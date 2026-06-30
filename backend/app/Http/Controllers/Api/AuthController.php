@@ -9,6 +9,7 @@ use App\Models\RefreshToken;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use OpenApi\Attributes as OA;
 
@@ -125,7 +126,8 @@ class AuthController extends Controller
     )]
     public function sendOtp(Request $request)
     {
-        $request->validate([
+
+        $validator = Validator::make($request->all(), [
             'mobile' => 'required|digits:11',
         ]);
 
@@ -137,12 +139,17 @@ class AuthController extends Controller
             'expires_at' => now()->addMinutes(2),
         ]);
 
-        // dump("OTP: {$code}");
-
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'اطلاعات وارد شده معتبر نیست.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
         return response()->json([
             'status' => 200,
-            'message' => 'کد ورود با موفقیت ارسال شد.',
-        ], 200);
+            'message' => 'کد با موفقیت ارسال شد',
+        ]);
     }
 
     #[OA\Post(
@@ -239,17 +246,17 @@ class AuthController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/logout",
-        tags: ["Auth"],
-        summary: "Logout",
+        path: '/api/logout',
+        tags: ['Auth'],
+        summary: 'Logout',
         security: [
-            ["bearerAuth" => []]
+            ['bearerAuth' => []],
         ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Logout success"
-            )
+                description: 'Logout success'
+            ),
         ]
     )]
     public function logout(Request $request)
@@ -268,64 +275,5 @@ class AuthController extends Controller
         ]);
     }
 
-    // // Register
-    // public function register(RegisterRequest $request)
-    // {
-
-    //     $data = $request->validated();
-
-    //     $user = User::create([
-    //         'name' => $data['name'],
-    //         'email' => $data['email'],
-    //         'password' => Hash::make($data['password']),
-    //     ]);
-
-    //     $token = $user->createToken('auth_token')->plainTextToken;
-
-    //     return response()->json([
-    //         'user' => $user,
-    //         'token' => $token,
-    //     ]);
-    // }
-
-    // // login
-    // public function login(Request $request)
-    // {
-    //     $user = User::where('email', $request->email)->first();
-
-    //     if (! $user) {
-    //         return response()->json(['message' => 'User not found'], 404);
-    //     }
-
-    //     if (! Hash::check($request->password, $user->password)) {
-    //         return response()->json(['message' => 'Invalid password'], 401);
-    //     }
-
-    //     $user->tokens()->delete();
-
-    //     $token = $user->createToken('auth_token')->plainTextToken;
-
-    //     return response()->json([
-    //         'user' => $user,
-    //         'token' => $token,
-    //     ]);
-    // }
-
-    // logout
-    // public function logout(Request $request)
-    // {
-    //     $user = $request->user();
-
-    //     if (! $user) {
-    //         return response()->json([
-    //             'message' => 'Unauthenticated',
-    //         ], 401);
-    //     }
-
-    //     $user->currentAccessToken()->delete();
-
-    //     return response()->json([
-    //         'message' => 'Logged out successfully',
-    //     ]);
-    // }
+  
 }
