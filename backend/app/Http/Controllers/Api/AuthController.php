@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Http\Resources\UserResource;
 use OpenApi\Attributes as OA;
 
 class AuthController extends Controller
@@ -68,7 +69,7 @@ class AuthController extends Controller
             ->where('expires_at', '>', now())
             ->first();
 
-        if (! $refreshToken) {
+        if (!$refreshToken) {
             return response()->json([
                 'status' => 401,
                 'message' => 'Refresh Token نامعتبر است.',
@@ -77,7 +78,7 @@ class AuthController extends Controller
 
         $user = User::find($refreshToken->user_id);
 
-        if (! $user) {
+        if (!$user) {
             return response()->json([
                 'status' => 404,
                 'message' => 'کاربر پیدا نشد.',
@@ -146,6 +147,7 @@ class AuthController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
+
         return response()->json([
             'status' => 200,
             'message' => 'کد با موفقیت ارسال شد',
@@ -198,7 +200,7 @@ class AuthController extends Controller
             ->latest()
             ->first();
 
-        if (! $otp) {
+        if (!$otp) {
             return response()->json([
                 'status' => 401,
                 'message' => 'کد وارد شده اشتباه است.',
@@ -275,5 +277,40 @@ class AuthController extends Controller
         ]);
     }
 
-  
+
+
+
+    #[OA\Get(
+        path: '/api/who-am-i',
+        tags: ['Auth'],
+        summary: 'Who Am I',
+        description: 'Get authenticated user information',
+        security: [
+            ['bearerAuth' => []],
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'User information retrieved successfully'
+            ),
+            new OA\Response(
+                response: 401,
+                description: 'Unauthenticated'
+            ),
+        ]
+    )]
+
+    //who_am_i
+
+    public function whoAmI(Request $request)
+    {
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'User information retrieved successfully.',
+            'data' => new UserResource($request->user()),
+        ]);
+
+    }
+
 }
