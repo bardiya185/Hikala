@@ -15,14 +15,14 @@
   "static/chunks/node_modules_react-icons_gr_index_mjs_d1f4966a._.js",
   "static/chunks/node_modules_react-icons_fa_index_mjs_0459ff00._.js",
   "static/chunks/node_modules_react-icons_lib_844c6c50._.js",
-  "static/chunks/node_modules_@tanstack_query-core_build_modern_32f3a29f._.js",
+  "static/chunks/node_modules_@tanstack_query-core_build_modern_5f569b2b._.js",
   "static/chunks/node_modules_axios_lib_abd7c0de._.js",
   "static/chunks/node_modules_baseline-browser-mapping_dist_index_cjs_43923a95._.js",
   "static/chunks/node_modules_caniuse-lite_618f1ad9._.js",
   "static/chunks/node_modules_autoprefixer_7bb18243._.js",
   "static/chunks/node_modules_postcss_lib_26819481._.js",
-  "static/chunks/node_modules_8f0b2d1a._.js",
-  "static/chunks/src_534b261f._.js"
+  "static/chunks/node_modules_04b73e4f._.js",
+  "static/chunks/src_db70716b._.js"
 ],
     source: "dynamic"
 });

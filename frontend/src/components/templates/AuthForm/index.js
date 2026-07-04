@@ -10,15 +10,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { IoLogOutOutline } from "react-icons/io5";
 import { menuItems } from "@/core/config/menu";
+import { useGetUserData } from "@/core/services/queries";
 
 function AuthForm() {
   const [step, setStep] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [mobile, setMobile] = useState("");
 
+  const {data} = useGetUserData()
+    const { data: userData } = data || {};
+  console.log(userData)
  
 
-  const userData = true;
+  
   if (userData)
     return (
       <div className="relative  cursor-pointer">
@@ -33,11 +37,11 @@ function AuthForm() {
               href="/profile"
             >
               <div className="flex mx-4 py-4 border-b mt-[15px] border-neutral-200 justify-between items-center">
-                <Link className="curs" href="/profile">
+                
                 <span className=" font-iranyekanbold text-sm font-bold text-neutral-800 text-[]">
-                  09123456789
+        {userData?.data?.mobile}
                 </span>
-                </Link>
+                
               </div>
             </Link>
 
