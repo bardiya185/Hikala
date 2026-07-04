@@ -94,11 +94,11 @@ function ProfileLayout({children}) {
             return (
               <div key={menu.id} className="">
                 <Link
-                  className="flex items-center gap-2 border-b border-neutral-400 px-10 py-2"
+                  className="flex items-center gap-2 border-b border-neutral-400 px-10 py-5"
                   href={menu.href}
                 >
-                  <Iconmenu />
-                  <span>{menu.label}</span>
+                  <Iconmenu className="w-[22px] h-[20px]" />
+                  <span className="text-base font-bold text-neutral-700">{menu.label}</span>
                 </Link>
               </div>
             );
