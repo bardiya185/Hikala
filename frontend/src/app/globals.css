@@ -8,3 +8,20 @@
   margin: 0;
 }
 
+@font-face {
+  font-family: IRANYEKANWEBMEDIUM;
+  src: url("/frontend/public/fonts/iranyekanwebmedium.2d4f96e5.2d4f96e5.woff") format("woff");
+
+  font-style: normal;
+  font-weight: 400;
+}
+
+@layer utilities {
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
