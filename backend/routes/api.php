@@ -24,8 +24,6 @@ Route::post('/send-otp', [AuthController::class, 'sendOtp']);
 Route::post('/check-otp', [AuthController::class, 'checkOtp']);
 Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
 
-// ========== تغییرات اینجا شروع میشه ==========
-
 // Products (فقط GET‌ها عمومی، بقیه نیاز به auth دارن)
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
@@ -70,7 +68,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('roles', RoleController::class);
 });
 
-// ========== تغییرات اینجا تموم میشه ==========
 
 //Test
 Route::get('/test', [AuthController::class, 'test']);
