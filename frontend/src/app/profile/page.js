@@ -1,14 +1,10 @@
-"use client"
-import React, { useState } from 'react'
-import AccountInfoTemplates from '@/components/templates/Account-info'
+import OrderSummary from '@/components/templates/OrdersSummary'
+import React from 'react'
 
-function Profile() {
-  const [userAccountInformatations,setUserAccountInformations] = useState(true)
+function page() {
   return (
-    <>
-    {userAccountInformatations ? <AccountInfoTemplates/>:null}
-  </>
+    <OrderSummary/>
   )
 }
 
-export default Profile
+export default page
