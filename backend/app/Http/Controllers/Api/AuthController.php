@@ -301,7 +301,6 @@ class AuthController extends Controller
     )]
 
     //who_am_i
-
     public function whoAmI(Request $request)
     {
 
