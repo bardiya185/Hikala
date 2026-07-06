@@ -1,0 +1,192 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1036{\fonttbl{\f0\fnil\fcharset0 Arial;}{\f1\fnil\fcharset0 Courier New;}}
+{\colortbl ;\red0\green77\blue187;\red0\green176\blue80;\red255\green0\blue0;}
+{\*\generator Riched20 10.0.22621}\viewkind4\uc1 
+\pard\sa200\sl240\slmult1\qc\cf1\b\fs28\lang12 Wampserver - HTTPS SSL en mode \'ab\~manuel\~\'bb\par
+
+\pard\sl240\slmult1\fs24 - 1 - O\'f9 sont les outils HTTPS SSL \'ab\~manuels\~\'bb ?\par
+- 2 - Pr\'e9alables \'e0 la cr\'e9ation des certificats CA et SSL\par
+- 3 - Cr\'e9ation du certificat auto-sign\'e9.\par
+- 4 - Cr\'e9ation du certificat et de la cl\'e9 priv\'e9e pour un domaine\par
+- 5 - Dire \'e0 Apache que le VirtualHost my-domain.internal est en mode HTTPS SSL\par
+\cf0\b0\fs22 Depuis la version 3.3.2, Wampserver comprend les outils n\'e9cessaires pour supporter https SSL automatiquement.\par
+\'c0 partir de la version 3.2.6.4, Tray Menu Manager int\'e8gre les outils permettant de g\'e9n\'e9rer les certificats auto-sign\'e9s et les cl\'e9s priv\'e9s pour supporter https SSL manuellement.\par
+Ces outils \'ab manuels\~\'bb, sont compatibles avec le mode https SSL automatique de Wampserver.\par
+\par
+\cf1\b\fs24 - 1 - O\'f9 sont les outils HTTPS SSL \'ab\~manuels\~\'bb ?\par
+\cf0\b0\fs22 Onglet "Self Signed" de \'c0 propos de Tray Menu Manager\par
+Donc, double-clic sur l'ic\'f4ne Wampmanager ou Clic-Droit -> \'c0 propos de\'85 puis onglet "Self Signed"\par
+\par
+Cet onglet "Self Signed" comprend lui-m\'eame quatre onglets :\par
+- \b 1.1 \b0 - Certificate Domain Name (CDN)\par
+
+\pard\li720\sl240\slmult1 -- Certificate Domain Common Name\par
+D\'e9signation du nom du certificat auto-sign\'e9 (Ex: Wampserver Certificat No 1) ou nom de domaine (Ex: domaine.internal) pour les certificats et cl\'e9s priv\'e9s de domaines.\par
+-- Private Key File Password\par
+Mot de passe obligatoire \'e0 se souvenir.\par
+-- Local Server IPv4 or IPv6\par
+\'c0 laisser sur 127.0.0.1 (Sauf pour expert)\par
+-- Certificat SAN (Subjet Alternat Names)\par
+Lors de la cr\'e9ation des cl\'e9s priv\'e9s domaine.tld, peut \'e9ventuellement contenir d'autres noms de domaines.\par
+
+\pard\sl240\slmult1 - \b 1.2\b0 - Properties and Certificate Authority (PCA)\par
+
+\pard\li720\sl240\slmult1 R\'e9f\'e9rences et propri\'e9t\'e9s du certificat auto-sign\'e9.\par
+
+\pard\sl240\slmult1 - \b 1.3 \b0 - Create and Save New Certicate (CSNC)\par
+
+\pard\li720\sl240\slmult1 Plusieurs r\'f4les :\par
+- Cr\'e9er le certificat auto-sign\'e9 (Create CA Cert)\par
+- Charger le certificat auto-sign\'e9 pr\'e9alablement cr\'e9\'e9 (Load CA Cert)\par
+- Cr\'e9er le certificat SSL de domaine (Create SSL Cert)\par
+
+\pard\sl240\slmult1 - \b 1.4 \b0 - Verify Log\par
+
+\pard\li720\sl240\slmult1 Voir le log\par
+
+\pard\sl240\slmult1\par
+\cf1\b\fs24 - 2 - Pr\'e9alables \'e0 la cr\'e9ation des certificats CA et SSL en mode manuel\par
+\cf2\ul\fs26 Si le mode HTTPS SSL automatique de Wampserver est d\'e9j\'e0 activ\'e9, c'est \'e0 dire si :\ulnone\par
+
+\pard\li720\sl240\slmult1\i Clic-Droit -> Param\'e8tres Wamp -> Wampserver pr\'eat pour supporter https\par
+
+\pard\sl240\slmult1\ul\i0 est coch\'e9, passez directement au point - 3 -\par
+
+\pard\sa200\sl240\slmult1\ulnone Cet item peut \'eatre coch\'e9, le mode HTTPS SSL manuel est compatible avec le mode HTTPS SSL automatique.\par
+
+\pard\sl240\slmult1\cf0\b0\fs22 - \b 2.1 \b0 - Pour rester compatible avec le mode HTTPS SSL automatique de Wampserver, le contenu du fichier :\par
+C:\\wamp64\\bin\\apache\\apache2.4.xx\\conf\\extra\\httpd-ssl.conf doit \'eatre remplac\'e9 par\~:\par
+_____ D\'e9but du fichier (non inclus) _____\par
+\f1 #\par
+# This is the Apache server configuration file providing SSL support.\par
+# When we also provide SSL we have to listen to the\par
+# standard HTTP port and to the HTTPS port\par
+#\par
+Listen 0.0.0.0:443 https\par
+Listen [::0]:443 https\par
+\par
+# Where the certificates are\par
+Define CERTIFS $\{INSTALL_DIR\}/bin/Certs\par
+Define CERTIFICATS $\{INSTALL_DIR\}/bin/certificats\par
+\par
+Protocols h2 h2c http/1.1\par
+<IfModule mod_headers.c>\par
+  Header always set Strict-Transport-Security "max-age=31536000; preload"\par
+</IfModule>\par
+SSLSessionCache shmcb:$\{INSTALL_DIR\}/tmp/ssl_gcache_data(512000)\par
+SSLOptions +StrictRequire +StdEnvVars -ExportCertData\par
+# SSL Protocol support:\par
+SSLProtocol -all +TLSv1.2 +TLSv1.3\par
+SSLCompression Off\par
+SSLHonorCipherOrder On\par
+# SSL Cipher Suite:\par
+SSLCipherSuite SSL ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-RSA-AES256-GCM-SHA384\par
+# Encryptions TLSv1.3\par
+SSLCipherSuite TLSv1.3 TLS_CHACHA20_POLY1305_SHA256:TLS_AES_256_GCM_SHA384\par
+SSLOpenSSLConfCmd ECDHParameters secp521r1\par
+SSLOpenSSLConfCmd Curves sect571r1:sect571k1:secp521r1:sect409k1:sect409r1:secp384r1\par
+\par
+## Never modify these four lines\par
+## BEGIN OF SSL VIRTUAL HOST CONTEXT\par
+## END OF SSL VIRTUAL HOST CONTEXT\par
+## To be repeated for another SSL VirtualHost\par
+\par
+# Do not remove these lines UnDefine\par
+UnDefine SERVERNAMEVHOSTSSL\par
+UnDefine DOCUMENTROOTVHOSTSSL\par
+\f0 _____ Fin du fichier (non inclus) _____\par
+\par
+Ne pas oublier de sauvegarder le fichier modifi\'e9.\par
+\par
+- \b 2.2 \b0 - Dans le fichier C:\\wamp64\\bin\\apache\\apache2.4.xx\\conf\\httpd.conf\par
+- 2.2.1 - Remplacer\par
+\f1 #LoadModule socache_shmcb_module modules/mod_socache_shmcb.so\par
+\f0 par\par
+\f1 LoadModule socache_shmcb_module modules/mod_socache_shmcb.so\par
+\f0 - 2.2.2 - Remplacer\par
+\f1 #LoadModule ssl_module modules/mod_ssl.so\par
+\f0 par\par
+\f1 LoadModule ssl_module modules/mod_ssl.so\par
+\f0 - 2.2.3 - Remplacer :\par
+\f1 #Include conf/extra/httpd-ssl.conf\par
+\f0 par\par
+\f1 Include conf/extra/httpd-ssl.conf\par
+\f0\par
+Ne pas oublier de sauvegarder le fichier modifi\'e9.\par
+\par
+\cf1\b\fs24 - 3 - Cr\'e9ation du certificat auto-sign\'e9.\par
+\cf0\b0\fs22 - \b 3.1 \b0 - R\'e9f\'e9rences et propri\'e9t\'e9s du certificat auto-sign\'e9.\par
+Aller l'onglet "Properties and Certificate Authority" (Voir 1.2 ci-dessus) et remplir les diff\'e9rents champs ci-dessous :\par
+-- \i Country Code \i0 : \tab\tab le code du pays sur deux lettres, par exemple 'FR' pour France\par
+-- \i Organization Name \i0 : \tab Ce que vous voulez, par exemple 'Otomatic & Co'\par
+-- \i Organizational Unit \i0 : \tab Ce que vous voulez, par exemple 'engineering'\par
+-- \i Address \i0 : \tab\tab\tab Par exemple, le code postal et le nom du quartier : '75017 - Epinettes'\par
+-- \i Locality \i0 : \tab\tab\tab Votre ville, par exemple 'Paris'\par
+-- \i State/County \i0 : \tab\tab Votre pays ou votre \'e9tat, par exemple 'France'\par
+-- \i Email \i0 :\tab\tab\tab Peut \'eatre une adresse invalide : toto@toto.invalid\par
+-- \i Cert Period days \i0 : \tab\tab P\'e9riode de validit\'e9 du certificat en jours, 999 maximum\par
+\par
+Toutes ces informations sont m\'e9moris\'e9es et vous n'aurez plus \'e0 les rentrer par la suite, sauf \'e0 vouloir les modifier.\par
+\par
+- \b 3.2 \b0 - Cr\'e9ation du certificat auto-sign\'e9\par
+- 3.2.1 - Aller \'e0 l'onglet "Certificate Domain Name" (Voir 1.1 ci-dessus)\par
+Remplir le champ 'Certificate DomainCommon Name' par le nom que vous voulez donner au certificat auto-sign\'e9, par exemple : '\i Wampserver Cert No 1'\i0\par
+Remplir le champ 'Private Key File Password' par le mot de passe de votre choix. Bien noter ce mot de passe qui sera utilis\'e9 apr\'e8s.\par
+- 3.2.2 - Aller \'e0 l'onglet "Create and Save New Certificate" (Voir 1.3 ci-dessus)\par
+Valider le bouton [Create CA Cert]\par
+Un popup affiche "Finished collecting and saving certificate for Wampserver Cert No 1\par
+Valider OK du popup.\par
+Si on valide l'onglet "Verify log", on verra le log de tout le processus de cr\'e9ation du certificat auto-sign\'e9 qui, au final, se trouve dans : C:\\wamp64\\bin\\certificats\\Wampserver_Cert_No_1.pfx\par
+Un seul certificat auto-sign\'e9 suffit pour cr\'e9er plusieurs plusieurs certificats et cl\'e9 priv\'e9es de domaines.\par
+\par
+\cf1\b\fs24 - 4 - Cr\'e9ation du certificat et de la cl\'e9 priv\'e9e pour un domaine\par
+\cf0\b0\fs22 - \b 4.1 \b0 - Aller sur l'onglet "Certificate Domain Name" (Voir 1.1 ci-dessus)\par
+Valider le bouton [Clear Domains]\par
+Remplir le champ "Certificate Domain Common Name" par le nom du domaine local que vous voulez passer en mode HTTPS SSL, par exemple 'my-domain.internal'\par
+Remplir le champ 'Private Key File Password' par le mot de passe pr\'e9alablement not\'e9\par
+- \b 4.2 \b0 - Aller sur l'onglet "Create and Save New Certificate" (Voir 1.3 ci-dessus)\par
+\'c0 l'aide du bouton Arborescence du champ CA Certificate, ouvrir le certificat auto-sign\'e9 cr\'e9\'e9 en 3.2.2, dans notre cas : C:\\wamp64\\bin\\certificats\\Wampserver_Cert_No_1.pfx\par
+Remplir le champ 'CA Private Key Password' par le mot de passe pr\'e9alablement not\'e9\par
+Valider le bouton [Load CA Cert]\par
+Valider le bouton [Create SSL Cert]\par
+Un popup affiche "SSL certificate created successfully"\par
+Valider OK du popup\par
+Si on valide l'onglet "Verify log", on verra le log de tout le processus de cr\'e9ation du certificat et de la cl\'e9 priv\'e9e pour le domaine qui, au final, se trouvent dans :\par
+C:\\wamp64\\bin\\certificats\\my-domain.internal-certonly.pem\par
+C:\\wamp64\\bin\\certificats\\my-domain.internal-privatekey.pem\par
+\par
+\cf1\b\fs24 - 5 - Dire \'e0 Apache que le VirtualHost my-domain.internal est en mode HTTPS SSL\par
+\cf0\b0\fs22 - \b 5.1\b0  - Ins\'e9rer le texte ci-dessous dans le fichier C:\\wamp64\\bin\\apache\\apache2.4.xx\\conf\\extra\\httpd-ssl.conf juste avant la ligne :\par
+\f1 ## Never modify these four lines\par
+\ul\f0 Pour rester compatible avec la gestion des VirtualHost de Wampserver, \cf3 le nom de domaine.tld, en l'occurence 'my-domain.internal' est \'e9crit trois fois \cf0 : commentaires (##) de d\'e9but et de fin et ligne Define SERVERNAMEVHOSTSSL\par
+\ulnone Le dossier du VirtualHost (Define DOCUMENTROOTVHOSTSSL) est le m\'eame que dans le fichier\par
+C:\\wamp64\\bin\\apache\\apache2.4.xx\\conf\\extra\\httpd-vhosts.conf\par
+et ne doit pas comporter de slash final.\par
+______ D\'e9but du texte (Non inclus) _____\par
+\par
+\f1 ## BEGIN OF SSL VIRTUAL HOST my-domain.internal CONTEXT\par
+Define SERVERNAMEVHOSTSSL my-domain.internal\par
+Define DOCUMENTROOTVHOSTSSL G:/www/aviatechno\par
+<VirtualHost *:443>\par
+  ServerName $\{SERVERNAMEVHOSTSSL\}\par
+  DocumentRoot "$\{DOCUMENTROOTVHOSTSSL\}"\par
+  SSLEngine on\par
+  SSLCertificateFile      "$\{CERTIFICATS\}/$\{SERVERNAMEVHOSTSSL\}-certonly.pem"\par
+  SSLCertificateKeyFile   "$\{CERTIFICATS\}/$\{SERVERNAMEVHOSTSSL\}-privatekey.pem"\par
+  <Directory "$\{DOCUMENTROOTVHOSTSSL\}/">\par
+    Options +Indexes +Includes +FollowSymLinks +MultiViews\par
+    AllowOverride all\par
+    Require local\par
+  </Directory>\par
+  CustomLog "$\{INSTALL_DIR\}/logs/custom.log" "%t %h %\{SSL_PROTOCOL\}x %\{SSL_CIPHER\}x \\"%r\\" %b"\par
+</VirtualHost>\par
+## END OF SSL VIRTUAL HOST my-domain.internal CONTEXT\par
+\f0\par
+_____ Fin du texte (non inclus) _____\par
+\par
+Ne pas oublier d'enregistrer le fichier modifi\'e9.\par
+\par
+- \b 5.2\b0  - Clic-Droit -> Red\'e9marrer de z\'e9ro\par
+Le VirtualHost my-domain.internal devrait \'eatre en mode HTTPS SSL.\par
+\par
+}
+ 
