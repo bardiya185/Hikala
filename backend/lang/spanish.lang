@@ -1,0 +1,106 @@
+<?php
+//3.0.7 - $w_mariadbConsole - $w_mariadbLog - $w_mariaSettings
+//        $w_apacheDoc - $w_mysqlDoc - $w_mariadbDoc - $w_phpDoc - $w_doc
+//3.0.8 - $w_noDBMS
+//3.1.1   $w_cmdWindows - $w_mysqlCommand - $w_mariadbCommand - $w_apacheCommand - $w_services_msc
+//3.2.0		$w_helpForums - $w_helpUse
+//3.2.1   $w_apacheSettings - $w_apacheDefaults
+//3.2.2   $w_helpFile modified
+//3.2.6   $w_startedOn - $w_restartWamp - $w_phpCommand
+//3.2.7   $w_changelog - $w_warning
+//        --- Suppress: $w_putOnline - $w_putOffline
+//3.2.9   $w_startOfServices - $w_servicesStarted - $w_bepatient - $w_ready - $w_state_services
+//      --- Suppress: $w_serverOffline - $w_serverOnline
+//3.3.0   $w_waitConfig - $file_charset
+//3.3.2 --- Modified $w_helpForums
+//3.3.6 --- Modified $w_about
+
+$w_translated_by = 'Traducido al español por Napolion';
+$file_charset = 'iso-8859-1';
+
+$w_allServicesRunning = 'Todos los servicios estan ejecutandose';
+$w_oneServiceRunning = '%n de %t servicios se estan ejecutando';
+$w_allServicesStopped = 'Ningun servicio de %t se esta ejecutando';
+$w_state_services = 'Botón derecho del mouse -> Herramientas -> Consultar estado de servicios';
+
+$w_about = 'Acerca...';
+$w_helpFile = 'Archivos y documentación';
+$w_help = 'Ayuda';
+$w_helpForums = 'Foros de soporte';
+$w_helpUse = 'Instrucciones de operación';
+$w_exit = 'Salir';
+$w_version = 'Versión';
+$w_service = 'Administración de servicios';
+$w_services_msc = 'Panel de control de servicios';
+$w_doc = 'documentación';
+$w_cmdWindows = 'Ventanas de comando';
+
+$w_localhost = 'Servidor virtual';
+$w_phpmyadmin = 'phpMyAdmin';
+$w_sqlitemanager = 'SQLiteManager';
+$w_wwwDirectory = 'directorio www';
+$w_logFiles = 'Registros de archivos';
+$w_configFiles = 'Configuración';
+$w_apacheModules = 'Módulos de Apache';
+$w_apacheSettings = 'Configuración de Apache';
+$w_apacheDefaults = 'Directivas predeterminadas';
+$w_phpSettings = 'Configuración de PHP';
+$w_aliasDirectories = 'Directorios Alias';
+$w_services = 'Servicios';
+$w_apache = 'Apache';
+$w_apacheCommand = $w_cmdWindows.' '.$w_apache.'/bin';
+$w_apacheDoc = 'Apache '.$w_doc;
+$w_mysql = 'MySQL';
+$w_mysqlDoc = 'MySQL '.$w_doc;
+$w_mysqlSettings = 'Configuración de MySQL';
+$w_mariaSettings = 'Configuración de MariaDB';
+$w_mariadbDoc = 'MariaDB '.$w_doc;
+$w_startServices = 'Iniciar todos los servicios';
+$w_stopServices = 'Detener todos los servicios';
+$w_restartServices = 'Reiniciar todos los servicios';
+// Format ICU from https://unicode-org.github.io/icu/userguide/format_parse/datetime/#date-field-symbol-table
+// be careful
+$w_FormatDate = "dd.MM.Y hh:mm a";
+$w_startedOn = 'Lanzado el ';
+$w_restartWamp = 'Reiniciar desde cero';
+$w_warning = 'ADVERTENCIA'.
+
+$w_apacheErrorLog = 'Registro de errores de Apache';
+$w_apacheAccessLog = 'Registro de acceso de Apache';
+$w_phpLog = 'Registro de errores de PHP';
+$w_changelog ='Registro de cambios';
+$w_phpDoc = 'PHP '.$w_doc;
+$w_mysqlLog = 'Registro de MySQL';
+$w_mariadbLog = 'Registro de MariaDB';
+$w_addAlias = 'Agregar un alias';
+$w_editAlias = 'Editar alias';
+$w_editHtaccess = 'Editar .htaccess';
+$w_deleteAlias = 'Eliminar alias';
+$w_refresh = 'Refrescar';
+$w_phpExtensions = 'Extensiones de PHP';
+$w_addExtension = 'Agregar extensión';
+$w_phpCommand = $w_cmdWindows.' PHP';
+
+$w_startResume = 'Iniciar o continuar servicio';
+$w_pauseService = 'Pausar servicio';
+$w_stopService = 'Detener servicio';
+$w_restartService = 'Reiniciar servicio';
+$w_testPort80 = 'Probar puerto 80';
+$w_installService = 'Instalar servicio';
+$w_removeService = 'Remover servicio';
+$w_mysqlConsole = 'Consola de MySQL';
+$w_mysqlCommand = $w_cmdWindows.' '.$w_mysql.'/bin';
+$w_mariadbConsole = 'Consola de MariaDB';
+$w_mariadbCommand = $w_cmdWindows.' MariaDB/bin';
+
+$w_noDBMS = 'No hay sistema de base de datos';
+
+$w_language = 'Idioma';
+
+$w_startOfServices = 'Iniciando servicios';
+$w_servicesStarted = 'Servicios iniciados';
+$w_bepatient = 'Sea paciente!';
+$w_ready = 'Listo!';
+$w_waitConfig = 'Actualizando configuración!';
+
+?>
