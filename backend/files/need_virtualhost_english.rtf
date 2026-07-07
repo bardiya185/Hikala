@@ -1,0 +1,118 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1036{\fonttbl{\f0\fnil\fcharset0 Calibri;}{\f1\fnil\fcharset0 Arial;}{\f2\fnil\fcharset1 Cambria Math;}}
+{\colortbl ;\red0\green77\blue187;\red0\green0\blue255;\red255\green0\blue0;\red0\green176\blue80;\red255\green255\blue0;}
+{\*\generator Riched20 10.0.22621}{\*\mmathPr\mmathFont2\mwrapIndent1440 }\viewkind4\uc1 
+\pard\sl276\slmult1\cf1\b\f0\fs22\lang12 - 1 - THE NEED FOR VirtualHost\par
+- 2 - How to create a VirtualHost\par
+\par
+- 1 - \ul THE NEED FOR VIRTUALHOST\ulnone\par
+\cf0\b0 The use of VirtualHost is mandatory with Apache to correctly use WEB applications, CMS or your local sites. It is essential to create a VirtualHost for each of your projects, even if they are in the \\wamp64\\www\\subfolder structure.\par
+\par
+Launching local sites via '{{\field{\*\fldinst{HYPERLINK http://localhost/project1/ }}{\fldrslt{http://localhost/project1/\ul0\cf0}}}}\f0\fs22 ' or '{{\field{\*\fldinst{HYPERLINK http://localhost/project2/ }}{\fldrslt{http://localhost/project2/\ul0\cf0}}}}\f0\fs22 ' is \cf3\b ABSOLUTELY NOT \cf0\b0 a good solution, and should be avoided altogether.\par
+In effect, you're introducing an extra "localhost/" level into the access urls to your local sites, which means that many variables defined by the HTTP server, such as elements of the \i $_SERVER['xxx'] \i0 array, will not have the right values.\par
+For example, for a wamp64/www/my-project/ project\par
+With the call as it should be: {{\field{\*\fldinst{HYPERLINK http://my-project/ }}{\fldrslt{http://my-project/\ul0\cf0}}}}\f0\fs22  here are the values of some predefined elements\par
+
+\pard\li720\sl276\slmult1\i $_SERVER['HTTP_HOST'] = my-project\par
+$_SERVER['SERVER_NAME'] = my-project\par
+$_SERVER['DOCUMENT_ROOT'] =C:/wamp64/www/my-project\par
+
+\pard\sl276\slmult1\i0 And these are the same elements predefined with {{\field{\*\fldinst{HYPERLINK http://localhost/my-project/ }}{\fldrslt{http://localhost/my-project/\ul0\cf0}}}}\f0\fs22\par
+
+\pard\li720\sl276\slmult1\i $_SERVER['HTTP_HOST'] = localhost\par
+$_SERVER['SERVER_NAME'] = localhost\par
+$_SERVER['DOCUMENT_ROOT'] =C:/wamp64/www\par
+
+\pard\sl276\slmult1\i0 You can see, among other things, that the path to the project's root folder \i ($_SERVER['DOCUMENT_ROOT']) \i0 is the wrong one. And, what's more, \cf3\b it will ALWAYS be \i C:/wamp64/www\i0 , whatever project is launched \cf0\b0 in this way.\par
+These erroneous values will - for sure - induce incomprehensible errors with Frameworks, CMS or web applications you add to your projects, such as Wordpress or Joomla; but they're not the only ones.\par
+Your "projects" are hosted at "localhost", just as "real" sites are hosted at "ovh", "free", "1and1", "gandi" or others, and to access these real sites, you don't type {{\field{\*\fldinst{HYPERLINK http://gandi/wampserver.com }}{\fldrslt{http://gandi/wampserver.com\ul0\cf0}}}}\f0\fs22  but {{\field{\*\fldinst{HYPERLINK http://wampserver.com }}{\fldrslt{http://wampserver.com\ul0\cf0}}}}\f0\fs22 .\par
+What's more, the folder for a VirtualHost can be anywhere, for example in \i g:\\www\\ \i0 whereas Wampserver is in \i c:\\wamp64\\, \i0 so the folder won't be deleted even after Wampserver has been uninstalled.\par
+\par
+\cf1\b - 2 - \ul HOW TO CREATE A VIRTUALHOST\par
+\cf4\highlight5\f1\fs26 Always create a VirtualHost \cf3 BEFORE\cf4  installing a Web application or CMS \cf0\highlight0\ulnone\b0\f0\fs24 (Joomla, Wordpress, Prestashop, Moodle, etc.).\par
+\cf4\b\fs22 While this doesn't prevent you from reading everything that follows (and it's even recommended)\cf0\b0 , with Wampserver, creating or adding a VirtualHost can be summed up in a few clicks. It is essential to use Wampserver's internal tools to create or add a VirtualHost.\par
+For ease of explanation, here are a few names:\par
+- \cf4\b sitefolder\cf0\b0 : folder in which to host the local site\par
+- \cf1\b sitename\cf0\b0 : name under which the local site will be called {{\field{\*\fldinst{HYPERLINK http://sitename/ }}{\fldrslt{http://sitename/\ul0\cf0}}}}\f0\fs22\par
+First of all, let's choose the place where we want to host our local site. This can be a folder located in Wampserver, such as \i wamp64/www/dossierdusite/\i0 , but it's not mandatory; this hosting can be anywhere on the hard disk, avoiding paths containing spaces; for simplicity of explanation we choose :\par
+\cf4\b c:\\sitefolder\\\par
+\cf0\b0 The folder in which the site will be hosted \cf3\b must exist before the VirtualHost is created\cf0\b0 , so you need to create it using File Explorer, running as administrator.\par
+- Launch Wampserver, wait for \cf4\b green W icon\cf0\b0\par
+- \i Wampmanager icon -> localhost\i0\par
+This takes you to the Wampserver home page.\par
+- Click on \b Add a Virtual Host\b0 , in the \b Tools \b0 menu at bottom left.\par
+You're now on the Add a Virtual Host page\par
+You're all set to add your first VirtualHost\par
+- In the form\par
+-- For "\i Name of the Virtual Host\i0 ", type :\par
+\cf1\b sitename\par
+\cf0\b0 -- For "\i Complete absolute path of the VirtualHost folder \i0 ", enter :\par
+\cf4\b c:\\sitefolder\\\par
+\cf0\b0 -- If you want to use PHP in FCGI mode\par
+Check to use a PHP version other than the default. Choose the PHP version you want from the drop-down menu.\par
+There are two other possible options:\par
+-- If you want to use a "Listen port" other than the default one.\par
+-- If you want to use VirtualHost by IP.\par
+Then validate the form with the button:\par
+-- \i Start the creation/modification of the VirtualHost\i0\par
+As indicated: this may take some time.\par
+After this "certain time" it is indicated that unfortunately certain operations necessary to the taking into account by Windows and Apache of this new VirtualHost cannot be carried out automatically by the navigator, thus, as indicated:\par
+- \i Right-click Wampmanager icon -> Tools-> Restart DNS\par
+\i0 Wait for the icon to turn green again.\par
+Click on Back to homepage\par
+In the Your VirtualHost menu, on the right, your own VirtualHost is present:\par
+- localhost\par
+- \cf1\b sitename\cf0\b0\par
+In the same way, you also have this Vos VirtualHosts submenu with the Wampmanager icon.\par
+Now you're ready to install your local site in the \cf4\b c:\\sitefolder\\ \cf0\b0 folder, indicating, if requested during installation, that the url is {{\field{\*\fldinst{HYPERLINK http://sitename/ }}{\fldrslt{http://\b sitename\b0 /\ul0\cf0}}}}\f0\fs22 .\par
+\par
+In fact, it should work in exactly the same way as any Apache server on a hosting provider's site, with a few minor differences in terms of access authorizations.\par
+To fully understand the VirtualHost mechanism, it's essential to read the following.\par
+This is the file called `httpd-vhosts.conf` which contains the VirtualHost for Apache\par
+\\wamp64\\binapacheapache2.4.58\\conf\\extra\\httpd-vhosts.conf\par
+Here's a definition of a VirtualHost in Wampserver :\par
+
+\pard\li720\sl276\slmult1\i <VirtualHost *:80>\par
+  ServerName nom-de-mon-site\par
+  DocumentRoot "chemin-du-dossier"\par
+  <Directory "chemin-du-dossier/">\par
+    Options +Indexes +Includes +FollowSymLinks +MultiViews\par
+    AllowOverride all\par
+    Require local\par
+ </Directory>\par
+</VirtualHost>\par
+
+\pard\sl276\slmult1\i0 Each VirtualHost has its own definitions of\par
+\cf4\b\f2\u10625?\f0  ServerName \cf0\b0 which indicates the name of the local site \par
+\cf4\b\f2\u10625?\f0  DocumentRoot \cf0\b0 which indicates which folder it is in.\par
+\cf4\b\f2\u10625?\f0  Directory\cf0\b0  which gives the possible options and access authorizations.\par
+\lang12\par
+\b -- How VirtualHost works in Apache --\par
+\b0 The first definition in this file will also be the default site, so that if the domain name used in the browser doesn't match any defined domain, localhost, the first domain in the file, will be served.\par
+So, we make sure that Apache security for the domain localhost\b  ** ALWAYS HAS THE VALUE**.\b0\par
+Require local\par
+and that it \b ALWAYS REMAINS FIRST \b0 on the VirtualHost list. Any casual hacker from an external address will receive an error and won't be able to enter the PC, but if you misspell a domain you'll see the WampServer home page (or an external domain), because you're on the same PC as WampServer and therefore in `local`.\par
+To add a VirtualHost, you need to add your new domain name to the HOSTS file.\par
+\i C:\\windows\\system32\\drivers\\etc\\hosts\par
+\i0 The file has no extension and must remain extensionless. Beware of Notepad, as it may try to add a `.txt` extension if you don't have a better editor.  I suggest you download Notepad++, it's free and a very good editor.\par
+It's also a protected file that you'll need to edit with administrator privileges, so you'll need to launch the editor with the "Run as administrator" option.\par
+After editing and adding the project1 domain, the contents of the hosts file should look like this:\par
+
+\pard\li720\sl276\slmult1\i 127.0.0.1 localhost\par
+::1 localhost\par
+127.0.0.1 project1\par
+::1 project1\par
+
+\pard\sl276\slmult1\i0 Now we need to tell Windows to refresh the domain name cache (otherwise, we'll have to reboot).\par
+Open a command window as administrator and type the command below: \par
+\i ipconfig /flushdns\par
+\i0 This forces Windows to clear the domain name cache and then reload it. On reloading, Windows will reread the HOSTS file and the new `project1` domain will be known.\par
+To do this, \i right-click -> Tools -> DNS Restart.\par
+\b\par
+\cf3\i0 NOTE: \cf4 Domain name\cf0\b0 . It's a very bad idea to define a ServerName\super 1\nosupersub  or ServerAlias that is the same as your real domain name. In fact, when you request a url in the browser, the local DNS (hosts file, then local cache) is read first, and if a match is found, the local site will be loaded, making it impossible to access the real site.\par
+A good practice is to give the same name but without the tld, so, for example, \i mysite.net \i0 on the real site and \i mysite \i0 on the local site.\par
+It's also possible to make a few changes to the PHP configuration, which will ONLY apply to this local site. This can be very useful for a site with specific requirements, as opposed to all the other sites you manage.\par
+\par
+\super 1 \nosupersub\i ServerName is a domain name, even locally, and must comply with certain rules. A domain name must be between 2 and 63 characters long. Allowed characters are letters, numbers and the "-" sign. The "-" sign is allowed anywhere except in the first or last position. In ALL CASES, underscores (_) are not allowed in domain names. For more information (but it's pretty boring), see Internationalized Domain Names in Applications, RFC 5890 and also RFC 1034.\par
+\par
+}
+ 

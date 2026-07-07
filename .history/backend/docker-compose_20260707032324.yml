@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  laravel_backend:
+    build:
+      context: .
+      target: dev 
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html 
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=hikala
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_DATABASE=hikala
+      - MYSQL_ROOT_PASSWORD=root

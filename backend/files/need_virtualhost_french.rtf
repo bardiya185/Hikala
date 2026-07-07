@@ -1,0 +1,134 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1036{\fonttbl{\f0\fnil\fcharset0 Calibri;}{\f1\fnil\fcharset0 Arial;}{\f2\fnil\fcharset2 Symbol;}}
+{\colortbl ;\red0\green77\blue187;\red255\green0\blue0;\red0\green0\blue255;\red0\green176\blue80;\red255\green255\blue0;}
+{\*\generator Riched20 10.0.22621}\viewkind4\uc1 
+\pard\sl276\slmult1\cf1\b\f0\fs22\lang12 - 1 - LE BESOIN DE VirtualHost\par
+- 2 - Comment cr\'e9er un VirtualHost\par
+\cf0\b0\par
+\cf1\b - 1 - \ul LE BESOIN DE VIRTUALHOST\cf0\ulnone\b0\par
+L'utilisation des VirtualHost est obligatoire avec Apache pour utiliser correctement les applications WEB, les CMS ou vos sites locaux. Il est imp\'e9ratif de cr\'e9er un VirtualHost pour chacun de vos projets, m\'eame s'ils sont dans la structure \i\\wamp64\\www\\sous-dossier.\par
+\i0\par
+\cf2\b Lancer ses sites locaux par '{\cf0{\field{\*\fldinst{HYPERLINK http://localhost/projet1/ }}{\fldrslt{http://localhost/projet1/\ul0\cf0}}}}\f0\fs22 ' ou '{\cf0{\field{\*\fldinst{HYPERLINK http://localhost/projet2/ }}{\fldrslt{http://localhost/projet2/\ul0\cf0}}}}\f0\fs22 ' n'est ABSOLUMENT PAS une bonne solution, c'est m\'eame quelque chose \'e0 bannir totalement.\par
+\cf0\b0 En effet, vous introduisez un niveau suppl\'e9mentaire \i "localhost/" \i0 dans les url d'acc\'e8s \'e0 vos sites locaux ce qui fait que beaucoup de variables d\'e9finies par le serveur HTTP, par exemple des \'e9l\'e9ments du tableau \i $_SERVER['xxx'] \i0 n'auront pas les bonnes valeurs.\par
+Par exemple, pour un projet \i wamp64/www/mon-projet/\par
+\i0 Avec l'appel tel qu'il devrait \'eatre : {{\field{\*\fldinst{HYPERLINK http://mon-projet/ }}{\fldrslt{http://mon-projet/\ul0\cf0}}}}\f0\fs22  voici les valeurs de quelques \'e9l\'e9ments pr\'e9d\'e9finis\par
+
+\pard\li720\sl276\slmult1\i $_SERVER['HTTP_HOST'] = mon-projet\par
+$_SERVER['SERVER_NAME'] = mon-projet\par
+$_SERVER['DOCUMENT_ROOT'] =C:/wamp64/www/mon-projet\par
+
+\pard\sl276\slmult1\i0 Et voil\'e0 quels sont les m\'eames \'e9l\'e9ments pr\'e9d\'e9finis avec {{\field{\*\fldinst{HYPERLINK http://localhost/mon-projet/ }}{\fldrslt{http://localhost/mon-projet/\ul0\cf0}}}}\f0\fs22\par
+
+\pard\li720\sl276\slmult1\i $_SERVER['HTTP_HOST'] = localhost\par
+$_SERVER['SERVER_NAME'] = localhost\par
+$_SERVER['DOCUMENT_ROOT'] =C:/wamp64/www\par
+
+\pard\sl276\slmult1\i0 Vous pouvez voir, entre autres, que le chemin d'acc\'e8s au dossier racine du projet ($_SERVER['DOCUMENT_ROOT']) n'est pas le bon chemin. Et, en plus, \cf2\b ce sera TOUJOURS C:/wamp64/www quel que soit le projet lanc\'e9 de cette mani\'e8re.\par
+\cf0\b0 Ces valeurs erron\'e9es vont - \'e0 coup s\'fbr - induire des erreurs incompr\'e9hensibles avec des Frameworks, des CMS ou des applications web que vous ajouterez \'e0 vos projets, par exemple Wordpress ou Joomla ; mais ce ne sont pas les seules.\par
+Vos \'ab projets \'bb sont h\'e9berg\'e9s chez "localhost" tout comme les sites \'ab r\'e9els \'bb sont h\'e9berg\'e9s chez "ovh", "free", "1and1", "gandi" ou autres et, pour acc\'e9der \'e0 ces sites r\'e9els , vous ne tapez pas {{\field{\*\fldinst{HYPERLINK http://gandi/wampserver.com }}{\fldrslt{http://gandi/wampserver.com\ul0\cf0}}}}\f0\fs22  mais bien {{\field{\*\fldinst{HYPERLINK http://wampserver.com }}{\fldrslt{http://wampserver.com\ul0\cf0}}}}\f0\fs22\par
+De plus, le dossier relatif \'e0 un VirtualHost peut \'eatre n'importe o\'f9, par exemple dans \i g:\\www\\ \i0 alors que Wampserver est dans \i c:\\wamp64\\ \i0 ce qui fait que le dossier ne sera pas supprim\'e9 m\'eame apr\'e8s d\'e9sinstallation de Wampserver.\i\par
+\i0\par
+\cf1\b - 2 - \ul COMMENT CR\'c9ER UN VIRTUALHOST\ulnone\par
+\cf4\highlight5\ul\f1\fs26 Il faut toujours cr\'e9er un VirtualHost \cf2 AVANT \cf4 d'installer une application Web ou un CMS \cf0\highlight0\ulnone\b0\f0\fs22 (Joomla, Wordpress, Prestashop, Moodle, etc.)\par
+Bien que cela ne vous emp\'e8che pas de lire tout ce qui suit (Et c'est m\'eame recommand\'e9), avec Wampserver, la cr\'e9ation ou l'ajout de VirtualHost peut se r\'e9sumer en quelques clics. Il est  indispensable d'utiliser les outils internes \'e0 Wampserver pour cr\'e9er ou ajouter un VirtualHost.\par
+Pour faciliter les explications, voici quelques d\'e9nominations :\par
+- \cf4\b dossierdusite\b0  \cf0 : dossier dans lequel on souhaite h\'e9berger le site local\par
+- \cf1\b nomdusite\cf0\b0  : nom sous lequel sera appel\'e9 le site local ({{\field{\*\fldinst{HYPERLINK http://nomdusite/ }}{\fldrslt{http://\b nomdusite\b0 /\ul0\cf0}}}}\f0\fs22 )\par
+Tout d'abord, choisissons l'endroit o\'f9 nous souhaitons h\'e9berger notre site local, ce peut \'eatre un dossier situ\'e9 dans Wampserver, comme wamp64/www/\cf4\b dossierdusite\cf0\b0 / mais ce n'est pas obligatoire ; cet h\'e9bergement peut \'eatre n'importe o\'f9 sur le disque dur, en \'e9vitant les chemins comportants des espaces ; pour la simplicit\'e9 des  explications nous choisissons :\par
+\cf4\b c:\\dossierdusite\\\par
+\cf0\b0 Il faut que le dossier destin\'e9 \'e0 h\'e9berger le site existe avant de cr\'e9er le VirtualHost, il faut donc le cr\'e9er par l'Explorateur de fichiers, lanc\'e9 en tant qu'administrateur.\par
+- Lancer Wampserver, attendre ic\'f4ne \cf4\b W verte\par
+\cf0\b0 - Ic\'f4ne Wampmanager -> localhost\par
+On arrive sur la page d'accueil de Wampserver.\par
+- Cliquer sur \b Ajouter un Virtual Host\b0 , dans le menu Vos Outils en bas \'e0 gauche\par
+On arrive sur la page Ajouter un Virtual Host\par
+Tout est pr\'eat pour pouvoir ajouter son premier VirtualHost\par
+- Dans le formulaire\par
+-- Pour \'ab\~Nom du VirtualHost\~\'bb, on tape alors :\par
+
+\pard\li720\sl276\slmult1\cf1\b nomdusite\par
+
+\pard\sl276\slmult1\cf0\b0 -- Pour \'ab\~Chemin complet absolu du dossier VirtualHost\~\'bb, on tape alors :\par
+
+\pard\li720\sl276\slmult1\cf4\b c:\\dossierdusite\\\par
+
+\pard\sl276\slmult1\cf0\b0 -- Si vous voulez utiliser PHP en mode FCGI\par
+\'c0 cocher pour utiliser une autre version PHP que celle par d\'e9faut. Choisir la version PHP voulue parmi celles du menu d\'e9roulant.\par
+Il existe deux autres options possibles :\par
+-- Si vous voulez utiliser un "Listen port" autre que celui par d\'e9faut.\par
+-- Si vous voulez utiliser les VirtualHost par IP.\par
+Et on valide le formulaire par le bouton :\par
+-- D\'e9marrer la cr\'e9ation du VirtualHost\par
+Comme indiqu\'e9 : \'c7a peut prendre un certain temps.\par
+Apr\'e8s ce \'ab certain temps \'bb il est indiqu\'e9 que malheureusement certaines op\'e9rations n\'e9cessaires \'e0 la prise en compte par Windows et Apache de ce nouveau VirtualHost ne peuvent pas \'eatre effectu\'e9es automatiquement par le navigateur, donc, comme indiqu\'e9 :\par
+\i - Clic-droit Ic\'f4ne Wampmanager-> Outils-> Red\'e9marrage DNS\par
+\i0 Attendre que l'ic\'f4ne redevienne verte.\par
+Cliquez sur Retour \'e0 l'accueil\par
+Dans le menu Vos VirtualHost, \'e0 droite, votre propre VirtualHost est pr\'e9sent :\par
+- localhost\par
+- \cf1\b nomdusite\par
+\cf0\b0 De la m\'eame mani\'e8re, vous avez aussi ce sous-menu Vos VirtualHosts avec l'ic\'f4ne de Wampmanager.\par
+\par
+Maintenant tout est pr\'eat pour installer votre site local dans le dossier \cf4\b c:\\dossierdusite\\ \cf0\b0 en indiquant, si demand\'e9 lors de l'installation, que l'url est {{\field{\*\fldinst{HYPERLINK http://nomdusite/ }}{\fldrslt{http://\b nomdusite\b0 /\ul0\cf0}}}}\f0\fs22 .\par
+\par
+En fait, \b cela doit fonctionner exactement de la m\'eame mani\'e8re que pour tout serveur Apache d'un h\'e9bergeur\b0 , avec quelques petites diff\'e9rences quant aux autorisations d'acc\'e8s.\par
+\cf4\ul\b\fs24 Il est indispensable de lire tout ce qui suit pour bien comprendre le m\'e9canisme des VirtualHost\cf0\ulnone\b0\fs22\par
+C'est le fichier appel\'e9 `httpd-vhosts.conf` qui contient les VirtualHost pour Apache\par
+ \i\\wamp64\\bin\\apache\\apache2.4.58\\conf\\extra\\httpd-vhosts.conf\i0\par
+Voici une d\'e9finition d'un VirtualHost dans Wampserver :\par
+
+\pard\li720\sl276\slmult1\i <VirtualHost *:80>\par
+  ServerName nom-de-mon-site\par
+  DocumentRoot "chemin-du-dossier"\par
+  <Directory "chemin-du-dossier/">\par
+    Options +Indexes +Includes +FollowSymLinks +MultiViews\par
+    AllowOverride all\par
+    Require local\par
+ </Directory>\par
+</VirtualHost>\par
+
+\pard\sl276\slmult1\cf4\b\i0 Chaque VirtualHost a ses propres d\'e9finitions de\par
+
+\pard{\pntext\f2\'B7\tab}{\*\pn\pnlvlblt\pnf2\pnindent0{\pntxtb\'B7}}\fi-360\li720\sl276\slmult1 ServerName\b0  \cf0 qui indique le nom du site local\cf4\b  \cf0\b0\par
+{\pntext\f2\'B7\tab}\cf4\b DocumentRoot  \cf0\b0 qui indique quel est le dossier dans lequel il est.\par
+{\pntext\f2\'B7\tab}\cf4\b Directory \cf0\b0 qui donne les options possibles et les autorisations d'acc\'e8s\par
+
+\pard\sl276\slmult1\par
+\b -- Comment les VirtualHost travaillent dans Apache --\par
+\b0 La premi\'e8re d\'e9finition de ce fichier sera \'e9galement le site par d\'e9faut, de sorte que si le nom de domaine utilis\'e9 dans le navigateur ne correspond \'e0 aucun domaine d\'e9fini, c'est localhost, le premier domaine dans le fichier, qui sera servi.\par
+Donc, nous nous assurons que la \b s\'e9curit\'e9 Apache pour le domaine localhost \ul ** A TOUJOURS POUR VALEUR**\ulnone\b0\par
+ Require local\par
+\b et qu'il \ul RESTE TOUJOURS LE PREMIER\ulnone  de la liste \b0 des VirtualHost. Tout piratage occasionnel \'e0 partir d'une adresse externe recevra une erreur et ne pourra pas entrer sur le PC, mais si vous orthographiez mal un domaine vous verrez la page d'accueil WampServer (ou un domaine externe), parce que vous \'eates sur le m\'eame PC que WampServer et donc en `local`.\par
+\par
+L'ajout d'un VirtualHost n\'e9cessite d'ajouter votre nouveau nom de domaine dans le fichier HOSTS.\par
+
+\pard\li720\sl276\slmult1\i C:\\windows\\system32\\drivers\\etc\\hosts\par
+
+\pard\sl276\slmult1\i0 Le fichier n'a pas d'extension et doit absolument rester sans extension. M\'e9fiez-vous du bloc-notes (Notepad), car il peut essayer d'ajouter une extension `.txt` si vous n'avez pas de meilleure \'e9diteur.  Je vous sugg\'e8re de t\'e9l\'e9charger Notepad++, c'est gratuit et un tr\'e8s bon \'e9diteur.\par
+C'est aussi un fichier prot\'e9g\'e9 que vous devez modifier avec des privil\'e8ges d'administrateur, il faut donc lancer l'\'e9diteur avec l'option \'ab Ex\'e9cuter en tant qu'administrateur \'bb.\par
+Apr\'e8s \'e9dition et ajout du domaine projet1, le contenu du fichier hosts devrait ressembler \'e0 \'e7a :\par
+
+\pard\li720\sl276\slmult1\i 127.0.0.1 localhost\par
+::1 localhost\par
+127.0.0.1 project1\par
+::1 project1\par
+
+\pard\sl276\slmult1\i0\par
+Maintenant, nous devons indiquer \'e0 Windows de rafra\'eechir le cache des noms de domaine (Sinon, il faudra red\'e9marrer).\par
+Ouvrir une fen\'eatre de commande en tant qu'administrateur et tapez la commande ci-dessous :\par
+
+\pard\li720\sl276\slmult1  \i ipconfig /flushdns\par
+
+\pard\sl276\slmult1\i0 Cela oblige Windows \'e0 effacer le cache des noms de domaine puis \'e0 le recharger. En rechargeant Windows relira le fichier HOSTS et le nouveau domaine `project1` sera connu.\par
+Tout cela sera effectu\'e9 par \cf4\b\i Clic-Droit -> Outils -> Red\'e9marrage DNS\par
+\par
+\cf2\i0 NOTE : Nom de Domaine. \cf0\b0 C'est une tr\'e8s mauvaise id\'e9e que de d\'e9finir un ServerName\super 1\nosupersub  ou ServerAlias qui soit le m\'eame que votre nom de domaine r\'e9el. En effet, lorsque l'on demande une url dans le navigateur, ce sont d'abord les DNS locaux (fichier hosts, puis cache local) qui sont lus et si une correspondance est trouv\'e9e, c'est le site local qui sera charg\'e9 ; il sera donc impossible d'acc\'e9der au site r\'e9el.\par
+Une bonne pratique, est de donner le m\'eame nom mais sans le tld, donc, par exemple, monsite.net en r\'e9el et monsite en local.\par
+\par
+Il est aussi possible d'effectuer quelques modifications de la configuration de PHP, qui ne s'appliqueront QUE pour ce site local. Ce peut \'eatre tr\'e8s utile pour un site ayant besoin d'exigences sp\'e9cifiques, contrairement \'e0 tous les autres sites que vous g\'e9rez.\par
+\par
+\super 1 \nosupersub\i ServerName est un nom de domaine, m\'eame en local et doit respecter des r\'e8gles. Un nom de domaine doit comporter entre 2 et 63 caract\'e8res. Les caract\'e8res autoris\'e9s sont les lettres, les chiffres et le signe "-". Le signe "-" est autoris\'e9 n'importe o\'f9 sauf en premi\'e8re ou en derni\'e8re position.\par
+Les accents (\'e0\'e2\'e4\'e9\'e8\'ea\'eb\'f4\'f6\'f9\'fb\'fc\'ee\'ef) et les lettres infl\'e9chies (\'e7) sont autoris\'e9s uniquement pour les noms de domaine avec l'extension .com, .net, .fr et eu. et, comme c'est relativement r\'e9cent, le probl\'e8me est que tous les serveurs, h\'e9bergeurs, et navigateurs ne les prennent pas en compte.\par
+Mais, dans TOUS LES CAS, le tiret-bas (underscore_) n'est pas autoris\'e9 dans les noms de domaine. Pour plus d'informations (Mais c'est assez r\'e9barbatif), voir la \b I\b0 nternationalized \b D\b0 omain \b N\b0 ames in \b A\b0 pplications, RFC 5890 et aussi la RFC 1034.\par
+\par
+}
+ 
