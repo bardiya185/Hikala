@@ -101,7 +101,7 @@ class CategoryController extends Controller
     )]
     public function show(Category $category)
     {
-        $category->load('children');
+        $category->load('');
 
         return new CategoryResource($category);
     }
@@ -197,7 +197,7 @@ class CategoryController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/menu",
+        path: "/api/categories/menu",
         tags: ["Categories"],
         summary: "Get Category Menu Tree",
         description: "Get categories tree for header menu (like Digikala).",
@@ -219,7 +219,6 @@ class CategoryController extends Controller
         ->where('is_active', 1)
         ->orderBy('sort_order')
         ->get();
-
         return response()->json([
             'success' => true,
             'data' => $categories

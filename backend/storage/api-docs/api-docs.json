@@ -615,61 +615,17 @@
                 ]
             }
         },
-        "/api/categories/all": {
+        "/api/menu": {
             "get": {
                 "tags": [
                     "Categories"
                 ],
-                "summary": "Get All Categories",
-                "description": "Get all active categories with product count.",
-                "operationId": "80bb1ed87c25c4f11e058a0ff0f351c1",
-                "responses": {
-                    "200": {
-                        "description": "Categories retrieved successfully."
-                    }
-                }
-            }
-        },
-        "/api/categories/menu": {
-            "get": {
-                "tags": [
-                    "Categories"
-                ],
-                "summary": "Get Categories Menu",
-                "description": "Get categories tree for menu (with children).",
-                "operationId": "36398f4d449211050f1d2a17aae7211c",
+                "summary": "Get Category Menu Tree",
+                "description": "Get categories tree for header menu (like Digikala).",
+                "operationId": "75fee4bbcedc667fa26dd2d8669b917e",
                 "responses": {
                     "200": {
                         "description": "Categories menu retrieved successfully."
-                    }
-                }
-            }
-        },
-        "/api/categories/{category}/products": {
-            "get": {
-                "tags": [
-                    "Categories"
-                ],
-                "summary": "Get Category Products",
-                "description": "Get all products of a specific category.",
-                "operationId": "8462e5d0ebfdd3b70b151609bcc5c9f0",
-                "parameters": [
-                    {
-                        "name": "category",
-                        "in": "path",
-                        "description": "Category ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Category products retrieved successfully."
-                    },
-                    "404": {
-                        "description": "Category not found."
                     }
                 }
             }

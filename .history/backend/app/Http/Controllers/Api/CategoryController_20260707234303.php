@@ -219,7 +219,8 @@ class CategoryController extends Controller
         ->where('is_active', 1)
         ->orderBy('sort_order')
         ->get();
-
+        
+        dd($categories);
         return response()->json([
             'success' => true,
             'data' => $categories

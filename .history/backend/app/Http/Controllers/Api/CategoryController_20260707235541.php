@@ -196,36 +196,5 @@ class CategoryController extends Controller
         ]);
     }
 
-    #[OA\Get(
-        path: "/api/menu",
-        tags: ["Categories"],
-        summary: "Get Category Menu Tree",
-        description: "Get categories tree for header menu (like Digikala).",
-        responses: [
-            new OA\Response(
-                response: 200,
-                description: "Categories menu retrieved successfully."
-            )
-        ]
-    )]
-    public function menu()
-    {
-        $categories = Category::with(['children' => function($query) {
-            $query->with(['children' => function($q) {
-                $q->with('children')->orderBy('sort_order');
-            }])->orderBy('sort_order');
-        }])
-        ->whereNull('parent_id')
-        ->where('is_active', 1)
-        ->orderBy('sort_order')
-        ->get();
-
-        return response()->json([
-            'success' => true,
-            'data' => $categories
-        ]);
-    }
-
-
   
 }

@@ -197,7 +197,7 @@ class CategoryController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/menu",
+        path: "/api/categories/menu",
         tags: ["Categories"],
         summary: "Get Category Menu Tree",
         description: "Get categories tree for header menu (like Digikala).",

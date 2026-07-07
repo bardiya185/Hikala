@@ -197,7 +197,7 @@ class CategoryController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/menu",
+        path: "/api/categories/menu",
         tags: ["Categories"],
         summary: "Get Category Menu Tree",
         description: "Get categories tree for header menu (like Digikala).",
@@ -219,7 +219,8 @@ class CategoryController extends Controller
         ->where('is_active', 1)
         ->orderBy('sort_order')
         ->get();
-
+        
+        dd($categories);
         return response()->json([
             'success' => true,
             'data' => $categories

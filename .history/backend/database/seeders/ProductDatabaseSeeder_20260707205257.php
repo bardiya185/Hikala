@@ -266,21 +266,21 @@ class ProductDatabaseSeeder extends Seeder
                     ['name' => 'Self-Help Books', 'slug' => 'self-help-books'],
                 ]
             ],
-          // ===== Sports & Travel =====
-[
-    'name' => 'Sports & Travel',
-    'slug' => 'sports-travel',
-    'sort_order' => 13,
-    'children' => [
-        ['name' => 'Sports Equipment', 'slug' => 'sports-equipment'],
-        ['name' => 'Travel Sportswear', 'slug' => 'travel-sportswear'], // ✅ تغییر
-        ['name' => 'Travel Equipment', 'slug' => 'travel-equipment'],
-        ['name' => 'Outdoor Sports', 'slug' => 'outdoor-sports'],
-        ['name' => 'Cycling', 'slug' => 'cycling'],
-        ['name' => 'Camping', 'slug' => 'camping'],
-        ['name' => 'Hiking', 'slug' => 'hiking'],
-    ]
-],
+            // ===== Sports & Travel =====
+            [
+                'name' => 'Sports & Travel',
+                'slug' => 'sports-travel',
+                'sort_order' => 13,
+                'children' => [
+                    ['name' => 'Sports Equipment', 'slug' => 'sports-equipment'],
+                    ['name' => 'Sportswear', 'slug' => 'sportswear'],
+                    ['name' => 'Travel Equipment', 'slug' => 'travel-equipment'],
+                    ['name' => 'Outdoor Sports', 'slug' => 'outdoor-sports'],
+                    ['name' => 'Cycling', 'slug' => 'cycling'],
+                    ['name' => 'Camping', 'slug' => 'camping'],
+                    ['name' => 'Hiking', 'slug' => 'hiking'],
+                ]
+            ],
             // ===== Gift Cards =====
             [
                 'name' => 'Gift Cards',

@@ -178,21 +178,21 @@ class ProductDatabaseSeeder extends Seeder
                     ['name' => 'Sunscreen', 'slug' => 'sunscreen'],
                 ]
             ],
-          // ===== Fashion =====
-[
-    'name' => 'Fashion',
-    'slug' => 'fashion',
-    'sort_order' => 7,
-    'children' => [
-        ['name' => 'Mens Clothing', 'slug' => 'mens-clothing'],
-        ['name' => 'Womens Clothing', 'slug' => 'womens-clothing'],
-        ['name' => 'Childrens Clothing', 'slug' => 'childrens-clothing'],
-        ['name' => 'Shoes', 'slug' => 'shoes'],
-        ['name' => 'Bags & Wallets', 'slug' => 'bags-wallets'],
-        ['name' => 'Accessories', 'slug' => 'accessories'],
-        ['name' => 'Fashion Sportswear', 'slug' => 'fashion-sportswear'], // ✅ تغییر
-    ]
-],
+            // ===== Fashion =====
+            [
+                'name' => 'Fashion',
+                'slug' => 'fashion',
+                'sort_order' => 7,
+                'children' => [
+                    ['name' => 'Mens Clothing', 'slug' => 'mens-clothing'],
+                    ['name' => 'Womens Clothing', 'slug' => 'womens-clothing'],
+                    ['name' => 'Childrens Clothing', 'slug' => 'childrens-clothing'],
+                    ['name' => 'Shoes', 'slug' => 'shoes'],
+                    ['name' => 'Bags & Wallets', 'slug' => 'bags-wallets'],
+                    ['name' => 'Accessories', 'slug' => 'accessories'],
+                    ['name' => 'Sportswear', 'slug' => 'sportswear'],
+                ]
+            ],
           // ===== Gold & Jewelry =====
 [
     'name' => 'Gold & Jewelry',
@@ -266,21 +266,21 @@ class ProductDatabaseSeeder extends Seeder
                     ['name' => 'Self-Help Books', 'slug' => 'self-help-books'],
                 ]
             ],
-          // ===== Sports & Travel =====
-[
-    'name' => 'Sports & Travel',
-    'slug' => 'sports-travel',
-    'sort_order' => 13,
-    'children' => [
-        ['name' => 'Sports Equipment', 'slug' => 'sports-equipment'],
-        ['name' => 'Travel Sportswear', 'slug' => 'travel-sportswear'], // ✅ تغییر
-        ['name' => 'Travel Equipment', 'slug' => 'travel-equipment'],
-        ['name' => 'Outdoor Sports', 'slug' => 'outdoor-sports'],
-        ['name' => 'Cycling', 'slug' => 'cycling'],
-        ['name' => 'Camping', 'slug' => 'camping'],
-        ['name' => 'Hiking', 'slug' => 'hiking'],
-    ]
-],
+            // ===== Sports & Travel =====
+            [
+                'name' => 'Sports & Travel',
+                'slug' => 'sports-travel',
+                'sort_order' => 13,
+                'children' => [
+                    ['name' => 'Sports Equipment', 'slug' => 'sports-equipment'],
+                    ['name' => 'Sportswear', 'slug' => 'sportswear'],
+                    ['name' => 'Travel Equipment', 'slug' => 'travel-equipment'],
+                    ['name' => 'Outdoor Sports', 'slug' => 'outdoor-sports'],
+                    ['name' => 'Cycling', 'slug' => 'cycling'],
+                    ['name' => 'Camping', 'slug' => 'camping'],
+                    ['name' => 'Hiking', 'slug' => 'hiking'],
+                ]
+            ],
             // ===== Gift Cards =====
             [
                 'name' => 'Gift Cards',

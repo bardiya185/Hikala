@@ -197,7 +197,7 @@ class CategoryController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/menu",
+        path: "/api/categories/menu",
         tags: ["Categories"],
         summary: "Get Category Menu Tree",
         description: "Get categories tree for header menu (like Digikala).",
@@ -211,6 +211,7 @@ class CategoryController extends Controller
     public function menu()
     {
         $categories = Category::with(['children' => function($query) {
+            dd($cate)
             $query->with(['children' => function($q) {
                 $q->with('children')->orderBy('sort_order');
             }])->orderBy('sort_order');

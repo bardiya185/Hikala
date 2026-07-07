@@ -46,17 +46,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/product-images/reorder', [ProductImageController::class, 'reorder']);
 });
 
-
 // Categories (فقط GET‌ها عمومی، بقیه نیاز به auth دارن)
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/{category}', [CategoryController::class, 'show']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::put('/categories/{category}', [CategoryController::class, 'update']);
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+    Route::get('/categories/menu', [CategoryController::class, 'menu']);  
+    Route::get('/categories/with-products', [CategoryController::class, 'withProduct
 });
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/categories/{category}', [CategoryController::class, 'show']);
-Route::get('/menu', [CategoryController::class, 'menu']);  
-Route::get('/categories/with-products', [CategoryController::class, 'withProducts']);
 
 // Brands (همه نیاز به auth دارن)
 Route::middleware('auth:sanctum')->group(function () {

@@ -196,11 +196,39 @@ class CategoryController extends Controller
         ]);
     }
 
+    // ========== متدهای اضافی برای فرانت ==========
+
     #[OA\Get(
-        path: "/api/menu",
+        path: "/api/categories/all",
         tags: ["Categories"],
-        summary: "Get Category Menu Tree",
-        description: "Get categories tree for header menu (like Digikala).",
+        summary: "Get All Categories",
+        description: "Get all active categories with product count.",
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Categories retrieved successfully."
+            )
+        ]
+    )]
+    public function all()
+    {
+        $categories = Category::query()
+            ->withCount('products')
+            ->where('is_active', 1)
+            ->orderBy('sort_order')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $categories
+        ]);
+    }
+
+    #[OA\Get(
+        path: "/api/categories/menu",
+        tags: ["Categories"],
+        summary: "Get Categories Menu",
+        description: "Get categories tree for menu (with children).",
         responses: [
             new OA\Response(
                 response: 200,
@@ -210,11 +238,11 @@ class CategoryController extends Controller
     )]
     public function menu()
     {
-        $categories = Category::with(['children' => function($query) {
-            $query->with(['children' => function($q) {
-                $q->with('children')->orderBy('sort_order');
-            }])->orderBy('sort_order');
-        }])
+        $categories = Category::with([
+            'children' => function($query) {
+                $query->where('is_active', 1)->orderBy('sort_order');
+            }
+        ])
         ->whereNull('parent_id')
         ->where('is_active', 1)
         ->orderBy('sort_order')
@@ -226,6 +254,42 @@ class CategoryController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: "/api/categories/{category}/products",
+        tags: ["Categories"],
+        summary: "Get Category Products",
+        description: "Get all products of a specific category.",
+        parameters: [
+            new OA\Parameter(
+                name: "category",
+                in: "path",
+                required: true,
+                description: "Category ID",
+                schema: new OA\Schema(type: "integer")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Category products retrieved successfully."
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Category not found."
+            ),
+        ]
+    )]
+    public function products(Category $category)
+    {
+        $products = $category->products()
+            ->with(['brand', 'variants'])
+            ->where('is_active', 1)
+            ->latest()
+            ->paginate(15);
 
-  
+        return response()->json([
+            'success' => true,
+            'data' => $products
+        ]);
+    }
 }

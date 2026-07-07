@@ -197,35 +197,32 @@ class CategoryController extends Controller
     }
 
     #[OA\Get(
-        path: "/api/menu",
+        path: "/api/categories/with-products",
         tags: ["Categories"],
-        summary: "Get Category Menu Tree",
-        description: "Get categories tree for header menu (like Digikala).",
+        summary: "Get Categories with Products",
+        description: "Get all categories with their products.",
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Categories menu retrieved successfully."
+                description: "Categories with products retrieved successfully."
             )
         ]
     )]
-    public function menu()
+    public function withProducts()
     {
-        $categories = Category::with(['children' => function($query) {
-            $query->with(['children' => function($q) {
-                $q->with('children')->orderBy('sort_order');
-            }])->orderBy('sort_order');
-        }])
-        ->whereNull('parent_id')
-        ->where('is_active', 1)
-        ->orderBy('sort_order')
-        ->get();
+        $categories = Category::query()
+            ->with(['products' => function($query) {
+                $query->where('is_active', 1)->latest()->limit(10);
+            }])
+            ->where('is_active', 1)
+            ->orderBy('sort_order')
+            ->get();
 
         return response()->json([
             'success' => true,
             'data' => $categories
         ]);
     }
-
 
   
 }

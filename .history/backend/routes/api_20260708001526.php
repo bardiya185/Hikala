@@ -47,12 +47,12 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
-// Categories (فقط GET‌ها عمومی، بقیه نیاز به auth دارن)
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::put('/categories/{category}', [CategoryController::class, 'update']);
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
 });
+// Categories (فقط GET‌ها عمومی، بقیه نیاز به auth دارن)
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{category}', [CategoryController::class, 'show']);
 Route::get('/menu', [CategoryController::class, 'menu']);  

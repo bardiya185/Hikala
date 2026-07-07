@@ -178,36 +178,36 @@ class ProductDatabaseSeeder extends Seeder
                     ['name' => 'Sunscreen', 'slug' => 'sunscreen'],
                 ]
             ],
-          // ===== Fashion =====
-[
-    'name' => 'Fashion',
-    'slug' => 'fashion',
-    'sort_order' => 7,
-    'children' => [
-        ['name' => 'Mens Clothing', 'slug' => 'mens-clothing'],
-        ['name' => 'Womens Clothing', 'slug' => 'womens-clothing'],
-        ['name' => 'Childrens Clothing', 'slug' => 'childrens-clothing'],
-        ['name' => 'Shoes', 'slug' => 'shoes'],
-        ['name' => 'Bags & Wallets', 'slug' => 'bags-wallets'],
-        ['name' => 'Accessories', 'slug' => 'accessories'],
-        ['name' => 'Fashion Sportswear', 'slug' => 'fashion-sportswear'], // ✅ تغییر
-    ]
-],
-          // ===== Gold & Jewelry =====
-[
-    'name' => 'Gold & Jewelry',
-    'slug' => 'gold-and-jewelry', // ✅ تغییر به gold-and-jewelry
-    'sort_order' => 8,
-    'children' => [
-        ['name' => 'Gold Jewelry', 'slug' => 'gold-jewelry'], // ✅ این gold-jewelry میمونه
-        ['name' => 'Silver Jewelry', 'slug' => 'silver-jewelry'],
-        ['name' => 'Diamonds & Gems', 'slug' => 'diamonds-gems'],
-        ['name' => 'Watches', 'slug' => 'watches'],
-        ['name' => 'Bracelets', 'slug' => 'bracelets'],
-        ['name' => 'Necklaces', 'slug' => 'necklaces'],
-        ['name' => 'Rings', 'slug' => 'rings'],
-    ]
-],
+            // ===== Fashion =====
+            [
+                'name' => 'Fashion',
+                'slug' => 'fashion',
+                'sort_order' => 7,
+                'children' => [
+                    ['name' => 'Mens Clothing', 'slug' => 'mens-clothing'],
+                    ['name' => 'Womens Clothing', 'slug' => 'womens-clothing'],
+                    ['name' => 'Childrens Clothing', 'slug' => 'childrens-clothing'],
+                    ['name' => 'Shoes', 'slug' => 'shoes'],
+                    ['name' => 'Bags & Wallets', 'slug' => 'bags-wallets'],
+                    ['name' => 'Accessories', 'slug' => 'accessories'],
+                    ['name' => 'Sportswear', 'slug' => 'sportswear'],
+                ]
+            ],
+            // ===== Gold & Jewelry =====
+            [
+                'name' => 'Gold & Jewelry',
+                'slug' => 'gold-jewelry',
+                'sort_order' => 8,
+                'children' => [
+                    ['name' => 'Gold Jewelry', 'slug' => 'gold-jewelry'],
+                    ['name' => 'Silver Jewelry', 'slug' => 'silver-jewelry'],
+                    ['name' => 'Diamonds & Gems', 'slug' => 'diamonds-gems'],
+                    ['name' => 'Watches', 'slug' => 'watches'],
+                    ['name' => 'Bracelets', 'slug' => 'bracelets'],
+                    ['name' => 'Necklaces', 'slug' => 'necklaces'],
+                    ['name' => 'Rings', 'slug' => 'rings'],
+                ]
+            ],
             // ===== Vehicles =====
             [
                 'name' => 'Vehicles',
@@ -266,21 +266,21 @@ class ProductDatabaseSeeder extends Seeder
                     ['name' => 'Self-Help Books', 'slug' => 'self-help-books'],
                 ]
             ],
-          // ===== Sports & Travel =====
-[
-    'name' => 'Sports & Travel',
-    'slug' => 'sports-travel',
-    'sort_order' => 13,
-    'children' => [
-        ['name' => 'Sports Equipment', 'slug' => 'sports-equipment'],
-        ['name' => 'Travel Sportswear', 'slug' => 'travel-sportswear'], // ✅ تغییر
-        ['name' => 'Travel Equipment', 'slug' => 'travel-equipment'],
-        ['name' => 'Outdoor Sports', 'slug' => 'outdoor-sports'],
-        ['name' => 'Cycling', 'slug' => 'cycling'],
-        ['name' => 'Camping', 'slug' => 'camping'],
-        ['name' => 'Hiking', 'slug' => 'hiking'],
-    ]
-],
+            // ===== Sports & Travel =====
+            [
+                'name' => 'Sports & Travel',
+                'slug' => 'sports-travel',
+                'sort_order' => 13,
+                'children' => [
+                    ['name' => 'Sports Equipment', 'slug' => 'sports-equipment'],
+                    ['name' => 'Sportswear', 'slug' => 'sportswear'],
+                    ['name' => 'Travel Equipment', 'slug' => 'travel-equipment'],
+                    ['name' => 'Outdoor Sports', 'slug' => 'outdoor-sports'],
+                    ['name' => 'Cycling', 'slug' => 'cycling'],
+                    ['name' => 'Camping', 'slug' => 'camping'],
+                    ['name' => 'Hiking', 'slug' => 'hiking'],
+                ]
+            ],
             // ===== Gift Cards =====
             [
                 'name' => 'Gift Cards',
@@ -296,58 +296,28 @@ class ProductDatabaseSeeder extends Seeder
         ];
 
         $categoryIds = [];
-
         foreach ($categories as $mainCat) {
-            // بررسی وجود دسته‌بندی اصلی
-            $mainCategory = DB::table('categories')->where('slug', $mainCat['slug'])->first();
-            
-            if (!$mainCategory) {
-                $mainId = DB::table('categories')->insertGetId([
-                    'name' => $mainCat['name'],
-                    'slug' => $mainCat['slug'],
-                    'sort_order' => $mainCat['sort_order'],
+            $mainId = DB::table('categories')->insertGetId([
+                'name' => $mainCat['name'],
+                'slug' => $mainCat['slug'],
+                'sort_order' => $mainCat['sort_order'],
+                'is_active' => 1,
+                'parent_id' => null,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+            $categoryIds[$mainCat['slug']] = $mainId;
+
+            foreach ($mainCat['children'] as $child) {
+                $childId = DB::table('categories')->insertGetId([
+                    'name' => $child['name'],
+                    'slug' => $child['slug'],
+                    'sort_order' => 0,
                     'is_active' => 1,
-                    'parent_id' => null,
+                    'parent_id' => $mainId,
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
-                $this->command->info('➕ Created main category: ' . $mainCat['name']);
-            } else {
-                $mainId = $mainCategory->id;
-                DB::table('categories')
-                    ->where('id', $mainId)
-                    ->update([
-                        'sort_order' => $mainCat['sort_order'],
-                        'updated_at' => now()
-                    ]);
-                $this->command->info('⏭️ Skipped existing main category: ' . $mainCat['name']);
-            }
-            
-            $categoryIds[$mainCat['slug']] = $mainId;
-        
-            foreach ($mainCat['children'] as $child) {
-                // بررسی وجود زیردسته
-                $childCategory = DB::table('categories')
-                    ->where('slug', $child['slug'])
-                    ->where('parent_id', $mainId)
-                    ->first();
-                
-                if (!$childCategory) {
-                    $childId = DB::table('categories')->insertGetId([
-                        'name' => $child['name'],
-                        'slug' => $child['slug'],
-                        'sort_order' => 0,
-                        'is_active' => 1,
-                        'parent_id' => $mainId,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
-                    $this->command->info('  ➕ Created sub-category: ' . $child['name']);
-                } else {
-                    $childId = $childCategory->id;
-                    $this->command->info('  ⏭️ Skipped existing sub-category: ' . $child['name']);
-                }
-                
                 $categoryIds[$child['slug']] = $childId;
             }
         }
