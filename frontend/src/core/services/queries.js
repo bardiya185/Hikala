@@ -7,3 +7,22 @@ export const useGetUserData = ()=>{
     const queryKey = ['user-data']
     return useQuery({queryKey,queryFn})
 }
+
+export const useGetMainCategories = ()=>{
+    const queryFn = ()=>api.get("/api/categories")
+    const queryKey = ["categories-data"]
+    return useQuery({queryKey,queryFn})
+}
+
+export const useGetSubCategory = (activeId) => {
+  const queryKey = ["subCategory", activeId];
+  
+  
+  const queryFn = () => api.get(`/api/categories/${activeId}`); 
+  
+  return useQuery({
+    queryKey,
+    queryFn,
+    enabled: !!activeId, 
+  });
+};
