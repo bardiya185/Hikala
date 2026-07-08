@@ -615,14 +615,14 @@
                 ]
             }
         },
-        "/api/menu": {
+        "/api/categories/menu": {
             "get": {
                 "tags": [
                     "Categories"
                 ],
                 "summary": "Get Category Menu Tree",
                 "description": "Get categories tree for header menu (like Digikala).",
-                "operationId": "75fee4bbcedc667fa26dd2d8669b917e",
+                "operationId": "36398f4d449211050f1d2a17aae7211c",
                 "responses": {
                     "200": {
                         "description": "Categories menu retrieved successfully."
