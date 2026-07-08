@@ -304,4 +304,95 @@ class ProductController extends Controller
             'message' => 'Product deleted successfully.',
         ]);
     }
+
+
+// ================================================================
+// LATEST PRODUCTS (جدیدترین محصولات)
+// ================================================================
+#[OA\Get(
+    path: "/api/products/latest",
+    tags: ["Products"],
+    summary: "Get latest products",
+    description: "Get newest products (top 10).",
+    parameters: [
+        new OA\Parameter(
+            name: "limit",
+            in: "query",
+            description: "Number of products",
+            schema: new OA\Schema(type: "integer", default: 10)
+        )
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: "Latest products retrieved successfully."
+        )
+    ]
+)]
+public function latest(Request $request)
+{
+    $limit = $request->get('limit', 10);
+    if ($limit > 50) {
+        $limit = 50;
+    }
+
+    $products = Product::query()
+        ->with([
+            'brand',
+            'categories',
+            'images',
+            'variants.attributeValues.attribute',
+        ])
+        ->where('is_active', 1)
+        ->latest() // مرتب‌سازی بر اساس created_at DESC
+        ->limit($limit)
+        ->get();
+
+    return ProductResource::collection($products);
+}
+
+// ================================================================
+// FEATURED PRODUCTS (محصولات پربازدید)
+// ================================================================
+#[OA\Get(
+    path: "/api/products/featured",
+    tags: ["Products"],
+    summary: "Get featured products",
+    description: "Get most viewed products (top 10).",
+    parameters: [
+        new OA\Parameter(
+            name: "limit",
+            in: "query",
+            description: "Number of products",
+            schema: new OA\Schema(type: "integer", default: 10)
+        )
+    ],
+    responses: [
+        new OA\Response(
+            response: 200,
+            description: "Featured products retrieved successfully."
+        )
+    ]
+)]
+public function featured(Request $request)
+{
+    $limit = $request->get('limit', 10);
+    if ($limit > 50) {
+        $limit = 50;
+    }
+
+    $products = Product::query()
+        ->with([
+            'brand',
+            'categories',
+            'images',
+            'variants.attributeValues.attribute',
+        ])
+        ->where('is_active', 1)
+        ->orderBy('view_count', 'desc')
+        ->limit($limit)
+        ->get();
+
+    return ProductResource::collection($products);
+}
  }
