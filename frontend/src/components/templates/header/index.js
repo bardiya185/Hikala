@@ -1,85 +1,55 @@
 "use client";
-
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CiSearch, CiMobile1 } from "react-icons/ci";
+
+import { CiMobile1 } from "react-icons/ci";
+import { TbDeviceLaptop, TbFridge, TbShirt } from "react-icons/tb";
+import { GiGoldBar, GiCarKey } from "react-icons/gi";
+import { CiSearch } from "react-icons/ci";
 import { MdShoppingCartCheckout } from "react-icons/md";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { TbChevronLeft, TbDeviceLaptop, TbFridge, TbShirt } from "react-icons/tb";
+import { TbChevronRight } from "react-icons/tb";
+
 import AuthForm from "../AuthForm";
-const categories = [
-  {
-    key: "mobile",
-    label: "موبایل و تبلت",
-    icon: CiMobile1,
-    href: "/search/category-mobile-phone/",
-    columns: [
-      {
-        main: { label: "انتخاب موبایل", href: "/landing/mobile/" },
-        leaves: [
-          { label: "گوشی سامسونگ", href: "#" },
-          { label: "گوشی شیائومی", href: "#" },
-          { label: "گوشی اپل", href: "#" },
-        ],
-      },
-      {
-        main: { label: "لوازم جانبی موبایل", href: "#" },
-        leaves: [
-          { label: "قاب گوشی", href: "#" },
-          { label: "شارژر گوشی", href: "#" },
-        ],
-      },
-    ],
-  },
-  {
-    key: "laptop",
-    label: "لپ تاپ",
-    icon: TbDeviceLaptop,
-    href: "/landing/laptop/",
-    columns: [
-      {
-        main: { label: "انتخاب لپ تاپ", href: "#" },
-        leaves: [
-          { label: "لپ تاپ ایسوس", href: "#" },
-          { label: "لپ تاپ لنوو", href: "#" },
-        ],
-      },
-    ],
-  },
-  {
-    key: "appliance",
-    label: "لوازم خانگی برقی",
-    icon: TbFridge,
-    href: "/landing/category-home-appliance/",
-    columns: [
-      {
-        main: { label: "یخچال فریزر", href: "#" },
-        leaves: [{ label: "ساید بای ساید", href: "#" }],
-      },
-    ],
-  },
-  {
-    key: "fashion",
-    label: "مد و پوشاک",
-    icon: TbShirt,
-    href: "/landing/apparel/",
-    columns: [
-      {
-        main: { label: "پوشاک مردانه", href: "#" },
-        leaves: [
-          { label: "پیراهن مردانه", href: "#" },
-          { label: "شلوار جین مردانه", href: "#" },
-        ],
-      },
-    ],
-  },
-];
+
+import { useGetMainCategories, useGetSubCategory } from "@/core/services/queries";
+
+const iconMap = {
+  "mobile": CiMobile1,
+  "laptops": TbDeviceLaptop,
+  "digital": TbDeviceLaptop, 
+  "home-kitchen": TbFridge,
+  "fashion": TbShirt,
+  "gold-jewelry": GiGoldBar,
+  "vehicles": GiCarKey,
+  
+};
+
+function CategoryIcon({ iconKey, className }) {
+  const IconComponent = iconMap[iconKey];
+
+  if (!IconComponent) return null; 
+
+  return <IconComponent className={className} />;
+}
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeKey, setActiveKey] = useState(categories[0]?.key);
+  const [activeId, setActiveId] = useState(null); 
   const closeTimer = useRef(null);
+
+  const { data: categoriess } = useGetMainCategories();
+  const mainDataArray = categoriess?.data?.data || [];
+
+  const { data: categoryMenu, isLoading: isSubLoading } = useGetSubCategory(activeId);
+  const subDataArray = categoryMenu?.data?.data || [];
+
+  useEffect(() => {
+    if (mainDataArray.length > 0 && !activeId) {
+      setActiveId(mainDataArray[0].id);
+    }
+  }, [mainDataArray, activeId]);
 
   const clearCloseTimer = useCallback(() => {
     if (closeTimer.current) {
@@ -95,127 +65,131 @@ function Header() {
 
   const openMenu = useCallback(() => {
     clearCloseTimer();
-    setIsOpen(true);
-  }, [clearCloseTimer]);
+    if (!isOpen) setIsOpen(true);
+  }, [clearCloseTimer, isOpen]);
 
-  const activeCategory = categories.find((c) => c.key === activeKey) ?? categories[0];
+  const activeCategory = mainDataArray?.find((c) => c.id === activeId) || mainDataArray[0];
+
+   
+ const finalSubList = Array.isArray(subDataArray)
+  ? subDataArray
+  : (subDataArray?.children || subDataArray?.subs || subDataArray?.subcategories || []);
 
   return (
-    <div className="lg:w-full">
-     
+    <div dir="ltr" className="lg:w-full font-sans select-none">
+      
       <div>
-        <Image
-          src="/icons/1.png"
-          width={1270}
-          height={60}
-          alt="banner"
-          className="w-full inline-block"
-        />
+        <Image src="/icons/1.png" width={1270} height={60} alt="banner" className="w-full inline-block" />
       </div>
 
-      {/* هدر اصلی */}
-      <div className="flex justify-between px-[16px] mt-[17px]">
+      
+      <div className="flex justify-between items-center px-[16px] mt-[17px]">
         <div className="flex items-center gap-7">
-          <Image src="/icons/logo.svg" width={195} height={30} alt="logo" />
-          <div className="relative">
-            <CiSearch className="absolute top-3 right-2" />
+          <Image src="/icons/en-logo.svg" width={195} height={30} alt="logo" />
+          <div className="relative flex items-center">
+            <CiSearch className="absolute left-3 text-neutral-500 w-5 h-5" />
             <input
-              placeholder="جستجو"
-              className="lg:w-[500px] lg:h-[44px] bg-neutral-100 rounded-full pr-[27px] pb-[7px]"
+              placeholder="Search..."
+              className="lg:w-[500px] lg:h-[44px] bg-neutral-100 rounded-full pl-[35px] pr-[15px] outline-none text-sm text-neutral-800"
             />
           </div>
         </div>
-        <div className="flex items-center gap-7 pl-[20px]">
+        
+        <div className="flex items-center gap-7 pr-[20px]">
           <AuthForm />
           <Link href="/checkout">
-            <MdShoppingCartCheckout className="w-[24px] h-[24px]" />
+            <div className="p-2 hover:bg-neutral-100 rounded-full transition-colors">
+              <MdShoppingCartCheckout className="w-[24px] h-[24px] text-neutral-700" />
+            </div>
           </Link>
         </div>
       </div>
 
       
-      <div
-        className="relative inline-block mt-4 px-[16px]"
-        dir="rtl"
-        onMouseLeave={scheduleClose}
-      >
+      <div className="relative inline-block mt-4 px-[16px]" onMouseLeave={scheduleClose}>
         <button
           type="button"
-          className="flex items-center gap-2 cursor-pointer"
+          className="flex items-center gap-2 cursor-pointer py-2 text-neutral-800 hover:text-red-600 transition-colors"
           onMouseEnter={openMenu}
           onClick={() => setIsOpen((v) => !v)}
         >
-          <RxHamburgerMenu />
-          <span>دسته بندی ها</span>
+          <RxHamburgerMenu className="w-5 h-5" />
+          <span className="text-sm font-bold">Categories</span>
         </button>
 
         {isOpen && (
           <div
-            className="absolute top-[calc(100%+4px)] right-0 z-30 flex w-[700px] h-[282px] bg-white rounded-lg shadow-xl overflow-hidden"
+            className="absolute top-[calc(100%+4px)] left-4 z-30 flex w-[700px] h-[350px] bg-white rounded-lg shadow-xl overflow-hidden border border-neutral-100"
             onMouseEnter={clearCloseTimer}
           >
-            {/* ستون راست */}
-            <nav className="flex flex-col w-[220px] shrink-0 overflow-y-auto border-l border-neutral-100 py-2">
-              {categories.map((cat) => {
-                const Icon = cat.icon;
-                const isActive = activeKey === cat.key;
+            
+            <nav className="flex flex-col w-[220px] shrink-0 overflow-y-auto border-r border-neutral-100 py-2 bg-neutral-50">
+              {mainDataArray?.map((c) => {
+                const isActive = activeId === c.id;
                 return (
-                  <Link
-                    key={cat.key}
-                    href={cat.href}
-                    onMouseEnter={() => setActiveKey(cat.key)}
-                    className={`flex items-center gap-2 px-4 py-2.5 text-[13px] font-semibold whitespace-nowrap ${
-                      isActive ? "bg-red-50 text-red-600" : "text-neutral-900"
+                  <div
+                    key={c.id}
+                    onMouseEnter={() => setActiveId(c.id)}
+                    className={`flex items-center justify-between px-4 py-2.5 text-[13px] font-semibold cursor-pointer transition-colors ${
+                      isActive 
+                        ? "bg-white text-red-600 border-l-4 border-l-red-500" 
+                        : "text-neutral-900 hover:bg-neutral-100"
                     }`}
                   >
-                    {Icon && (
-                      <Icon
-                        className={`w-[18px] h-[18px] ${
-                          isActive ? "text-red-600" : "text-neutral-500"
-                        }`}
-                      />
-                    )}
-                    <span>{cat.label}</span>
-                  </Link>
+                    <div className="flex items-center gap-2">
+                      <CategoryIcon iconKey={c.icon_key} className={`w-[18px] h-[18px] ${isActive ? "text-red-600" : "text-neutral-500"}`} />
+
+                    <span>{c.name}</span>
+                    </div>
+                    <TbChevronRight className={`w-3.5 h-3.5 ${isActive ? "text-red-500" : "text-neutral-300"}`} />
+                  </div>
                 );
               })}
             </nav>
 
-            {/* بخش چپ */}
-            {activeCategory && (
-              <div className="flex-1 overflow-y-auto px-6 py-5">
-                <Link
-                  href={activeCategory.href}
-                  className="flex items-center gap-1 mb-4 text-[13px] font-semibold text-red-600 whitespace-nowrap"
-                >
-                  همه محصولات {activeCategory.label}
-                  <TbChevronLeft className="w-3.5 h-3.5" />
-                </Link>
-
-                <div className="grid grid-cols-3 gap-6">
-                  {activeCategory.columns.map((col) => (
-                    <div key={col.main.label} className="flex flex-col whitespace-nowrap">
-                      <Link
-                        href={col.main.href}
-                        className="flex items-center justify-between mb-2 py-1 text-sm font-bold text-neutral-900"
-                      >
-                        {col.main.label}
-                        <TbChevronLeft className="w-3.5 h-3.5 text-neutral-500" />
-                      </Link>
-                      {col.leaves.map((leaf) => (
-                        <Link
-                          key={leaf.label}
-                          href={leaf.href}
-                          className="py-1 text-[13px] text-neutral-500 hover:text-red-600 transition-colors"
-                        >
-                          {leaf.label}
-                        </Link>
-                      ))}
-                    </div>
-                  ))}
+            
+            <div className="flex-1 overflow-y-auto px-6 py-5 bg-white relative">
+              {isSubLoading ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-white/50">
+                  <div className="w-6 h-6 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
-              </div>
-            )}
+              ) : (
+                <>
+                  <Link
+                    href={`/search/${activeCategory?.slug || ""}`}
+                    className="flex items-center gap-1 mb-4 text-[13px] font-bold text-red-600 whitespace-nowrap hover:underline"
+                  >
+                    All {activeCategory?.name} Products
+                    <TbChevronRight className="w-3.5 h-3.5" />
+                  </Link>
+
+                  <div className="grid grid-cols-3 gap-6">
+                    {finalSubList?.map((col, idx) => (
+                      <div key={col.id || idx} className="flex flex-col whitespace-nowrap">
+                        <Link
+                          href={`/search/${col.slug || ""}`}
+                          className="flex items-center justify-between mb-2 py-1 text-sm font-bold text-neutral-900 border-b border-neutral-100 group"
+                        >
+                          <span className="group-hover:text-red-600 transition-colors">{col.name}</span>
+                          <TbChevronRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-red-600 transition-colors" />
+                        </Link>
+
+                    
+                        {(col.children || col.subs || col.leaves)?.map((leaf, lIdx) => (
+                          <Link
+                            key={leaf.id || lIdx}
+                            href={`/search/${leaf.slug || ""}`}
+                            className="py-1 text-[13px] text-neutral-500 hover:text-red-600 transition-colors"
+                          >
+                            {leaf.name}
+                          </Link>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         )}
       </div>

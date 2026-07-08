@@ -28,46 +28,61 @@ function CheckOtpForm({ mobile,setStep }) {
   };
 
   return (
-    <form onSubmit={submitHandler}>
-      <div className="w-[360px] h-[360px] border border-solid border-gray-400 rounded-xl">
-        <div>
-          <Image
-            src="/icons/logo.svg"
-            width={162}
-            height={25}
-            alt="logo"
-            className="pt-[35px] mr-[69px]"
-          />
-        </div>
-        <div className="px-[20px]">
-          <h6 className="mt-[48px]">کد تایید را وارد کنید</h6>
-          <p className="text-gray-500 text-[12px] mt-[20px]">
-            حساب کاربری با شماره موبایل {mobile} وجود ندارد. برای ساخت حساب
-            جدید، کد تایید برای این شماره ارسال گردید.
-          </p>
-          <div
-            style={{
-              direction: "ltr",
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "18px",
-            }}
-          >
-            <div className=" ltr flex justify-cente">
-              <OtpInput
-                value={code}
-                onChange={handleChange}
-                numInputs={6}
-                className="border border-solid border-silver rounded-[5px] lg:w-[35px] lg:h-[40px] lg:m-[12px] w-[50px] h-[45px] m-[4px] rounded-[6px] justify-center mt-[21px]  "
-              />
-            </div>
-          </div>
-            <button type="submit" className="w-[320px] h-[48px] bg-red-600 rounded-lg mt-[15px] text-white">
-              تایید
-            </button>
-        </div>
-      </div>
-    </form>
+    <form onSubmit={submitHandler} className="flex items-center justify-center min-h-[450px]">
+  
+  <div className="w-[380px] p-6 bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-neutral-100 flex flex-col transition-all duration-300">
+    
+  
+    <div className="flex justify-center mb-6 mt-2">
+      <Image 
+        src="/icons/en-logo.svg" 
+        width={150} 
+        height={24} 
+        alt="logo" 
+        className="object-contain"
+      />
+    </div>
+
+  
+    <div className="flex flex-col text-left">
+      <h6 className="text-lg font-bold text-neutral-800 tracking-tight">
+        Enter verification code
+      </h6>
+      <p className="mt-2 text-[12px] text-neutral-400 font-medium leading-relaxed">
+        An account with <span className="text-neutral-700 font-semibold">{mobile}</span> does not exist. 
+        A 6-digit verification code has been sent to create a new account.
+      </p>
+    </div>
+
+    
+    <div className="flex justify-center mt-6" dir="ltr">
+      <OtpInput
+        value={code}
+        onChange={handleChange}
+        numInputs={6}
+
+        className="w-[44px] h-[48px] mx-1 text-center text-lg font-semibold border border-neutral-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/10 rounded-xl outline-none bg-neutral-50/50 focus:bg-white transition-all duration-200"
+      />
+    </div>
+
+  
+    <button 
+      type="submit" 
+      className="w-full h-[50px] bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white rounded-xl mt-6 font-semibold text-sm shadow-md shadow-red-600/10 hover:shadow-lg hover:shadow-red-600/20 transition-all duration-200 cursor-pointer flex items-center justify-center"
+    >
+      Verify & Proceed
+    </button>
+
+    
+    <div className="text-center mt-5">
+      <span className="text-[12px] text-neutral-400">Didn't receive the code? </span>
+      <button type="button" className="text-[12px] text-red-600 font-semibold hover:underline bg-transparent border-none cursor-pointer">
+        Resend
+      </button>
+    </div>
+
+  </div>
+</form>
   );
 }
 
