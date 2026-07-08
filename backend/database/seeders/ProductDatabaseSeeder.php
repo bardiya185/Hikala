@@ -8,34 +8,54 @@ use Illuminate\Support\Str;
 
 class ProductDatabaseSeeder extends Seeder
 {
-
-    
     private function saveChildren($children, $parentId)
     {
         foreach ($children as $child) {
+            $baseSlug = $child['slug'];
+            
+            // بررسی وجود اسلاگ
+            $existing = DB::table('categories')->where('slug', $baseSlug)->first();
+            
+            if ($existing) {
+                // گرفتن نام دسته‌بندی والد
+                $parent = DB::table('categories')->where('id', $parentId)->first();
+                $parentSlug = $parent ? $parent->slug : 'sub';
+                
+                // اسلاگ جدید با نام والد
+                $finalSlug = $baseSlug . '-' . $parentSlug;
+                
+                // اگر باز هم تکراری بود، عدد اضافه کن
+                $counter = 2;
+                while (DB::table('categories')->where('slug', $finalSlug)->exists()) {
+                    $finalSlug = $baseSlug . '-' . $parentSlug . '-' . $counter;
+                    $counter++;
+                }
+            } else {
+                $finalSlug = $baseSlug;
+            }
+            
             $childCategory = DB::table('categories')
-                ->where('slug', $child['slug'])
+                ->where('slug', $finalSlug)
                 ->where('parent_id', $parentId)
                 ->first();
             
             if (!$childCategory) {
                 $childId = DB::table('categories')->insertGetId([
                     'name' => $child['name'],
-                    'slug' => $child['slug'],
-                    'icon_key' => null,
-                    'sort_order' => 0,
+                    'slug' => $finalSlug,
+                    'icon_key' => $child['icon_key'] ?? null,
+                    'sort_order' => $child['sort_order'] ?? 0,
                     'is_active' => 1,
                     'parent_id' => $parentId,
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
-                $this->command->info('  ➕ Created: ' . $child['name']);
+                $this->command->info('  ➕ Created: ' . $child['name'] . ' (slug: ' . $finalSlug . ')');
             } else {
                 $childId = $childCategory->id;
                 $this->command->info('  ⏭️ Skipped: ' . $child['name']);
             }
             
-            // ✅ اگر زیردسته‌های بیشتری داشت، بازگشتی برو
             if (isset($child['children']) && !empty($child['children'])) {
                 $this->saveChildren($child['children'], $childId);
             }
@@ -43,10 +63,10 @@ class ProductDatabaseSeeder extends Seeder
     }
     public function run()
     {
-        $this->command->info('🚀 Starting complete product seeding with categories like Digikala...');
+        $this->command->info('🚀 Starting complete product seeding...');
 
         // ================================================================
-        // 1. CREATE CATEGORIES (LIKE DIGIKALA) - FULL VERSION
+        // 1. CREATE CATEGORIES
         // ================================================================
         $categories = [
             // ===== MOBILE =====
@@ -109,6 +129,8 @@ class ProductDatabaseSeeder extends Seeder
                                     ['name' => 'Nokia', 'slug' => 'nokia'],
                                     ['name' => 'Sony Xperia', 'slug' => 'sony-xperia'],
                                     ['name' => 'Motorola', 'slug' => 'motorola'],
+                                    ['name' => 'Nothing Phone', 'slug' => 'nothing-phone'],
+                                    ['name' => 'Realme', 'slug' => 'realme'],
                                 ]
                             ],
                             [
@@ -150,12 +172,11 @@ class ProductDatabaseSeeder extends Seeder
                                     ['name' => 'Phone Cases', 'slug' => 'phone-cases'],
                                     ['name' => 'Screen Protectors', 'slug' => 'screen-protectors'],
                                     ['name' => 'Chargers & Cables', 'slug' => 'chargers-cables'],
-                                    ['name' => 'Power Banks', 'slug' => 'mobile-power-banks'], // ✅ تغییر
+                                    ['name' => 'Power Banks', 'slug' => 'mobile-power-banks'],
                                     ['name' => 'Headphones', 'slug' => 'headphones-accessories'],
                                     ['name' => 'Smartwatches', 'slug' => 'smartwatches-accessories'],
                                 ]
                             ],
-                            // ===== Trending (خارج از Mobile Accessories) =====
                             [
                                 'name' => 'Trending',
                                 'slug' => 'trending-phones',
@@ -163,7 +184,7 @@ class ProductDatabaseSeeder extends Seeder
                                     ['name' => 'iPhone 17', 'slug' => 'iphone-17'],
                                     ['name' => 'Galaxy S25', 'slug' => 'galaxy-s25'],
                                     ['name' => 'Xiaomi 15', 'slug' => 'xiaomi-15'],
-                                    ['name' => 'Poco X7 Pro', 'slug' => 'poco-x7-pro-trending'], // ✅ تغییر
+                                    ['name' => 'Poco X7 Pro', 'slug' => 'poco-x7-pro-trending'],
                                 ]
                             ],
                         ]
@@ -278,7 +299,6 @@ class ProductDatabaseSeeder extends Seeder
                     ],
                 ]
             ],
-
             // ===== DIGITAL PRODUCTS =====
             [
                 'name' => 'Digital Products',
@@ -507,7 +527,6 @@ class ProductDatabaseSeeder extends Seeder
                     ],
                 ]
             ],
-
             // ===== HOME & KITCHEN =====
             [
                 'name' => 'Home & Kitchen',
@@ -649,7 +668,6 @@ class ProductDatabaseSeeder extends Seeder
                     ],
                 ]
             ],
-
             // ===== HOME APPLIANCES =====
             [
                 'name' => 'Home Appliances',
@@ -799,10 +817,7 @@ class ProductDatabaseSeeder extends Seeder
                     ],
                 ]
             ],
-
-            // ================================================================
-            // 6. BEAUTY & HEALTH
-            // ================================================================
+            // ===== BEAUTY & HEALTH =====
             [
                 'name' => 'Beauty & Health',
                 'slug' => 'beauty-health',
@@ -910,10 +925,7 @@ class ProductDatabaseSeeder extends Seeder
                     ],
                 ]
             ],
-
-            // ================================================================
-            // 7. FASHION
-            // ================================================================
+            // ===== FASHION =====
             [
                 'name' => 'Fashion',
                 'slug' => 'fashion',
@@ -1038,7 +1050,7 @@ class ProductDatabaseSeeder extends Seeder
                             ['name' => 'Sports Bra', 'slug' => 'fashion-sports-bra'],
                             ['name' => 'Compression Wear', 'slug' => 'fashion-compression-wear'],
                             ['name' => 'Sweatband', 'slug' => 'fashion-sweatband'],
-                            ['name' => 'Sport Socks', 'slug' => 'sfashion-port-socks'],
+                            ['name' => 'Sport Socks', 'slug' => 'fashion-sport-socks'],
                         ]
                     ],
                     [
@@ -1077,277 +1089,317 @@ class ProductDatabaseSeeder extends Seeder
                     ],
                 ]
             ],
-
-          // ===== Gold & Jewelry =====
-[
-    'name' => 'Gold & Jewelry',
-    'slug' => 'gold-jewelry',  // ✅ این保持不变
-    'icon_key' => 'gold-jewelry',
-    'sort_order' => 8,
-    'children' => [
-        [
-            'name' => 'Gold Jewelry',
-            'slug' => 'gold-jewelry-items',  // ✅ تغییر به gold-jewelry-items
-            'children' => [
-                ['name' => 'Gold Necklace', 'slug' => 'gold-necklace'],
-                ['name' => 'Gold Ring', 'slug' => 'gold-ring'],
-                ['name' => 'Gold Earrings', 'slug' => 'gold-earrings'],
-                ['name' => 'Gold Bracelet', 'slug' => 'gold-bracelet'],
-                ['name' => 'Gold Anklet', 'slug' => 'gold-anklet'],
-                ['name' => 'Gold Chain', 'slug' => 'gold-chain'],
-                ['name' => 'Gold Pendant', 'slug' => 'gold-pendant'],
-                ['name' => 'Gold Set', 'slug' => 'gold-set'],
-                ['name' => '22K Gold', 'slug' => '22k-gold'],
-                ['name' => '24K Gold', 'slug' => '24k-gold'],
-                ['name' => 'Gold Under 10M', 'slug' => 'gold-under-10m'],
-                ['name' => 'Gold Under 15M', 'slug' => 'gold-under-15m'],
-                ['name' => 'Gold Under 20M', 'slug' => 'gold-under-20m'],
-            ]
-        ],
-        [
-            'name' => 'Silver Jewelry',
-            'slug' => 'silver-jewelry',
-            'children' => [
-                ['name' => 'Silver Necklace', 'slug' => 'silver-necklace'],
-                ['name' => 'Silver Ring', 'slug' => 'silver-ring'],
-                ['name' => 'Silver Earrings', 'slug' => 'silver-earrings'],
-                ['name' => 'Silver Bracelet', 'slug' => 'silver-bracelet'],
-                ['name' => 'Silver Chain', 'slug' => 'silver-chain'],
-                ['name' => 'Silver Anklet', 'slug' => 'silver-anklet'],
-                ['name' => '925 Silver', 'slug' => '925-silver'],
-            ]
-        ],
-        [
-            'name' => 'Diamonds & Gems',
-            'slug' => 'diamonds-gems',
-            'children' => [
-                ['name' => 'Diamond Ring', 'slug' => 'diamond-ring'],
-                ['name' => 'Diamond Necklace', 'slug' => 'diamond-necklace'],
-                ['name' => 'Diamond Earrings', 'slug' => 'diamond-earrings'],
-                ['name' => 'Ruby Jewelry', 'slug' => 'ruby-jewelry'],
-                ['name' => 'Sapphire Jewelry', 'slug' => 'sapphire-jewelry'],
-                ['name' => 'Emerald Jewelry', 'slug' => 'emerald-jewelry'],
-                ['name' => 'Pearl Jewelry', 'slug' => 'pearl-jewelry'],
-                ['name' => 'Gemstone Ring', 'slug' => 'gemstone-ring'],
-            ]
-        ],
-        [
-            'name' => 'Gold Coins & Bars',
-            'slug' => 'gold-coins-bars',
-            'children' => [
-                ['name' => 'Gold Bar', 'slug' => 'gold-bar'],
-                ['name' => 'Gold Coin', 'slug' => 'gold-coin'],
-                ['name' => 'Quarter Coin', 'slug' => 'quarter-coin'],
-                ['name' => 'Half Coin', 'slug' => 'half-coin'],
-                ['name' => 'Full Coin', 'slug' => 'full-coin'],
-                ['name' => 'Parsian Coin', 'slug' => 'parsian-coin'],
-                ['name' => 'Melted Gold', 'slug' => 'melted-gold'],
-            ]
-        ],
-        [
-            'name' => 'Gold Galleries',
-            'slug' => 'gold-galleries',
-            'children' => [
-                ['name' => 'Ruby Art', 'slug' => 'ruby-art'],
-                ['name' => 'Eli Gallery', 'slug' => 'eli-gallery'],
-                ['name' => 'Mavi Gallery', 'slug' => 'mavi-gallery'],
-                ['name' => 'Mostajabi', 'slug' => 'mostajabi'],
-                ['name' => 'Taj', 'slug' => 'taj'],
-                ['name' => 'Daris', 'slug' => 'daris'],
-                ['name' => 'Mio Gold', 'slug' => 'mio-gold'],
-                ['name' => 'Parasteh Gallery', 'slug' => 'parasteh-gallery'],
-                ['name' => 'Sheida Majd', 'slug' => 'sheida-majd'],
-                ['name' => 'Kia Gallery', 'slug' => 'kia-gallery'],
-                ['name' => 'Naria', 'slug' => 'naria'],
-                ['name' => 'Maya Mahak', 'slug' => 'maya-mahak'],
-                ['name' => 'Gol Dam', 'slug' => 'gol-dam'],
-                ['name' => 'Hor Gold Gallery', 'slug' => 'hor-gold-gallery'],
-                ['name' => 'Parsis Gold', 'slug' => 'parsis-gold'],
-                ['name' => 'Tokeniko', 'slug' => 'tokeniko'],
-                ['name' => 'ZIOTO', 'slug' => 'zioto'],
-                ['name' => 'Brillian Gold', 'slug' => 'brillian-gold'],
-            ]
-        ],
-    ]
-],
-
-         // ===== Vehicles =====
-[
-    'name' => 'Vehicles',
-    'slug' => 'vehicles',
-    'icon_key' => 'vehicles',
-    'sort_order' => 9,
-    'children' => [
-        [
-            'name' => 'Cars',
-            'slug' => 'cars',
-            'children' => [
-                ['name' => 'BMW 5 Series', 'slug' => 'bmw-5-series'],
-                ['name' => 'Mercedes E-Class', 'slug' => 'mercedes-e-class'],
-                ['name' => 'Toyota Camry', 'slug' => 'toyota-camry'],
-                ['name' => 'Honda Civic', 'slug' => 'honda-civic'],
-                ['name' => 'Hyundai Sonata', 'slug' => 'hyundai-sonata'],
-                ['name' => 'Kia Sportage', 'slug' => 'kia-sportage'],
-                ['name' => 'Peugeot 206', 'slug' => 'peugeot-206'],
-                ['name' => 'Peugeot 207', 'slug' => 'peugeot-207'],
-                ['name' => 'Peugeot 405', 'slug' => 'peugeot-405'],
-                ['name' => 'Renault Sandero', 'slug' => 'renault-sandero'], // ✅ اینجا
-                ['name' => 'Pride', 'slug' => 'pride'],
-                ['name' => 'Tiba', 'slug' => 'tiba'],
-                ['name' => 'Samand', 'slug' => 'samand'],
-                ['name' => 'Dena', 'slug' => 'dena'],
-                ['name' => 'Quick', 'slug' => 'quick'],
-                ['name' => 'Saina', 'slug' => 'saina'],
-                ['name' => 'MVM 315', 'slug' => 'mvm-315'],
-                ['name' => 'MVM 530', 'slug' => 'mvm-530'],
-                ['name' => 'Lifan 620', 'slug' => 'lifan-620'],
-                ['name' => 'Lifan X50', 'slug' => 'lifan-x50'],
-            ]
-        ],
-        [
-            'name' => 'Motorcycles',
-            'slug' => 'motorcycles',
-            'children' => [
-                ['name' => 'Honda CBR 500R', 'slug' => 'honda-cbr-500r'],
-                ['name' => 'Honda CB 650R', 'slug' => 'honda-cb-650r'],
-                ['name' => 'BMW R 1250 GS', 'slug' => 'bmw-r-1250-gs'],
-                ['name' => 'Yamaha MT-07', 'slug' => 'yamaha-mt-07'],
-                ['name' => 'Suzuki GSX-R750', 'slug' => 'suzuki-gsx-r750'],
-                ['name' => 'Kawasaki Ninja 400', 'slug' => 'kawasaki-ninja-400'],
-                ['name' => 'Dirt Bike', 'slug' => 'dirt-bike'],
-                ['name' => 'Electric Scooter', 'slug' => 'electric-scooter'],
-            ]
-        ],
-        [
-            'name' => 'Car Accessories',
-            'slug' => 'car-accessories',
-            'children' => [
-                ['name' => 'Car Alloy Rims', 'slug' => 'car-alloy-rims'],
-                ['name' => 'Car Audio System', 'slug' => 'car-audio-system'],
-                ['name' => 'Car Speakers', 'slug' => 'car-speakers'],
-                ['name' => 'Car Amplifier', 'slug' => 'car-amplifier'],
-                ['name' => 'Dashcam', 'slug' => 'dashcam'],
-                ['name' => 'GPS Navigation', 'slug' => 'gps-navigation'],
-                ['name' => 'Car Seat Covers', 'slug' => 'car-seat-covers'],
-                ['name' => 'Car Floor Mats', 'slug' => 'car-floor-mats'],
-                ['name' => 'Car Tinting', 'slug' => 'car-tinting'],
-                ['name' => 'Car Sunshade', 'slug' => 'car-sunshade'],
-                ['name' => 'Car Cover', 'slug' => 'car-cover'],
-                ['name' => 'Car Phone Holder', 'slug' => 'car-phone-holder'],
-                ['name' => 'Car Air Freshener', 'slug' => 'car-air-freshener'],
-                ['name' => 'Car Roof Rack', 'slug' => 'car-roof-rack'],
-                ['name' => 'Car Tire Chains', 'slug' => 'car-tire-chains'],
-                ['name' => 'Car Jack', 'slug' => 'car-jack'],
-                ['name' => 'Car Emergency Kit', 'slug' => 'car-emergency-kit'],
-            ]
-        ],
-        [
-            'name' => 'Motorcycle Accessories',
-            'slug' => 'motorcycle-accessories',
-            'children' => [
-                ['name' => 'Motorcycle Helmet', 'slug' => 'motorcycle-helmet'],
-                ['name' => 'Motorcycle Jacket', 'slug' => 'motorcycle-jacket'],
-                ['name' => 'Motorcycle Gloves', 'slug' => 'motorcycle-gloves'],
-                ['name' => 'Motorcycle Boots', 'slug' => 'motorcycle-boots'],
-                ['name' => 'Motorcycle Cover', 'slug' => 'motorcycle-cover'],
-                ['name' => 'Motorcycle Phone Mount', 'slug' => 'motorcycle-phone-mount'],
-                ['name' => 'Motorcycle Saddlebag', 'slug' => 'motorcycle-saddlebag'],
-            ]
-        ],
-        [
-            'name' => 'Car Consumables',
-            'slug' => 'car-consumables',
-            'children' => [
-                ['name' => 'Engine Oil', 'slug' => 'engine-oil'],
-                ['name' => 'Transmission Oil', 'slug' => 'transmission-oil'],
-                ['name' => 'Brake Fluid', 'slug' => 'brake-fluid'],
-                ['name' => 'Antifreeze', 'slug' => 'antifreeze'],
-                ['name' => 'Car Battery', 'slug' => 'car-battery'],
-                ['name' => 'Oil Filter', 'slug' => 'oil-filter'],
-                ['name' => 'Air Filter', 'slug' => 'air-filter'],
-                ['name' => 'Brake Pads', 'slug' => 'brake-pads'],
-                ['name' => 'Spark Plug', 'slug' => 'spark-plug'],
-                ['name' => 'Wiper Blade', 'slug' => 'wiper-blade'],
-                ['name' => 'Car Tire', 'slug' => 'car-tire'],
-            ]
-        ],
-        [
-            'name' => 'By Car Model',
-            'slug' => 'by-car-model',
-            'children' => [
-                ['name' => 'Peugeot 206-207', 'slug' => 'peugeot-206-207'],
-                ['name' => 'Peugeot 405-Parsia', 'slug' => 'peugeot-405-parsia'],
-                ['name' => 'Pride-Tiba', 'slug' => 'pride-tiba'],
-                ['name' => 'Samand-Dena', 'slug' => 'samand-dena'],
-                ['name' => 'Quick-Saina', 'slug' => 'quick-saina'],
-                ['name' => 'Renault Sandero', 'slug' => 'renault-sandero-car'], // ✅ تغییر به renault-sandero-car
-                ['name' => 'MVM-Phoenix', 'slug' => 'mvm-phoenix'],
-                ['name' => 'Hyundai-Kia', 'slug' => 'hyundai-kia'],
-                ['name' => 'Toyota-Renault', 'slug' => 'toyota-renault'],
-            ]
-        ],
-    ]
-],
-
-  // ===== Health & Medical =====
-[
-    'name' => 'Health & Medical',
-    'slug' => 'health-medical',
-    'icon_key' => 'health-medical',
-    'sort_order' => 10,
-    'children' => [
-        [
+            // ===== GOLD & JEWELRY =====
             [
-                'name' => 'Medical Equipment',
-                'slug' => 'medical-equipment',
+                'name' => 'Gold & Jewelry',
+                'slug' => 'gold-jewelry',
+                'icon_key' => 'gold-jewelry',
+                'sort_order' => 8,
                 'children' => [
-                    ['name' => 'Blood Pressure Monitor', 'slug' => 'blood-pressure-monitor'],
-                    ['name' => 'Digital Thermometer', 'slug' => 'digital-thermometer'],
-                    ['name' => 'Glucose Meter', 'slug' => 'glucose-meter'],
-                    ['name' => 'Nebulizer', 'slug' => 'nebulizer'],
-                    ['name' => 'Pulse Oximeter', 'slug' => 'pulse-oximeter'],
-                    ['name' => 'Stethoscope', 'slug' => 'stethoscope'],
-                    ['name' => 'Hearing Aid', 'slug' => 'hearing-aid'],
-                    ['name' => 'Medical Mask', 'slug' => 'medical-mask'],
-                    ['name' => 'Medical Gloves', 'slug' => 'medical-gloves'],
+                    [
+                        'name' => 'Gold Jewelry',
+                        'slug' => 'gold-jewelry-items',
+                        'children' => [
+                            ['name' => 'Gold Necklace', 'slug' => 'gold-necklace'],
+                            ['name' => 'Gold Ring', 'slug' => 'gold-ring'],
+                            ['name' => 'Gold Earrings', 'slug' => 'gold-earrings'],
+                            ['name' => 'Gold Bracelet', 'slug' => 'gold-bracelet'],
+                            ['name' => 'Gold Anklet', 'slug' => 'gold-anklet'],
+                            ['name' => 'Gold Chain', 'slug' => 'gold-chain'],
+                            ['name' => 'Gold Pendant', 'slug' => 'gold-pendant'],
+                            ['name' => 'Gold Set', 'slug' => 'gold-set'],
+                            ['name' => '22K Gold', 'slug' => '22k-gold'],
+                            ['name' => '24K Gold', 'slug' => '24k-gold'],
+                            ['name' => 'Gold Under 10M', 'slug' => 'gold-under-10m'],
+                            ['name' => 'Gold Under 15M', 'slug' => 'gold-under-15m'],
+                            ['name' => 'Gold Under 20M', 'slug' => 'gold-under-20m'],
+                        ]
+                    ],
+                    [
+                        'name' => 'Silver Jewelry',
+                        'slug' => 'silver-jewelry',
+                        'children' => [
+                            ['name' => 'Silver Necklace', 'slug' => 'silver-necklace'],
+                            ['name' => 'Silver Ring', 'slug' => 'silver-ring'],
+                            ['name' => 'Silver Earrings', 'slug' => 'silver-earrings'],
+                            ['name' => 'Silver Bracelet', 'slug' => 'silver-bracelet'],
+                            ['name' => 'Silver Chain', 'slug' => 'silver-chain'],
+                            ['name' => 'Silver Anklet', 'slug' => 'silver-anklet'],
+                            ['name' => '925 Silver', 'slug' => '925-silver'],
+                        ]
+                    ],
+                    [
+                        'name' => 'Diamonds & Gems',
+                        'slug' => 'diamonds-gems',
+                        'children' => [
+                            ['name' => 'Diamond Ring', 'slug' => 'diamond-ring'],
+                            ['name' => 'Diamond Necklace', 'slug' => 'diamond-necklace'],
+                            ['name' => 'Diamond Earrings', 'slug' => 'diamond-earrings'],
+                            ['name' => 'Ruby Jewelry', 'slug' => 'ruby-jewelry'],
+                            ['name' => 'Sapphire Jewelry', 'slug' => 'sapphire-jewelry'],
+                            ['name' => 'Emerald Jewelry', 'slug' => 'emerald-jewelry'],
+                            ['name' => 'Pearl Jewelry', 'slug' => 'pearl-jewelry'],
+                            ['name' => 'Gemstone Ring', 'slug' => 'gemstone-ring'],
+                        ]
+                    ],
+                    [
+                        'name' => 'Gold Coins & Bars',
+                        'slug' => 'gold-coins-bars',
+                        'children' => [
+                            ['name' => 'Gold Bar', 'slug' => 'gold-bar'],
+                            ['name' => 'Gold Coin', 'slug' => 'gold-coin'],
+                            ['name' => 'Quarter Coin', 'slug' => 'quarter-coin'],
+                            ['name' => 'Half Coin', 'slug' => 'half-coin'],
+                            ['name' => 'Full Coin', 'slug' => 'full-coin'],
+                            ['name' => 'Parsian Coin', 'slug' => 'parsian-coin'],
+                            ['name' => 'Melted Gold', 'slug' => 'melted-gold'],
+                        ]
+                    ],
+                    [
+                        'name' => 'Gold Galleries',
+                        'slug' => 'gold-galleries',
+                        'children' => [
+                            ['name' => 'Ruby Art', 'slug' => 'ruby-art'],
+                            ['name' => 'Eli Gallery', 'slug' => 'eli-gallery'],
+                            ['name' => 'Mavi Gallery', 'slug' => 'mavi-gallery'],
+                            ['name' => 'Mostajabi', 'slug' => 'mostajabi'],
+                            ['name' => 'Taj', 'slug' => 'taj'],
+                            ['name' => 'Daris', 'slug' => 'daris'],
+                            ['name' => 'Mio Gold', 'slug' => 'mio-gold'],
+                            ['name' => 'Parasteh Gallery', 'slug' => 'parasteh-gallery'],
+                            ['name' => 'Sheida Majd', 'slug' => 'sheida-majd'],
+                            ['name' => 'Kia Gallery', 'slug' => 'kia-gallery'],
+                            ['name' => 'Naria', 'slug' => 'naria'],
+                            ['name' => 'Maya Mahak', 'slug' => 'maya-mahak'],
+                            ['name' => 'Gol Dam', 'slug' => 'gol-dam'],
+                            ['name' => 'Hor Gold Gallery', 'slug' => 'hor-gold-gallery'],
+                            ['name' => 'Parsis Gold', 'slug' => 'parsis-gold'],
+                            ['name' => 'Tokeniko', 'slug' => 'tokeniko'],
+                            ['name' => 'ZIOTO', 'slug' => 'zioto'],
+                            ['name' => 'Brillian Gold', 'slug' => 'brillian-gold'],
+                        ]
+                    ],
                 ]
             ],
+            // ===== VEHICLES =====
             [
-                'name' => 'Orthopedic',
-                'slug' => 'orthopedic',
+                'name' => 'Vehicles',
+                'slug' => 'vehicles',
+                'icon_key' => 'vehicles',
+                'sort_order' => 9,
                 'children' => [
-                    ['name' => 'Back Brace', 'slug' => 'back-brace'],
-                    ['name' => 'Knee Brace', 'slug' => 'knee-brace'],
-                    ['name' => 'Wrist Brace', 'slug' => 'wrist-brace'],
-                    ['name' => 'Ankle Support', 'slug' => 'ankle-support'],
-                    ['name' => 'Neck Brace', 'slug' => 'neck-brace'],
-                    ['name' => 'Orthopedic Shoes', 'slug' => 'orthopedic-shoes'],
-                    ['name' => 'Orthopedic Insole', 'slug' => 'orthopedic-insole'],
-                    ['name' => 'Compression Socks', 'slug' => 'compression-socks'],
+                    [
+                        'name' => 'Cars',
+                        'slug' => 'cars',
+                        'children' => [
+                            ['name' => 'BMW 5 Series', 'slug' => 'bmw-5-series'],
+                            ['name' => 'Mercedes E-Class', 'slug' => 'mercedes-e-class'],
+                            ['name' => 'Toyota Camry', 'slug' => 'toyota-camry'],
+                            ['name' => 'Honda Civic', 'slug' => 'honda-civic'],
+                            ['name' => 'Hyundai Sonata', 'slug' => 'hyundai-sonata'],
+                            ['name' => 'Kia Sportage', 'slug' => 'kia-sportage'],
+                            ['name' => 'Peugeot 206', 'slug' => 'peugeot-206'],
+                            ['name' => 'Peugeot 207', 'slug' => 'peugeot-207'],
+                            ['name' => 'Peugeot 405', 'slug' => 'peugeot-405'],
+                            ['name' => 'Renault Sandero', 'slug' => 'renault-sandero'],
+                            ['name' => 'Pride', 'slug' => 'pride'],
+                            ['name' => 'Tiba', 'slug' => 'tiba'],
+                            ['name' => 'Samand', 'slug' => 'samand'],
+                            ['name' => 'Dena', 'slug' => 'dena'],
+                            ['name' => 'Quick', 'slug' => 'quick'],
+                            ['name' => 'Saina', 'slug' => 'saina'],
+                            ['name' => 'MVM 315', 'slug' => 'mvm-315'],
+                            ['name' => 'MVM 530', 'slug' => 'mvm-530'],
+                            ['name' => 'Lifan 620', 'slug' => 'lifan-620'],
+                            ['name' => 'Lifan X50', 'slug' => 'lifan-x50'],
+                        ]
+                    ],
+                    [
+                        'name' => 'Motorcycles',
+                        'slug' => 'motorcycles',
+                        'children' => [
+                            ['name' => 'Honda CBR 500R', 'slug' => 'honda-cbr-500r'],
+                            ['name' => 'Honda CB 650R', 'slug' => 'honda-cb-650r'],
+                            ['name' => 'BMW R 1250 GS', 'slug' => 'bmw-r-1250-gs'],
+                            ['name' => 'Yamaha MT-07', 'slug' => 'yamaha-mt-07'],
+                            ['name' => 'Suzuki GSX-R750', 'slug' => 'suzuki-gsx-r750'],
+                            ['name' => 'Kawasaki Ninja 400', 'slug' => 'kawasaki-ninja-400'],
+                            ['name' => 'Dirt Bike', 'slug' => 'dirt-bike'],
+                            ['name' => 'Electric Scooter', 'slug' => 'electric-scooter'],
+                        ]
+                    ],
+                    [
+                        'name' => 'Car Accessories',
+                        'slug' => 'car-accessories',
+                        'children' => [
+                            ['name' => 'Car Alloy Rims', 'slug' => 'car-alloy-rims'],
+                            ['name' => 'Car Audio System', 'slug' => 'car-audio-system'],
+                            ['name' => 'Car Speakers', 'slug' => 'car-speakers'],
+                            ['name' => 'Car Amplifier', 'slug' => 'car-amplifier'],
+                            ['name' => 'Dashcam', 'slug' => 'dashcam'],
+                            ['name' => 'GPS Navigation', 'slug' => 'gps-navigation'],
+                            ['name' => 'Car Seat Covers', 'slug' => 'car-seat-covers'],
+                            ['name' => 'Car Floor Mats', 'slug' => 'car-floor-mats'],
+                            ['name' => 'Car Tinting', 'slug' => 'car-tinting'],
+                            ['name' => 'Car Sunshade', 'slug' => 'car-sunshade'],
+                            ['name' => 'Car Cover', 'slug' => 'car-cover'],
+                            ['name' => 'Car Phone Holder', 'slug' => 'car-phone-holder'],
+                            ['name' => 'Car Air Freshener', 'slug' => 'car-air-freshener'],
+                            ['name' => 'Car Roof Rack', 'slug' => 'car-roof-rack'],
+                            ['name' => 'Car Tire Chains', 'slug' => 'car-tire-chains'],
+                            ['name' => 'Car Jack', 'slug' => 'car-jack'],
+                            ['name' => 'Car Emergency Kit', 'slug' => 'car-emergency-kit'],
+                        ]
+                    ],
+                    [
+                        'name' => 'Motorcycle Accessories',
+                        'slug' => 'motorcycle-accessories',
+                        'children' => [
+                            ['name' => 'Motorcycle Helmet', 'slug' => 'motorcycle-helmet'],
+                            ['name' => 'Motorcycle Jacket', 'slug' => 'motorcycle-jacket'],
+                            ['name' => 'Motorcycle Gloves', 'slug' => 'motorcycle-gloves'],
+                            ['name' => 'Motorcycle Boots', 'slug' => 'motorcycle-boots'],
+                            ['name' => 'Motorcycle Cover', 'slug' => 'motorcycle-cover'],
+                            ['name' => 'Motorcycle Phone Mount', 'slug' => 'motorcycle-phone-mount'],
+                            ['name' => 'Motorcycle Saddlebag', 'slug' => 'motorcycle-saddlebag'],
+                        ]
+                    ],
+                    [
+                        'name' => 'Car Consumables',
+                        'slug' => 'car-consumables',
+                        'children' => [
+                            ['name' => 'Engine Oil', 'slug' => 'engine-oil'],
+                            ['name' => 'Transmission Oil', 'slug' => 'transmission-oil'],
+                            ['name' => 'Brake Fluid', 'slug' => 'brake-fluid'],
+                            ['name' => 'Antifreeze', 'slug' => 'antifreeze'],
+                            ['name' => 'Car Battery', 'slug' => 'car-battery'],
+                            ['name' => 'Oil Filter', 'slug' => 'oil-filter'],
+                            ['name' => 'Air Filter', 'slug' => 'air-filter'],
+                            ['name' => 'Brake Pads', 'slug' => 'brake-pads'],
+                            ['name' => 'Spark Plug', 'slug' => 'spark-plug'],
+                            ['name' => 'Wiper Blade', 'slug' => 'wiper-blade'],
+                            ['name' => 'Car Tire', 'slug' => 'car-tire'],
+                        ]
+                    ],
+                    [
+                        'name' => 'By Car Model',
+                        'slug' => 'by-car-model',
+                        'children' => [
+                            ['name' => 'Peugeot 206-207', 'slug' => 'peugeot-206-207'],
+                            ['name' => 'Peugeot 405-Parsia', 'slug' => 'peugeot-405-parsia'],
+                            ['name' => 'Pride-Tiba', 'slug' => 'pride-tiba'],
+                            ['name' => 'Samand-Dena', 'slug' => 'samand-dena'],
+                            ['name' => 'Quick-Saina', 'slug' => 'quick-saina'],
+                            ['name' => 'Renault Sandero', 'slug' => 'renault-sandero-car'],
+                            ['name' => 'MVM-Phoenix', 'slug' => 'mvm-phoenix'],
+                            ['name' => 'Hyundai-Kia', 'slug' => 'hyundai-kia'],
+                            ['name' => 'Toyota-Renault', 'slug' => 'toyota-renault'],
+                        ]
+                    ],
                 ]
             ],
-            'name' => 'Supplements',
-            'slug' => 'supplements',
-            'children' => [
-                ['name' => 'Vitamin C', 'slug' => 'vitamin-c-supplement'], // ✅
-                ['name' => 'Vitamin D3', 'slug' => 'vitamin-d3-supplement'], // ✅
-                ['name' => 'Omega-3', 'slug' => 'omega-3-supplement'], // ✅
-                ['name' => 'Magnesium', 'slug' => 'magnesium-supplement'], // ✅
-                ['name' => 'Zinc', 'slug' => 'zinc-supplement'], // ✅
-                ['name' => 'B-Complex', 'slug' => 'b-complex-supplement'], // ✅
-                ['name' => 'Protein Powder', 'slug' => 'protein-powder-supplement'], // ✅
-                ['name' => 'Collagen', 'slug' => 'collagen-supplement'], // ✅
-                ['name' => 'Probiotic', 'slug' => 'probiotic-supplement'], // ✅
-                ['name' => 'Multivitamin', 'slug' => 'multivitamin-supplement'], // ✅
-                ['name' => 'Calcium', 'slug' => 'calcium-supplement'], // ✅
-                ['name' => 'Iron Supplement', 'slug' => 'iron-supplement-item'], // ✅
-            ]
-        ],
-    ]
-],
-            // ================================================================
-            // 11. TOOLS & EQUIPMENT
-            // ================================================================
+            // ===== HEALTH & MEDICAL =====
+            [
+                'name' => 'Health & Medical',
+                'slug' => 'health-medical',
+                'icon_key' => 'health-medical',
+                'sort_order' => 10,
+                'children' => [
+                    [
+                        'name' => 'Medical Equipment',
+                        'slug' => 'medical-equipment',
+                        'children' => [
+                            ['name' => 'Blood Pressure Monitor', 'slug' => 'blood-pressure-monitor'],
+                            ['name' => 'Digital Thermometer', 'slug' => 'digital-thermometer'],
+                            ['name' => 'Glucose Meter', 'slug' => 'glucose-meter'],
+                            ['name' => 'Nebulizer', 'slug' => 'nebulizer'],
+                            ['name' => 'Pulse Oximeter', 'slug' => 'pulse-oximeter'],
+                            ['name' => 'Stethoscope', 'slug' => 'stethoscope'],
+                            ['name' => 'Hearing Aid', 'slug' => 'hearing-aid'],
+                            ['name' => 'Medical Mask', 'slug' => 'medical-mask'],
+                            ['name' => 'Medical Gloves', 'slug' => 'medical-gloves'],
+                        ]
+                    ],
+                    [
+                        'name' => 'Orthopedic',
+                        'slug' => 'orthopedic',
+                        'children' => [
+                            ['name' => 'Back Brace', 'slug' => 'back-brace'],
+                            ['name' => 'Knee Brace', 'slug' => 'knee-brace'],
+                            ['name' => 'Wrist Brace', 'slug' => 'wrist-brace'],
+                            ['name' => 'Ankle Support', 'slug' => 'ankle-support'],
+                            ['name' => 'Neck Brace', 'slug' => 'neck-brace'],
+                            ['name' => 'Orthopedic Shoes', 'slug' => 'orthopedic-shoes'],
+                            ['name' => 'Orthopedic Insole', 'slug' => 'orthopedic-insole'],
+                            ['name' => 'Compression Socks', 'slug' => 'compression-socks'],
+                        ]
+                    ],
+                    [
+                        'name' => 'Supplements',
+                        'slug' => 'supplements',
+                        'children' => [
+                            ['name' => 'Vitamin C', 'slug' => 'vitamin-c-supplement'],
+                            ['name' => 'Vitamin D3', 'slug' => 'vitamin-d3-supplement'],
+                            ['name' => 'Omega-3', 'slug' => 'omega-3-supplement'],
+                            ['name' => 'Magnesium', 'slug' => 'magnesium-supplement'],
+                            ['name' => 'Zinc', 'slug' => 'zinc-supplement'],
+                            ['name' => 'B-Complex', 'slug' => 'b-complex-supplement'],
+                            ['name' => 'Protein Powder', 'slug' => 'protein-powder-supplement'],
+                            ['name' => 'Collagen', 'slug' => 'collagen-supplement'],
+                            ['name' => 'Probiotic', 'slug' => 'probiotic-supplement'],
+                            ['name' => 'Multivitamin', 'slug' => 'multivitamin-supplement'],
+                            ['name' => 'Calcium', 'slug' => 'calcium-supplement'],
+                            ['name' => 'Iron Supplement', 'slug' => 'iron-supplement-item'],
+                        ]
+                    ],
+                    [
+                        'name' => 'Dental Care',
+                        'slug' => 'dental-care',
+                        'children' => [
+                            ['name' => 'Electric Toothbrush', 'slug' => 'electric-toothbrush'],
+                            ['name' => 'Toothbrush', 'slug' => 'toothbrush'],
+                            ['name' => 'Toothpaste', 'slug' => 'toothpaste'],
+                            ['name' => 'Dental Floss', 'slug' => 'dental-floss'],
+                            ['name' => 'Mouthwash', 'slug' => 'mouthwash'],
+                            ['name' => 'Teeth Whitening Kit', 'slug' => 'teeth-whitening-kit'],
+                            ['name' => 'Water Flosser', 'slug' => 'water-flosser'],
+                            ['name' => 'Tongue Cleaner', 'slug' => 'tongue-cleaner'],
+                        ]
+                    ],
+                    [
+                        'name' => 'First Aid',
+                        'slug' => 'first-aid',
+                        'children' => [
+                            ['name' => 'First Aid Kit', 'slug' => 'first-aid-kit'],
+                            ['name' => 'Bandage', 'slug' => 'bandage'],
+                            ['name' => 'Gauze', 'slug' => 'gauze'],
+                            ['name' => 'Medical Tape', 'slug' => 'medical-tape'],
+                            ['name' => 'Antiseptic Cream', 'slug' => 'antiseptic-cream'],
+                            ['name' => 'Pain Reliever', 'slug' => 'pain-reliever'],
+                            ['name' => 'Cold Pack', 'slug' => 'cold-pack'],
+                            ['name' => 'Hot Pack', 'slug' => 'hot-pack'],
+                            ['name' => 'Band-aid', 'slug' => 'band-aid'],
+                        ]
+                    ],
+                    [
+                        'name' => 'Fitness Equipment',
+                        'slug' => 'fitness-equipment',
+                        'children' => [
+                            ['name' => 'Treadmill', 'slug' => 'treadmill'],
+                            ['name' => 'Exercise Bike', 'slug' => 'exercise-bike'],
+                            ['name' => 'Dumbbell Set', 'slug' => 'dumbbell-set'],
+                            ['name' => 'Yoga Mat', 'slug' => 'yoga-mat'],
+                            ['name' => 'Resistance Band', 'slug' => 'resistance-band'],
+                            ['name' => 'Kettlebell', 'slug' => 'kettlebell'],
+                            ['name' => 'Pull Up Bar', 'slug' => 'pull-up-bar'],
+                            ['name' => 'Ab Wheel', 'slug' => 'ab-wheel'],
+                            ['name' => 'Jump Rope', 'slug' => 'jump-rope'],
+                            ['name' => 'Fitness Ball', 'slug' => 'fitness-ball'],
+                        ]
+                    ],
+                ]
+            ],
+            // ===== TOOLS & EQUIPMENT =====
             [
                 'name' => 'Tools & Equipment',
                 'slug' => 'tools-equipment',
@@ -1440,10 +1492,7 @@ class ProductDatabaseSeeder extends Seeder
                     ],
                 ]
             ],
-
-            // ================================================================
-            // 12. BOOKS & ART
-            // ================================================================
+            // ===== BOOKS & ART =====
             [
                 'name' => 'Books & Art',
                 'slug' => 'books-art',
@@ -1511,10 +1560,7 @@ class ProductDatabaseSeeder extends Seeder
                     ],
                 ]
             ],
-
-            // ================================================================
-            // 13. SPORTS & TRAVEL
-            // ================================================================
+            // ===== SPORTS & TRAVEL =====
             [
                 'name' => 'Sports & Travel',
                 'slug' => 'sports-travel',
@@ -1547,7 +1593,7 @@ class ProductDatabaseSeeder extends Seeder
                     ],
                     [
                         'name' => 'Sportswear',
-                        'slug' => 'sportswear',
+                        'slug' => 'travel-sportswear',
                         'children' => [
                             ['name' => 'Sports T-Shirt', 'slug' => 'travel-sports-t-shirt'],
                             ['name' => 'Sports Shorts', 'slug' => 'travel-sports-shorts'],
@@ -1639,10 +1685,7 @@ class ProductDatabaseSeeder extends Seeder
                     ],
                 ]
             ],
-
-            // ================================================================
-            // 14. GIFT CARDS
-            // ================================================================
+            // ===== GIFT CARDS =====
             [
                 'name' => 'Gift Cards',
                 'slug' => 'gift-cards',
@@ -1727,7 +1770,6 @@ class ProductDatabaseSeeder extends Seeder
             
             $categoryIds[$mainCat['slug']] = $mainId;
 
-            // ✅ اینجا saveChildren رو صدا بزن
             if (isset($mainCat['children']) && !empty($mainCat['children'])) {
                 $this->saveChildren($mainCat['children'], $mainId);
             }
@@ -1736,11 +1778,7 @@ class ProductDatabaseSeeder extends Seeder
         $this->command->info('✅ All categories created successfully!');
 
         // ================================================================
-        // تابع بازگشتی برای ذخیره زیردسته‌ها در همه سطوح
-        // ================================================================
-       
-        // ================================================================
-        // 2. CREATE BRANDS (برندها)
+        // 2. CREATE BRANDS
         // ================================================================
         $this->command->info('🏷️ Creating brands...');
 
@@ -1748,27 +1786,44 @@ class ProductDatabaseSeeder extends Seeder
             ['name' => 'Apple', 'slug' => 'apple'],
             ['name' => 'Samsung', 'slug' => 'samsung'],
             ['name' => 'Xiaomi', 'slug' => 'xiaomi'],
+            ['name' => 'Google', 'slug' => 'google'],
+            ['name' => 'OnePlus', 'slug' => 'oneplus'],
+            ['name' => 'Huawei', 'slug' => 'huawei'],
+            ['name' => 'Nokia', 'slug' => 'nokia'],
+            ['name' => 'Sony', 'slug' => 'sony'],
+            ['name' => 'Motorola', 'slug' => 'motorola'],
+            ['name' => 'Nothing', 'slug' => 'nothing'],
+            ['name' => 'Realme', 'slug' => 'realme'],
             ['name' => 'Dell', 'slug' => 'dell'],
             ['name' => 'HP', 'slug' => 'hp'],
             ['name' => 'Lenovo', 'slug' => 'lenovo'],
-            ['name' => 'Sony', 'slug' => 'sony'],
+            ['name' => 'Asus', 'slug' => 'asus'],
+            ['name' => 'Acer', 'slug' => 'acer'],
+            ['name' => 'MSI', 'slug' => 'msi'],
+            ['name' => 'Razer', 'slug' => 'razer'],
             ['name' => 'LG', 'slug' => 'lg'],
-            ['name' => 'Nike', 'slug' => 'nike'],
-            ['name' => 'Adidas', 'slug' => 'adidas'],
             ['name' => 'Bosch', 'slug' => 'bosch'],
+            ['name' => 'Whirlpool', 'slug' => 'whirlpool'],
+            ['name' => 'Philips', 'slug' => 'philips'],
+            ['name' => 'Kenwood', 'slug' => 'kenwood'],
             ['name' => 'IKEA', 'slug' => 'ikea'],
             ['name' => 'Zara', 'slug' => 'zara'],
             ['name' => 'H&M', 'slug' => 'hm'],
+            ['name' => 'Nike', 'slug' => 'nike'],
+            ['name' => 'Adidas', 'slug' => 'adidas'],
+            ['name' => 'Puma', 'slug' => 'puma'],
+            ['name' => 'Levis', 'slug' => 'levis'],
             ['name' => 'Rolex', 'slug' => 'rolex'],
             ['name' => 'Seiko', 'slug' => 'seiko'],
+            ['name' => 'Tissot', 'slug' => 'tissot'],
+            ['name' => 'Omega', 'slug' => 'omega'],
+            ['name' => 'Citizen', 'slug' => 'citizen'],
             ['name' => 'BMW', 'slug' => 'bmw'],
             ['name' => 'Mercedes', 'slug' => 'mercedes'],
             ['name' => 'Toyota', 'slug' => 'toyota'],
             ['name' => 'Honda', 'slug' => 'honda'],
-            ['name' => 'Nokia', 'slug' => 'nokia'],
-            ['name' => 'Huawei', 'slug' => 'huawei'],
-            ['name' => 'OnePlus', 'slug' => 'oneplus'],
-            ['name' => 'Google', 'slug' => 'google'],
+            ['name' => 'Hyundai', 'slug' => 'hyundai'],
+            ['name' => 'Kia', 'slug' => 'kia'],
             ['name' => 'Canon', 'slug' => 'canon'],
             ['name' => 'Nikon', 'slug' => 'nikon'],
             ['name' => 'JBL', 'slug' => 'jbl'],
@@ -1777,6 +1832,7 @@ class ProductDatabaseSeeder extends Seeder
             ['name' => 'Makita', 'slug' => 'makita'],
             ['name' => 'DeWalt', 'slug' => 'dewalt'],
             ['name' => 'Stanley', 'slug' => 'stanley'],
+            ['name' => 'Milwaukee', 'slug' => 'milwaukee'],
             ['name' => 'Loreal', 'slug' => 'loreal'],
             ['name' => 'Maybelline', 'slug' => 'maybelline'],
             ['name' => 'Nivea', 'slug' => 'nivea'],
@@ -1786,39 +1842,9 @@ class ProductDatabaseSeeder extends Seeder
             ['name' => 'Nintendo', 'slug' => 'nintendo'],
             ['name' => 'PlayStation', 'slug' => 'playstation'],
             ['name' => 'Xbox', 'slug' => 'xbox'],
-            ['name' => 'Tissot', 'slug' => 'tissot'],
-            ['name' => 'Omega', 'slug' => 'omega'],
-            ['name' => 'Citizen', 'slug' => 'citizen'],
-            ['name' => 'Hyundai', 'slug' => 'hyundai'],
-            ['name' => 'Kia', 'slug' => 'kia'],
-            ['name' => 'Whirlpool', 'slug' => 'whirlpool'],
-            ['name' => 'Philips', 'slug' => 'philips'],
-            ['name' => 'Kenwood', 'slug' => 'kenwood'],
-            ['name' => 'Milwaukee', 'slug' => 'milwaukee'],
+            ['name' => 'TP-Link', 'slug' => 'tp-link'],
+            ['name' => 'D-Link', 'slug' => 'd-link'],
             ['name' => 'Beats', 'slug' => 'beats'],
-            ['name' => 'Levis', 'slug' => 'levis'],
-            ['name' => 'Zara Home', 'slug' => 'zara-home'],
-            ['name' => 'Puma', 'slug' => 'puma'],
-            ['name' => 'Asus', 'slug' => 'asus'],
-            ['name' => 'Acer', 'slug' => 'acer'],
-            ['name' => 'MSI', 'slug' => 'msi'],
-            ['name' => 'Razer', 'slug' => 'razer'],
-            ['name' => 'Motorola', 'slug' => 'motorola'],
-            ['name' => 'Realme', 'slug' => 'realme'],
-            ['name' => 'Poco', 'slug' => 'poco'],
-            ['name' => 'Honor', 'slug' => 'honor'],
-            ['name' => 'Cypher', 'slug' => 'cypher'],
-            ['name' => 'Vekal', 'slug' => 'vekal'],
-            ['name' => 'TCL', 'slug' => 'tcl'],
-            ['name' => 'Redton', 'slug' => 'redton'],
-            ['name' => 'Alcatel', 'slug' => 'alcatel'],
-            ['name' => 'Doogee', 'slug' => 'doogee'],
-            ['name' => 'HMD', 'slug' => 'hmd'],
-            ['name' => 'Nothing', 'slug' => 'nothing'],
-            ['name' => 'Daria', 'slug' => 'daria'],
-            ['name' => 'GLX', 'slug' => 'glx'],
-            ['name' => 'TCH', 'slug' => 'tch'],
-            ['name' => 'General Luxe', 'slug' => 'general-luxe'],
             ['name' => 'Casper', 'slug' => 'casper'],
             ['name' => 'Snowa', 'slug' => 'snowa'],
             ['name' => 'Pakshoma', 'slug' => 'pakshoma'],
@@ -1832,8 +1858,29 @@ class ProductDatabaseSeeder extends Seeder
             ['name' => 'Mobin Net', 'slug' => 'mobin-net'],
             ['name' => 'Irancel', 'slug' => 'irancel'],
             ['name' => 'Hamrahe Aval', 'slug' => 'hamrahe-aval'],
-            ['name' => 'TP-Link', 'slug' => 'tp-link'],
-            ['name' => 'D-Link', 'slug' => 'd-link'],
+            ['name' => 'Novin Charm', 'slug' => 'novin-charm'],
+            ['name' => 'Charm Mashhad', 'slug' => 'charm-mashhad'],
+            ['name' => 'Asmara', 'slug' => 'asmara'],
+            ['name' => 'Serjeh', 'slug' => 'serjeh'],
+            ['name' => 'Gordieh', 'slug' => 'gordieh'],
+            ['name' => 'Charm Ataroud', 'slug' => 'charm-ataroud'],
+            ['name' => 'Tolika', 'slug' => 'tolika'],
+            ['name' => 'Pama', 'slug' => 'pama'],
+            ['name' => 'I-Tech', 'slug' => 'i-tech'],
+            ['name' => 'Zara Home', 'slug' => 'zara-home'],
+            ['name' => 'Alcatel', 'slug' => 'alcatel'],
+            ['name' => 'Doogee', 'slug' => 'doogee'],
+            ['name' => 'HMD', 'slug' => 'hmd'],
+            ['name' => 'Vekal', 'slug' => 'vekal'],
+            ['name' => 'TCL', 'slug' => 'tcl'],
+            ['name' => 'Redton', 'slug' => 'redton'],
+            ['name' => 'Cypher', 'slug' => 'cypher'],
+            ['name' => 'Honor', 'slug' => 'honor'],
+            ['name' => 'Poco', 'slug' => 'poco'],
+            ['name' => 'General Luxe', 'slug' => 'general-luxe'],
+            ['name' => 'Daria', 'slug' => 'daria'],
+            ['name' => 'GLX', 'slug' => 'glx'],
+            ['name' => 'TCH', 'slug' => 'tch'],
             ['name' => 'QCY', 'slug' => 'qcy'],
             ['name' => 'One More', 'slug' => 'one-more'],
         ];
@@ -1854,90 +1901,242 @@ class ProductDatabaseSeeder extends Seeder
         $this->command->info('✅ Brands created!');
 
         // ================================================================
-        // 3. CREATE PRODUCTS WITH VARIANTS (محصولات با تنوع)
+        // 3. CREATE PRODUCTS WITH VARIANTS
         // ================================================================
         $this->command->info('🔄 Creating products with variants...');
 
-        // دریافت دسته‌بندی‌های سطح آخر (بدون زیردسته)
-        $leafCategories = DB::table('categories')
-            ->leftJoin('categories as children', 'categories.id', '=', 'children.parent_id')
-            ->whereNull('children.id')
-            ->select('categories.*')
-            ->get();
-
-        if ($leafCategories->isEmpty()) {
-            $leafCategories = DB::table('categories')->whereNotNull('parent_id')->get();
-        }
+        $productsData = [
+            // ===== MOBILE =====
+            ['title' => 'iPhone 16 Pro', 'category' => 'Apple Phones', 'brand' => 'Apple'],
+            ['title' => 'iPhone 16 Pro Max', 'category' => 'Apple Phones', 'brand' => 'Apple'],
+            ['title' => 'iPhone 15 Pro', 'category' => 'Apple Phones', 'brand' => 'Apple'],
+            ['title' => 'iPhone 15', 'category' => 'Apple Phones', 'brand' => 'Apple'],
+            ['title' => 'iPhone 14', 'category' => 'Apple Phones', 'brand' => 'Apple'],
+            ['title' => 'iPhone SE', 'category' => 'Apple Phones', 'brand' => 'Apple'],
+            ['title' => 'Galaxy S24 Ultra', 'category' => 'Samsung Phones', 'brand' => 'Samsung'],
+            ['title' => 'Galaxy S24 Plus', 'category' => 'Samsung Phones', 'brand' => 'Samsung'],
+            ['title' => 'Galaxy S24', 'category' => 'Samsung Phones', 'brand' => 'Samsung'],
+            ['title' => 'Galaxy Z Fold 6', 'category' => 'Samsung Phones', 'brand' => 'Samsung'],
+            ['title' => 'Galaxy Z Flip 6', 'category' => 'Samsung Phones', 'brand' => 'Samsung'],
+            ['title' => 'Xiaomi 14 Ultra', 'category' => 'Xiaomi Phones', 'brand' => 'Xiaomi'],
+            ['title' => 'Xiaomi 14 Pro', 'category' => 'Xiaomi Phones', 'brand' => 'Xiaomi'],
+            ['title' => 'Xiaomi 14', 'category' => 'Xiaomi Phones', 'brand' => 'Xiaomi'],
+            ['title' => 'Redmi Note 13 Pro', 'category' => 'Xiaomi Phones', 'brand' => 'Xiaomi'],
+            ['title' => 'Redmi Note 13', 'category' => 'Xiaomi Phones', 'brand' => 'Xiaomi'],
+            ['title' => 'Poco X7 Pro', 'category' => 'Xiaomi Phones', 'brand' => 'Poco'],
+            ['title' => 'Google Pixel 8 Pro', 'category' => 'Other Brands', 'brand' => 'Google'],
+            ['title' => 'Google Pixel 8', 'category' => 'Other Brands', 'brand' => 'Google'],
+            ['title' => 'Nothing Phone 2', 'category' => 'Other Brands', 'brand' => 'Nothing'],
+            ['title' => 'OnePlus 12', 'category' => 'Other Brands', 'brand' => 'OnePlus'],
+            ['title' => 'Huawei P60 Pro', 'category' => 'Other Brands', 'brand' => 'Huawei'],
+            ['title' => 'Nokia X30', 'category' => 'Other Brands', 'brand' => 'Nokia'],
+            ['title' => 'Sony Xperia 1 V', 'category' => 'Other Brands', 'brand' => 'Sony'],
+            ['title' => 'Motorola Edge 40', 'category' => 'Other Brands', 'brand' => 'Motorola'],
+            ['title' => 'Realme GT 3', 'category' => 'Other Brands', 'brand' => 'Realme'],
+            
+            // ===== LAPTOPS =====
+            ['title' => 'MacBook Pro M3', 'category' => 'Apple MacBooks', 'brand' => 'Apple'],
+            ['title' => 'MacBook Air M3', 'category' => 'Apple MacBooks', 'brand' => 'Apple'],
+            ['title' => 'MacBook Pro M4', 'category' => 'Apple MacBooks', 'brand' => 'Apple'],
+            ['title' => 'ASUS ROG Zephyrus', 'category' => 'ASUS Laptops', 'brand' => 'Asus'],
+            ['title' => 'ASUS TUF Gaming', 'category' => 'ASUS Laptops', 'brand' => 'Asus'],
+            ['title' => 'Lenovo ThinkPad X1', 'category' => 'Lenovo Laptops', 'brand' => 'Lenovo'],
+            ['title' => 'Lenovo Legion Pro', 'category' => 'Lenovo Laptops', 'brand' => 'Lenovo'],
+            ['title' => 'MSI Titan GT77', 'category' => 'Gaming Laptops', 'brand' => 'MSI'],
+            ['title' => 'Razer Blade 16', 'category' => 'Gaming Laptops', 'brand' => 'Razer'],
+            ['title' => 'Dell XPS 16', 'category' => 'Business Laptops', 'brand' => 'Dell'],
+            ['title' => 'HP Spectre x360', 'category' => 'Business Laptops', 'brand' => 'HP'],
+            ['title' => 'Acer Aspire 5', 'category' => 'Student Laptops', 'brand' => 'Acer'],
+            ['title' => 'HP Pavilion 15', 'category' => 'Student Laptops', 'brand' => 'HP'],
+            
+            // ===== DIGITAL PRODUCTS =====
+            ['title' => 'PS5', 'category' => 'Gaming Consoles', 'brand' => 'PlayStation'],
+            ['title' => 'PS5 Slim', 'category' => 'Gaming Consoles', 'brand' => 'PlayStation'],
+            ['title' => 'Xbox Series X', 'category' => 'Gaming Consoles', 'brand' => 'Xbox'],
+            ['title' => 'Nintendo Switch OLED', 'category' => 'Gaming Consoles', 'brand' => 'Nintendo'],
+            ['title' => 'Sony WH-1000XM5', 'category' => 'Headphones', 'brand' => 'Sony'],
+            ['title' => 'Apple AirPods Pro 2', 'category' => 'Headphones', 'brand' => 'Apple'],
+            ['title' => 'Samsung Galaxy Buds 2 Pro', 'category' => 'Headphones', 'brand' => 'Samsung'],
+            ['title' => 'Apple Watch Ultra 2', 'category' => 'Smartwatches', 'brand' => 'Apple'],
+            ['title' => 'Samsung Galaxy Watch 6', 'category' => 'Smartwatches', 'brand' => 'Samsung'],
+            ['title' => 'iPad Pro M4', 'category' => 'Tablets', 'brand' => 'Apple'],
+            ['title' => 'Samsung Galaxy Tab S9', 'category' => 'Tablets', 'brand' => 'Samsung'],
+            ['title' => 'JBL Charge 5', 'category' => 'Speakers', 'brand' => 'JBL'],
+            ['title' => 'Canon EOS R5', 'category' => 'Cameras', 'brand' => 'Canon'],
+            ['title' => 'Sony Alpha A7 IV', 'category' => 'Cameras', 'brand' => 'Sony'],
+            ['title' => 'Anker 20000mAh', 'category' => 'Power Banks', 'brand' => 'Anker'],
+            ['title' => 'Xiaomi 30000mAh', 'category' => 'Power Banks', 'brand' => 'Xiaomi'],
+            ['title' => 'Intel Core i9-14900K', 'category' => 'Computer Components', 'brand' => 'Intel'],
+            ['title' => 'NVIDIA RTX 4090', 'category' => 'Computer Components', 'brand' => 'NVIDIA'],
+            ['title' => 'Xiaomi Smart Hub', 'category' => 'Smart Home', 'brand' => 'Xiaomi'],
+            ['title' => 'Google Nest Hub 2', 'category' => 'Smart Home', 'brand' => 'Google'],
+            ['title' => 'HP LaserJet Pro MFP', 'category' => 'Printers', 'brand' => 'HP'],
+            ['title' => 'Samsung 1TB SSD', 'category' => 'Storage Devices', 'brand' => 'Samsung'],
+            ['title' => 'TP-Link Router', 'category' => 'Networking', 'brand' => 'TP-Link'],
+            
+            // ===== HOME & KITCHEN =====
+            ['title' => 'Non-Stick Frying Pan', 'category' => 'Cookware', 'brand' => 'IKEA'],
+            ['title' => 'Pressure Cooker', 'category' => 'Cookware', 'brand' => 'Bosch'],
+            ['title' => 'Coffee Maker', 'category' => 'Tea & Coffee', 'brand' => 'Philips'],
+            ['title' => 'Electric Kettle', 'category' => 'Tea & Coffee', 'brand' => 'Kenwood'],
+            ['title' => 'Sofa Set', 'category' => 'Furniture', 'brand' => 'IKEA'],
+            ['title' => 'Dining Table', 'category' => 'Furniture', 'brand' => 'IKEA'],
+            ['title' => 'Chandelier', 'category' => 'Lighting', 'brand' => 'IKEA'],
+            ['title' => 'King Size Bed', 'category' => 'Bedroom', 'brand' => 'IKEA'],
+            ['title' => 'Persian Carpet', 'category' => 'Carpets & Rugs', 'brand' => 'IKEA'],
+            
+            // ===== HOME APPLIANCES =====
+            ['title' => 'LG Refrigerator', 'category' => 'Refrigerators', 'brand' => 'LG'],
+            ['title' => 'Samsung Refrigerator', 'category' => 'Refrigerators', 'brand' => 'Samsung'],
+            ['title' => 'LG Washing Machine', 'category' => 'Washing Machines', 'brand' => 'LG'],
+            ['title' => 'Bosch Dishwasher', 'category' => 'Dishwashers', 'brand' => 'Bosch'],
+            ['title' => 'Robot Vacuum', 'category' => 'Vacuums', 'brand' => 'LG'],
+            ['title' => 'Air Fryer', 'category' => 'Cooking Appliances', 'brand' => 'Philips'],
+            ['title' => 'Microwave Oven', 'category' => 'Cooking Appliances', 'brand' => 'LG'],
+            ['title' => 'Sony OLED TV', 'category' => 'TVs', 'brand' => 'Sony'],
+            ['title' => 'Samsung QLED TV', 'category' => 'TVs', 'brand' => 'Samsung'],
+            ['title' => 'LG OLED TV', 'category' => 'TVs', 'brand' => 'LG'],
+            
+            // ===== BEAUTY & HEALTH =====
+            ['title' => 'Moisturizer Cream', 'category' => 'Skin Care', 'brand' => 'Loreal'],
+            ['title' => 'Sunscreen SPF 50', 'category' => 'Skin Care', 'brand' => 'Nivea'],
+            ['title' => 'Foundation', 'category' => 'Makeup', 'brand' => 'Maybelline'],
+            ['title' => 'Lipstick', 'category' => 'Makeup', 'brand' => 'Maybelline'],
+            ['title' => 'Shampoo', 'category' => 'Hair Care', 'brand' => 'Loreal'],
+            ['title' => 'Hair Dryer', 'category' => 'Hair Care', 'brand' => 'Philips'],
+            ['title' => 'Dior Sauvage', 'category' => 'Perfumes', 'brand' => 'Dior'],
+            ['title' => 'Chanel No.5', 'category' => 'Perfumes', 'brand' => 'Chanel'],
+            ['title' => 'Electric Toothbrush', 'category' => 'Oral Care', 'brand' => 'Philips'],
+            ['title' => 'Deodorant', 'category' => 'Personal Care', 'brand' => 'Nivea'],
+            
+            // ===== FASHION =====
+            ['title' => 'Men\'s T-Shirt', 'category' => 'Men\'s Clothing', 'brand' => 'Nike'],
+            ['title' => 'Men\'s Jeans', 'category' => 'Men\'s Clothing', 'brand' => 'Levis'],
+            ['title' => 'Men\'s Suit', 'category' => 'Men\'s Clothing', 'brand' => 'Zara'],
+            ['title' => 'Women\'s Dress', 'category' => 'Women\'s Clothing', 'brand' => 'Zara'],
+            ['title' => 'Women\'s Jeans', 'category' => 'Women\'s Clothing', 'brand' => 'H&M'],
+            ['title' => 'Manteau', 'category' => 'Women\'s Clothing', 'brand' => 'Zara'],
+            ['title' => 'Baby Bodysuit', 'category' => 'Children\'s Clothing', 'brand' => 'H&M'],
+            ['title' => 'Nike Air Max', 'category' => 'Shoes', 'brand' => 'Nike'],
+            ['title' => 'Adidas Ultraboost', 'category' => 'Shoes', 'brand' => 'Adidas'],
+            ['title' => 'Men\'s Wallet', 'category' => 'Bags & Accessories', 'brand' => 'Levis'],
+            ['title' => 'Women\'s Handbag', 'category' => 'Bags & Accessories', 'brand' => 'Zara'],
+            ['title' => 'Rolex Watch', 'category' => 'Bags & Accessories', 'brand' => 'Rolex'],
+            
+            // ===== GOLD & JEWELRY =====
+            ['title' => 'Gold Necklace', 'category' => 'Gold Jewelry', 'brand' => 'Rolex'],
+            ['title' => 'Gold Ring', 'category' => 'Gold Jewelry', 'brand' => 'Rolex'],
+            ['title' => 'Gold Earrings', 'category' => 'Gold Jewelry', 'brand' => 'Rolex'],
+            ['title' => 'Silver Necklace', 'category' => 'Silver Jewelry', 'brand' => 'Seiko'],
+            ['title' => 'Diamond Ring', 'category' => 'Diamonds & Gems', 'brand' => 'Rolex'],
+            
+            // ===== VEHICLES =====
+            ['title' => 'BMW 5 Series', 'category' => 'Cars', 'brand' => 'BMW'],
+            ['title' => 'Mercedes E-Class', 'category' => 'Cars', 'brand' => 'Mercedes'],
+            ['title' => 'Toyota Camry', 'category' => 'Cars', 'brand' => 'Toyota'],
+            ['title' => 'Honda Civic', 'category' => 'Cars', 'brand' => 'Honda'],
+            ['title' => 'Honda CBR 500R', 'category' => 'Motorcycles', 'brand' => 'Honda'],
+            ['title' => 'Car Audio System', 'category' => 'Car Accessories', 'brand' => 'Sony'],
+            
+            // ===== HEALTH & MEDICAL =====
+            ['title' => 'Blood Pressure Monitor', 'category' => 'Medical Equipment', 'brand' => 'Philips'],
+            ['title' => 'Digital Thermometer', 'category' => 'Medical Equipment', 'brand' => 'Philips'],
+            ['title' => 'Knee Brace', 'category' => 'Orthopedic', 'brand' => 'Nivea'],
+            ['title' => 'Vitamin C', 'category' => 'Supplements', 'brand' => 'Nivea'],
+            ['title' => 'Omega-3', 'category' => 'Supplements', 'brand' => 'Nivea'],
+            ['title' => 'Electric Toothbrush', 'category' => 'Dental Care', 'brand' => 'Philips'],
+            ['title' => 'Treadmill', 'category' => 'Fitness Equipment', 'brand' => 'Nike'],
+            
+            // ===== TOOLS & EQUIPMENT =====
+            ['title' => 'Makita Drill', 'category' => 'Power Tools', 'brand' => 'Makita'],
+            ['title' => 'DeWalt Grinder', 'category' => 'Power Tools', 'brand' => 'DeWalt'],
+            ['title' => 'Screwdriver Set', 'category' => 'Hand Tools', 'brand' => 'Stanley'],
+            ['title' => 'Lawn Mower', 'category' => 'Gardening Tools', 'brand' => 'Bosch'],
+            
+            // ===== BOOKS & ART =====
+            ['title' => '1984 George Orwell', 'category' => 'Books', 'brand' => 'Apple'],
+            ['title' => 'Atomic Habits', 'category' => 'Books', 'brand' => 'Apple'],
+            ['title' => 'Oil Painting Canvas', 'category' => 'Art & Painting', 'brand' => 'Apple'],
+            
+            // ===== SPORTS & TRAVEL =====
+            ['title' => 'Boxing Punching Bag', 'category' => 'Sports Equipment', 'brand' => 'Adidas'],
+            ['title' => 'Yoga Mat', 'category' => 'Sports Equipment', 'brand' => 'Nike'],
+            ['title' => 'Sports T-Shirt', 'category' => 'Sportswear', 'brand' => 'Nike'],
+            ['title' => 'Suitcase 4 Wheels', 'category' => 'Travel Equipment', 'brand' => 'Adidas'],
+            
+            // ===== GIFT CARDS =====
+            ['title' => 'Digikala Gift Card', 'category' => 'Store Gift Cards', 'brand' => 'Apple'],
+            ['title' => 'PlayStation Gift Card', 'category' => 'Digital Gift Cards', 'brand' => 'PlayStation'],
+        ];
 
         $productCount = 0;
         $variantCount = 0;
 
-        foreach ($leafCategories as $category) {
-            // تعداد محصولات بر اساس دسته
-            $numProducts = rand(2, 5);
+        foreach ($productsData as $productData) {
+            $category = DB::table('categories')->where('name', $productData['category'])->first();
             
-            for ($i = 0; $i < $numProducts; $i++) {
-                // انتخاب برند تصادفی
+            if (!$category) {
+                $this->command->warn('⚠️ Category not found: ' . $productData['category']);
+                continue;
+            }
+            
+            $brand = DB::table('brands')->where('name', $productData['brand'])->first();
+            if (!$brand) {
                 $brand = DB::table('brands')->inRandomOrder()->first();
-                
-                // ایجاد عنوان محصول متناسب با دسته
-                $title = $this->generateProductTitle($category->name, $brand->name);
-                $title = $title . ' ' . Str::random(4);
-                
-                $price = rand(100000, 50000000);
-                $price = round($price / 1000) * 1000;
-                $salePrice = $price * rand(7, 9) / 10;
-                $salePrice = round($salePrice / 1000) * 1000;
+            }
+            $title = $productData['title'] . ' ' . Str::random(4);
+            $slug = Str::slug($title) . '-' . uniqid();
+            $price = rand(100000, 50000000);
+            $price = round($price / 1000) * 1000;
+            $salePrice = $price * rand(7, 9) / 10;
+            $salePrice = round($salePrice / 1000) * 1000;
 
-                $productId = DB::table('products')->insertGetId([
-                    'brand_id' => $brand->id,
-                    'title' => $title,
-                    'slug' => Str::slug($title . '-' . Str::random(4)),
-                    'short_description' => 'Short description for ' . $title,
-                    'description' => '<p>Full description for ' . $title . '</p>',
-                    'status' => 'active',
-                    'meta_title' => $title,
-                    'meta_keywords' => $title . ', buy, shop',
-                    'meta_description' => 'Buy ' . $title . ' with best price',
-                    'view_count' => rand(0, 1000),
+            $productId = DB::table('products')->insertGetId([
+                'brand_id' => $brand->id,
+                'title' => $title,
+               'slug' => $slug,
+                'short_description' => 'Short description for ' . $title,
+                'description' => '<p>Full description for ' . $title . '</p>',
+                'status' => 'active',
+                'meta_title' => $title,
+                'meta_keywords' => $title . ', buy, shop',
+                'meta_description' => 'Buy ' . $title . ' with best price',
+                'view_count' => rand(0, 1000),
+                'is_active' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            DB::table('category_product')->insert([
+                'category_id' => $category->id,
+                'product_id' => $productId,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            $variantCountPerProduct = rand(2, 4);
+            for ($v = 1; $v <= $variantCountPerProduct; $v++) {
+                $variantPrice = $price * rand(8, 13) / 10;
+                $variantPrice = round($variantPrice / 1000) * 1000;
+                
+                $variantSalePrice = $variantPrice * rand(6, 9) / 10;
+                $variantSalePrice = round($variantSalePrice / 1000) * 1000;
+
+                DB::table('product_variants')->insert([
+                    'product_id' => $productId,
+                    'sku' => 'SKU-' . $productId . '-' . $v . '-' . Str::random(3),
+                    'barcode' => rand(1000000000000, 9999999999999),
+                    'price' => $variantPrice,
+                    'sale_price' => $variantSalePrice,
+                    'stock' => rand(5, 50),
+                    'weight' => rand(100, 1000),
                     'is_active' => 1,
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
-
-                // ارتباط با دسته‌بندی
-                DB::table('category_product')->insert([
-                    'category_id' => $category->id,
-                    'product_id' => $productId,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
-
-                // ایجاد ۲-۴ تنوع
-                $variantCountPerProduct = rand(2, 4);
-                for ($v = 1; $v <= $variantCountPerProduct; $v++) {
-                    $variantPrice = $price * rand(8, 13) / 10;
-                    $variantPrice = round($variantPrice / 1000) * 1000;
-                    
-                    $variantSalePrice = $variantPrice * rand(6, 9) / 10;
-                    $variantSalePrice = round($variantSalePrice / 1000) * 1000;
-
-                    DB::table('product_variants')->insert([
-                        'product_id' => $productId,
-                        'sku' => 'SKU-' . $productId . '-' . $v . '-' . Str::random(3),
-                        'barcode' => rand(1000000000000, 9999999999999),
-                        'price' => $variantPrice,
-                        'sale_price' => $variantSalePrice,
-                        'stock' => rand(5, 50),
-                        'weight' => rand(100, 1000),
-                        'is_active' => 1,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ]);
-                    $variantCount++;
-                }
-                $productCount++;
+                $variantCount++;
             }
+            $productCount++;
         }
 
         $this->command->info('✅ ' . $productCount . ' products created!');
@@ -1945,33 +2144,4 @@ class ProductDatabaseSeeder extends Seeder
         $this->command->info('📊 Total categories: ' . DB::table('categories')->count());
         $this->command->info('🏷️ Total brands: ' . DB::table('brands')->count());
     }
-
- 
-    private function generateProductTitle($categoryName, $brandName)
-    {
-        $titles = [
-            'Mobile' => ['Pro', 'Ultra', 'Max', 'Plus', 'Lite', '5G', 'Fold', 'Flip'],
-            'Laptops' => ['Pro', 'Ultra', 'Gaming', 'Business', 'Slim', 'Premium', 'X', 'Evo'],
-            'Digital Products' => ['Pro', 'Max', 'Ultra', 'Plus', 'Wireless', 'Bluetooth', '4K', 'HD'],
-            'Home & Kitchen' => ['Deluxe', 'Premium', 'Pro', 'Smart', 'Advanced', 'Essential'],
-            'Home Appliances' => ['Pro', 'Max', 'Ultra', 'Smart', 'Inverter', 'Digital'],
-            'Beauty & Health' => ['Pro', 'Premium', 'Advanced', 'Natural', 'Organic', 'Clinical'],
-            'Fashion' => ['Classic', 'Modern', 'Sport', 'Premium', 'Essential', 'Trendy'],
-            'Gold & Jewelry' => ['Luxury', 'Premium', 'Classic', 'Elegant', 'Royal', 'Diamond'],
-            'Vehicles' => ['Sport', 'Luxury', 'Premium', 'Executive', 'Performance'],
-            'Health & Medical' => ['Pro', 'Premium', 'Advanced', 'Digital', 'Clinical'],
-            'Tools & Equipment' => ['Pro', 'Heavy Duty', 'Industrial', 'Premium', 'Professional'],
-            'Books & Art' => ['Collector', 'Limited', 'Classic', 'Premium', 'Special'],
-            'Sports & Travel' => ['Pro', 'Premium', 'Ultra', 'Adventure', 'Explorer'],
-            'Gift Cards' => ['Premium', 'Gold', 'Silver', 'Platinum', 'Exclusive'],
-        ];
-
-        $categoryTitles = $titles[$categoryName] ?? ['Pro', 'Premium', 'Ultra', 'Plus', 'Max'];
-        $suffix = $categoryTitles[array_rand($categoryTitles)];
-
-        return $brandName . ' ' . $suffix;
-    }
-   
-
-
 }

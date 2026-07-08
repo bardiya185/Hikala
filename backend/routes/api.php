@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AttributeController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductImageController;
+use App\Http\Controllers\Api\ProductFilterController;
 
 //Users
 Route::get('/user', function (Request $request) {
@@ -25,13 +26,20 @@ Route::post('/check-otp', [AuthController::class, 'checkOtp']);
 Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
 
 // ================================================================
-// PRODUCTS
+// PRODUCT FILTER & SEARCH (قبل از CRUD - مهم!)
+// ================================================================
+Route::get('/products/filter-options', [ProductFilterController::class, 'options']);
+Route::get('/products/filter', [ProductFilterController::class, 'filter']);
+Route::get('/products/search', [ProductFilterController::class, 'search']);
+Route::get('/products/advanced-search', [ProductFilterController::class, 'advancedSearch']);
+Route::get('/products/infinite', [ProductFilterController::class, 'infinite']);
+
+// ================================================================
+// PRODUCTS (CRUD)
 // ================================================================
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/featured', [ProductController::class, 'featured']);
 Route::get('/products/latest', [ProductController::class, 'latest']);
-Route::get('/products/search', [ProductController::class, 'search']);
-Route::get('/products/filter', [ProductController::class, 'filter']);
 Route::get('/products/category/{categoryId}', [ProductController::class, 'getByCategory']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 
@@ -57,7 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // ================================================================
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/all', [CategoryController::class, 'all']);
-Route::get('/categories/menu', [CategoryController::class, 'menu']); // ✅ درست
+Route::get('/categories/menu', [CategoryController::class, 'menu']);
 Route::get('/categories/with-products', [CategoryController::class, 'withProducts']);
 Route::get('/categories/{category}/products', [CategoryController::class, 'products']);
 Route::get('/categories/{category}', [CategoryController::class, 'show']);
