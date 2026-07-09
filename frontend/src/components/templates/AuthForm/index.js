@@ -107,12 +107,12 @@ function AuthForm() {
   return (
     <>
       <button
-        onClick={() => setStep(1)}
-        className=" lg:w-[134px] lg:h-[40px] gap-2 pr-[8px]  flex items-center  border border-solid border-neutral rounded-md w-fit h-[30px]"
-      >
-        <TbLogin className="w-[24px] h-[24px]" />
-        <span>ورود | ثبت نام</span>
-      </button>
+    onClick={() => setStep(1)}
+    className="group flex items-center justify-center gap-2 w-[120px] h-[40px] border border-neutral-200/80 hover:border-neutral-900 bg-white hover:bg-neutral-900 text-neutral-700 hover:text-white rounded-xl text-sm font-medium shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-300 ease-in-out cursor-pointer"
+  >
+    <TbLogin className="w-5 h-5 text-neutral-500 group-hover:text-white transition-colors duration-300" />
+    <span>Sign In</span>
+  </button>
       {step === 1 && (
         <ModalContainer isOpen={isOpen} setIsOpen={setIsOpen}>
           <SendOtpForm
