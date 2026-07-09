@@ -1,8 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 3, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
-    {"offset": {"line": 14, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/Desktop/hikala/frontend/src/app/page.module.css [app-rsc] (css module)"],"sourcesContent":["__turbopack_context__.v({\n  \"ctas\": \"page-module__-GJiwW__ctas\",\n  \"footer\": \"page-module__-GJiwW__footer\",\n  \"logo\": \"page-module__-GJiwW__logo\",\n  \"main\": \"page-module__-GJiwW__main\",\n  \"page\": \"page-module__-GJiwW__page\",\n  \"primary\": \"page-module__-GJiwW__primary\",\n  \"secondary\": \"page-module__-GJiwW__secondary\",\n});\n"],"names":[],"mappings":"AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA"}},
-    {"offset": {"line": 27, "column": 0}, "map": {"version":3,"sources":["file:///C:/Users/psk/Desktop/hikala/frontend/src/app/page.js"],"sourcesContent":["import Image from \"next/image\";\r\nimport styles from \"./page.module.css\";\r\n\r\nexport default function Home() {\r\n  return (\r\n   <div>\r\n    \r\n   </div>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;;AAAA;AACA;;;;AAEe,SAAS;IACtB,qBACC,+QAAC;;;;;AAIJ","debugId":null}}]
-}
