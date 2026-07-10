@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Models;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+class User extends Authenticatable
+{
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    protected string $guard_name = 'sanctum';
+
+    protected $fillable = [
+        'name',
+        'mobile',
+    ];
+
+    protected $hidden = [
+        'remember_token',
+    ];
+
+}
