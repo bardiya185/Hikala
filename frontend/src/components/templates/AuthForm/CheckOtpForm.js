@@ -55,13 +55,13 @@ function CheckOtpForm({ mobile,setStep }) {
     </div>
 
     
-    <div className="flex justify-center mt-6" dir="ltr">
+    <div className="flex justify-center  mt-6" dir="ltr">
       <OtpInput
+        className="w-[44px] h-[48px] mx-1 bg-black text-center flex  justify-center text-lg font-semibold border border-neutral-800 focus:border-red-500 focus:ring-2 focus:ring-red-500/10 rounded-xl outline-none bg-neutral-50/50 focus:bg-white transition-all duration-200"
         value={code}
         onChange={handleChange}
         numInputs={6}
 
-        className="w-[44px] h-[48px] mx-1 text-center text-lg font-semibold border border-neutral-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/10 rounded-xl outline-none bg-neutral-50/50 focus:bg-white transition-all duration-200"
       />
     </div>
 
