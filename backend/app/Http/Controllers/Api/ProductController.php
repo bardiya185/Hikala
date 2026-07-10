@@ -395,4 +395,74 @@ public function featured(Request $request)
 
     return ProductResource::collection($products);
 }
+
+// ================================================================
+    // GET PRODUCTS BY CATEGORY (محصولات بر اساس دسته‌بندی)
+    // ================================================================
+    #[OA\Get(
+        path: "/api/products/category/{categoryId}",
+        tags: ["Products"],
+        summary: "Get Products by Category",
+        description: "Get all products of a specific category with pagination.",
+        parameters: [
+            new OA\Parameter(
+                name: "categoryId",
+                in: "path",
+                required: true,
+                description: "Category ID",
+                schema: new OA\Schema(type: "integer")
+            ),
+            new OA\Parameter(
+                name: "page",
+                in: "query",
+                description: "Page number",
+                schema: new OA\Schema(type: "integer", default: 1)
+            ),
+            new OA\Parameter(
+                name: "per_page",
+                in: "query",
+                description: "Items per page",
+                schema: new OA\Schema(type: "integer", default: 15)
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Category products retrieved successfully."
+            ),
+            new OA\Response(
+                response: 404,
+                description: "Category not found."
+            ),
+        ]
+    )]
+    public function getByCategory($categoryId)
+    {
+        // بررسی وجود دسته‌بندی
+        $category = \App\Models\Category::find($categoryId);
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'message' => 'دسته‌بندی مورد نظر یافت نشد'
+            ], 404);
+        }
+
+        // دریافت محصولات با صفحه‌بندی
+        $products = Product::query()
+            ->whereHas('categories', function($query) use ($categoryId) {
+                $query->where('category_id', $categoryId);
+            })
+            ->with([
+                'brand',
+                'categories',
+                'images',
+                'variants.attributeValues.attribute',
+            ])
+            ->where('is_active', 1)
+            ->latest()
+            ->paginate(15);
+
+        return ProductResource::collection($products);
+    }
+
  }
