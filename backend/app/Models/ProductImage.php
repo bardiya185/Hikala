@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductImage extends Model
 {
     protected $fillable = [
         'product_id',
-        'image_path',
+        'path',
         'alt',
         'sort_order',
         'is_main',
@@ -16,17 +17,17 @@ class ProductImage extends Model
 
     protected $casts = [
         'is_main' => 'boolean',
+        'sort_order' => 'integer',
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    protected $appends = ['image_url'];
-
-    public function getImageUrlAttribute()
+    // ✅ اضافه کردن Accessor برای URL کامل
+    public function getUrlAttribute(): string
     {
-        return asset('storage/'.$this->path);
+        return asset('storage/' . $this->path);
     }
 }

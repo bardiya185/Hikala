@@ -1086,6 +1086,53 @@
                 }
             }
         },
+        "/api/products/category/{categoryId}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get Products by Category",
+                "description": "Get all products of a specific category with pagination.",
+                "operationId": "2b2d438bba5934926535a71563d99309",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "description": "Category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category products retrieved successfully."
+                    },
+                    "404": {
+                        "description": "Category not found."
+                    }
+                }
+            }
+        },
         "/api/products/filter-options": {
             "get": {
                 "tags": [
@@ -1292,13 +1339,13 @@
                     "Products"
                 ],
                 "summary": "Infinite scroll products",
-                "description": "Load products with cursor-based pagination for infinite scroll.",
+                "description": "Load products with cursor-based pagination for infinite scroll. You can sort by id, price, view_count, created_at, title.",
                 "operationId": "7c1c9bb7022e1732c4ef9d7fc12615dc",
                 "parameters": [
                     {
                         "name": "cursor",
                         "in": "query",
-                        "description": "Cursor for pagination (get from response)",
+                        "description": "Cursor for pagination (get from response meta.next_cursor)",
                         "schema": {
                             "type": "string"
                         }
@@ -1306,7 +1353,7 @@
                     {
                         "name": "limit",
                         "in": "query",
-                        "description": "Number of products per request",
+                        "description": "Number of products per request (max: 50)",
                         "schema": {
                             "type": "integer",
                             "default": 20
@@ -1315,7 +1362,7 @@
                     {
                         "name": "category_id",
                         "in": "query",
-                        "description": "Category ID",
+                        "description": "Category ID (e.g., 2 for all mobile, 3 for Apple phones, 12 for Samsung, 20 for Xiaomi, 27 for Other Brands)",
                         "schema": {
                             "type": "integer"
                         }
@@ -1343,13 +1390,422 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "attributes",
+                        "in": "query",
+                        "description": "Filter by attribute values (comma separated IDs, e.g., '1,2,3')",
+                        "schema": {
+                            "type": "string",
+                            "example": ""
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search query for product title or description",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Sort by field (id, price, view_count, created_at, title)",
+                        "schema": {
+                            "type": "string",
+                            "default": "id",
+                            "enum": [
+                                "id",
+                                "price",
+                                "view_count",
+                                "created_at",
+                                "title"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "Sort order (asc: ascending, desc: descending)",
+                        "schema": {
+                            "type": "string",
+                            "default": "asc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Products loaded successfully."
+                        "description": "Products loaded successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string"
+                                                    },
+                                                    "short_description": {
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    },
+                                                    "view_count": {
+                                                        "type": "integer"
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "brand": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "categories": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "slug": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "variants": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "sku": {
+                                                                    "type": "string"
+                                                                },
+                                                                "price": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "sale_price": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "stock": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "weight": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "attributes": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "attribute_name": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "value": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "color_code": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "has_more": {
+                                                    "type": "boolean"
+                                                },
+                                                "next_cursor": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "limit": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error"
                     }
                 }
+            }
+        },
+        "/api/products/{product}/images": {
+            "get": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Get product images",
+                "description": "Get all images of a specific product.",
+                "operationId": "ea81cedf60c2db84e767ae2b8507806b",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Images retrieved successfully."
+                    },
+                    "404": {
+                        "description": "Product not found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Upload product image",
+                "description": "Upload a new image for a product.",
+                "operationId": "d0143c39e42cbee5f21036b3539793ef",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "image"
+                                ],
+                                "properties": {
+                                    "image": {
+                                        "description": "Image file (jpeg, png, jpg, gif, webp - max 5MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "is_main": {
+                                        "description": "Set as main image",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "alt": {
+                                        "description": "Alt text for image",
+                                        "type": "string",
+                                        "example": "iPhone 15 Pro"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Image uploaded successfully."
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    },
+                    "404": {
+                        "description": "Product not found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/product-images/{image}": {
+            "delete": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Delete product image",
+                "description": "Delete a product image.",
+                "operationId": "30d587f1fe712e2310511d8b1b4aefb2",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "Image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Image deleted successfully."
+                    },
+                    "404": {
+                        "description": "Image not found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/product-images/{image}/main": {
+            "put": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Set main image",
+                "description": "Set an image as the main image for its product.",
+                "operationId": "b9a3a99d424a0c9e3d5ef810b2b61c40",
+                "parameters": [
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "Image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Main image set successfully."
+                    },
+                    "404": {
+                        "description": "Image not found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/product-images/reorder": {
+            "put": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Reorder images",
+                "description": "Reorder product images by sending an array of image IDs.",
+                "operationId": "45f72a80af334e55e61f83e1a2b89018",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "order"
+                                ],
+                                "properties": {
+                                    "order": {
+                                        "description": "Array of image IDs in desired order",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            3,
+                                            1,
+                                            2
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Images reordered successfully."
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/roles": {
@@ -1611,6 +2067,10 @@
         {
             "name": "Products",
             "description": "Products"
+        },
+        {
+            "name": "Product Images",
+            "description": "Product Images"
         },
         {
             "name": "Roles",
