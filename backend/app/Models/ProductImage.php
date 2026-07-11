@@ -9,7 +9,7 @@ class ProductImage extends Model
 {
     protected $fillable = [
         'product_id',
-        'path',
+        'image_path',
         'alt',
         'sort_order',
         'is_main',
@@ -28,6 +28,7 @@ class ProductImage extends Model
     // ✅ اضافه کردن Accessor برای URL کامل
     public function getUrlAttribute(): string
     {
-        return asset('storage/' . $this->path);
+        return asset('public/' . $this->path);
     }
+
 }

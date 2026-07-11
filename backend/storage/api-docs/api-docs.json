@@ -10,14 +10,197 @@
         }
     ],
     "paths": {
-        "/api/test": {
+        "/api/attributes": {
             "get": {
-                "operationId": "23c51201e748a7a199c8de3b5d30a077",
+                "tags": [
+                    "Attributes"
+                ],
+                "summary": "List Attributes",
+                "description": "Get all attributes with their values.",
+                "operationId": "e43bb61719a288d8fb189dff99cd2160",
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Attributes retrieved successfully."
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Attributes"
+                ],
+                "summary": "Create Attribute",
+                "description": "Create an attribute and its values synchronously.",
+                "operationId": "6d0a530c5b0cb1921e99524ef52ef2ee",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Color"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "color"
+                                    },
+                                    "sort_order": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "values": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "value": {
+                                                    "type": "string",
+                                                    "example": "Red"
+                                                },
+                                                "color_code": {
+                                                    "type": "string",
+                                                    "example": "#FF0000"
+                                                },
+                                                "sort_order": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Attribute created successfully."
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/attributes/{attribute}": {
+            "get": {
+                "tags": [
+                    "Attributes"
+                ],
+                "summary": "Show Attribute",
+                "description": "Get single attribute details with values.",
+                "operationId": "5a49898b4f43064cbca9c879a0671640",
+                "parameters": [
+                    {
+                        "name": "attribute",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Attribute details retrieved."
+                    },
+                    "404": {
+                        "description": "Attribute not found."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Attributes"
+                ],
+                "summary": "Update Attribute",
+                "description": "Update attribute and sync its values completely.",
+                "operationId": "1b217ead9f701da689bcb1b18d672cfd",
+                "parameters": [
+                    {
+                        "name": "attribute",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Color"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Attribute updated successfully."
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Attributes"
+                ],
+                "summary": "Delete Attribute",
+                "operationId": "4dd84fcafd320f3b71dcc72aef3c08f2",
+                "parameters": [
+                    {
+                        "name": "attribute",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Attribute deleted."
+                    },
+                    "400": {
+                        "description": "Cannot delete used attributes."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/refresh-token": {
@@ -51,7 +234,7 @@
                         "description": "Access token created"
                     },
                     "401": {
-                        "description": "Invalid refresh token"
+                        "description": "Invalid or expired refresh token"
                     }
                 }
             }
@@ -85,6 +268,9 @@
                 "responses": {
                     "200": {
                         "description": "OTP sent successfully"
+                    },
+                    "429": {
+                        "description": "Too many requests - Rate limit exceeded"
                     },
                     "422": {
                         "description": "Validation error"
@@ -128,7 +314,7 @@
                         "description": "Login Success"
                     },
                     "401": {
-                        "description": "Invalid OTP"
+                        "description": "Invalid or expired OTP"
                     }
                 }
             }
@@ -181,18 +367,13 @@
                     "Brands"
                 ],
                 "summary": "List Brands",
-                "description": "Get all brands.",
+                "description": "Get all active brands.",
                 "operationId": "130f2bd423b6fe2355253e2c39878d99",
                 "responses": {
                     "200": {
                         "description": "Brands retrieved successfully."
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             },
             "post": {
                 "tags": [
@@ -284,12 +465,7 @@
                     "404": {
                         "description": "Brand not found."
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             },
             "put": {
                 "tags": [
@@ -383,6 +559,9 @@
                 "responses": {
                     "200": {
                         "description": "Brand deleted successfully."
+                    },
+                    "400": {
+                        "description": "Cannot delete brand with associated products."
                     },
                     "404": {
                         "description": "Brand not found."
@@ -649,7 +828,6 @@
                     "Products"
                 ],
                 "summary": "Create Product",
-                "description": "Create a new product with variants and attributes.",
                 "operationId": "785644b7d7dd38af4b51dafd0fbc1b6d",
                 "requestBody": {
                     "required": true,
@@ -660,129 +838,7 @@
                                     "brand_id",
                                     "title",
                                     "slug"
-                                ],
-                                "properties": {
-                                    "brand_id": {
-                                        "description": "شناسه برند",
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "title": {
-                                        "description": "عنوان محصول",
-                                        "type": "string",
-                                        "example": "iPhone 15 Pro"
-                                    },
-                                    "slug": {
-                                        "description": "اسلاگ محصول (آدرس سئویی)",
-                                        "type": "string",
-                                        "example": "iphone-15-pro"
-                                    },
-                                    "short_description": {
-                                        "description": "توضیح مختصر",
-                                        "type": "string",
-                                        "example": "گوشی آیفون ۱۵ پرو با پردازنده A16"
-                                    },
-                                    "description": {
-                                        "description": "توضیح کامل (HTML)",
-                                        "type": "string",
-                                        "example": "<p>توضیحات کامل محصول</p>"
-                                    },
-                                    "status": {
-                                        "description": "وضعیت (active/inactive/draft)",
-                                        "type": "string",
-                                        "example": "active"
-                                    },
-                                    "meta_title": {
-                                        "description": "عنوان سئو",
-                                        "type": "string",
-                                        "example": "iPhone 15 Pro"
-                                    },
-                                    "meta_keywords": {
-                                        "description": "کلمات کلیدی سئو",
-                                        "type": "string",
-                                        "example": "iphone, apple"
-                                    },
-                                    "meta_description": {
-                                        "description": "توضیحات سئو",
-                                        "type": "string",
-                                        "example": "خرید آیفون ۱۵ پرو"
-                                    },
-                                    "is_active": {
-                                        "description": "فعال/غیرفعال",
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "categories": {
-                                        "description": "آرایه شناسه دسته‌بندی‌ها",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "integer"
-                                        },
-                                        "example": [
-                                            1,
-                                            2
-                                        ]
-                                    },
-                                    "variants": {
-                                        "description": "لیست تنوع‌های محصول",
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "sku": {
-                                                    "description": "کد انبار",
-                                                    "type": "string",
-                                                    "example": "SKU-001"
-                                                },
-                                                "barcode": {
-                                                    "description": "بارکد",
-                                                    "type": "string",
-                                                    "example": "1234567890123"
-                                                },
-                                                "price": {
-                                                    "description": "قیمت اصلی (تومان)",
-                                                    "type": "integer",
-                                                    "example": 30000000
-                                                },
-                                                "sale_price": {
-                                                    "description": "قیمت تخفیف‌خورده (تومان)",
-                                                    "type": "integer",
-                                                    "example": 25000000
-                                                },
-                                                "stock": {
-                                                    "description": "موجودی انبار",
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "weight": {
-                                                    "description": "وزن (گرم)",
-                                                    "type": "integer",
-                                                    "example": 200
-                                                },
-                                                "is_active": {
-                                                    "description": "فعال/غیرفعال",
-                                                    "type": "boolean",
-                                                    "example": true
-                                                },
-                                                "attributes": {
-                                                    "description": "ویژگی‌های این تنوع",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "attribute_value_id": {
-                                                                "description": "شناسه مقدار ویژگی",
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    }
-                                },
-                                "type": "object"
+                                ]
                             }
                         }
                     }
@@ -808,13 +864,11 @@
                     "Products"
                 ],
                 "summary": "Show Product",
-                "description": "Get product details with variants and attributes.",
                 "operationId": "db00b523e69d5dbc09c6edad76374bdc",
                 "parameters": [
                     {
                         "name": "product",
                         "in": "path",
-                        "description": "Product ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -835,161 +889,20 @@
                     "Products"
                 ],
                 "summary": "Update Product",
-                "description": "Update product information with variants.",
                 "operationId": "f47cf55f4f3e0b134b5e7d9a8373725d",
                 "parameters": [
                     {
                         "name": "product",
                         "in": "path",
-                        "description": "Product ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
                         }
                     }
                 ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "brand_id": {
-                                        "description": "شناسه برند",
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "title": {
-                                        "description": "عنوان محصول",
-                                        "type": "string",
-                                        "example": "iPhone 15 Pro"
-                                    },
-                                    "slug": {
-                                        "description": "اسلاگ محصول",
-                                        "type": "string",
-                                        "example": "iphone-15-pro"
-                                    },
-                                    "short_description": {
-                                        "description": "توضیح مختصر",
-                                        "type": "string",
-                                        "example": "گوشی آیفون ۱۵ پرو"
-                                    },
-                                    "description": {
-                                        "description": "توضیح کامل",
-                                        "type": "string",
-                                        "example": "<p>توضیحات کامل</p>"
-                                    },
-                                    "status": {
-                                        "description": "وضعیت",
-                                        "type": "string",
-                                        "example": "active"
-                                    },
-                                    "meta_title": {
-                                        "description": "عنوان سئو",
-                                        "type": "string",
-                                        "example": "iPhone 15 Pro"
-                                    },
-                                    "meta_keywords": {
-                                        "description": "کلمات کلیدی",
-                                        "type": "string",
-                                        "example": "iphone, apple"
-                                    },
-                                    "meta_description": {
-                                        "description": "توضیحات سئو",
-                                        "type": "string",
-                                        "example": "خرید آیفون ۱۵ پرو"
-                                    },
-                                    "is_active": {
-                                        "description": "فعال/غیرفعال",
-                                        "type": "boolean",
-                                        "example": true
-                                    },
-                                    "categories": {
-                                        "description": "آرایه شناسه دسته‌بندی‌ها",
-                                        "type": "array",
-                                        "items": {
-                                            "type": "integer"
-                                        },
-                                        "example": [
-                                            1,
-                                            2
-                                        ]
-                                    },
-                                    "variants": {
-                                        "description": "لیست تنوع‌های محصول",
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "id": {
-                                                    "description": "شناسه تنوع (برای آپدیت)",
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "sku": {
-                                                    "description": "کد انبار",
-                                                    "type": "string",
-                                                    "example": "SKU-001"
-                                                },
-                                                "barcode": {
-                                                    "description": "بارکد",
-                                                    "type": "string",
-                                                    "example": "1234567890123"
-                                                },
-                                                "price": {
-                                                    "description": "قیمت اصلی",
-                                                    "type": "integer",
-                                                    "example": 30000000
-                                                },
-                                                "sale_price": {
-                                                    "description": "قیمت تخفیف‌خورده",
-                                                    "type": "integer",
-                                                    "example": 25000000
-                                                },
-                                                "stock": {
-                                                    "description": "موجودی",
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "weight": {
-                                                    "description": "وزن",
-                                                    "type": "integer",
-                                                    "example": 200
-                                                },
-                                                "is_active": {
-                                                    "description": "فعال/غیرفعال",
-                                                    "type": "boolean",
-                                                    "example": true
-                                                },
-                                                "attributes": {
-                                                    "description": "ویژگی‌های تنوع",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "attribute_value_id": {
-                                                                "description": "شناسه مقدار ویژگی",
-                                                                "type": "integer",
-                                                                "example": 1
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "200": {
                         "description": "Product updated successfully."
-                    },
-                    "404": {
-                        "description": "Product not found."
                     },
                     "422": {
                         "description": "Validation Error"
@@ -1006,13 +919,11 @@
                     "Products"
                 ],
                 "summary": "Delete Product",
-                "description": "Delete a product.",
                 "operationId": "ac878db81fdb1333b21fc79e574a5a17",
                 "parameters": [
                     {
                         "name": "product",
                         "in": "path",
-                        "description": "Product ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -1022,9 +933,6 @@
                 "responses": {
                     "200": {
                         "description": "Product deleted successfully."
-                    },
-                    "404": {
-                        "description": "Product not found."
                     }
                 },
                 "security": [
@@ -1040,13 +948,11 @@
                     "Products"
                 ],
                 "summary": "Get latest products",
-                "description": "Get newest products (top 10).",
                 "operationId": "7ffdacbdbf0e7d7f668510c8ce20622a",
                 "parameters": [
                     {
                         "name": "limit",
                         "in": "query",
-                        "description": "Number of products",
                         "schema": {
                             "type": "integer",
                             "default": 10
@@ -1066,13 +972,11 @@
                     "Products"
                 ],
                 "summary": "Get featured products",
-                "description": "Get most viewed products (top 10).",
                 "operationId": "787711e5f2b08d01a9338d339746e9e1",
                 "parameters": [
                     {
                         "name": "limit",
                         "in": "query",
-                        "description": "Number of products",
                         "schema": {
                             "type": "integer",
                             "default": 10
@@ -1092,31 +996,19 @@
                     "Products"
                 ],
                 "summary": "Get Products by Category",
-                "description": "Get all products of a specific category with pagination.",
                 "operationId": "2b2d438bba5934926535a71563d99309",
                 "parameters": [
                     {
                         "name": "categoryId",
                         "in": "path",
-                        "description": "Category ID",
                         "required": true,
                         "schema": {
                             "type": "integer"
                         }
                     },
                     {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Page number",
-                        "schema": {
-                            "type": "integer",
-                            "default": 1
-                        }
-                    },
-                    {
                         "name": "per_page",
                         "in": "query",
-                        "description": "Items per page",
                         "schema": {
                             "type": "integer",
                             "default": 15
@@ -1597,7 +1489,7 @@
                     "Product Images"
                 ],
                 "summary": "Get product images",
-                "description": "Get all images of a specific product.",
+                "description": "Get all images of a specific product",
                 "operationId": "ea81cedf60c2db84e767ae2b8507806b",
                 "parameters": [
                     {
@@ -1606,30 +1498,26 @@
                         "description": "Product ID",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Images retrieved successfully."
+                        "description": "Images retrieved successfully"
                     },
                     "404": {
-                        "description": "Product not found."
+                        "description": "Product not found"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             },
             "post": {
                 "tags": [
                     "Product Images"
                 ],
                 "summary": "Upload product image",
-                "description": "Upload a new image for a product.",
+                "description": "Upload a new image for a product",
                 "operationId": "d0143c39e42cbee5f21036b3539793ef",
                 "parameters": [
                     {
@@ -1638,7 +1526,8 @@
                         "description": "Product ID",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
@@ -1674,13 +1563,16 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Image uploaded successfully."
+                        "description": "Image uploaded successfully"
                     },
                     "422": {
-                        "description": "Validation Error"
+                        "description": "Validation error"
                     },
                     "404": {
-                        "description": "Product not found."
+                        "description": "Product not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -1690,31 +1582,45 @@
                 ]
             }
         },
-        "/api/product-images/{image}": {
+        "/api/products/{product}/images/{image}": {
             "delete": {
                 "tags": [
                     "Product Images"
                 ],
                 "summary": "Delete product image",
-                "description": "Delete a product image.",
-                "operationId": "30d587f1fe712e2310511d8b1b4aefb2",
+                "description": "Delete a product image",
+                "operationId": "7652cb2303a40514a52edc77d55114a8",
                 "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
                     {
                         "name": "image",
                         "in": "path",
                         "description": "Image ID",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Image deleted successfully."
+                        "description": "Image deleted successfully"
                     },
                     "404": {
-                        "description": "Image not found."
+                        "description": "Image not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -1724,31 +1630,45 @@
                 ]
             }
         },
-        "/api/product-images/{image}/main": {
+        "/api/products/{product}/images/{image}/main": {
             "put": {
                 "tags": [
                     "Product Images"
                 ],
                 "summary": "Set main image",
-                "description": "Set an image as the main image for its product.",
-                "operationId": "b9a3a99d424a0c9e3d5ef810b2b61c40",
+                "description": "Set an image as the main image for its product",
+                "operationId": "cbd67e08c490feb68f4404e8def173f7",
                 "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
                     {
                         "name": "image",
                         "in": "path",
                         "description": "Image ID",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Main image set successfully."
+                        "description": "Main image set successfully"
                     },
                     "404": {
-                        "description": "Image not found."
+                        "description": "Image not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -1758,14 +1678,26 @@
                 ]
             }
         },
-        "/api/product-images/reorder": {
+        "/api/products/{product}/images/reorder": {
             "put": {
                 "tags": [
                     "Product Images"
                 ],
                 "summary": "Reorder images",
-                "description": "Reorder product images by sending an array of image IDs.",
-                "operationId": "45f72a80af334e55e61f83e1a2b89018",
+                "description": "Reorder product images by sending an array of image IDs",
+                "operationId": "8772bdf19e132c0962cc22a0903dc87f",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1795,10 +1727,13 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Images reordered successfully."
+                        "description": "Images reordered successfully"
                     },
                     "422": {
-                        "description": "Validation Error"
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -1814,8 +1749,19 @@
                     "Roles"
                 ],
                 "summary": "Get all roles",
-                "description": "Returns a list of all roles.",
+                "description": "Returns a paginated list of all roles.",
                 "operationId": "getRoles",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Roles retrieved successfully.",
@@ -2001,6 +1947,9 @@
                     "204": {
                         "description": "Role deleted successfully."
                     },
+                    "400": {
+                        "description": "Bad request / Protected role."
+                    },
                     "404": {
                         "description": "Role not found."
                     }
@@ -2053,6 +2002,14 @@
     },
     "tags": [
         {
+            "name": "Product Images",
+            "description": "Manage product images"
+        },
+        {
+            "name": "Attributes",
+            "description": "Attributes"
+        },
+        {
             "name": "Auth",
             "description": "Auth"
         },
@@ -2067,10 +2024,6 @@
         {
             "name": "Products",
             "description": "Products"
-        },
-        {
-            "name": "Product Images",
-            "description": "Product Images"
         },
         {
             "name": "Roles",

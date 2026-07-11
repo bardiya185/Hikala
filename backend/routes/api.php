@@ -11,36 +11,42 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductImageController;
 use App\Http\Controllers\Api\ProductFilterController;
 
-//Users
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
-// Auths
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/who-am-i', [AuthController::class, 'whoAmI']);
-});
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+// ================================================================
+// USERS & AUTHENTICATION
+// ================================================================
 Route::post('/send-otp', [AuthController::class, 'sendOtp']);
 Route::post('/check-otp', [AuthController::class, 'checkOtp']);
 Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::get('/who-am-i', [AuthController::class, 'whoAmI']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
+
 // ================================================================
-// PRODUCT FILTER & SEARCH (قبل از CRUD - مهم!)
+// PRODUCT FILTER & SEARCH
 // ================================================================
-Route::get('/products/filter-options', [ProductFilterController::class, 'options']);
-Route::get('/products/filter', [ProductFilterController::class, 'filter']);
-Route::get('/products/search', [ProductFilterController::class, 'search']);
-Route::get('/products/advanced-search', [ProductFilterController::class, 'advancedSearch']);
-Route::get('/products/infinite', [ProductFilterController::class, 'infinite']);
+Route::prefix('products')->group(function () {
+    Route::get('/filter-options', [ProductFilterController::class, 'options']);
+    Route::get('/filter', [ProductFilterController::class, 'filter']);
+    Route::get('/search', [ProductFilterController::class, 'search']);
+    Route::get('/advanced-search', [ProductFilterController::class, 'advancedSearch']);
+    Route::get('/infinite', [ProductFilterController::class, 'infinite']);
+});
 
 // ================================================================
 // PRODUCTS (CRUD)
 // ================================================================
-Route::get('/products', [ProductController::class, 'index']);
+// روت‌های استاتیک و خاص 
 Route::get('/products/featured', [ProductController::class, 'featured']);
 Route::get('/products/latest', [ProductController::class, 'latest']);
 Route::get('/products/category/{categoryId}', [ProductController::class, 'getByCategory']);
+
+// روت‌های استاندارد نمایشی
+Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -50,24 +56,26 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // ================================================================
-// PRODUCT IMAGES
+// PRODUCT IMAGES 
 // ================================================================
+Route::get('/products/{product}/images', [ProductImageController::class, 'index']);
+
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/products/{product}/images', [ProductImageController::class, 'index']);
     Route::post('/products/{product}/images', [ProductImageController::class, 'store']);
-    Route::delete('/product-images/{image}', [ProductImageController::class, 'destroy']);
-    Route::put('/product-images/{image}/main', [ProductImageController::class, 'setMain']);
-    Route::put('/product-images/reorder', [ProductImageController::class, 'reorder']);
+    Route::delete('/products/{product}/images/{image}', [ProductImageController::class, 'destroy'])->scopeBindings();
+    Route::put('/products/{product}/images/{image}/main', [ProductImageController::class, 'setMain'])->scopeBindings();
+    Route::put('/products/{product}/images/reorder', [ProductImageController::class, 'reorder']); // اضافه شدن {product} به مسیر برای امنیت بیشتر
 });
 
 // ================================================================
 // CATEGORIES
 // ================================================================
-Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/all', [CategoryController::class, 'all']);
 Route::get('/categories/menu', [CategoryController::class, 'menu']);
 Route::get('/categories/with-products', [CategoryController::class, 'withProducts']);
 Route::get('/categories/{category}/products', [CategoryController::class, 'products']);
+
+Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{category}', [CategoryController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -77,27 +85,24 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // ================================================================
-// BRANDS
+// BRANDS & ATTRIBUTES 
 // ================================================================
+Route::get('/brands', [BrandController::class, 'index']);
+Route::get('/brands/{brand}', [BrandController::class, 'show']);
+
+Route::get('/attributes', [AttributeController::class, 'index']);
+Route::get('/attributes/{attribute}', [AttributeController::class, 'show']);
+
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('brands', BrandController::class);
+    Route::apiResource('brands', BrandController::class)->except(['index', 'show']);
+    Route::apiResource('attributes', AttributeController::class)->except(['index', 'show']);
 });
 
 // ================================================================
-// ATTRIBUTES
-// ================================================================
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('attributes', AttributeController::class);
-});
-
-// ================================================================
-// ROLES
+// ROLES & TEST
 // ================================================================
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('roles', RoleController::class);
 });
 
-// ================================================================
-// TEST
-// ================================================================
 Route::get('/test', [AuthController::class, 'test']);

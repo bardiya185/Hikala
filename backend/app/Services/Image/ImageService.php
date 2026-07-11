@@ -1,108 +1,35 @@
 <?php
 
-namespace App\Services\ProductImage;
+namespace App\Services\Image;
 
-use App\Models\Product;
-use App\Models\ProductImage;
-use App\Services\Image\ImageService;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
-class ProductImageService
+class ImageService
 {
-    public function __construct(
-        private ImageService $imageService
-    ) {}
-
-    /**
-     * آپلود عکس جدید
-     */
-    public function upload(Product $product, UploadedFile $file, ?string $alt = null): ProductImage
+    public function upload(UploadedFile $file, string $path = 'products'): string
     {
-        return DB::transaction(function () use ($product, $file, $alt) {
-            // آپلود با استفاده از ImageService
-            $path = $this->imageService->upload($file, 'products/' . $product->id);
-
-            // ذخیره در دیتابیس
-            return ProductImage::create([
-                'product_id' => $product->id,
-                'path' => $path,
-                'alt' => $alt,
-                'sort_order' => ProductImage::where('product_id', $product->id)->count() + 1,
-                'is_main' => false,
-            ]);
-        });
-    }
-
-    /**
-     * حذف عکس
-     */
-    public function delete(ProductImage $image): void
-    {
-        DB::transaction(function () use ($image) {
-            // حذف فایل با استفاده از ImageService
-            $this->imageService->delete($image->path);
-            
-            // حذف از دیتابیس
-            $image->delete();
-        });
-    }
-
-    /**
-     * تنظیم عکس به عنوان اصلی
-     */
-    public function setMain(ProductImage $image): void
-    {
-        DB::transaction(function () use ($image) {
-            // همه عکس‌های این محصول رو غیراصلی کن
-            ProductImage::where('product_id', $image->product_id)
-                ->update(['is_main' => false]);
-
-            // این عکس رو اصلی کن
-            $image->update(['is_main' => true]);
-        });
-    }
-
-    /**
-     * مرتب‌سازی عکس‌ها
-     */
-    public function reorder(array $order): void
-    {
-        DB::transaction(function () use ($order) {
-            foreach ($order as $index => $imageId) {
-                ProductImage::where('id', $imageId)
-                    ->update(['sort_order' => $index + 1]);
-            }
-        });
-    }
-
-    /**
-     * آپلود عکس با تنظیم به عنوان اصلی
-     */
-    public function uploadWithMain(Product $product, UploadedFile $file, ?string $alt = null): ProductImage
-    {
-        $image = $this->upload($product, $file, $alt);
-        $this->setMain($image);
+        $fileName =
+        Str::uuid()
+        . '.'
+        . $file->extension();
         
-        return $image;
+        // ✅ ذخیره در دیسک public (storage/app/public/...)
+        $storedPath = $file->storeAs($path, $fileName, 'public');
+        
+        if (!$storedPath) {
+            throw new \Exception('فایل ذخیره نشد!');
+        }
+        
+        return $storedPath; // returns "products/1/filename.jpg"
     }
 
-    /**
-     * دریافت عکس اصلی محصول
-     */
-    public function getMainImage(Product $product): ?ProductImage
+    public function delete(string $path): bool
     {
-        return $product->images()->where('is_main', true)->first();
-    }
-
-    /**
-     * دریافت همه عکس‌های محصول با مرتب‌سازی
-     */
-    public function getImages(Product $product)
-    {
-        return $product->images()
-            ->orderBy('sort_order')
-            ->orderBy('id')
-            ->get();
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->delete($path);
+        }
+        return false;
     }
 }

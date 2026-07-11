@@ -29,10 +29,10 @@ function SendOtpForm({setStep,mobile,setMobile}) {
   <div className="w-[380px] p-6 bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-neutral-100 flex flex-col justify-between transition-all duration-300">
     
     {/* بخش لوگو - تراز دقیق در وسط */}
-    <div className="flex justify-center mb-6 mt-2">
+    <div className="flex justify-center mb-8 mt-2">
       <Image 
         src="/icons/en-logo.svg" 
-        width={150} 
+        width={200} 
         height={24} 
         alt="logo" 
         className="object-contain"
@@ -41,7 +41,7 @@ function SendOtpForm({setStep,mobile,setMobile}) {
 
     
     <div className="flex flex-col flex-1">
-      <h6 className="text-lg font-bold text-neutral-800 tracking-tight text-left">
+      <h6 className="text-md font-bold text-neutral-800 tracking-tight text-left">
         Log in or sign up
       </h6>
       
