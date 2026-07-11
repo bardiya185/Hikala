@@ -8,9 +8,14 @@ use App\Http\Resources\ProductImageResource;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Services\ProductImage\ProductImageService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
+#[OA\Tag(
+    name: "Product Images",
+    description: "Manage product images"
+)]
 class ProductImageController extends Controller
 {
     public function __construct(
@@ -18,54 +23,51 @@ class ProductImageController extends Controller
     ) {}
 
     // ================================================================
-    // 1. دریافت همه تصاویر یک محصول
+    // 1. Get all images of a product
     // ================================================================
     #[OA\Get(
         path: "/api/products/{product}/images",
         tags: ["Product Images"],
         summary: "Get product images",
-        description: "Get all images of a specific product.",
+        description: "Get all images of a specific product",
         parameters: [
             new OA\Parameter(
                 name: "product",
                 in: "path",
                 required: true,
                 description: "Product ID",
-                schema: new OA\Schema(type: "integer")
+                schema: new OA\Schema(type: "integer", example: 1)
             )
-        ],
-        security: [
-            ["bearerAuth" => []]
         ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Images retrieved successfully."
+                description: "Images retrieved successfully"
             ),
             new OA\Response(
                 response: 404,
-                description: "Product not found."
+                description: "Product not found"
             )
         ]
     )]
-    public function index(Product $product)
+    public function index(Product $product): JsonResponse
     {
-        $images = $product->images()
-            ->orderBy('sort_order')
-            ->orderBy('id')
-            ->get();
+        $images = $this->service->getImages($product);
 
-        return ProductImageResource::collection($images);
+        return response()->json([
+            'success' => true,
+            'data' => ProductImageResource::collection($images)
+        ]);
     }
 
     // ================================================================
-    // 2. آپلود عکس جدید
+    // 2. Upload a new image
     // ================================================================
     #[OA\Post(
         path: "/api/products/{product}/images",
         tags: ["Product Images"],
         summary: "Upload product image",
-        description: "Upload a new image for a product.",
+        description: "Upload a new image for a product",
         security: [
             ["bearerAuth" => []]
         ],
@@ -75,7 +77,7 @@ class ProductImageController extends Controller
                 in: "path",
                 required: true,
                 description: "Product ID",
-                schema: new OA\Schema(type: "integer")
+                schema: new OA\Schema(type: "integer", example: 1)
             )
         ],
         requestBody: new OA\RequestBody(
@@ -110,19 +112,23 @@ class ProductImageController extends Controller
         responses: [
             new OA\Response(
                 response: 201,
-                description: "Image uploaded successfully."
+                description: "Image uploaded successfully"
             ),
             new OA\Response(
                 response: 422,
-                description: "Validation Error"
+                description: "Validation error"
             ),
             new OA\Response(
                 response: 404,
-                description: "Product not found."
+                description: "Product not found"
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Unauthenticated"
             )
         ]
     )]
-    public function store(StoreProductImageRequest $request, Product $product)
+    public function store(StoreProductImageRequest $request, Product $product): JsonResponse
     {
         $image = $this->service->upload(
             $product,
@@ -130,9 +136,9 @@ class ProductImageController extends Controller
             $request->input('alt')
         );
 
-        // اگر این عکس اصلی است
-        if ($request->input('is_main', false)) {
+        if ($request->boolean('is_main')) {
             $this->service->setMain($image);
+            $image->refresh();
         }
 
         return (new ProductImageResource($image))
@@ -141,38 +147,57 @@ class ProductImageController extends Controller
     }
 
     // ================================================================
-    // 3. حذف عکس
+    // 3. Delete an image
     // ================================================================
     #[OA\Delete(
-        path: "/api/product-images/{image}",
+        path: "/api/products/{product}/images/{image}",
         tags: ["Product Images"],
         summary: "Delete product image",
-        description: "Delete a product image.",
+        description: "Delete a product image",
         security: [
             ["bearerAuth" => []]
         ],
         parameters: [
             new OA\Parameter(
+                name: "product",
+                in: "path",
+                required: true,
+                description: "Product ID",
+                schema: new OA\Schema(type: "integer", example: 1)
+            ),
+            new OA\Parameter(
                 name: "image",
                 in: "path",
                 required: true,
                 description: "Image ID",
-                schema: new OA\Schema(type: "integer")
+                schema: new OA\Schema(type: "integer", example: 1)
             )
         ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Image deleted successfully."
+                description: "Image deleted successfully"
             ),
             new OA\Response(
                 response: 404,
-                description: "Image not found."
+                description: "Image not found"
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Unauthenticated"
             )
         ]
     )]
-    public function destroy(ProductImage $image)
+    public function destroy(Product $product, ProductImage $image): JsonResponse
     {
+        // Ensure image belongs to product
+        if ($image->product_id !== $product->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Image does not belong to this product'
+            ], 404);
+        }
+
         $this->service->delete($image);
 
         return response()->json([
@@ -182,39 +207,59 @@ class ProductImageController extends Controller
     }
 
     // ================================================================
-    // 4. تنظیم عکس به عنوان اصلی
+    // 4. Set an image as main
     // ================================================================
     #[OA\Put(
-        path: "/api/product-images/{image}/main",
+        path: "/api/products/{product}/images/{image}/main",
         tags: ["Product Images"],
         summary: "Set main image",
-        description: "Set an image as the main image for its product.",
+        description: "Set an image as the main image for its product",
         security: [
             ["bearerAuth" => []]
         ],
         parameters: [
             new OA\Parameter(
+                name: "product",
+                in: "path",
+                required: true,
+                description: "Product ID",
+                schema: new OA\Schema(type: "integer", example: 1)
+            ),
+            new OA\Parameter(
                 name: "image",
                 in: "path",
                 required: true,
                 description: "Image ID",
-                schema: new OA\Schema(type: "integer")
+                schema: new OA\Schema(type: "integer", example: 1)
             )
         ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Main image set successfully."
+                description: "Main image set successfully"
             ),
             new OA\Response(
                 response: 404,
-                description: "Image not found."
+                description: "Image not found"
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Unauthenticated"
             )
         ]
     )]
-    public function setMain(ProductImage $image)
+    public function setMain(Product $product, ProductImage $image): JsonResponse
     {
+        // Ensure image belongs to product
+        if ($image->product_id !== $product->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Image does not belong to this product'
+            ], 404);
+        }
+
         $this->service->setMain($image);
+        $image->refresh();
 
         return response()->json([
             'success' => true,
@@ -224,15 +269,24 @@ class ProductImageController extends Controller
     }
 
     // ================================================================
-    // 5. مرتب‌سازی عکس‌ها
+    // 5. Reorder images
     // ================================================================
     #[OA\Put(
-        path: "/api/product-images/reorder",
+        path: "/api/products/{product}/images/reorder",
         tags: ["Product Images"],
         summary: "Reorder images",
-        description: "Reorder product images by sending an array of image IDs.",
+        description: "Reorder product images by sending an array of image IDs",
         security: [
             ["bearerAuth" => []]
+        ],
+        parameters: [
+            new OA\Parameter(
+                name: "product",
+                in: "path",
+                required: true,
+                description: "Product ID",
+                schema: new OA\Schema(type: "integer", example: 1)
+            )
         ],
         requestBody: new OA\RequestBody(
             required: true,
@@ -252,20 +306,38 @@ class ProductImageController extends Controller
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Images reordered successfully."
+                description: "Images reordered successfully"
             ),
             new OA\Response(
                 response: 422,
-                description: "Validation Error"
+                description: "Validation error"
+            ),
+            new OA\Response(
+                response: 401,
+                description: "Unauthenticated"
             )
         ]
     )]
-    public function reorder(Request $request)
+    public function reorder(Request $request, Product $product): JsonResponse
     {
         $request->validate([
             'order' => 'required|array',
             'order.*' => 'exists:product_images,id',
         ]);
+
+        // Ensure all images belong to the product
+        $imageIds = ProductImage::where('product_id', $product->id)
+            ->pluck('id')
+            ->toArray();
+
+        foreach ($request->order as $id) {
+            if (!in_array($id, $imageIds)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Image ID {$id} does not belong to this product"
+                ], 422);
+            }
+        }
 
         $this->service->reorder($request->order);
 

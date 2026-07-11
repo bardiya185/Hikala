@@ -10,10 +10,19 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Services\ProductService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use OpenApi\Attributes as OA;
 
 class ProductController extends Controller
 {
+    // آرایه پیش‌فرض روابط برای جلوگیری از تکرار کد در متدهای نمایش تکی یا لیست‌های خاص
+    private array $defaultRelations = [
+        'brand',
+        'categories',
+        'images',
+        'variants'
+    ];
+
     public function __construct(
         private ProductService $productService
     ) {}
@@ -24,23 +33,17 @@ class ProductController extends Controller
         summary: 'List Products',
         description: 'Get all products with pagination.',
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Products retrieved successfully.'
-            ),
+            new OA\Response(response: 200, description: 'Products retrieved successfully.')
         ]
     )]
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->get('per_page', 15);
+
         $products = Product::query()
-            ->with([
-                'brand',
-                'categories',
-                'images',
-                'variants.attributeValues.attribute',
-            ])
+            ->with($this->defaultRelations) // لود بهینه روابط سطحی برای لیست
             ->latest()
-            ->paginate(15);
+            ->paginate($perPage > 50 ? 50 : $perPage);
 
         return ProductResource::collection($products);
     }
@@ -49,121 +52,43 @@ class ProductController extends Controller
         path: '/api/products',
         tags: ['Products'],
         summary: 'Create Product',
-        description: 'Create a new product with variants and attributes.',
-        security: [
-            ['bearerAuth' => []],
-        ],
+        security: [['bearerAuth' => []]],
         requestBody: new OA\RequestBody(
             required: true,
-            content: new OA\JsonContent(
-                required: ['brand_id', 'title', 'slug'],
-                properties: [
-                    // ===== اطلاعات اصلی محصول =====
-                    new OA\Property(property: 'brand_id', type: 'integer', example: 1, description: 'شناسه برند'),
-                    new OA\Property(property: 'title', type: 'string', example: 'iPhone 15 Pro', description: 'عنوان محصول'),
-                    new OA\Property(property: 'slug', type: 'string', example: 'iphone-15-pro', description: 'اسلاگ محصول (آدرس سئویی)'),
-                    new OA\Property(property: 'short_description', type: 'string', example: 'گوشی آیفون ۱۵ پرو با پردازنده A16', description: 'توضیح مختصر'),
-                    new OA\Property(property: 'description', type: 'string', example: '<p>توضیحات کامل محصول</p>', description: 'توضیح کامل (HTML)'),
-                    new OA\Property(property: 'status', type: 'string', example: 'active', description: 'وضعیت (active/inactive/draft)'),
-                    new OA\Property(property: 'meta_title', type: 'string', example: 'iPhone 15 Pro', description: 'عنوان سئو'),
-                    new OA\Property(property: 'meta_keywords', type: 'string', example: 'iphone, apple', description: 'کلمات کلیدی سئو'),
-                    new OA\Property(property: 'meta_description', type: 'string', example: 'خرید آیفون ۱۵ پرو', description: 'توضیحات سئو'),
-                    new OA\Property(property: 'is_active', type: 'boolean', example: true, description: 'فعال/غیرفعال'),
-                    
-                    // ===== دسته‌بندی‌ها =====
-                    new OA\Property(
-                        property: 'categories',
-                        type: 'array',
-                        items: new OA\Items(type: 'integer'),
-                        example: [1, 2],
-                        description: 'آرایه شناسه دسته‌بندی‌ها'
-                    ),
-                    
-                    // ===== تنوع‌ها (Variants) =====
-                    new OA\Property(
-                        property: 'variants',
-                        type: 'array',
-                        description: 'لیست تنوع‌های محصول',
-                        items: new OA\Items(
-                            properties: [
-                                new OA\Property(property: 'sku', type: 'string', example: 'SKU-001', description: 'کد انبار'),
-                                new OA\Property(property: 'barcode', type: 'string', example: '1234567890123', description: 'بارکد'),
-                                new OA\Property(property: 'price', type: 'integer', example: 30000000, description: 'قیمت اصلی (تومان)'),
-                                new OA\Property(property: 'sale_price', type: 'integer', example: 25000000, description: 'قیمت تخفیف‌خورده (تومان)'),
-                                new OA\Property(property: 'stock', type: 'integer', example: 10, description: 'موجودی انبار'),
-                                new OA\Property(property: 'weight', type: 'integer', example: 200, description: 'وزن (گرم)'),
-                                new OA\Property(property: 'is_active', type: 'boolean', example: true, description: 'فعال/غیرفعال'),
-                                new OA\Property(
-                                    property: 'attributes',
-                                    type: 'array',
-                                    description: 'ویژگی‌های این تنوع',
-                                    items: new OA\Items(
-                                        properties: [
-                                            new OA\Property(property: 'attribute_value_id', type: 'integer', example: 1, description: 'شناسه مقدار ویژگی')
-                                        ]
-                                    )
-                                )
-                            ]
-                        )
-                    )
-                ]
-            )
+            content: new OA\JsonContent(required: ['brand_id', 'title', 'slug'])
         ),
         responses: [
-            new OA\Response(
-                response: 201,
-                description: 'Product created successfully.'
-            ),
-            new OA\Response(
-                response: 422,
-                description: 'Validation Error'
-            ),
+            new OA\Response(response: 201, description: 'Product created successfully.'),
+            new OA\Response(response: 422, description: 'Validation Error')
         ]
     )]
     public function store(StoreProductRequest $request)
     {
-        $product = $this->productService->create(
-            $request->validated()
-        );
+        $product = $this->productService->create($request->validated());
 
         return (new ProductResource($product))
             ->response()
-            ->setStatusCode(201);
+            ->setStatusCode(Response::HTTP_CREATED);
     }
 
     #[OA\Get(
         path: '/api/products/{product}',
         tags: ['Products'],
         summary: 'Show Product',
-        description: 'Get product details with variants and attributes.',
         parameters: [
-            new OA\Parameter(
-                name: 'product',
-                in: 'path',
-                required: true,
-                description: 'Product ID',
-                schema: new OA\Schema(type: 'integer')
-            ),
+            new OA\Parameter(name: 'product', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Product retrieved successfully.'
-            ),
-            new OA\Response(
-                response: 404,
-                description: 'Product not found.'
-            ),
+            new OA\Response(response: 200, description: 'Product retrieved successfully.'),
+            new OA\Response(response: 404, description: 'Product not found.')
         ]
     )]
     public function show(Product $product)
     {
-        $product->load([
-            'brand',
-            'categories',
-            'images',
-            'variants.attributeValues.attribute',
-        ]);
+        // لود کامل و عمیق روابط ویژگی‌ها فقط و فقط در صفحه جزئیات محصول
+        $product->load(array_merge($this->defaultRelations, [
+            'variants.attributeValues.attribute'
+        ]));
 
         return new ProductResource($product);
     }
@@ -172,98 +97,18 @@ class ProductController extends Controller
         path: '/api/products/{product}',
         tags: ['Products'],
         summary: 'Update Product',
-        description: 'Update product information with variants.',
-        security: [
-            ['bearerAuth' => []],
-        ],
+        security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(
-                name: 'product',
-                in: 'path',
-                required: true,
-                description: 'Product ID',
-                schema: new OA\Schema(type: 'integer')
-            ),
+            new OA\Parameter(name: 'product', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
         ],
-        requestBody: new OA\RequestBody(
-            required: true,
-            content: new OA\JsonContent(
-                properties: [
-                    // ===== اطلاعات اصلی محصول =====
-                    new OA\Property(property: 'brand_id', type: 'integer', example: 1, description: 'شناسه برند'),
-                    new OA\Property(property: 'title', type: 'string', example: 'iPhone 15 Pro', description: 'عنوان محصول'),
-                    new OA\Property(property: 'slug', type: 'string', example: 'iphone-15-pro', description: 'اسلاگ محصول'),
-                    new OA\Property(property: 'short_description', type: 'string', example: 'گوشی آیفون ۱۵ پرو', description: 'توضیح مختصر'),
-                    new OA\Property(property: 'description', type: 'string', example: '<p>توضیحات کامل</p>', description: 'توضیح کامل'),
-                    new OA\Property(property: 'status', type: 'string', example: 'active', description: 'وضعیت'),
-                    new OA\Property(property: 'meta_title', type: 'string', example: 'iPhone 15 Pro', description: 'عنوان سئو'),
-                    new OA\Property(property: 'meta_keywords', type: 'string', example: 'iphone, apple', description: 'کلمات کلیدی'),
-                    new OA\Property(property: 'meta_description', type: 'string', example: 'خرید آیفون ۱۵ پرو', description: 'توضیحات سئو'),
-                    new OA\Property(property: 'is_active', type: 'boolean', example: true, description: 'فعال/غیرفعال'),
-                    
-                    // ===== دسته‌بندی‌ها =====
-                    new OA\Property(
-                        property: 'categories',
-                        type: 'array',
-                        items: new OA\Items(type: 'integer'),
-                        example: [1, 2],
-                        description: 'آرایه شناسه دسته‌بندی‌ها'
-                    ),
-                    
-                    // ===== تنوع‌ها (Variants) =====
-                    new OA\Property(
-                        property: 'variants',
-                        type: 'array',
-                        description: 'لیست تنوع‌های محصول',
-                        items: new OA\Items(
-                            properties: [
-                                new OA\Property(property: 'id', type: 'integer', example: 1, description: 'شناسه تنوع (برای آپدیت)'),
-                                new OA\Property(property: 'sku', type: 'string', example: 'SKU-001', description: 'کد انبار'),
-                                new OA\Property(property: 'barcode', type: 'string', example: '1234567890123', description: 'بارکد'),
-                                new OA\Property(property: 'price', type: 'integer', example: 30000000, description: 'قیمت اصلی'),
-                                new OA\Property(property: 'sale_price', type: 'integer', example: 25000000, description: 'قیمت تخفیف‌خورده'),
-                                new OA\Property(property: 'stock', type: 'integer', example: 10, description: 'موجودی'),
-                                new OA\Property(property: 'weight', type: 'integer', example: 200, description: 'وزن'),
-                                new OA\Property(property: 'is_active', type: 'boolean', example: true, description: 'فعال/غیرفعال'),
-                                new OA\Property(
-                                    property: 'attributes',
-                                    type: 'array',
-                                    description: 'ویژگی‌های تنوع',
-                                    items: new OA\Items(
-                                        properties: [
-                                            new OA\Property(property: 'attribute_value_id', type: 'integer', example: 1, description: 'شناسه مقدار ویژگی')
-                                        ]
-                                    )
-                                )
-                            ]
-                        )
-                    )
-                ]
-            )
-        ),
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Product updated successfully.'
-            ),
-            new OA\Response(
-                response: 404,
-                description: 'Product not found.'
-            ),
-            new OA\Response(
-                response: 422,
-                description: 'Validation Error'
-            ),
+            new OA\Response(response: 200, description: 'Product updated successfully.'),
+            new OA\Response(response: 422, description: 'Validation Error')
         ]
     )]
-    public function update(
-        UpdateProductRequest $request,
-        Product $product
-    ) {
-        $product = $this->productService->update(
-            $product,
-            $request->validated()
-        );
+    public function update(UpdateProductRequest $request, Product $product)
+    {
+        $product = $this->productService->update($product, $request->validated());
 
         return new ProductResource($product);
     }
@@ -272,28 +117,12 @@ class ProductController extends Controller
         path: '/api/products/{product}',
         tags: ['Products'],
         summary: 'Delete Product',
-        description: 'Delete a product.',
-        security: [
-            ['bearerAuth' => []],
-        ],
+        security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(
-                name: 'product',
-                in: 'path',
-                required: true,
-                description: 'Product ID',
-                schema: new OA\Schema(type: 'integer')
-            ),
+            new OA\Parameter(name: 'product', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
         ],
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Product deleted successfully.'
-            ),
-            new OA\Response(
-                response: 404,
-                description: 'Product not found.'
-            ),
+            new OA\Response(response: 200, description: 'Product deleted successfully.')
         ]
     )]
     public function destroy(Product $product)
@@ -301,168 +130,102 @@ class ProductController extends Controller
         $this->productService->delete($product);
 
         return response()->json([
+            'success' => true,
             'message' => 'Product deleted successfully.',
         ]);
     }
 
-
-// ================================================================
-// LATEST PRODUCTS (جدیدترین محصولات)
-// ================================================================
-#[OA\Get(
-    path: "/api/products/latest",
-    tags: ["Products"],
-    summary: "Get latest products",
-    description: "Get newest products (top 10).",
-    parameters: [
-        new OA\Parameter(
-            name: "limit",
-            in: "query",
-            description: "Number of products",
-            schema: new OA\Schema(type: "integer", default: 10)
-        )
-    ],
-    responses: [
-        new OA\Response(
-            response: 200,
-            description: "Latest products retrieved successfully."
-        )
-    ]
-)]
-public function latest(Request $request)
-{
-    $limit = $request->get('limit', 10);
-    if ($limit > 50) {
-        $limit = 50;
-    }
-
-    $products = Product::query()
-        ->with([
-            'brand',
-            'categories',
-            'images',
-            'variants.attributeValues.attribute',
-        ])
-        ->where('is_active', 1)
-        ->latest() // مرتب‌سازی بر اساس created_at DESC
-        ->limit($limit)
-        ->get();
-
-    return ProductResource::collection($products);
-}
-
-// ================================================================
-// FEATURED PRODUCTS (محصولات پربازدید)
-// ================================================================
-#[OA\Get(
-    path: "/api/products/featured",
-    tags: ["Products"],
-    summary: "Get featured products",
-    description: "Get most viewed products (top 10).",
-    parameters: [
-        new OA\Parameter(
-            name: "limit",
-            in: "query",
-            description: "Number of products",
-            schema: new OA\Schema(type: "integer", default: 10)
-        )
-    ],
-    responses: [
-        new OA\Response(
-            response: 200,
-            description: "Featured products retrieved successfully."
-        )
-    ]
-)]
-public function featured(Request $request)
-{
-    $limit = $request->get('limit', 10);
-    if ($limit > 50) {
-        $limit = 50;
-    }
-
-    $products = Product::query()
-        ->with([
-            'brand',
-            'categories',
-            'images',
-            'variants.attributeValues.attribute',
-        ])
-        ->where('is_active', 1)
-        ->orderBy('view_count', 'desc')
-        ->limit($limit)
-        ->get();
-
-    return ProductResource::collection($products);
-}
-
-// ================================================================
-    // GET PRODUCTS BY CATEGORY (محصولات بر اساس دسته‌بندی)
-    // ================================================================
     #[OA\Get(
-        path: "/api/products/category/{categoryId}",
+        path: "/api/products/latest",
         tags: ["Products"],
-        summary: "Get Products by Category",
-        description: "Get all products of a specific category with pagination.",
+        summary: "Get latest products",
         parameters: [
-            new OA\Parameter(
-                name: "categoryId",
-                in: "path",
-                required: true,
-                description: "Category ID",
-                schema: new OA\Schema(type: "integer")
-            ),
-            new OA\Parameter(
-                name: "page",
-                in: "query",
-                description: "Page number",
-                schema: new OA\Schema(type: "integer", default: 1)
-            ),
-            new OA\Parameter(
-                name: "per_page",
-                in: "query",
-                description: "Items per page",
-                schema: new OA\Schema(type: "integer", default: 15)
-            ),
+            new OA\Parameter(name: "limit", in: "query", schema: new OA\Schema(type: "integer", default: 10))
         ],
         responses: [
-            new OA\Response(
-                response: 200,
-                description: "Category products retrieved successfully."
-            ),
-            new OA\Response(
-                response: 404,
-                description: "Category not found."
-            ),
+            new OA\Response(response: 200, description: "Latest products retrieved successfully.")
         ]
     )]
-    public function getByCategory($categoryId)
+    public function latest(Request $request)
     {
-        // بررسی وجود دسته‌بندی
-        $category = \App\Models\Category::find($categoryId);
-        if (!$category) {
-            return response()->json([
-                'success' => false,
-                'message' => 'دسته‌بندی مورد نظر یافت نشد'
-            ], 404);
-        }
+        $limit = min($request->get('limit', 10), 50);
 
-        // دریافت محصولات با صفحه‌بندی
         $products = Product::query()
-            ->whereHas('categories', function($query) use ($categoryId) {
-                $query->where('category_id', $categoryId);
-            })
-            ->with([
-                'brand',
-                'categories',
-                'images',
-                'variants.attributeValues.attribute',
-            ])
-            ->where('is_active', 1)
+            ->with($this->defaultRelations)
+            ->where('is_active', true)
             ->latest()
-            ->paginate(15);
+            ->limit($limit)
+            ->get();
 
         return ProductResource::collection($products);
     }
 
- }
+    #[OA\Get(
+        path: "/api/products/featured",
+        tags: ["Products"],
+        summary: "Get featured products",
+        parameters: [
+            new OA\Parameter(name: "limit", in: "query", schema: new OA\Schema(type: "integer", default: 10))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: "Featured products retrieved successfully.")
+        ]
+    )]
+    public function featured(Request $request)
+    {
+        $limit = min($request->get('limit', 10), 50);
+
+        $products = Product::query()
+            ->with($this->defaultRelations)
+            ->where('is_active', true)
+            ->orderByDesc('view_count')
+            // ترجیحاً هاردکد نشود و تبدیل به یک Scope در مدل Product شود: scopeFeatured()
+            ->limit($limit)
+            ->get();
+
+        return ProductResource::collection($products);
+    }
+
+    #[OA\Get(
+        path: "/api/products/category/{categoryId}",
+        tags: ["Products"],
+        summary: "Get Products by Category",
+        parameters: [
+            new OA\Parameter(name: "categoryId", in: "path", required: true, schema: new OA\Schema(type: "integer")),
+            new OA\Parameter(name: "per_page", in: "query", schema: new OA\Schema(type: "integer", default: 15))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: "Category products retrieved successfully."),
+            new OA\Response(response: 404, description: "Category not found.")
+        ]
+    )]
+    public function getByCategory(Request $request, $categoryId)
+    {
+        $category = Category::find($categoryId);
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'message' => 'دسته‌بندی مورد نظر یافت نشد'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $perPage = min($request->get('per_page', 15), 50);
+
+        // حل باگ شماره ۲: دریافت شناسه خود دسته + تمام شناسه‌های زیرمجموعه آن به صورت درختی
+        // فرض بر این است متد getTypeIds یا شبیه به آن در مدل دسته‌بندی شما پیاده شده است
+        $categoryIds = method_exists($category, 'allSubCategoryIds') 
+            ? array_merge([$category->id], $category->allSubCategoryIds()) 
+            : [$category->id];
+
+        $products = Product::query()
+            ->whereHas('categories', function($query) use ($categoryIds) {
+                $query->whereIn('category_id', $categoryIds); // استفاده از whereIn به جای where
+            })
+            ->with($this->defaultRelations)
+            ->where('is_active', true)
+            ->latest()
+            ->paginate($perPage);
+
+        return ProductResource::collection($products);
+    }
+}
