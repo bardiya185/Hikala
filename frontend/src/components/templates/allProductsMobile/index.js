@@ -11,7 +11,7 @@ function AllMobile({ data }) {
         <div key={ddd.id} className=" ">
           <div className="w-[300px] h-full border border-solid border-neutral-400 rounded-md ">
             <Image
-              src="/icons/82101-samsung-galaxy-a57-6.jpg"
+              src="/icons/images.jfif"
               width={380}
               height={200}
               alt="p"
