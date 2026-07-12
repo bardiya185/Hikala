@@ -1,8 +1,9 @@
+import AllMobile from '@/components/templates/allProductsMobile'
 import React from 'react'
 
 function page() {
   return (
-    <div>page</div>
+    <AllMobile/>
   )
 }
 

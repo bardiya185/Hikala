@@ -41,6 +41,7 @@ function Header() {
 
   const { data: categoriess } = useGetMainCategories();
   const mainDataArray = categoriess?.data?.data || [];
+  console.log(categoriess)
 
   const { data: categoryMenu, isLoading: isSubLoading } = useGetSubCategory(activeId);
   const subDataArray = categoryMenu?.data?.data || [];
