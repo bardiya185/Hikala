@@ -10,14 +10,197 @@
         }
     ],
     "paths": {
-        "/api/test": {
+        "/api/attributes": {
             "get": {
-                "operationId": "23c51201e748a7a199c8de3b5d30a077",
+                "tags": [
+                    "Attributes"
+                ],
+                "summary": "List Attributes",
+                "description": "Get all attributes with their values.",
+                "operationId": "e43bb61719a288d8fb189dff99cd2160",
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Attributes retrieved successfully."
                     }
                 }
+            },
+            "post": {
+                "tags": [
+                    "Attributes"
+                ],
+                "summary": "Create Attribute",
+                "description": "Create an attribute and its values synchronously.",
+                "operationId": "6d0a530c5b0cb1921e99524ef52ef2ee",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Color"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "color"
+                                    },
+                                    "sort_order": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "values": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "value": {
+                                                    "type": "string",
+                                                    "example": "Red"
+                                                },
+                                                "color_code": {
+                                                    "type": "string",
+                                                    "example": "#FF0000"
+                                                },
+                                                "sort_order": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Attribute created successfully."
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/attributes/{attribute}": {
+            "get": {
+                "tags": [
+                    "Attributes"
+                ],
+                "summary": "Show Attribute",
+                "description": "Get single attribute details with values.",
+                "operationId": "5a49898b4f43064cbca9c879a0671640",
+                "parameters": [
+                    {
+                        "name": "attribute",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Attribute details retrieved."
+                    },
+                    "404": {
+                        "description": "Attribute not found."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Attributes"
+                ],
+                "summary": "Update Attribute",
+                "description": "Update attribute and sync its values completely.",
+                "operationId": "1b217ead9f701da689bcb1b18d672cfd",
+                "parameters": [
+                    {
+                        "name": "attribute",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Color"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Attribute updated successfully."
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Attributes"
+                ],
+                "summary": "Delete Attribute",
+                "operationId": "4dd84fcafd320f3b71dcc72aef3c08f2",
+                "parameters": [
+                    {
+                        "name": "attribute",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Attribute deleted."
+                    },
+                    "400": {
+                        "description": "Cannot delete used attributes."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/refresh-token": {
@@ -51,7 +234,7 @@
                         "description": "Access token created"
                     },
                     "401": {
-                        "description": "Invalid refresh token"
+                        "description": "Invalid or expired refresh token"
                     }
                 }
             }
@@ -85,6 +268,9 @@
                 "responses": {
                     "200": {
                         "description": "OTP sent successfully"
+                    },
+                    "429": {
+                        "description": "Too many requests - Rate limit exceeded"
                     },
                     "422": {
                         "description": "Validation error"
@@ -128,7 +314,7 @@
                         "description": "Login Success"
                     },
                     "401": {
-                        "description": "Invalid OTP"
+                        "description": "Invalid or expired OTP"
                     }
                 }
             }
@@ -174,9 +360,1638 @@
                     }
                 ]
             }
+        },
+        "/api/brands": {
+            "get": {
+                "tags": [
+                    "Brands"
+                ],
+                "summary": "List Brands",
+                "description": "Get all active brands.",
+                "operationId": "130f2bd423b6fe2355253e2c39878d99",
+                "responses": {
+                    "200": {
+                        "description": "Brands retrieved successfully."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Brands"
+                ],
+                "summary": "Create Brand",
+                "description": "Create a new brand.",
+                "operationId": "283de011874bd2a1ada6efafb676e83f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "slug"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Apple"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "apple"
+                                    },
+                                    "logo": {
+                                        "type": "string",
+                                        "example": "brands/apple.png",
+                                        "nullable": true
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Apple official brand",
+                                        "nullable": true
+                                    },
+                                    "sort_order": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Brand created successfully."
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/brands/{brand}": {
+            "get": {
+                "tags": [
+                    "Brands"
+                ],
+                "summary": "Show Brand",
+                "description": "Get brand details.",
+                "operationId": "3d96df73cdcb756852b6818c2ab3cfd1",
+                "parameters": [
+                    {
+                        "name": "brand",
+                        "in": "path",
+                        "description": "Brand ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Brand retrieved successfully."
+                    },
+                    "404": {
+                        "description": "Brand not found."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Brands"
+                ],
+                "summary": "Update Brand",
+                "description": "Update brand information.",
+                "operationId": "51442e7561e7014a84e4cc45cd2a5ce3",
+                "parameters": [
+                    {
+                        "name": "brand",
+                        "in": "path",
+                        "description": "Brand ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Apple"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "apple"
+                                    },
+                                    "logo": {
+                                        "type": "string",
+                                        "example": "brands/apple.png"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Apple official brand"
+                                    },
+                                    "sort_order": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Brand updated successfully."
+                    },
+                    "404": {
+                        "description": "Brand not found."
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Brands"
+                ],
+                "summary": "Delete Brand",
+                "description": "Delete a brand.",
+                "operationId": "6f697728ec03b01b5b1dbe50e023688c",
+                "parameters": [
+                    {
+                        "name": "brand",
+                        "in": "path",
+                        "description": "Brand ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Brand deleted successfully."
+                    },
+                    "400": {
+                        "description": "Cannot delete brand with associated products."
+                    },
+                    "404": {
+                        "description": "Brand not found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "List Categories",
+                "description": "Get all root categories with their children.",
+                "operationId": "ac9c4d978ea4e5b72915ca9728e5b8b1",
+                "responses": {
+                    "200": {
+                        "description": "Categories retrieved successfully."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Create Category",
+                "description": "Create a new category.",
+                "operationId": "cca49a87d9b0ebb9a98ad7c154b71737",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "slug"
+                                ],
+                                "properties": {
+                                    "parent_id": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "موبایل"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "mobile"
+                                    },
+                                    "icon_key": {
+                                        "type": "string",
+                                        "example": "mobile",
+                                        "nullable": true
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "example": "categories/mobile.png",
+                                        "nullable": true
+                                    },
+                                    "sort_order": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Category created successfully."
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/categories/{category}": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Show Category",
+                "description": "Get category details.",
+                "operationId": "ff3ab984d3fe877eb16da6009394d694",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "path",
+                        "description": "Category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category retrieved successfully."
+                    },
+                    "404": {
+                        "description": "Category not found."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Update Category",
+                "description": "Update category information.",
+                "operationId": "3146e96866d62a90bd01a7070fd61470",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "path",
+                        "description": "Category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "parent_id": {
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "موبایل"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "mobile"
+                                    },
+                                    "icon_key": {
+                                        "type": "string",
+                                        "example": "mobile"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "example": "categories/mobile.png"
+                                    },
+                                    "sort_order": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Category updated successfully."
+                    },
+                    "404": {
+                        "description": "Category not found."
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Delete Category",
+                "description": "Delete a category.",
+                "operationId": "88c22abd8149aea4b3bdcb280a0fddf7",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "path",
+                        "description": "Category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category deleted successfully."
+                    },
+                    "404": {
+                        "description": "Category not found."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/categories/menu": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get Category Menu Tree",
+                "description": "Get categories tree for header menu (like Digikala).",
+                "operationId": "36398f4d449211050f1d2a17aae7211c",
+                "responses": {
+                    "200": {
+                        "description": "Categories menu retrieved successfully."
+                    }
+                }
+            }
+        },
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "List Products",
+                "description": "Get all products with pagination.",
+                "operationId": "d97d1c3727cbac49708b85f7d11f7d58",
+                "responses": {
+                    "200": {
+                        "description": "Products retrieved successfully."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Create Product",
+                "operationId": "785644b7d7dd38af4b51dafd0fbc1b6d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "brand_id",
+                                    "title",
+                                    "slug"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Product created successfully."
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{product}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Show Product",
+                "operationId": "db00b523e69d5dbc09c6edad76374bdc",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product retrieved successfully."
+                    },
+                    "404": {
+                        "description": "Product not found."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Update Product",
+                "operationId": "f47cf55f4f3e0b134b5e7d9a8373725d",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product updated successfully."
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Delete Product",
+                "operationId": "ac878db81fdb1333b21fc79e574a5a17",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Product deleted successfully."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/latest": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get latest products",
+                "operationId": "7ffdacbdbf0e7d7f668510c8ce20622a",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Latest products retrieved successfully."
+                    }
+                }
+            }
+        },
+        "/api/products/featured": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get featured products",
+                "operationId": "787711e5f2b08d01a9338d339746e9e1",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Featured products retrieved successfully."
+                    }
+                }
+            }
+        },
+        "/api/products/category/{categoryId}": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get Products by Category",
+                "operationId": "2b2d438bba5934926535a71563d99309",
+                "parameters": [
+                    {
+                        "name": "categoryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Category products retrieved successfully."
+                    },
+                    "404": {
+                        "description": "Category not found."
+                    }
+                }
+            }
+        },
+        "/api/products/filter-options": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get filter options",
+                "description": "Get all available filter options (brands, categories, price range, attributes).",
+                "operationId": "82989189b604a3ca1d5a52c8e80e9c0a",
+                "responses": {
+                    "200": {
+                        "description": "Filter options retrieved successfully."
+                    }
+                }
+            }
+        },
+        "/api/products/filter": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Filter products",
+                "description": "Filter products by category, brand, price range, attributes, and sort.",
+                "operationId": "0c63911eec5023221542bca695b03af8",
+                "parameters": [
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Category ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "brand_id",
+                        "in": "query",
+                        "description": "Brand ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "min_price",
+                        "in": "query",
+                        "description": "Minimum price",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "max_price",
+                        "in": "query",
+                        "description": "Maximum price",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "attributes",
+                        "in": "query",
+                        "description": "Filter by attribute values (comma separated IDs)",
+                        "schema": {
+                            "type": "string",
+                            "example": "1,2,3"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Sort by field (price, view_count, created_at, title)",
+                        "schema": {
+                            "type": "string",
+                            "default": "created_at"
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "Sort order (asc, desc)",
+                        "schema": {
+                            "type": "string",
+                            "default": "desc"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Filtered products retrieved successfully."
+                    }
+                }
+            }
+        },
+        "/api/products/search": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Search products",
+                "description": "Search products by title or description.",
+                "operationId": "c60dc432cf588afd56a409913664a756",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Search query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results retrieved successfully."
+                    }
+                }
+            }
+        },
+        "/api/products/advanced-search": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Advanced search",
+                "description": "Search products with filters.",
+                "operationId": "542846a65b6cb22b63e0452d6e721790",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Search query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Category ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "brand_id",
+                        "in": "query",
+                        "description": "Brand ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "min_price",
+                        "in": "query",
+                        "description": "Minimum price",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "max_price",
+                        "in": "query",
+                        "description": "Maximum price",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results retrieved successfully."
+                    }
+                }
+            }
+        },
+        "/api/products/infinite": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Infinite scroll products",
+                "description": "Load products with cursor-based pagination for infinite scroll. You can sort by id, price, view_count, created_at, title.",
+                "operationId": "7c1c9bb7022e1732c4ef9d7fc12615dc",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "in": "query",
+                        "description": "Cursor for pagination (get from response meta.next_cursor)",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of products per request (max: 50)",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Category ID (e.g., 2 for all mobile, 3 for Apple phones, 12 for Samsung, 20 for Xiaomi, 27 for Other Brands)",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "brand_id",
+                        "in": "query",
+                        "description": "Brand ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "min_price",
+                        "in": "query",
+                        "description": "Minimum price",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "max_price",
+                        "in": "query",
+                        "description": "Maximum price",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "attributes",
+                        "in": "query",
+                        "description": "Filter by attribute values (comma separated IDs, e.g., '1,2,3')",
+                        "schema": {
+                            "type": "string",
+                            "example": ""
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search query for product title or description",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Sort by field (id, price, view_count, created_at, title)",
+                        "schema": {
+                            "type": "string",
+                            "default": "id",
+                            "enum": [
+                                "id",
+                                "price",
+                                "view_count",
+                                "created_at",
+                                "title"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "Sort order (asc: ascending, desc: descending)",
+                        "schema": {
+                            "type": "string",
+                            "default": "asc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Products loaded successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string"
+                                                    },
+                                                    "short_description": {
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    },
+                                                    "view_count": {
+                                                        "type": "integer"
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "brand": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "categories": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "slug": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "variants": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "sku": {
+                                                                    "type": "string"
+                                                                },
+                                                                "price": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "sale_price": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "stock": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "weight": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "attributes": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "attribute_name": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "value": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "color_code": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "has_more": {
+                                                    "type": "boolean"
+                                                },
+                                                "next_cursor": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "limit": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error"
+                    }
+                }
+            }
+        },
+        "/api/products/{product}/images": {
+            "get": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Get product images",
+                "description": "Get all images of a specific product",
+                "operationId": "ea81cedf60c2db84e767ae2b8507806b",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Images retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Upload product image",
+                "description": "Upload a new image for a product",
+                "operationId": "d0143c39e42cbee5f21036b3539793ef",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "image"
+                                ],
+                                "properties": {
+                                    "image": {
+                                        "description": "Image file (jpeg, png, jpg, gif, webp - max 5MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "is_main": {
+                                        "description": "Set as main image",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "alt": {
+                                        "description": "Alt text for image",
+                                        "type": "string",
+                                        "example": "iPhone 15 Pro"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Image uploaded successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{product}/images/{image}": {
+            "delete": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Delete product image",
+                "description": "Delete a product image",
+                "operationId": "7652cb2303a40514a52edc77d55114a8",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "Image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Image deleted successfully"
+                    },
+                    "404": {
+                        "description": "Image not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{product}/images/{image}/main": {
+            "put": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Set main image",
+                "description": "Set an image as the main image for its product",
+                "operationId": "cbd67e08c490feb68f4404e8def173f7",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "image",
+                        "in": "path",
+                        "description": "Image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Main image set successfully"
+                    },
+                    "404": {
+                        "description": "Image not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{product}/images/reorder": {
+            "put": {
+                "tags": [
+                    "Product Images"
+                ],
+                "summary": "Reorder images",
+                "description": "Reorder product images by sending an array of image IDs",
+                "operationId": "8772bdf19e132c0962cc22a0903dc87f",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "order"
+                                ],
+                                "properties": {
+                                    "order": {
+                                        "description": "Array of image IDs in desired order",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            3,
+                                            1,
+                                            2
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Images reordered successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/roles": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Get all roles",
+                "description": "Returns a paginated list of all roles.",
+                "operationId": "getRoles",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Roles retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Role"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Create a new role",
+                "description": "Creates a new role.",
+                "operationId": "storeRole",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "slug"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Administrator"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "admin"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Role created successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Role"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                }
+            }
+        },
+        "/api/roles/{role}": {
+            "get": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Get role by id",
+                "description": "Returns a single role.",
+                "operationId": "showRole",
+                "parameters": [
+                    {
+                        "name": "role",
+                        "in": "path",
+                        "description": "Role ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Role retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Role"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Role not found."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Update a role",
+                "description": "Updates an existing role.",
+                "operationId": "updateRole",
+                "parameters": [
+                    {
+                        "name": "role",
+                        "in": "path",
+                        "description": "Role ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "slug"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Super Administrator"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "admin"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Role updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Role"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Role not found."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Roles"
+                ],
+                "summary": "Delete a role",
+                "description": "Deletes an existing role.",
+                "operationId": "deleteRole",
+                "parameters": [
+                    {
+                        "name": "role",
+                        "in": "path",
+                        "description": "Role ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Role deleted successfully."
+                    },
+                    "400": {
+                        "description": "Bad request / Protected role."
+                    },
+                    "404": {
+                        "description": "Role not found."
+                    }
+                }
+            }
         }
     },
     "components": {
+        "schemas": {
+            "Role": {
+                "required": [
+                    "id",
+                    "name",
+                    "slug"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Administrator"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "admin"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-07-02T12:08:14Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-07-02T12:08:14Z"
+                    }
+                },
+                "type": "object"
+            }
+        },
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
@@ -187,8 +2002,32 @@
     },
     "tags": [
         {
+            "name": "Product Images",
+            "description": "Manage product images"
+        },
+        {
+            "name": "Attributes",
+            "description": "Attributes"
+        },
+        {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Brands",
+            "description": "Brands"
+        },
+        {
+            "name": "Categories",
+            "description": "Categories"
+        },
+        {
+            "name": "Products",
+            "description": "Products"
+        },
+        {
+            "name": "Roles",
+            "description": "Roles"
         }
     ]
 }

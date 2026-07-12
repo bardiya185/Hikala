@@ -50,9 +50,9 @@ return [
     | the Artisan command line tool. You should set this to the root of
     | the application so that it's available within Artisan commands.
     |
-    */
+    *
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://5d02823bc328a3c6-5-121-89-82.serveousercontent.com'),
 
     /*
     |--------------------------------------------------------------------------
