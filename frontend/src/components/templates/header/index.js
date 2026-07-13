@@ -41,7 +41,6 @@ function Header() {
 
   const { data: categoriess } = useGetMainCategories();
   const mainDataArray = categoriess?.data?.data || [];
-  console.log(categoriess)
 
   const { data: categoryMenu, isLoading: isSubLoading } = useGetSubCategory(activeId);
   const subDataArray = categoryMenu?.data?.data || [];
@@ -157,7 +156,7 @@ function Header() {
               ) : (
                 <>
                   <Link
-                    href={`/search/${activeCategory?.slug || ""}`}
+                    href={`/search/mobile/${encodeURIComponent(activeCategory?.id)}`}
                     className="flex items-center gap-1 mb-4 text-[13px] font-bold text-red-600 whitespace-nowrap hover:underline"
                   >
                     All {activeCategory?.name} Products
