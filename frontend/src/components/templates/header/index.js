@@ -10,6 +10,8 @@ import { CiSearch } from "react-icons/ci";
 import { MdShoppingCartCheckout } from "react-icons/md";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { TbChevronRight } from "react-icons/tb";
+import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import AuthForm from "../AuthForm";
 
@@ -39,10 +41,14 @@ function Header() {
   const [activeId, setActiveId] = useState(null); 
   const closeTimer = useRef(null);
 
+  const router = useRouter()
+  const pathname = usePathname()
+
   const { data: categoriess } = useGetMainCategories();
   const mainDataArray = categoriess?.data?.data || [];
 
   const { data: categoryMenu, isLoading: isSubLoading } = useGetSubCategory(activeId);
+  console.log(categoryMenu)
   const subDataArray = categoryMenu?.data?.data || [];
 
   useEffect(() => {
@@ -156,7 +162,7 @@ function Header() {
               ) : (
                 <>
                   <Link
-                    href={`/search/mobile/${encodeURIComponent(activeCategory?.id)}`}
+                    href={`/search/${activeCategory?.slug || "all"}?category_id=${activeCategory?.id}`}
                     className="flex items-center gap-1 mb-4 text-[13px] font-bold text-red-600 whitespace-nowrap hover:underline"
                   >
                     All {activeCategory?.name} Products
@@ -167,7 +173,7 @@ function Header() {
                     {finalSubList?.map((col, idx) => (
                       <div key={col.id || idx} className="flex flex-col whitespace-nowrap">
                         <Link
-                          href={`/search/${col.slug || ""}`}
+                          href={`/search/${col.slug || "category"}?category_id=${col.id}`}
                           className="flex items-center justify-between mb-2 py-1 text-sm font-bold text-neutral-900 border-b border-neutral-100 group"
                         >
                           <span className="group-hover:text-red-600 transition-colors">{col.name}</span>
@@ -178,7 +184,7 @@ function Header() {
                         {(col.children || col.subs || col.leaves)?.map((leaf, lIdx) => (
                           <Link
                             key={leaf.id || lIdx}
-                            href={`/search/${leaf.slug || ""}`}
+                            href={`/search/${leaf.slug || "child"}?category_id=${leaf.id}`}
                             className="py-1 text-[13px] text-neutral-500 hover:text-red-600 transition-colors"
                           >
                             {leaf.name}
