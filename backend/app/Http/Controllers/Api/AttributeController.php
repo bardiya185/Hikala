@@ -67,12 +67,12 @@ class AttributeController extends Controller
     )]
     public function store(StoreAttributeRequest $request)
     {
-        // استفاده از Transaction برای امنیت داده‌ها
+
         $attribute = DB::transaction(function () use ($request) {
             $attr = Attribute::create($request->safe()->except('values'));
 
             if ($request->filled('values')) {
-                // آماده‌سازی آرایه برای درج گروهی (Bulk Insert) جهت پرفورمنس بالاتر
+           
                 $valuesData = [];
                 foreach ($request->values as $item) {
                     $valuesData[] = [
