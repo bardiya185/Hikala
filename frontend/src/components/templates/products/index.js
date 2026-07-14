@@ -77,7 +77,7 @@ function Products({ data, current_sort, current_sortorder }) {
                       <div className="flex items-center gap-1 bg-amber-50 px-2 py-0.5 rounded">
                        <ReactStars 
                          count={5}
-                         value={3.1}
+                         value={ddd.rating}
                          size={24}
                          color2="#fbbf24"
                          edit={false}
@@ -90,7 +90,7 @@ function Products({ data, current_sort, current_sortorder }) {
                       className="flex justify-between items-center mt-3"
                       dir="ltr"
                     >
-                      <div className="flex flex-col gap-0.5">
+                      <div className="flex  gap-3">
                         <p className="text-green-600 font-bold text-[15px]">
                           ${formatPrice(salePrice || price)}
                         </p>

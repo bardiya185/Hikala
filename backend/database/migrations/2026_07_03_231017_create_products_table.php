@@ -46,6 +46,9 @@ return new class extends Migration
         
                 // آمار
                 $table->unsignedBigInteger('view_count')->default(0);
+
+                //امتیاز
+                $table->integer('rating')->default(0);
         
                 // ترتیب نمایش
                 $table->unsignedInteger('sort_order')->default(0);

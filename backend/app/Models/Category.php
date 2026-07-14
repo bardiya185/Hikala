@@ -54,6 +54,9 @@ class Category extends Model
         return $this->belongsToMany(Product::class);
     }
 
-    // app/Models/Category.php
+    public function brands()
+    {
+        return $this->belongsToMany(Brand::class, 'category_brand');
+    }
 
 }

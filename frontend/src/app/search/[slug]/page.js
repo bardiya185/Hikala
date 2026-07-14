@@ -4,7 +4,7 @@ async function getCategoryProducts(category_id, sort_by, sort_order) {
   try {
     // تنظیم مقادیر پیش‌فرض (هماهنگ با بک‌اند)
     const sortBy = sort_by || "created_at";
-    const sortOrder = sort_order || "desc";
+    const sortOrder = sort_order || "asc";
 
     // ساخت URL
     let url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/products?`;
