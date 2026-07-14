@@ -10,6 +10,8 @@ import { CiSearch } from "react-icons/ci";
 import { MdShoppingCartCheckout } from "react-icons/md";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { TbChevronRight } from "react-icons/tb";
+import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import AuthForm from "../AuthForm";
 
@@ -18,36 +20,39 @@ import { useGetMainCategories, useGetSubCategory } from "@/core/services/queries
 const iconMap = {
   "mobile": CiMobile1,
   "laptops": TbDeviceLaptop,
-  "digital": TbDeviceLaptop, 
+  "digital": TbDeviceLaptop,
   "home-kitchen": TbFridge,
   "fashion": TbShirt,
   "gold-jewelry": GiGoldBar,
   "vehicles": GiCarKey,
-  
 };
 
 function CategoryIcon({ iconKey, className }) {
   const IconComponent = iconMap[iconKey];
-
-  if (!IconComponent) return null; 
-
+  if (!IconComponent) return null;
   return <IconComponent className={className} />;
 }
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeId, setActiveId] = useState(null); 
+  const [activeId, setActiveId] = useState(null);
   const closeTimer = useRef(null);
+
+  const router = useRouter();
+  const pathname = usePathname();
 
   const { data: categoriess } = useGetMainCategories();
   const mainDataArray = categoriess?.data?.data || [];
 
   const { data: categoryMenu, isLoading: isSubLoading } = useGetSubCategory(activeId);
+  console.log(categoryMenu);
   const subDataArray = categoryMenu?.data?.data || [];
 
+// ✅ Initialize activeId with "mobile" category
   useEffect(() => {
     if (mainDataArray.length > 0 && !activeId) {
-      setActiveId(mainDataArray[0].id);
+      const targetCategory = mainDataArray.find((c) => c.slug === "mobile");
+      setActiveId(targetCategory?.id || mainDataArray[0]?.id);
     }
   }, [mainDataArray, activeId]);
 
@@ -70,19 +75,34 @@ function Header() {
 
   const activeCategory = mainDataArray?.find((c) => c.id === activeId) || mainDataArray[0];
 
-   
- const finalSubList = Array.isArray(subDataArray)
-  ? subDataArray
-  : (subDataArray?.children || subDataArray?.subs || subDataArray?.subcategories || []);
+ // Helper function: if category has children, return the first child, otherwise return itself
+  const getTargetCategory = (category) => {
+    if (!category) return null;
+    if (category.children && category.children.length > 0) {
+      return category.children[0];
+    }
+    return category;
+  };
+
+  const targetCategory = getTargetCategory(activeCategory);
+
+  const finalSubList = Array.isArray(subDataArray)
+    ? subDataArray
+    : subDataArray?.children || subDataArray?.subs || subDataArray?.subcategories || [];
 
   return (
     <div dir="ltr" className="lg:w-full font-sans select-none">
-      
+      {/* بنر */}
       <div>
-        <Image src="/icons/1.png" width={1270} height={60} alt="banner" className="w-full inline-block" />
+        <Image
+          src="/icons/1.png"
+          width={1270}
+          height={60}
+          alt="banner"
+          className="w-full inline-block"
+        />
       </div>
 
-      
       <div className="flex justify-between items-center px-[16px] mt-[17px]">
         <div className="flex items-center gap-7">
           <Image src="/icons/en-logo.svg" width={195} height={30} alt="logo" />
@@ -94,7 +114,7 @@ function Header() {
             />
           </div>
         </div>
-        
+
         <div className="flex items-center gap-7 pr-[20px]">
           <AuthForm />
           <Link href="/checkout">
@@ -105,7 +125,6 @@ function Header() {
         </div>
       </div>
 
-      
       <div className="relative inline-block mt-4 px-[16px]" onMouseLeave={scheduleClose}>
         <button
           type="button"
@@ -122,7 +141,6 @@ function Header() {
             className="absolute top-[calc(100%+4px)] left-4 z-30 flex w-[700px] h-[350px] bg-white rounded-lg shadow-xl overflow-hidden border border-neutral-100"
             onMouseEnter={clearCloseTimer}
           >
-            
             <nav className="flex flex-col w-[220px] shrink-0 overflow-y-auto border-r border-neutral-100 py-2 bg-neutral-50">
               {mainDataArray?.map((c) => {
                 const isActive = activeId === c.id;
@@ -131,23 +149,30 @@ function Header() {
                     key={c.id}
                     onMouseEnter={() => setActiveId(c.id)}
                     className={`flex items-center justify-between px-4 py-2.5 text-[13px] font-semibold cursor-pointer transition-colors ${
-                      isActive 
-                        ? "bg-white text-red-600 border-l-4 border-l-red-500" 
+                      isActive
+                        ? "bg-white text-red-600 border-l-4 border-l-red-500"
                         : "text-neutral-900 hover:bg-neutral-100"
                     }`}
                   >
                     <div className="flex items-center gap-2">
-                      <CategoryIcon iconKey={c.icon_key} className={`w-[18px] h-[18px] ${isActive ? "text-red-600" : "text-neutral-500"}`} />
-
-                    <span>{c.name}</span>
+                      <CategoryIcon
+                        iconKey={c.icon_key}
+                        className={`w-[18px] h-[18px] ${
+                          isActive ? "text-red-600" : "text-neutral-500"
+                        }`}
+                      />
+                      <span>{c.name}</span>
                     </div>
-                    <TbChevronRight className={`w-3.5 h-3.5 ${isActive ? "text-red-500" : "text-neutral-300"}`} />
+                    <TbChevronRight
+                      className={`w-3.5 h-3.5 ${
+                        isActive ? "text-red-500" : "text-neutral-300"
+                      }`}
+                    />
                   </div>
                 );
               })}
             </nav>
 
-            
             <div className="flex-1 overflow-y-auto px-6 py-5 bg-white relative">
               {isSubLoading ? (
                 <div className="absolute inset-0 flex items-center justify-center bg-white/50">
@@ -156,29 +181,30 @@ function Header() {
               ) : (
                 <>
                   <Link
-                    href={`/search/${activeCategory?.slug || ""}`}
+                    href={`/search/${targetCategory?.slug || "all"}?category_id=${targetCategory?.id}`}
                     className="flex items-center gap-1 mb-4 text-[13px] font-bold text-red-600 whitespace-nowrap hover:underline"
                   >
                     All {activeCategory?.name} Products
                     <TbChevronRight className="w-3.5 h-3.5" />
                   </Link>
-
+          
                   <div className="grid grid-cols-3 gap-6">
                     {finalSubList?.map((col, idx) => (
                       <div key={col.id || idx} className="flex flex-col whitespace-nowrap">
                         <Link
-                          href={`/search/${col.slug || ""}`}
+                          href={`/search/${col.slug || "category"}?category_id=${col.id}`}
                           className="flex items-center justify-between mb-2 py-1 text-sm font-bold text-neutral-900 border-b border-neutral-100 group"
                         >
-                          <span className="group-hover:text-red-600 transition-colors">{col.name}</span>
+                          <span className="group-hover:text-red-600 transition-colors">
+                            {col.name}
+                          </span>
                           <TbChevronRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-red-600 transition-colors" />
                         </Link>
-
-                    
+            
                         {(col.children || col.subs || col.leaves)?.map((leaf, lIdx) => (
                           <Link
                             key={leaf.id || lIdx}
-                            href={`/search/${leaf.slug || ""}`}
+                            href={`/search/${leaf.slug || "child"}?category_id=${leaf.id}`}
                             className="py-1 text-[13px] text-neutral-500 hover:text-red-600 transition-colors"
                           >
                             {leaf.name}

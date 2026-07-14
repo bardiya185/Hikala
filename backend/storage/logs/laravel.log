@@ -53681,6 +53681,7 @@ Did you mean this?
 #44 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('/var/www/html/p...')
 #45 {main}
 "} 
+<<<<<<< HEAD
 [2026-07-12 16:57:03] local.ERROR: Class "Spatie\Permission\PermissionServiceProvider" not found {"exception":"[object] (Error(code: 0): Class \"Spatie\\Permission\\PermissionServiceProvider\" not found at /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Application.php:961)
 [stacktrace]
 #0 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(893): Illuminate\\Foundation\\Application->resolveProvider('Spatie\\\\Permissi...')
@@ -53905,6 +53906,9 @@ Did you mean this?
 #49 {main}
 "} 
 [2026-07-13 06:13:09] local.ERROR: explode(): Argument #2 ($string) must be of type string, Symfony\Component\HttpFoundation\ParameterBag given {"exception":"[object] (TypeError(code: 0): explode(): Argument #2 ($string) must be of type string, Symfony\\Component\\HttpFoundation\\ParameterBag given at /var/www/html/app/Http/Controllers/Api/ProductFilterController.php:191)
+=======
+[2026-07-12 14:08:48] local.ERROR: explode(): Argument #2 ($string) must be of type string, Symfony\Component\HttpFoundation\ParameterBag given {"exception":"[object] (TypeError(code: 0): explode(): Argument #2 ($string) must be of type string, Symfony\\Component\\HttpFoundation\\ParameterBag given at /var/www/html/app/Http/Controllers/Api/ProductFilterController.php:191)
+>>>>>>> frontend
 [stacktrace]
 #0 /var/www/html/app/Http/Controllers/Api/ProductFilterController.php(191): explode(',', Object(Symfony\\Component\\HttpFoundation\\ParameterBag))
 #1 /var/www/html/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(46): App\\Http\\Controllers\\Api\\ProductFilterController->filter(Object(Illuminate\\Http\\Request))
@@ -53947,6 +53951,7 @@ Did you mean this?
 #38 /var/www/html/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(23): require_once('/var/www/html/p...')
 #39 {main}
 "} 
+<<<<<<< HEAD
 [2026-07-13 06:13:59] local.ERROR: explode(): Argument #2 ($string) must be of type string, Symfony\Component\HttpFoundation\ParameterBag given {"exception":"[object] (TypeError(code: 0): explode(): Argument #2 ($string) must be of type string, Symfony\\Component\\HttpFoundation\\ParameterBag given at /var/www/html/app/Http/Controllers/Api/ProductFilterController.php:191)
 [stacktrace]
 #0 /var/www/html/app/Http/Controllers/Api/ProductFilterController.php(191): explode(',', Object(Symfony\\Component\\HttpFoundation\\ParameterBag))
@@ -57836,3 +57841,5 @@ Did you mean this?
 #25 /var/www/html/artisan(16): Illuminate\\Foundation\\Application->handleCommand(Object(Symfony\\Component\\Console\\Input\\ArgvInput))
 #26 {main}
 "} 
+=======
+>>>>>>> frontend
