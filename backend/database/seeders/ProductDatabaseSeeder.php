@@ -13,18 +13,14 @@ class ProductDatabaseSeeder extends Seeder
         foreach ($children as $child) {
             $baseSlug = $child['slug'];
             
-            // بررسی وجود اسلاگ
             $existing = DB::table('categories')->where('slug', $baseSlug)->first();
             
             if ($existing) {
-                // گرفتن نام دسته‌بندی والد
                 $parent = DB::table('categories')->where('id', $parentId)->first();
                 $parentSlug = $parent ? $parent->slug : 'sub';
                 
-                // اسلاگ جدید با نام والد
                 $finalSlug = $baseSlug . '-' . $parentSlug;
                 
-                // اگر باز هم تکراری بود، عدد اضافه کن
                 $counter = 2;
                 while (DB::table('categories')->where('slug', $finalSlug)->exists()) {
                     $finalSlug = $baseSlug . '-' . $parentSlug . '-' . $counter;
@@ -61,6 +57,7 @@ class ProductDatabaseSeeder extends Seeder
             }
         }
     }
+
     public function run()
     {
         $this->command->info('🚀 Starting complete product seeding...');
@@ -1973,10 +1970,97 @@ class ProductDatabaseSeeder extends Seeder
         $this->command->info('✅ Brands created!');
 
         // ================================================================
-        // 3. CREATE PRODUCTS WITH VARIANTS
+        // 3. CREATE PRODUCTS WITH VARIANTS (بدون عکس و بدون نام رندوم)
         // ================================================================
         $this->command->info('🔄 Creating products with variants...');
 
+        // Product descriptions mapping
+        $descriptions = [
+            'iPhone' => 'The latest iPhone with cutting-edge technology, featuring a stunning Super Retina XDR display, powerful A-series chip, and an advanced dual-camera system for exceptional photos and videos.',
+            'Galaxy' => 'Samsung Galaxy series delivers premium performance with a dynamic AMOLED display, versatile multi-lens camera, and long-lasting battery, perfect for productivity and entertainment.',
+            'Xiaomi' => 'Xiaomi smartphone offers flagship-level features at an affordable price, with a high-refresh-rate display, powerful processor, and impressive camera capabilities.',
+            'MacBook' => 'Apple MacBook combines sleek design with powerful performance, featuring a brilliant Retina display, all-day battery life, and the intuitive macOS ecosystem.',
+            'ASUS' => 'ASUS laptop delivers reliable performance with innovative cooling technology, a vibrant display, and premium build quality for both work and gaming.',
+            'Lenovo' => 'Lenovo laptop offers versatile performance with a comfortable keyboard, long battery life, and robust security features for business and everyday use.',
+            'Gaming' => 'High-performance gaming device with powerful graphics, fast refresh rate, and advanced cooling system for an immersive gaming experience.',
+            'PS5' => 'PlayStation 5 delivers next-generation gaming with ultra-fast SSD, stunning 4K graphics, and immersive haptic feedback for a revolutionary gaming experience.',
+            'Xbox' => 'Xbox Series X offers powerful gaming performance with quick resume, 4K gaming at up to 120 FPS, and access to hundreds of games with Game Pass.',
+            'Sony WH-1000XM5' => 'Industry-leading noise cancellation with exceptional sound quality, comfortable design, and up to 30 hours of battery life for immersive audio experience.',
+            'AirPods Pro' => 'AirPods Pro feature active noise cancellation, adaptive audio, and spatial sound for an immersive listening experience with seamless Apple integration.',
+            'Samsung Galaxy Watch' => 'Samsung Galaxy Watch combines advanced health tracking, fitness features, and smartwatch capabilities with a stylish design and long battery life.',
+            'iPad Pro' => 'iPad Pro delivers pro-level performance with the M-series chip, stunning Liquid Retina XDR display, and Apple Pencil support for creativity and productivity.',
+            'JBL Charge' => 'JBL Charge speaker offers powerful sound, deep bass, and a built-in power bank for charging your devices, perfect for outdoor adventures.',
+            'Canon EOS' => 'Canon EOS camera delivers professional-grade photography with high-resolution sensors, advanced autofocus, and exceptional image quality.',
+            'Anker' => 'Anker power bank provides fast and reliable charging with high-capacity battery, multiple ports, and advanced safety features for your devices.',
+            'Intel Core' => 'Intel Core processor delivers exceptional performance for gaming, content creation, and multitasking with advanced AI capabilities and energy efficiency.',
+            'NVIDIA RTX' => 'NVIDIA RTX graphics card offers real-time ray tracing and AI-powered performance for stunning visuals in gaming and creative applications.',
+            'Xiaomi Smart Home' => 'Xiaomi Smart Home devices offer seamless integration, voice control, and automation for a smarter, more convenient living experience.',
+            'Google Nest' => 'Google Nest smart home devices provide intelligent assistance, voice control, and home automation with built-in Google Assistant.',
+            'HP LaserJet' => 'HP LaserJet printer delivers fast, high-quality printing with reliable performance, making it perfect for home office and business needs.',
+            'Samsung SSD' => 'Samsung SSD offers lightning-fast read and write speeds, reliable storage, and advanced data protection for your files and applications.',
+            'TP-Link Router' => 'TP-Link router provides fast and stable Wi-Fi coverage with advanced security features and easy setup for seamless connectivity.',
+            'Non-Stick Frying Pan' => 'Premium non-stick frying pan with durable coating, even heat distribution, and comfortable handle for perfect cooking results.',
+            'Pressure Cooker' => 'Multi-function pressure cooker with smart programs, fast cooking, and safety features for delicious meals in minutes.',
+            'Coffee Maker' => 'Coffee maker with programmable settings, brew strength control, and thermal carafe for the perfect cup of coffee every time.',
+            'Sofa Set' => 'Elegant sofa set with premium upholstery, comfortable cushions, and modern design that complements any living space.',
+            'Dining Table' => 'Stylish dining table with durable construction, spacious surface, and elegant design perfect for family gatherings.',
+            'Chandelier' => 'Beautiful chandelier with high-quality crystals, warm lighting, and timeless design that adds elegance to any room.',
+            'Bed' => 'Comfortable bed with premium mattress, sturdy frame, and elegant design for a perfect night\'s sleep.',
+            'Persian Carpet' => 'Handmade Persian carpet with intricate patterns, premium wool material, and rich colors that add warmth to any room.',
+            'LG Refrigerator' => 'LG refrigerator with Smart Inverter Compressor, advanced cooling technology, and spacious storage for fresh food preservation.',
+            'Samsung Refrigerator' => 'Samsung refrigerator with Family Hub, Twin Cooling Plus, and adjustable shelving for optimal food storage and organization.',
+            'LG Washing Machine' => 'LG washing machine with AI-powered technology, TurboWash, and Steam technology for superior cleaning and fabric care.',
+            'Bosch Dishwasher' => 'Bosch dishwasher with SilentDrive technology, efficient cleaning, and energy-saving features for sparkling dishes.',
+            'Robot Vacuum' => 'Smart robot vacuum with laser navigation, powerful suction, and automated cleaning for effortless floor maintenance.',
+            'Air Fryer' => 'Healthy air fryer with rapid air technology, adjustable temperature, and preset programs for crispy, delicious meals with less oil.',
+            'Microwave Oven' => 'Microwave oven with smart sensor technology, multiple power levels, and easy-to-use controls for quick and efficient cooking.',
+            'Sony OLED TV' => 'Sony OLED TV with Cognitive Processor XR, perfect contrast, and immersive sound for cinematic viewing experience.',
+            'Samsung QLED TV' => 'Samsung QLED TV with Quantum Dot technology, 100% color volume, and smart features for stunning picture quality.',
+            'Moisturizer Cream' => 'Hydrating moisturizer cream with natural ingredients, SPF protection, and anti-aging properties for healthy, glowing skin.',
+            'Sunscreen SPF 50' => 'High-protection sunscreen with SPF 50, PA+++, and lightweight formula for daily sun protection without white cast.',
+            'Lipstick' => 'Luxurious lipstick with rich pigments, moisturizing formula, and long-lasting color for perfect lips all day.',
+            'Shampoo' => 'Nourishing shampoo with natural extracts, gentle cleansing, and revitalizing formula for healthy, shiny hair.',
+            'Hair Dryer' => 'Professional hair dryer with ionic technology, multiple heat settings, and high-speed airflow for salon-quality blowouts.',
+            'Dior Sauvage' => 'Dior Sauvage fragrance with fresh, sophisticated scent notes of bergamot, pepper, and ambroxan for a bold, masculine aroma.',
+            'Chanel No.5' => 'Chanel No.5 iconic fragrance with floral, powdery notes and timeless elegance for the sophisticated woman.',
+            'Electric Toothbrush' => 'Electric toothbrush with sonic technology, multiple brushing modes, and smart timer for optimal oral hygiene.',
+            'Men\'s T-Shirt' => 'Classic men\'s t-shirt with soft cotton fabric, comfortable fit, and versatile style for everyday wear.',
+            'Men\'s Jeans' => 'Men\'s jeans with premium denim, comfortable stretch, and modern fit for casual style and all-day comfort.',
+            'Women\'s Dress' => 'Elegant women\'s dress with flattering silhouette, high-quality fabric, and versatile design for any occasion.',
+            'Manteau' => 'Stylish manteau with premium fabric, elegant design, and comfortable fit for sophisticated everyday wear.',
+            'Nike Air Max' => 'Nike Air Max sneakers with iconic Air cushioning, breathable mesh upper, and stylish design for comfort and performance.',
+            'Adidas Ultraboost' => 'Adidas Ultraboost running shoes with responsive cushioning, energy-returning boost foam, and comfortable Primeknit upper.',
+            'Women\'s Handbag' => 'Elegant women\'s handbag with premium leather, spacious interior, and versatile design for daily use.',
+            'Rolex Watch' => 'Rolex luxury watch with precision Swiss movement, premium materials, and timeless design for the discerning gentleman.',
+            'Gold Necklace' => 'Gold necklace with 24K gold, elegant design, and timeless beauty for special occasions and everyday elegance.',
+            'Diamond Ring' => 'Diamond ring with brilliant-cut stones, 18K gold setting, and stunning design for engagement or special occasions.',
+            'BMW 5 Series' => 'BMW 5 Series luxury sedan with powerful performance, advanced technology, and elegant design for a premium driving experience.',
+            'Mercedes E-Class' => 'Mercedes E-Class executive sedan with sophisticated design, luxurious interior, and cutting-edge technology for comfortable travel.',
+            'Toyota Camry' => 'Toyota Camry reliable sedan with efficient performance, spacious interior, and advanced safety features for comfortable family travel.',
+            'Honda Civic' => 'Honda Civic sporty sedan with responsive handling, fuel-efficient engine, and modern design for enjoyable daily driving.',
+            'Blood Pressure Monitor' => 'Blood pressure monitor with accurate measurement, easy-to-read display, and memory function for health monitoring.',
+            'Digital Thermometer' => 'Digital thermometer with fast reading, high accuracy, and fever alert for convenient health monitoring.',
+            'Knee Brace' => 'Knee brace with compression support, adjustable straps, and breathable material for injury recovery and joint protection.',
+            'Vitamin C' => 'Vitamin C supplement with high potency, antioxidant properties, and immune system support for overall health.',
+            'Omega-3' => 'Omega-3 supplement with essential fatty acids, heart health benefits, and brain function support for overall wellness.',
+            'Treadmill' => 'Treadmill with incline adjustment, heart rate monitoring, and multiple workout programs for effective home fitness.',
+            'Makita Drill' => 'Makita drill with powerful motor, variable speed, and durable construction for professional drilling and driving tasks.',
+            'Screwdriver Set' => 'Precision screwdriver set with multiple bits, comfortable handle, and durable steel for detailed repairs and DIY projects.',
+            'Lawn Mower' => 'Lawn mower with powerful engine, adjustable cutting height, and easy-start system for maintaining a beautiful lawn.',
+            '1984 George Orwell' => '1984 by George Orwell - A classic dystopian novel exploring themes of totalitarianism, surveillance, and individual freedom.',
+            'Atomic Habits' => 'Atomic Habits by James Clear - An easy and proven way to build good habits and break bad ones through small changes.',
+            'Oil Painting Canvas' => 'High-quality oil painting canvas with premium materials, ready-to-hang design, and beautiful artwork for home decoration.',
+            'Boxing Punching Bag' => 'Boxing punching bag with durable construction, heavy-duty materials, and professional design for effective training.',
+            'Yoga Mat' => 'Yoga mat with non-slip surface, comfortable thickness, and lightweight design for convenient exercise and meditation.',
+            'Suitcase 4 Wheels' => 'Suitcase with four smooth-rolling wheels, durable construction, and spacious interior for convenient travel.',
+            'Digikala Gift Card' => 'Digikala gift card - the perfect gift for any occasion, redeemable for millions of products on Digikala.',
+            'PlayStation Gift Card' => 'PlayStation gift card for purchasing games, subscriptions, and content on PlayStation Store.',
+        ];
+
+        $productCount = 0;
+        $variantCount = 0;
+
+        // لیست محصولات - بدون نام رندوم
         $productsData = [
             // ===== MOBILE =====
             ['title' => 'iPhone 16 Pro', 'category' => 'Apple Phones', 'brand' => 'Apple'],
@@ -2116,7 +2200,6 @@ class ProductDatabaseSeeder extends Seeder
             ['title' => 'Knee Brace', 'category' => 'Orthopedic', 'brand' => 'Nivea'],
             ['title' => 'Vitamin C', 'category' => 'Supplements', 'brand' => 'Nivea'],
             ['title' => 'Omega-3', 'category' => 'Supplements', 'brand' => 'Nivea'],
-            ['title' => 'Electric Toothbrush', 'category' => 'Dental Care', 'brand' => 'Philips'],
             ['title' => 'Treadmill', 'category' => 'Fitness Equipment', 'brand' => 'Nike'],
             
             // ===== TOOLS & EQUIPMENT =====
@@ -2141,9 +2224,6 @@ class ProductDatabaseSeeder extends Seeder
             ['title' => 'PlayStation Gift Card', 'category' => 'Digital Gift Cards', 'brand' => 'PlayStation'],
         ];
 
-        $productCount = 0;
-        $variantCount = 0;
-
         foreach ($productsData as $productData) {
             $category = DB::table('categories')->where('name', $productData['category'])->first();
             
@@ -2156,24 +2236,37 @@ class ProductDatabaseSeeder extends Seeder
             if (!$brand) {
                 $brand = DB::table('brands')->inRandomOrder()->first();
             }
-            $title = $productData['title'] . ' ' . Str::random(4);
+
+            // استفاده از نام محصول بدون تغییر (بدون نام رندوم)
+            $title = $productData['title'];
             $slug = Str::slug($title) . '-' . uniqid();
-            $price = rand(1000, 500000) / 100; 
-            $price = round($price, 2);
+            $price = rand(100, 5000);
             $salePrice = $price * rand(7, 9) / 10;
-            $salePrice = round($salePrice / 1000) * 1000;
+            $salePrice = round($salePrice / 100) * 100;
+
+            // Generate description
+            $description = '';
+            foreach ($descriptions as $key => $desc) {
+                if (strpos($title, $key) !== false) {
+                    $description = $desc;
+                    break;
+                }
+            }
+            if (empty($description)) {
+                $description = 'Premium ' . $productData['title'] . ' with high-quality features, excellent performance, and modern design. Perfect for everyday use and professional needs.';
+            }
 
             $productId = DB::table('products')->insertGetId([
                 'brand_id' => $brand->id,
                 'title' => $title,
-               'slug' => $slug,
-                'short_description' => 'Short description for ' . $title,
-                'description' => '<p>Full description for ' . $title . '</p>',
+                'slug' => $slug,
+                'short_description' => Str::limit($description, 120),
+                'description' => '<p>' . $description . '</p><p>Experience the best quality with our ' . $title . '. This product offers exceptional value, durability, and style. Perfect for those who appreciate quality and performance.</p>',
                 'status' => 'active',
-                'meta_title' => $title,
-                'meta_keywords' => $title . ', buy, shop',
-                'meta_description' => 'Buy ' . $title . ' with best price',
-                'view_count' => rand(0, 1000),
+                'meta_title' => $title . ' | Buy with best price',
+                'meta_keywords' => $title . ', buy, shop, best price, quality, ' . $productData['brand'],
+                'meta_description' => 'Buy ' . $title . ' with best price. ' . Str::limit($description, 150),
+                'view_count' => rand(100, 50000),
                 'is_active' => 1,
                 'created_at' => now(),
                 'updated_at' => now()
@@ -2186,16 +2279,24 @@ class ProductDatabaseSeeder extends Seeder
                 'updated_at' => now()
             ]);
 
+            // Insert 2-4 variants for each product
             $variantCountPerProduct = rand(2, 4);
-            for ($v = 1; $v <= $variantCountPerProduct; $v++) {
-                $variantPrice = $price * rand(8, 13) / 10;
-                $variantPrice = round($variantPrice, 2);
-                
-              
-                $variantSalePrice = $variantPrice * rand(6, 9) / 10;
-                $variantSalePrice = round($variantSalePrice, 2);
+            $isDefault = true;
+            $colors = ['Black', 'White', 'Silver', 'Gold', 'Blue', 'Red', 'Green', 'Purple', 'Pink', 'Space Gray'];
+            $usedColors = [];
 
-                DB::table('product_variants')->insert([
+            for ($v = 1; $v <= $variantCountPerProduct; $v++) {
+                // Pick a random color not used yet
+                $availableColors = array_diff($colors, $usedColors);
+                if (empty($availableColors)) break;
+                $color = $availableColors[array_rand($availableColors)];
+                $usedColors[] = $color;
+
+                $priceModifier = rand(90, 110) / 100;
+                $variantPrice = round($price * $priceModifier, 2);
+                $variantSalePrice = round($variantPrice * rand(7, 9) / 10, 2);
+
+                $variantId = DB::table('product_variants')->insertGetId([
                     'product_id' => $productId,
                     'sku' => 'SKU-' . $productId . '-' . $v . '-' . Str::random(3),
                     'barcode' => rand(1000000000000, 9999999999999),
@@ -2204,17 +2305,46 @@ class ProductDatabaseSeeder extends Seeder
                     'stock' => rand(5, 50),
                     'weight' => rand(100, 1000),
                     'is_active' => 1,
+                    'is_default' => $isDefault,
                     'created_at' => now(),
                     'updated_at' => now()
                 ]);
+
+                // Add color attribute to variant
+                $colorAttr = DB::table('attributes')->where('slug', 'color')->first();
+                if ($colorAttr) {
+                    $colorValue = DB::table('attribute_values')
+                        ->where('attribute_id', $colorAttr->id)
+                        ->where('value', $color)
+                        ->first();
+                    
+                    if ($colorValue) {
+                        DB::table('product_variant_attribute_values')->insert([
+                            'product_variant_id' => $variantId,
+                            'attribute_value_id' => $colorValue->id,
+                            'created_at' => now(),
+                            'updated_at' => now()
+                        ]);
+                    }
+                }
+
+                $isDefault = false;
                 $variantCount++;
             }
+
+            // ✅ حذف بخش دانلود و ذخیره عکس‌ها
+            // (بدون عکس)
+
             $productCount++;
+            if ($productCount % 20 === 0) {
+                $this->command->info('  📦 Created ' . $productCount . ' products...');
+            }
         }
 
         $this->command->info('✅ ' . $productCount . ' products created!');
         $this->command->info('✅ ' . $variantCount . ' variants created!');
         $this->command->info('📊 Total categories: ' . DB::table('categories')->count());
         $this->command->info('🏷️ Total brands: ' . DB::table('brands')->count());
+        $this->command->info('🖼️ Total images: 0 (images removed)');
     }
 }
