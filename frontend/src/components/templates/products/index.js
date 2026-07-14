@@ -29,13 +29,13 @@ function Products({ data, current_sort, current_sortorder }) {
     <>
       <div className="max-w-[1270px] grid grid-cols-4 gap-3">
         {data?.map((ddd) => (
-          <div key={ddd.id}>
+          <div className="group transform transition-all duration-300 ease-in-out hover:-translate-y-2 hover:shadow-lg rounded-[20px]" key={ddd.id}>
             <div className="w-full w-[300px] h-auto  rounded-[20px]">
               <div className="w-full h-fit px-3 py-3 rounded-[20px] ">
                 <div className="  rounded-[10px] w-full h-full border border-solid  px-4 py-4  ">
                   <Image
                     src="/icons/images.jfif"
-                    className="w-50 flex self-center m-auto object-cover rounded-[20px] bg-none "
+                    className="w-50 flex self-center m-auto object-cover rounded-[20px]  bg-none "
                     width={200}
                     height={250}
                     alt="e"
