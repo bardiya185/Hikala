@@ -35,6 +35,9 @@ importers:
       react-icons:
         specifier: ^5.6.0
         version: 5.7.0(react@19.1.0)
+      react-stars:
+        specifier: ^2.2.5
+        version: 2.2.5
       react18-input-otp:
         specifier: ^1.1.4
         version: 1.1.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1738,6 +1741,9 @@ packages:
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+
+  react-stars@2.2.5:
+    resolution: {integrity: sha512-O//KS6Z9RZnUOU/r+3+wxCzNalVn/wEWIcbAQFRV3dw8WbV+ys/kgcpBPijqTiNpHGrcwZdtb/7wF/UVem20CQ==}
 
   react-stately@3.48.0:
     resolution: {integrity: sha512-ImicSAG+lTotAe5izcs1fz49Zk48w7pDusqYg04WaPhCoej8BJ24soMu3iLXIrsi273s4P1gZrYGrqReMfgEEA==}
@@ -3804,6 +3810,8 @@ snapshots:
       react: 19.1.0
 
   react-is@16.13.1: {}
+
+  react-stars@2.2.5: {}
 
   react-stately@3.48.0(react@19.1.0):
     dependencies:
