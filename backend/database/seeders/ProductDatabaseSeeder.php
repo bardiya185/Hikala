@@ -307,222 +307,228 @@ class ProductDatabaseSeeder extends Seeder
                 'sort_order' => 3,
                 'children' => [
                     [
-                        'name' => 'Gaming Consoles',
-                        'slug' => 'gaming-consoles',
+                        'name' => 'Select Digital',
+                        'slug' => 'select-digital',
                         'children' => [
-                            ['name' => 'PS5', 'slug' => 'ps5'],
-                            ['name' => 'PS5 Slim', 'slug' => 'ps5-slim'],
-                            ['name' => 'PS5 Pro', 'slug' => 'ps5-pro'],
-                            ['name' => 'Xbox Series X', 'slug' => 'xbox-series-x'],
-                            ['name' => 'Xbox Series S', 'slug' => 'xbox-series-s'],
-                            ['name' => 'Nintendo Switch OLED', 'slug' => 'nintendo-switch-oled'],
-                            ['name' => 'Nintendo Switch Lite', 'slug' => 'nintendo-switch-lite'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Gaming Accessories',
-                        'slug' => 'gaming-accessories',
-                        'children' => [
-                            ['name' => 'Game Controllers', 'slug' => 'game-controllers'],
-                            ['name' => 'Gaming Headsets', 'slug' => 'gaming-headsets'],
-                            ['name' => 'Gaming Keyboards', 'slug' => 'gaming-keyboards'],
-                            ['name' => 'Gaming Mice', 'slug' => 'gaming-mice'],
-                            ['name' => 'Racing Wheels', 'slug' => 'racing-wheels'],
-                            ['name' => 'Gaming Chairs', 'slug' => 'gaming-chairs'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Gaming Games',
-                        'slug' => 'gaming-games',
-                        'children' => [
-                            ['name' => 'PS5 Games', 'slug' => 'ps5-games'],
-                            ['name' => 'PS4 Games', 'slug' => 'ps4-games'],
-                            ['name' => 'Xbox Games', 'slug' => 'xbox-games'],
-                            ['name' => 'PC Games', 'slug' => 'pc-games'],
-                            ['name' => 'Nintendo Games', 'slug' => 'nintendo-games'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Headphones',
-                        'slug' => 'headphones',
-                        'children' => [
-                            ['name' => 'Sony WH-1000XM5', 'slug' => 'sony-wh-1000xm5'],
-                            ['name' => 'Sony WH-1000XM4', 'slug' => 'sony-wh-1000xm4'],
-                            ['name' => 'JBL Tune 770NC', 'slug' => 'jbl-tune-770nc'],
-                            ['name' => 'Bose QC45', 'slug' => 'bose-qc45'],
-                            ['name' => 'Apple AirPods Pro 2', 'slug' => 'apple-airpods-pro-2'],
-                            ['name' => 'Apple AirPods Max', 'slug' => 'apple-airpods-max'],
-                            ['name' => 'Samsung Galaxy Buds 2 Pro', 'slug' => 'samsung-buds-2-pro'],
-                            ['name' => 'Xiaomi Buds 3 Pro', 'slug' => 'xiaomi-buds-3-pro'],
-                            ['name' => 'Anker Soundcore Q45', 'slug' => 'anker-soundcore-q45'],
-                            ['name' => 'Razer Barracuda Pro', 'slug' => 'razer-barracuda-pro'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Smartwatches',
-                        'slug' => 'smartwatches',
-                        'children' => [
-                            ['name' => 'Apple Watch Ultra 2', 'slug' => 'apple-watch-ultra-2'],
-                            ['name' => 'Apple Watch Series 9', 'slug' => 'apple-watch-series-9'],
-                            ['name' => 'Apple Watch SE 2', 'slug' => 'apple-watch-se-2'],
-                            ['name' => 'Samsung Galaxy Watch 6', 'slug' => 'samsung-watch-6'],
-                            ['name' => 'Samsung Galaxy Watch 6 Classic', 'slug' => 'samsung-watch-6-classic'],
-                            ['name' => 'Xiaomi Watch S3', 'slug' => 'xiaomi-watch-s3'],
-                            ['name' => 'Xiaomi Watch 2', 'slug' => 'xiaomi-watch-2'],
-                            ['name' => 'Garmin Fenix 7', 'slug' => 'garmin-fenix-7'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Tablets',
-                        'slug' => 'tablets',
-                        'children' => [
-                            ['name' => 'iPad Pro M4', 'slug' => 'ipad-pro-m4'],
-                            ['name' => 'iPad Air M2', 'slug' => 'ipad-air-m2'],
-                            ['name' => 'iPad 10th Gen', 'slug' => 'ipad-10th-gen'],
-                            ['name' => 'Samsung Galaxy Tab S9', 'slug' => 'samsung-tab-s9'],
-                            ['name' => 'Samsung Galaxy Tab S9 Ultra', 'slug' => 'samsung-tab-s9-ultra'],
-                            ['name' => 'Xiaomi Pad 6', 'slug' => 'xiaomi-pad-6'],
-                            ['name' => 'Xiaomi Pad 6 Pro', 'slug' => 'xiaomi-pad-6-pro'],
-                            ['name' => 'Lenovo Tab P12', 'slug' => 'lenovo-tab-p12'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Speakers',
-                        'slug' => 'speakers',
-                        'children' => [
-                            ['name' => 'JBL Charge 5', 'slug' => 'jbl-charge-5'],
-                            ['name' => 'JBL Flip 6', 'slug' => 'jbl-flip-6'],
-                            ['name' => 'Sony SRS-XG300', 'slug' => 'sony-srs-xg300'],
-                            ['name' => 'Bose SoundLink Max', 'slug' => 'bose-soundlink-max'],
-                            ['name' => 'Marshall Middleton', 'slug' => 'marshall-middleton'],
-                            ['name' => 'Anker Soundcore Motion+', 'slug' => 'anker-soundcore-motion-plus'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Cameras',
-                        'slug' => 'cameras',
-                        'children' => [
-                            ['name' => 'Canon EOS R5', 'slug' => 'canon-eos-r5'],
-                            ['name' => 'Canon EOS R6 Mark II', 'slug' => 'canon-eos-r6-mark-ii'],
-                            ['name' => 'Sony Alpha A7 IV', 'slug' => 'sony-alpha-a7-iv'],
-                            ['name' => 'Sony Alpha A7R V', 'slug' => 'sony-alpha-a7r-v'],
-                            ['name' => 'Nikon Z8', 'slug' => 'nikon-z8'],
-                            ['name' => 'Nikon Z9', 'slug' => 'nikon-z9'],
-                            ['name' => 'DJI Pocket 3', 'slug' => 'dji-pocket-3'],
-                            ['name' => 'Instax Mini 12', 'slug' => 'instax-mini-12'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Power Banks',
-                        'slug' => 'power-banks',
-                        'children' => [
-                            ['name' => 'Anker 20000mAh', 'slug' => 'anker-20000mah'],
-                            ['name' => 'Anker 10000mAh', 'slug' => 'anker-10000mah'],
-                            ['name' => 'Xiaomi 30000mAh', 'slug' => 'xiaomi-30000mah'],
-                            ['name' => 'Xiaomi 20000mAh', 'slug' => 'xiaomi-20000mah'],
-                            ['name' => 'Samsung 10000mAh', 'slug' => 'samsung-10000mah'],
-                            ['name' => 'Apple MagSafe Battery', 'slug' => 'apple-magsafe-battery'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Computer Components',
-                        'slug' => 'computer-components',
-                        'children' => [
-                            ['name' => 'Intel Core i9-14900K', 'slug' => 'intel-core-i9-14900k'],
-                            ['name' => 'Intel Core i7-14700K', 'slug' => 'intel-core-i7-14700k'],
-                            ['name' => 'AMD Ryzen 9 7950X', 'slug' => 'amd-ryzen-9-7950x'],
-                            ['name' => 'AMD Ryzen 7 7800X3D', 'slug' => 'amd-ryzen-7-7800x3d'],
-                            ['name' => 'NVIDIA RTX 4090', 'slug' => 'nvidia-rtx-4090'],
-                            ['name' => 'NVIDIA RTX 4080 Super', 'slug' => 'nvidia-rtx-4080-super'],
-                            ['name' => 'NVIDIA RTX 4070 Ti', 'slug' => 'nvidia-rtx-4070-ti'],
-                            ['name' => 'ASUS ROG Motherboard Z790', 'slug' => 'asus-rog-z790'],
-                            ['name' => 'MSI Motherboard B760', 'slug' => 'msi-b760'],
-                            ['name' => 'Corsair Vengeance 32GB RAM', 'slug' => 'corsair-vengeance-32gb'],
-                            ['name' => 'G.Skill Trident 16GB RAM', 'slug' => 'gskill-trident-16gb'],
-                            ['name' => 'Samsung 990 Pro SSD', 'slug' => 'samsung-990-pro-ssd'],
-                            ['name' => 'Western Digital Black SSD', 'slug' => 'wd-black-ssd'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Smart Home',
-                        'slug' => 'smart-home',
-                        'children' => [
-                            ['name' => 'Xiaomi Smart Hub', 'slug' => 'xiaomi-smart-hub'],
-                            ['name' => 'Xiaomi Smart Light Bulb', 'slug' => 'xiaomi-smart-light'],
-                            ['name' => 'Xiaomi Smart Plug', 'slug' => 'xiaomi-smart-plug'],
-                            ['name' => 'Google Nest Hub 2', 'slug' => 'google-nest-hub-2'],
-                            ['name' => 'Google Nest Mini', 'slug' => 'google-nest-mini'],
-                            ['name' => 'Amazon Echo Show 8', 'slug' => 'amazon-echo-show-8'],
-                            ['name' => 'Amazon Echo Dot', 'slug' => 'amazon-echo-dot'],
-                            ['name' => 'TP-Link Smart Switch', 'slug' => 'tplink-smart-switch'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Printers',
-                        'slug' => 'printers',
-                        'children' => [
-                            ['name' => 'HP LaserJet Pro MFP', 'slug' => 'hp-laserjet-pro-mfp'],
-                            ['name' => 'HP Deskjet 2755', 'slug' => 'hp-deskjet-2755'],
-                            ['name' => 'Creality Ender 3 V2', 'slug' => 'creality-ender-3-v2'],
-                            ['name' => 'Epson EcoTank L3110', 'slug' => 'epson-ecotank-l3110'],
-                            ['name' => 'Brother Thermal Printer', 'slug' => 'brother-thermal-printer'],
-                            ['name' => 'Canon ImageClass MF', 'slug' => 'canon-imageclass-mf'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Storage Devices',
-                        'slug' => 'storage-devices',
-                        'children' => [
-                            ['name' => 'Samsung 1TB SSD', 'slug' => 'samsung-1tb-ssd'],
-                            ['name' => 'Western Digital 2TB HDD', 'slug' => 'wd-2tb-hdd'],
-                            ['name' => 'Seagate 4TB External HDD', 'slug' => 'seagate-4tb-external'],
-                            ['name' => 'SanDisk 128GB Flash', 'slug' => 'sandisk-128gb-flash'],
-                            ['name' => 'SanDisk 64GB Flash', 'slug' => 'sandisk-64gb-flash'],
-                            ['name' => 'Kingston 32GB Flash', 'slug' => 'kingston-32gb-flash'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Networking',
-                        'slug' => 'networking',
-                        'children' => [
-                            ['name' => 'TP-Link Router', 'slug' => 'tplink-router'],
-                            ['name' => 'Asus Router', 'slug' => 'asus-router'],
-                            ['name' => 'D-Link Switch', 'slug' => 'dlink-switch'],
-                            ['name' => 'TP-Link USB Hub', 'slug' => 'tplink-usb-hub'],
-                            ['name' => 'Anker USB Hub', 'slug' => 'anker-usb-hub'],
-                            ['name' => 'CAT6 Ethernet Cable', 'slug' => 'cat6-ethernet-cable'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Top Brands',
-                        'slug' => 'digital-top-brands',
-                        'children' => [
-                            ['name' => 'Xiaomi', 'slug' => 'xiaomi-digital'],
-                            ['name' => 'Samsung', 'slug' => 'samsung-digital'],
-                            ['name' => 'Apple', 'slug' => 'apple-digital'],
-                            ['name' => 'Sony', 'slug' => 'sony-digital'],
-                            ['name' => 'JBL', 'slug' => 'jbl-digital'],
-                            ['name' => 'Bose', 'slug' => 'bose-digital'],
-                            ['name' => 'Anker', 'slug' => 'anker-digital'],
-                            ['name' => 'TP-Link', 'slug' => 'tplink-digital'],
-                            ['name' => 'Canon', 'slug' => 'canon-digital'],
-                            ['name' => 'Nikon', 'slug' => 'nikon-digital'],
-                            ['name' => 'Nintendo', 'slug' => 'nintendo-digital'],
-                            ['name' => 'PlayStation', 'slug' => 'playstation-digital'],
-                            ['name' => 'Xbox', 'slug' => 'xbox-digital'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Trending',
-                        'slug' => 'digital-trending',
-                        'children' => [
-                            ['name' => 'PS5 Bundle', 'slug' => 'ps5-bundle'],
-                            ['name' => 'Nintendo Switch OLED', 'slug' => 'nintendo-switch-oled-trend'],
-                            ['name' => 'Sony WH-1000XM5', 'slug' => 'sony-wh-1000xm5-trend'],
-                            ['name' => 'Apple AirPods Pro 2', 'slug' => 'airpods-pro-2-trend'],
-                            ['name' => 'Samsung Galaxy Watch 6', 'slug' => 'galaxy-watch-6-trend'],
-                            ['name' => 'NVIDIA RTX 4090', 'slug' => 'nvidia-rtx-4090-trend'],
-                            ['name' => 'iPad Pro M4', 'slug' => 'ipad-pro-m4-trend'],
+                            [
+                                'name' => 'Gaming Consoles',
+                                'slug' => 'gaming-consoles',
+                                'children' => [
+                                    ['name' => 'PS5', 'slug' => 'ps5'],
+                                    ['name' => 'PS5 Slim', 'slug' => 'ps5-slim'],
+                                    ['name' => 'PS5 Pro', 'slug' => 'ps5-pro'],
+                                    ['name' => 'Xbox Series X', 'slug' => 'xbox-series-x'],
+                                    ['name' => 'Xbox Series S', 'slug' => 'xbox-series-s'],
+                                    ['name' => 'Nintendo Switch OLED', 'slug' => 'nintendo-switch-oled'],
+                                    ['name' => 'Nintendo Switch Lite', 'slug' => 'nintendo-switch-lite'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Gaming Accessories',
+                                'slug' => 'gaming-accessories',
+                                'children' => [
+                                    ['name' => 'Game Controllers', 'slug' => 'game-controllers'],
+                                    ['name' => 'Gaming Headsets', 'slug' => 'gaming-headsets'],
+                                    ['name' => 'Gaming Keyboards', 'slug' => 'gaming-keyboards'],
+                                    ['name' => 'Gaming Mice', 'slug' => 'gaming-mice'],
+                                    ['name' => 'Racing Wheels', 'slug' => 'racing-wheels'],
+                                    ['name' => 'Gaming Chairs', 'slug' => 'gaming-chairs'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Gaming Games',
+                                'slug' => 'gaming-games',
+                                'children' => [
+                                    ['name' => 'PS5 Games', 'slug' => 'ps5-games'],
+                                    ['name' => 'PS4 Games', 'slug' => 'ps4-games'],
+                                    ['name' => 'Xbox Games', 'slug' => 'xbox-games'],
+                                    ['name' => 'PC Games', 'slug' => 'pc-games'],
+                                    ['name' => 'Nintendo Games', 'slug' => 'nintendo-games'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Headphones',
+                                'slug' => 'headphones',
+                                'children' => [
+                                    ['name' => 'Sony WH-1000XM5', 'slug' => 'sony-wh-1000xm5'],
+                                    ['name' => 'Sony WH-1000XM4', 'slug' => 'sony-wh-1000xm4'],
+                                    ['name' => 'JBL Tune 770NC', 'slug' => 'jbl-tune-770nc'],
+                                    ['name' => 'Bose QC45', 'slug' => 'bose-qc45'],
+                                    ['name' => 'Apple AirPods Pro 2', 'slug' => 'apple-airpods-pro-2'],
+                                    ['name' => 'Apple AirPods Max', 'slug' => 'apple-airpods-max'],
+                                    ['name' => 'Samsung Galaxy Buds 2 Pro', 'slug' => 'samsung-buds-2-pro'],
+                                    ['name' => 'Xiaomi Buds 3 Pro', 'slug' => 'xiaomi-buds-3-pro'],
+                                    ['name' => 'Anker Soundcore Q45', 'slug' => 'anker-soundcore-q45'],
+                                    ['name' => 'Razer Barracuda Pro', 'slug' => 'razer-barracuda-pro'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Smartwatches',
+                                'slug' => 'smartwatches',
+                                'children' => [
+                                    ['name' => 'Apple Watch Ultra 2', 'slug' => 'apple-watch-ultra-2'],
+                                    ['name' => 'Apple Watch Series 9', 'slug' => 'apple-watch-series-9'],
+                                    ['name' => 'Apple Watch SE 2', 'slug' => 'apple-watch-se-2'],
+                                    ['name' => 'Samsung Galaxy Watch 6', 'slug' => 'samsung-watch-6'],
+                                    ['name' => 'Samsung Galaxy Watch 6 Classic', 'slug' => 'samsung-watch-6-classic'],
+                                    ['name' => 'Xiaomi Watch S3', 'slug' => 'xiaomi-watch-s3'],
+                                    ['name' => 'Xiaomi Watch 2', 'slug' => 'xiaomi-watch-2'],
+                                    ['name' => 'Garmin Fenix 7', 'slug' => 'garmin-fenix-7'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Tablets',
+                                'slug' => 'tablets',
+                                'children' => [
+                                    ['name' => 'iPad Pro M4', 'slug' => 'ipad-pro-m4'],
+                                    ['name' => 'iPad Air M2', 'slug' => 'ipad-air-m2'],
+                                    ['name' => 'iPad 10th Gen', 'slug' => 'ipad-10th-gen'],
+                                    ['name' => 'Samsung Galaxy Tab S9', 'slug' => 'samsung-tab-s9'],
+                                    ['name' => 'Samsung Galaxy Tab S9 Ultra', 'slug' => 'samsung-tab-s9-ultra'],
+                                    ['name' => 'Xiaomi Pad 6', 'slug' => 'xiaomi-pad-6'],
+                                    ['name' => 'Xiaomi Pad 6 Pro', 'slug' => 'xiaomi-pad-6-pro'],
+                                    ['name' => 'Lenovo Tab P12', 'slug' => 'lenovo-tab-p12'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Speakers',
+                                'slug' => 'speakers',
+                                'children' => [
+                                    ['name' => 'JBL Charge 5', 'slug' => 'jbl-charge-5'],
+                                    ['name' => 'JBL Flip 6', 'slug' => 'jbl-flip-6'],
+                                    ['name' => 'Sony SRS-XG300', 'slug' => 'sony-srs-xg300'],
+                                    ['name' => 'Bose SoundLink Max', 'slug' => 'bose-soundlink-max'],
+                                    ['name' => 'Marshall Middleton', 'slug' => 'marshall-middleton'],
+                                    ['name' => 'Anker Soundcore Motion+', 'slug' => 'anker-soundcore-motion-plus'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Cameras',
+                                'slug' => 'cameras',
+                                'children' => [
+                                    ['name' => 'Canon EOS R5', 'slug' => 'canon-eos-r5'],
+                                    ['name' => 'Canon EOS R6 Mark II', 'slug' => 'canon-eos-r6-mark-ii'],
+                                    ['name' => 'Sony Alpha A7 IV', 'slug' => 'sony-alpha-a7-iv'],
+                                    ['name' => 'Sony Alpha A7R V', 'slug' => 'sony-alpha-a7r-v'],
+                                    ['name' => 'Nikon Z8', 'slug' => 'nikon-z8'],
+                                    ['name' => 'Nikon Z9', 'slug' => 'nikon-z9'],
+                                    ['name' => 'DJI Pocket 3', 'slug' => 'dji-pocket-3'],
+                                    ['name' => 'Instax Mini 12', 'slug' => 'instax-mini-12'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Power Banks',
+                                'slug' => 'power-banks',
+                                'children' => [
+                                    ['name' => 'Anker 20000mAh', 'slug' => 'anker-20000mah'],
+                                    ['name' => 'Anker 10000mAh', 'slug' => 'anker-10000mah'],
+                                    ['name' => 'Xiaomi 30000mAh', 'slug' => 'xiaomi-30000mah'],
+                                    ['name' => 'Xiaomi 20000mAh', 'slug' => 'xiaomi-20000mah'],
+                                    ['name' => 'Samsung 10000mAh', 'slug' => 'samsung-10000mah'],
+                                    ['name' => 'Apple MagSafe Battery', 'slug' => 'apple-magsafe-battery'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Computer Components',
+                                'slug' => 'computer-components',
+                                'children' => [
+                                    ['name' => 'Intel Core i9-14900K', 'slug' => 'intel-core-i9-14900k'],
+                                    ['name' => 'Intel Core i7-14700K', 'slug' => 'intel-core-i7-14700k'],
+                                    ['name' => 'AMD Ryzen 9 7950X', 'slug' => 'amd-ryzen-9-7950x'],
+                                    ['name' => 'AMD Ryzen 7 7800X3D', 'slug' => 'amd-ryzen-7-7800x3d'],
+                                    ['name' => 'NVIDIA RTX 4090', 'slug' => 'nvidia-rtx-4090'],
+                                    ['name' => 'NVIDIA RTX 4080 Super', 'slug' => 'nvidia-rtx-4080-super'],
+                                    ['name' => 'NVIDIA RTX 4070 Ti', 'slug' => 'nvidia-rtx-4070-ti'],
+                                    ['name' => 'ASUS ROG Motherboard Z790', 'slug' => 'asus-rog-z790'],
+                                    ['name' => 'MSI Motherboard B760', 'slug' => 'msi-b760'],
+                                    ['name' => 'Corsair Vengeance 32GB RAM', 'slug' => 'corsair-vengeance-32gb'],
+                                    ['name' => 'G.Skill Trident 16GB RAM', 'slug' => 'gskill-trident-16gb'],
+                                    ['name' => 'Samsung 990 Pro SSD', 'slug' => 'samsung-990-pro-ssd'],
+                                    ['name' => 'Western Digital Black SSD', 'slug' => 'wd-black-ssd'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Smart Home',
+                                'slug' => 'smart-home',
+                                'children' => [
+                                    ['name' => 'Xiaomi Smart Hub', 'slug' => 'xiaomi-smart-hub'],
+                                    ['name' => 'Xiaomi Smart Light Bulb', 'slug' => 'xiaomi-smart-light'],
+                                    ['name' => 'Xiaomi Smart Plug', 'slug' => 'xiaomi-smart-plug'],
+                                    ['name' => 'Google Nest Hub 2', 'slug' => 'google-nest-hub-2'],
+                                    ['name' => 'Google Nest Mini', 'slug' => 'google-nest-mini'],
+                                    ['name' => 'Amazon Echo Show 8', 'slug' => 'amazon-echo-show-8'],
+                                    ['name' => 'Amazon Echo Dot', 'slug' => 'amazon-echo-dot'],
+                                    ['name' => 'TP-Link Smart Switch', 'slug' => 'tplink-smart-switch'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Printers',
+                                'slug' => 'printers',
+                                'children' => [
+                                    ['name' => 'HP LaserJet Pro MFP', 'slug' => 'hp-laserjet-pro-mfp'],
+                                    ['name' => 'HP Deskjet 2755', 'slug' => 'hp-deskjet-2755'],
+                                    ['name' => 'Creality Ender 3 V2', 'slug' => 'creality-ender-3-v2'],
+                                    ['name' => 'Epson EcoTank L3110', 'slug' => 'epson-ecotank-l3110'],
+                                    ['name' => 'Brother Thermal Printer', 'slug' => 'brother-thermal-printer'],
+                                    ['name' => 'Canon ImageClass MF', 'slug' => 'canon-imageclass-mf'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Storage Devices',
+                                'slug' => 'storage-devices',
+                                'children' => [
+                                    ['name' => 'Samsung 1TB SSD', 'slug' => 'samsung-1tb-ssd'],
+                                    ['name' => 'Western Digital 2TB HDD', 'slug' => 'wd-2tb-hdd'],
+                                    ['name' => 'Seagate 4TB External HDD', 'slug' => 'seagate-4tb-external'],
+                                    ['name' => 'SanDisk 128GB Flash', 'slug' => 'sandisk-128gb-flash'],
+                                    ['name' => 'SanDisk 64GB Flash', 'slug' => 'sandisk-64gb-flash'],
+                                    ['name' => 'Kingston 32GB Flash', 'slug' => 'kingston-32gb-flash'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Networking',
+                                'slug' => 'networking',
+                                'children' => [
+                                    ['name' => 'TP-Link Router', 'slug' => 'tplink-router'],
+                                    ['name' => 'Asus Router', 'slug' => 'asus-router'],
+                                    ['name' => 'D-Link Switch', 'slug' => 'dlink-switch'],
+                                    ['name' => 'TP-Link USB Hub', 'slug' => 'tplink-usb-hub'],
+                                    ['name' => 'Anker USB Hub', 'slug' => 'anker-usb-hub'],
+                                    ['name' => 'CAT6 Ethernet Cable', 'slug' => 'cat6-ethernet-cable'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Top Brands',
+                                'slug' => 'digital-top-brands',
+                                'children' => [
+                                    ['name' => 'Xiaomi', 'slug' => 'xiaomi-digital'],
+                                    ['name' => 'Samsung', 'slug' => 'samsung-digital'],
+                                    ['name' => 'Apple', 'slug' => 'apple-digital'],
+                                    ['name' => 'Sony', 'slug' => 'sony-digital'],
+                                    ['name' => 'JBL', 'slug' => 'jbl-digital'],
+                                    ['name' => 'Bose', 'slug' => 'bose-digital'],
+                                    ['name' => 'Anker', 'slug' => 'anker-digital'],
+                                    ['name' => 'TP-Link', 'slug' => 'tplink-digital'],
+                                    ['name' => 'Canon', 'slug' => 'canon-digital'],
+                                    ['name' => 'Nikon', 'slug' => 'nikon-digital'],
+                                    ['name' => 'Nintendo', 'slug' => 'nintendo-digital'],
+                                    ['name' => 'PlayStation', 'slug' => 'playstation-digital'],
+                                    ['name' => 'Xbox', 'slug' => 'xbox-digital'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Trending',
+                                'slug' => 'digital-trending',
+                                'children' => [
+                                    ['name' => 'PS5 Bundle', 'slug' => 'ps5-bundle'],
+                                    ['name' => 'Nintendo Switch OLED', 'slug' => 'nintendo-switch-oled-trend'],
+                                    ['name' => 'Sony WH-1000XM5', 'slug' => 'sony-wh-1000xm5-trend'],
+                                    ['name' => 'Apple AirPods Pro 2', 'slug' => 'airpods-pro-2-trend'],
+                                    ['name' => 'Samsung Galaxy Watch 6', 'slug' => 'galaxy-watch-6-trend'],
+                                    ['name' => 'NVIDIA RTX 4090', 'slug' => 'nvidia-rtx-4090-trend'],
+                                    ['name' => 'iPad Pro M4', 'slug' => 'ipad-pro-m4-trend'],
+                                ]
+                            ],
                         ]
                     ],
                 ]
@@ -535,135 +541,141 @@ class ProductDatabaseSeeder extends Seeder
                 'sort_order' => 4,
                 'children' => [
                     [
-                        'name' => 'Cookware',
-                        'slug' => 'cookware',
+                        'name' => 'Select Home',
+                        'slug' => 'select-home',
                         'children' => [
-                            ['name' => 'Pots & Pans Set', 'slug' => 'pots-pans-set'],
-                            ['name' => 'Non-Stick Frying Pan', 'slug' => 'non-stick-frying-pan'],
-                            ['name' => 'Stainless Steel Pot', 'slug' => 'stainless-steel-pot'],
-                            ['name' => 'Pressure Cooker', 'slug' => 'pressure-cooker'],
-                            ['name' => 'Knife Set', 'slug' => 'knife-set'],
-                            ['name' => 'Cutting Board Set', 'slug' => 'cutting-board-set'],
-                            ['name' => 'Kitchen Scale', 'slug' => 'kitchen-scale'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Tea & Coffee',
-                        'slug' => 'tea-coffee',
-                        'children' => [
-                            ['name' => 'Coffee Maker', 'slug' => 'coffee-maker'],
-                            ['name' => 'Espresso Machine', 'slug' => 'espresso-machine'],
-                            ['name' => 'Electric Kettle', 'slug' => 'electric-kettle'],
-                            ['name' => 'Tea Pot', 'slug' => 'tea-pot'],
-                            ['name' => 'Samovar', 'slug' => 'samovar'],
-                            ['name' => 'Coffee Grinder', 'slug' => 'coffee-grinder'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Kitchenware',
-                        'slug' => 'kitchenware',
-                        'children' => [
-                            ['name' => 'Glass Food Container', 'slug' => 'glass-food-container'],
-                            ['name' => 'Spice Rack', 'slug' => 'spice-rack'],
-                            ['name' => 'Kitchen Organizer', 'slug' => 'kitchen-organizer'],
-                            ['name' => 'Colander', 'slug' => 'colander'],
-                            ['name' => 'Mixing Bowl Set', 'slug' => 'mixing-bowl-set'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Dining & Serving',
-                        'slug' => 'dining-serving',
-                        'children' => [
-                            ['name' => 'Dinnerware Set', 'slug' => 'dinnerware-set'],
-                            ['name' => 'Cutlery Set', 'slug' => 'cutlery-set'],
-                            ['name' => 'Glass Set', 'slug' => 'glass-set'],
-                            ['name' => 'Serving Tray', 'slug' => 'serving-tray'],
-                            ['name' => 'Tablecloth', 'slug' => 'tablecloth'],
-                            ['name' => 'Placemat Set', 'slug' => 'placemat-set'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Furniture',
-                        'slug' => 'furniture',
-                        'children' => [
-                            ['name' => 'Sofa Set', 'slug' => 'sofa-set'],
-                            ['name' => 'Sofa Bed', 'slug' => 'sofa-bed'],
-                            ['name' => 'Dining Table', 'slug' => 'dining-table'],
-                            ['name' => 'Dining Chair Set', 'slug' => 'dining-chair-set'],
-                            ['name' => 'TV Stand', 'slug' => 'tv-stand'],
-                            ['name' => 'Bookshelf', 'slug' => 'bookshelf'],
-                            ['name' => 'Office Chair', 'slug' => 'office-chair'],
-                            ['name' => 'Office Desk', 'slug' => 'office-desk'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Lighting',
-                        'slug' => 'lighting',
-                        'children' => [
-                            ['name' => 'Chandelier', 'slug' => 'chandelier'],
-                            ['name' => 'Table Lamp', 'slug' => 'table-lamp'],
-                            ['name' => 'Floor Lamp', 'slug' => 'floor-lamp'],
-                            ['name' => 'LED Light Strip', 'slug' => 'led-light-strip'],
-                            ['name' => 'Ceiling Light', 'slug' => 'ceiling-light'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Carpets & Rugs',
-                        'slug' => 'carpets-rugs',
-                        'children' => [
-                            ['name' => 'Persian Carpet', 'slug' => 'persian-carpet'],
-                            ['name' => 'Modern Rug', 'slug' => 'modern-rug'],
-                            ['name' => 'Door Mat', 'slug' => 'door-mat'],
-                            ['name' => 'Carpet Tapestry', 'slug' => 'carpet-tapestry'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Home Decor',
-                        'slug' => 'home-decor',
-                        'children' => [
-                            ['name' => 'Wall Mirror', 'slug' => 'wall-mirror'],
-                            ['name' => 'Photo Frame', 'slug' => 'photo-frame'],
-                            ['name' => 'Wall Clock', 'slug' => 'wall-clock'],
-                            ['name' => 'Decorative Vase', 'slug' => 'decorative-vase'],
-                            ['name' => 'Candle Holder', 'slug' => 'candle-holder'],
-                            ['name' => 'Artificial Flower', 'slug' => 'artificial-flower'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Bedroom',
-                        'slug' => 'bedroom',
-                        'children' => [
-                            ['name' => 'King Size Bed', 'slug' => 'king-size-bed'],
-                            ['name' => 'Queen Size Bed', 'slug' => 'queen-size-bed'],
-                            ['name' => 'Mattress', 'slug' => 'mattress'],
-                            ['name' => 'Pillow', 'slug' => 'pillow'],
-                            ['name' => 'Bed Sheet Set', 'slug' => 'bed-sheet-set'],
-                            ['name' => 'Duvet Cover', 'slug' => 'duvet-cover'],
-                            ['name' => 'Comforter', 'slug' => 'comforter'],
-                            ['name' => 'Wardrobe', 'slug' => 'wardrobe'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Bathroom',
-                        'slug' => 'bathroom',
-                        'children' => [
-                            ['name' => 'Towel Set', 'slug' => 'towel-set'],
-                            ['name' => 'Bathroom Mirror', 'slug' => 'bathroom-mirror'],
-                            ['name' => 'Shower Curtain', 'slug' => 'shower-curtain'],
-                            ['name' => 'Toilet Seat', 'slug' => 'toilet-seat'],
-                            ['name' => 'Toothbrush Holder', 'slug' => 'toothbrush-holder'],
-                            ['name' => 'Soap Dispenser', 'slug' => 'soap-dispenser'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Cleaning',
-                        'slug' => 'cleaning',
-                        'children' => [
-                            ['name' => 'Mop & Bucket Set', 'slug' => 'mop-bucket-set'],
-                            ['name' => 'Broom & Dustpan', 'slug' => 'broom-dustpan'],
-                            ['name' => 'Lint Roller', 'slug' => 'lint-roller'],
-                            ['name' => 'Laundry Basket', 'slug' => 'laundry-basket'],
-                            ['name' => 'Ironing Board', 'slug' => 'ironing-board'],
+                            [
+                                'name' => 'Cookware',
+                                'slug' => 'cookware',
+                                'children' => [
+                                    ['name' => 'Pots & Pans Set', 'slug' => 'pots-pans-set'],
+                                    ['name' => 'Non-Stick Frying Pan', 'slug' => 'non-stick-frying-pan'],
+                                    ['name' => 'Stainless Steel Pot', 'slug' => 'stainless-steel-pot'],
+                                    ['name' => 'Pressure Cooker', 'slug' => 'pressure-cooker'],
+                                    ['name' => 'Knife Set', 'slug' => 'knife-set'],
+                                    ['name' => 'Cutting Board Set', 'slug' => 'cutting-board-set'],
+                                    ['name' => 'Kitchen Scale', 'slug' => 'kitchen-scale'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Tea & Coffee',
+                                'slug' => 'tea-coffee',
+                                'children' => [
+                                    ['name' => 'Coffee Maker', 'slug' => 'coffee-maker'],
+                                    ['name' => 'Espresso Machine', 'slug' => 'espresso-machine'],
+                                    ['name' => 'Electric Kettle', 'slug' => 'electric-kettle'],
+                                    ['name' => 'Tea Pot', 'slug' => 'tea-pot'],
+                                    ['name' => 'Samovar', 'slug' => 'samovar'],
+                                    ['name' => 'Coffee Grinder', 'slug' => 'coffee-grinder'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Kitchenware',
+                                'slug' => 'kitchenware',
+                                'children' => [
+                                    ['name' => 'Glass Food Container', 'slug' => 'glass-food-container'],
+                                    ['name' => 'Spice Rack', 'slug' => 'spice-rack'],
+                                    ['name' => 'Kitchen Organizer', 'slug' => 'kitchen-organizer'],
+                                    ['name' => 'Colander', 'slug' => 'colander'],
+                                    ['name' => 'Mixing Bowl Set', 'slug' => 'mixing-bowl-set'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Dining & Serving',
+                                'slug' => 'dining-serving',
+                                'children' => [
+                                    ['name' => 'Dinnerware Set', 'slug' => 'dinnerware-set'],
+                                    ['name' => 'Cutlery Set', 'slug' => 'cutlery-set'],
+                                    ['name' => 'Glass Set', 'slug' => 'glass-set'],
+                                    ['name' => 'Serving Tray', 'slug' => 'serving-tray'],
+                                    ['name' => 'Tablecloth', 'slug' => 'tablecloth'],
+                                    ['name' => 'Placemat Set', 'slug' => 'placemat-set'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Furniture',
+                                'slug' => 'furniture',
+                                'children' => [
+                                    ['name' => 'Sofa Set', 'slug' => 'sofa-set'],
+                                    ['name' => 'Sofa Bed', 'slug' => 'sofa-bed'],
+                                    ['name' => 'Dining Table', 'slug' => 'dining-table'],
+                                    ['name' => 'Dining Chair Set', 'slug' => 'dining-chair-set'],
+                                    ['name' => 'TV Stand', 'slug' => 'tv-stand'],
+                                    ['name' => 'Bookshelf', 'slug' => 'bookshelf'],
+                                    ['name' => 'Office Chair', 'slug' => 'office-chair'],
+                                    ['name' => 'Office Desk', 'slug' => 'office-desk'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Lighting',
+                                'slug' => 'lighting',
+                                'children' => [
+                                    ['name' => 'Chandelier', 'slug' => 'chandelier'],
+                                    ['name' => 'Table Lamp', 'slug' => 'table-lamp'],
+                                    ['name' => 'Floor Lamp', 'slug' => 'floor-lamp'],
+                                    ['name' => 'LED Light Strip', 'slug' => 'led-light-strip'],
+                                    ['name' => 'Ceiling Light', 'slug' => 'ceiling-light'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Carpets & Rugs',
+                                'slug' => 'carpets-rugs',
+                                'children' => [
+                                    ['name' => 'Persian Carpet', 'slug' => 'persian-carpet'],
+                                    ['name' => 'Modern Rug', 'slug' => 'modern-rug'],
+                                    ['name' => 'Door Mat', 'slug' => 'door-mat'],
+                                    ['name' => 'Carpet Tapestry', 'slug' => 'carpet-tapestry'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Home Decor',
+                                'slug' => 'home-decor',
+                                'children' => [
+                                    ['name' => 'Wall Mirror', 'slug' => 'wall-mirror'],
+                                    ['name' => 'Photo Frame', 'slug' => 'photo-frame'],
+                                    ['name' => 'Wall Clock', 'slug' => 'wall-clock'],
+                                    ['name' => 'Decorative Vase', 'slug' => 'decorative-vase'],
+                                    ['name' => 'Candle Holder', 'slug' => 'candle-holder'],
+                                    ['name' => 'Artificial Flower', 'slug' => 'artificial-flower'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Bedroom',
+                                'slug' => 'bedroom',
+                                'children' => [
+                                    ['name' => 'King Size Bed', 'slug' => 'king-size-bed'],
+                                    ['name' => 'Queen Size Bed', 'slug' => 'queen-size-bed'],
+                                    ['name' => 'Mattress', 'slug' => 'mattress'],
+                                    ['name' => 'Pillow', 'slug' => 'pillow'],
+                                    ['name' => 'Bed Sheet Set', 'slug' => 'bed-sheet-set'],
+                                    ['name' => 'Duvet Cover', 'slug' => 'duvet-cover'],
+                                    ['name' => 'Comforter', 'slug' => 'comforter'],
+                                    ['name' => 'Wardrobe', 'slug' => 'wardrobe'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Bathroom',
+                                'slug' => 'bathroom',
+                                'children' => [
+                                    ['name' => 'Towel Set', 'slug' => 'towel-set'],
+                                    ['name' => 'Bathroom Mirror', 'slug' => 'bathroom-mirror'],
+                                    ['name' => 'Shower Curtain', 'slug' => 'shower-curtain'],
+                                    ['name' => 'Toilet Seat', 'slug' => 'toilet-seat'],
+                                    ['name' => 'Toothbrush Holder', 'slug' => 'toothbrush-holder'],
+                                    ['name' => 'Soap Dispenser', 'slug' => 'soap-dispenser'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Cleaning',
+                                'slug' => 'cleaning',
+                                'children' => [
+                                    ['name' => 'Mop & Bucket Set', 'slug' => 'mop-bucket-set'],
+                                    ['name' => 'Broom & Dustpan', 'slug' => 'broom-dustpan'],
+                                    ['name' => 'Lint Roller', 'slug' => 'lint-roller'],
+                                    ['name' => 'Laundry Basket', 'slug' => 'laundry-basket'],
+                                    ['name' => 'Ironing Board', 'slug' => 'ironing-board'],
+                                ]
+                            ],
                         ]
                     ],
                 ]
@@ -676,143 +688,149 @@ class ProductDatabaseSeeder extends Seeder
                 'sort_order' => 5,
                 'children' => [
                     [
-                        'name' => 'Refrigerators',
-                        'slug' => 'refrigerators',
+                        'name' => 'Select Appliance',
+                        'slug' => 'select-appliance',
                         'children' => [
-                            ['name' => 'Side by Side Refrigerator', 'slug' => 'side-by-side-refrigerator'],
-                            ['name' => 'French Door Refrigerator', 'slug' => 'french-door-refrigerator'],
-                            ['name' => 'Top Freezer Refrigerator', 'slug' => 'top-freezer-refrigerator'],
-                            ['name' => 'Mini Refrigerator', 'slug' => 'mini-refrigerator'],
-                            ['name' => 'LG Refrigerator', 'slug' => 'lg-refrigerator'],
-                            ['name' => 'Samsung Refrigerator', 'slug' => 'samsung-refrigerator'],
-                            ['name' => 'Bosch Refrigerator', 'slug' => 'bosch-refrigerator'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Washing Machines',
-                        'slug' => 'washing-machines',
-                        'children' => [
-                            ['name' => 'Front Load Washer', 'slug' => 'front-load-washer'],
-                            ['name' => 'Top Load Washer', 'slug' => 'top-load-washer'],
-                            ['name' => 'Washer Dryer Combo', 'slug' => 'washer-dryer-combo'],
-                            ['name' => 'LG Washing Machine', 'slug' => 'lg-washing-machine'],
-                            ['name' => 'Samsung Washing Machine', 'slug' => 'samsung-washing-machine'],
-                            ['name' => 'Bosch Washing Machine', 'slug' => 'bosch-washing-machine'],
-                            ['name' => 'Whirlpool Washing Machine', 'slug' => 'whirlpool-washing-machine'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Dishwashers',
-                        'slug' => 'dishwashers',
-                        'children' => [
-                            ['name' => 'Bosch Dishwasher', 'slug' => 'bosch-dishwasher'],
-                            ['name' => 'LG Dishwasher', 'slug' => 'lg-dishwasher'],
-                            ['name' => 'Samsung Dishwasher', 'slug' => 'samsung-dishwasher'],
-                            ['name' => 'Whirlpool Dishwasher', 'slug' => 'whirlpool-dishwasher'],
-                            ['name' => 'Portable Dishwasher', 'slug' => 'portable-dishwasher'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Vacuums',
-                        'slug' => 'vacuums',
-                        'children' => [
-                            ['name' => 'Robot Vacuum', 'slug' => 'robot-vacuum'],
-                            ['name' => 'Cordless Vacuum', 'slug' => 'cordless-vacuum'],
-                            ['name' => 'Canister Vacuum', 'slug' => 'canister-vacuum'],
-                            ['name' => 'Handheld Vacuum', 'slug' => 'handheld-vacuum'],
-                            ['name' => 'LG Robot Vacuum', 'slug' => 'lg-robot-vacuum'],
-                            ['name' => 'Samsung Robot Vacuum', 'slug' => 'samsung-robot-vacuum'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Cooking Appliances',
-                        'slug' => 'cooking-appliances',
-                        'children' => [
-                            ['name' => 'Air Fryer', 'slug' => 'air-fryer'],
-                            ['name' => 'Microwave Oven', 'slug' => 'microwave-oven'],
-                            ['name' => 'Toaster Oven', 'slug' => 'toaster-oven'],
-                            ['name' => 'Rice Cooker', 'slug' => 'rice-cooker'],
-                            ['name' => 'Electric Kettle', 'slug' => 'electric-kettle-appliances'],
-                            ['name' => 'Coffee Maker', 'slug' => 'coffee-maker-appliances'],
-                            ['name' => 'Espresso Machine', 'slug' => 'espresso-machine-appliances'],
-                            ['name' => 'Blender', 'slug' => 'blender'],
-                            ['name' => 'Food Processor', 'slug' => 'food-processor'],
-                            ['name' => 'Juicer', 'slug' => 'juicer'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Air Conditioners',
-                        'slug' => 'air-conditioners',
-                        'children' => [
-                            ['name' => 'Split AC', 'slug' => 'split-ac'],
-                            ['name' => 'Window AC', 'slug' => 'window-ac'],
-                            ['name' => 'Portable AC', 'slug' => 'portable-ac'],
-                            ['name' => 'Inverter AC', 'slug' => 'inverter-ac'],
-                            ['name' => 'LG AC', 'slug' => 'lg-ac'],
-                            ['name' => 'Samsung AC', 'slug' => 'samsung-ac'],
-                            ['name' => 'Gree AC', 'slug' => 'gree-ac'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Heaters & Fans',
-                        'slug' => 'heaters-fans',
-                        'children' => [
-                            ['name' => 'Electric Heater', 'slug' => 'electric-heater'],
-                            ['name' => 'Space Heater', 'slug' => 'space-heater'],
-                            ['name' => 'Stand Fan', 'slug' => 'stand-fan'],
-                            ['name' => 'Ceiling Fan', 'slug' => 'ceiling-fan'],
-                            ['name' => 'Tower Fan', 'slug' => 'tower-fan'],
-                            ['name' => 'Rechargeable Fan', 'slug' => 'rechargeable-fan'],
-                        ]
-                    ],
-                    [
-                        'name' => 'TVs',
-                        'slug' => 'tvs',
-                        'children' => [
-                            ['name' => 'Sony OLED TV', 'slug' => 'sony-oled-tv'],
-                            ['name' => 'Samsung QLED TV', 'slug' => 'samsung-qled-tv'],
-                            ['name' => 'LG OLED TV', 'slug' => 'lg-oled-tv'],
-                            ['name' => 'TCL TV', 'slug' => 'tcl-tv'],
-                            ['name' => 'X-Vision TV', 'slug' => 'x-vision-tv'],
-                            ['name' => '55 Inch TV', 'slug' => '55-inch-tv'],
-                            ['name' => '65 Inch TV', 'slug' => '65-inch-tv'],
-                            ['name' => '75 Inch TV', 'slug' => '75-inch-tv'],
-                            ['name' => '85 Inch TV', 'slug' => '85-inch-tv'],
-                            ['name' => '4K TV', 'slug' => '4k-tv'],
-                            ['name' => 'OLED TV', 'slug' => 'oled-tv'],
-                            ['name' => 'QLED TV', 'slug' => 'qled-tv'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Audio & Video',
-                        'slug' => 'audio-video',
-                        'children' => [
-                            ['name' => 'Soundbar', 'slug' => 'soundbar'],
-                            ['name' => 'Home Theater', 'slug' => 'home-theater'],
-                            ['name' => 'Bluetooth Speaker', 'slug' => 'bluetooth-speaker'],
-                            ['name' => 'Projector', 'slug' => 'projector'],
-                            ['name' => 'Android TV Box', 'slug' => 'android-tv-box'],
-                            ['name' => 'Remote Control', 'slug' => 'remote-control'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Sewing Machines',
-                        'slug' => 'sewing-machines',
-                        'children' => [
-                            ['name' => 'Janome Sewing Machine', 'slug' => 'janome-sewing-machine'],
-                            ['name' => 'Brother Sewing Machine', 'slug' => 'brother-sewing-machine'],
-                            ['name' => 'Industrial Sewing Machine', 'slug' => 'industrial-sewing-machine'],
-                            ['name' => 'Mini Sewing Machine', 'slug' => 'mini-sewing-machine'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Water Purifiers',
-                        'slug' => 'water-purifiers',
-                        'children' => [
-                            ['name' => 'Reverse Osmosis System', 'slug' => 'reverse-osmosis-system'],
-                            ['name' => 'Water Filter Pitcher', 'slug' => 'water-filter-pitcher'],
-                            ['name' => 'Under Sink Water Filter', 'slug' => 'under-sink-water-filter'],
-                            ['name' => 'Countertop Water Filter', 'slug' => 'countertop-water-filter'],
+                            [
+                                'name' => 'Refrigerators',
+                                'slug' => 'refrigerators',
+                                'children' => [
+                                    ['name' => 'Side by Side Refrigerator', 'slug' => 'side-by-side-refrigerator'],
+                                    ['name' => 'French Door Refrigerator', 'slug' => 'french-door-refrigerator'],
+                                    ['name' => 'Top Freezer Refrigerator', 'slug' => 'top-freezer-refrigerator'],
+                                    ['name' => 'Mini Refrigerator', 'slug' => 'mini-refrigerator'],
+                                    ['name' => 'LG Refrigerator', 'slug' => 'lg-refrigerator'],
+                                    ['name' => 'Samsung Refrigerator', 'slug' => 'samsung-refrigerator'],
+                                    ['name' => 'Bosch Refrigerator', 'slug' => 'bosch-refrigerator'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Washing Machines',
+                                'slug' => 'washing-machines',
+                                'children' => [
+                                    ['name' => 'Front Load Washer', 'slug' => 'front-load-washer'],
+                                    ['name' => 'Top Load Washer', 'slug' => 'top-load-washer'],
+                                    ['name' => 'Washer Dryer Combo', 'slug' => 'washer-dryer-combo'],
+                                    ['name' => 'LG Washing Machine', 'slug' => 'lg-washing-machine'],
+                                    ['name' => 'Samsung Washing Machine', 'slug' => 'samsung-washing-machine'],
+                                    ['name' => 'Bosch Washing Machine', 'slug' => 'bosch-washing-machine'],
+                                    ['name' => 'Whirlpool Washing Machine', 'slug' => 'whirlpool-washing-machine'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Dishwashers',
+                                'slug' => 'dishwashers',
+                                'children' => [
+                                    ['name' => 'Bosch Dishwasher', 'slug' => 'bosch-dishwasher'],
+                                    ['name' => 'LG Dishwasher', 'slug' => 'lg-dishwasher'],
+                                    ['name' => 'Samsung Dishwasher', 'slug' => 'samsung-dishwasher'],
+                                    ['name' => 'Whirlpool Dishwasher', 'slug' => 'whirlpool-dishwasher'],
+                                    ['name' => 'Portable Dishwasher', 'slug' => 'portable-dishwasher'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Vacuums',
+                                'slug' => 'vacuums',
+                                'children' => [
+                                    ['name' => 'Robot Vacuum', 'slug' => 'robot-vacuum'],
+                                    ['name' => 'Cordless Vacuum', 'slug' => 'cordless-vacuum'],
+                                    ['name' => 'Canister Vacuum', 'slug' => 'canister-vacuum'],
+                                    ['name' => 'Handheld Vacuum', 'slug' => 'handheld-vacuum'],
+                                    ['name' => 'LG Robot Vacuum', 'slug' => 'lg-robot-vacuum'],
+                                    ['name' => 'Samsung Robot Vacuum', 'slug' => 'samsung-robot-vacuum'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Cooking Appliances',
+                                'slug' => 'cooking-appliances',
+                                'children' => [
+                                    ['name' => 'Air Fryer', 'slug' => 'air-fryer'],
+                                    ['name' => 'Microwave Oven', 'slug' => 'microwave-oven'],
+                                    ['name' => 'Toaster Oven', 'slug' => 'toaster-oven'],
+                                    ['name' => 'Rice Cooker', 'slug' => 'rice-cooker'],
+                                    ['name' => 'Electric Kettle', 'slug' => 'electric-kettle-appliances'],
+                                    ['name' => 'Coffee Maker', 'slug' => 'coffee-maker-appliances'],
+                                    ['name' => 'Espresso Machine', 'slug' => 'espresso-machine-appliances'],
+                                    ['name' => 'Blender', 'slug' => 'blender'],
+                                    ['name' => 'Food Processor', 'slug' => 'food-processor'],
+                                    ['name' => 'Juicer', 'slug' => 'juicer'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Air Conditioners',
+                                'slug' => 'air-conditioners',
+                                'children' => [
+                                    ['name' => 'Split AC', 'slug' => 'split-ac'],
+                                    ['name' => 'Window AC', 'slug' => 'window-ac'],
+                                    ['name' => 'Portable AC', 'slug' => 'portable-ac'],
+                                    ['name' => 'Inverter AC', 'slug' => 'inverter-ac'],
+                                    ['name' => 'LG AC', 'slug' => 'lg-ac'],
+                                    ['name' => 'Samsung AC', 'slug' => 'samsung-ac'],
+                                    ['name' => 'Gree AC', 'slug' => 'gree-ac'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Heaters & Fans',
+                                'slug' => 'heaters-fans',
+                                'children' => [
+                                    ['name' => 'Electric Heater', 'slug' => 'electric-heater'],
+                                    ['name' => 'Space Heater', 'slug' => 'space-heater'],
+                                    ['name' => 'Stand Fan', 'slug' => 'stand-fan'],
+                                    ['name' => 'Ceiling Fan', 'slug' => 'ceiling-fan'],
+                                    ['name' => 'Tower Fan', 'slug' => 'tower-fan'],
+                                    ['name' => 'Rechargeable Fan', 'slug' => 'rechargeable-fan'],
+                                ]
+                            ],
+                            [
+                                'name' => 'TVs',
+                                'slug' => 'tvs',
+                                'children' => [
+                                    ['name' => 'Sony OLED TV', 'slug' => 'sony-oled-tv'],
+                                    ['name' => 'Samsung QLED TV', 'slug' => 'samsung-qled-tv'],
+                                    ['name' => 'LG OLED TV', 'slug' => 'lg-oled-tv'],
+                                    ['name' => 'TCL TV', 'slug' => 'tcl-tv'],
+                                    ['name' => 'X-Vision TV', 'slug' => 'x-vision-tv'],
+                                    ['name' => '55 Inch TV', 'slug' => '55-inch-tv'],
+                                    ['name' => '65 Inch TV', 'slug' => '65-inch-tv'],
+                                    ['name' => '75 Inch TV', 'slug' => '75-inch-tv'],
+                                    ['name' => '85 Inch TV', 'slug' => '85-inch-tv'],
+                                    ['name' => '4K TV', 'slug' => '4k-tv'],
+                                    ['name' => 'OLED TV', 'slug' => 'oled-tv'],
+                                    ['name' => 'QLED TV', 'slug' => 'qled-tv'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Audio & Video',
+                                'slug' => 'audio-video',
+                                'children' => [
+                                    ['name' => 'Soundbar', 'slug' => 'soundbar'],
+                                    ['name' => 'Home Theater', 'slug' => 'home-theater'],
+                                    ['name' => 'Bluetooth Speaker', 'slug' => 'bluetooth-speaker'],
+                                    ['name' => 'Projector', 'slug' => 'projector'],
+                                    ['name' => 'Android TV Box', 'slug' => 'android-tv-box'],
+                                    ['name' => 'Remote Control', 'slug' => 'remote-control'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Sewing Machines',
+                                'slug' => 'sewing-machines',
+                                'children' => [
+                                    ['name' => 'Janome Sewing Machine', 'slug' => 'janome-sewing-machine'],
+                                    ['name' => 'Brother Sewing Machine', 'slug' => 'brother-sewing-machine'],
+                                    ['name' => 'Industrial Sewing Machine', 'slug' => 'industrial-sewing-machine'],
+                                    ['name' => 'Mini Sewing Machine', 'slug' => 'mini-sewing-machine'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Water Purifiers',
+                                'slug' => 'water-purifiers',
+                                'children' => [
+                                    ['name' => 'Reverse Osmosis System', 'slug' => 'reverse-osmosis-system'],
+                                    ['name' => 'Water Filter Pitcher', 'slug' => 'water-filter-pitcher'],
+                                    ['name' => 'Under Sink Water Filter', 'slug' => 'under-sink-water-filter'],
+                                    ['name' => 'Countertop Water Filter', 'slug' => 'countertop-water-filter'],
+                                ]
+                            ],
                         ]
                     ],
                 ]
@@ -825,102 +843,108 @@ class ProductDatabaseSeeder extends Seeder
                 'sort_order' => 6,
                 'children' => [
                     [
-                        'name' => 'Skin Care',
-                        'slug' => 'skin-care',
+                        'name' => 'Select Beauty',
+                        'slug' => 'select-beauty',
                         'children' => [
-                            ['name' => 'Moisturizer Cream', 'slug' => 'moisturizer-cream'],
-                            ['name' => 'Sunscreen SPF 50', 'slug' => 'sunscreen-spf-50'],
-                            ['name' => 'Face Serum', 'slug' => 'face-serum'],
-                            ['name' => 'Face Mask', 'slug' => 'face-mask'],
-                            ['name' => 'Eye Cream', 'slug' => 'eye-cream'],
-                            ['name' => 'Face Cleanser', 'slug' => 'face-cleanser'],
-                            ['name' => 'Toner', 'slug' => 'toner'],
-                            ['name' => 'Exfoliating Scrub', 'slug' => 'exfoliating-scrub'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Makeup',
-                        'slug' => 'makeup',
-                        'children' => [
-                            ['name' => 'Foundation', 'slug' => 'foundation'],
-                            ['name' => 'Concealer', 'slug' => 'concealer'],
-                            ['name' => 'Blush', 'slug' => 'blush'],
-                            ['name' => 'Mascara', 'slug' => 'mascara'],
-                            ['name' => 'Eyeliner', 'slug' => 'eyeliner'],
-                            ['name' => 'Lipstick', 'slug' => 'lipstick'],
-                            ['name' => 'Lip Gloss', 'slug' => 'lip-gloss'],
-                            ['name' => 'Makeup Brush Set', 'slug' => 'makeup-brush-set'],
-                            ['name' => 'Eyeshadow Palette', 'slug' => 'eyeshadow-palette'],
-                            ['name' => 'Setting Spray', 'slug' => 'setting-spray'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Hair Care',
-                        'slug' => 'hair-care',
-                        'children' => [
-                            ['name' => 'Shampoo', 'slug' => 'shampoo'],
-                            ['name' => 'Conditioner', 'slug' => 'conditioner'],
-                            ['name' => 'Hair Mask', 'slug' => 'hair-mask'],
-                            ['name' => 'Hair Oil', 'slug' => 'hair-oil'],
-                            ['name' => 'Hair Spray', 'slug' => 'hair-spray'],
-                            ['name' => 'Hair Dryer', 'slug' => 'hair-dryer'],
-                            ['name' => 'Hair Straightener', 'slug' => 'hair-straightener'],
-                            ['name' => 'Hair Curler', 'slug' => 'hair-curler'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Perfumes',
-                        'slug' => 'perfumes',
-                        'children' => [
-                            ['name' => 'Dior Sauvage', 'slug' => 'dior-sauvage'],
-                            ['name' => 'Chanel No.5', 'slug' => 'chanel-no-5'],
-                            ['name' => 'YSL La Nuit', 'slug' => 'ysl-la-nuit'],
-                            ['name' => 'Versace Eros', 'slug' => 'versace-eros'],
-                            ['name' => 'Gucci Bloom', 'slug' => 'gucci-bloom'],
-                            ['name' => 'Paco Rabanne Invictus', 'slug' => 'paco-rabanne-invictus'],
-                            ['name' => 'Women\'s Perfume', 'slug' => 'womens-perfume'],
-                            ['name' => 'Men\'s Perfume', 'slug' => 'mens-perfume'],
-                            ['name' => 'Pocket Perfume', 'slug' => 'pocket-perfume'],
-                            ['name' => 'Body Spray', 'slug' => 'body-spray'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Oral Care',
-                        'slug' => 'oral-care',
-                        'children' => [
-                            ['name' => 'Electric Toothbrush', 'slug' => 'electric-toothbrush'],
-                            ['name' => 'Toothbrush', 'slug' => 'toothbrush'],
-                            ['name' => 'Toothpaste', 'slug' => 'toothpaste'],
-                            ['name' => 'Dental Floss', 'slug' => 'dental-floss'],
-                            ['name' => 'Mouthwash', 'slug' => 'mouthwash'],
-                            ['name' => 'Teeth Whitening Kit', 'slug' => 'teeth-whitening-kit'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Personal Care',
-                        'slug' => 'personal-care',
-                        'children' => [
-                            ['name' => 'Deodorant', 'slug' => 'deodorant'],
-                            ['name' => 'Body Wash', 'slug' => 'body-wash'],
-                            ['name' => 'Men\'s Body Wash', 'slug' => 'mens-body-wash'],
-                            ['name' => 'Women\'s Body Wash', 'slug' => 'womens-body-wash'],
-                            ['name' => 'Shaving Kit', 'slug' => 'shaving-kit'],
-                            ['name' => 'Razor', 'slug' => 'razor'],
-                            ['name' => 'Hair Removal Cream', 'slug' => 'hair-removal-cream'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Health Supplements',
-                        'slug' => 'health-supplements',
-                        'children' => [
-                            ['name' => 'Vitamin C', 'slug' => 'vitamin-c'],
-                            ['name' => 'Vitamin D3', 'slug' => 'vitamin-d3'],
-                            ['name' => 'Omega-3', 'slug' => 'omega-3'],
-                            ['name' => 'Magnesium', 'slug' => 'magnesium'],
-                            ['name' => 'Zinc', 'slug' => 'zinc'],
-                            ['name' => 'B-Complex', 'slug' => 'b-complex'],
-                            ['name' => 'Protein Powder', 'slug' => 'protein-powder'],
-                            ['name' => 'Collagen', 'slug' => 'collagen'],
+                            [
+                                'name' => 'Skin Care',
+                                'slug' => 'skin-care',
+                                'children' => [
+                                    ['name' => 'Moisturizer Cream', 'slug' => 'moisturizer-cream'],
+                                    ['name' => 'Sunscreen SPF 50', 'slug' => 'sunscreen-spf-50'],
+                                    ['name' => 'Face Serum', 'slug' => 'face-serum'],
+                                    ['name' => 'Face Mask', 'slug' => 'face-mask'],
+                                    ['name' => 'Eye Cream', 'slug' => 'eye-cream'],
+                                    ['name' => 'Face Cleanser', 'slug' => 'face-cleanser'],
+                                    ['name' => 'Toner', 'slug' => 'toner'],
+                                    ['name' => 'Exfoliating Scrub', 'slug' => 'exfoliating-scrub'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Makeup',
+                                'slug' => 'makeup',
+                                'children' => [
+                                    ['name' => 'Foundation', 'slug' => 'foundation'],
+                                    ['name' => 'Concealer', 'slug' => 'concealer'],
+                                    ['name' => 'Blush', 'slug' => 'blush'],
+                                    ['name' => 'Mascara', 'slug' => 'mascara'],
+                                    ['name' => 'Eyeliner', 'slug' => 'eyeliner'],
+                                    ['name' => 'Lipstick', 'slug' => 'lipstick'],
+                                    ['name' => 'Lip Gloss', 'slug' => 'lip-gloss'],
+                                    ['name' => 'Makeup Brush Set', 'slug' => 'makeup-brush-set'],
+                                    ['name' => 'Eyeshadow Palette', 'slug' => 'eyeshadow-palette'],
+                                    ['name' => 'Setting Spray', 'slug' => 'setting-spray'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Hair Care',
+                                'slug' => 'hair-care',
+                                'children' => [
+                                    ['name' => 'Shampoo', 'slug' => 'shampoo'],
+                                    ['name' => 'Conditioner', 'slug' => 'conditioner'],
+                                    ['name' => 'Hair Mask', 'slug' => 'hair-mask'],
+                                    ['name' => 'Hair Oil', 'slug' => 'hair-oil'],
+                                    ['name' => 'Hair Spray', 'slug' => 'hair-spray'],
+                                    ['name' => 'Hair Dryer', 'slug' => 'hair-dryer'],
+                                    ['name' => 'Hair Straightener', 'slug' => 'hair-straightener'],
+                                    ['name' => 'Hair Curler', 'slug' => 'hair-curler'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Perfumes',
+                                'slug' => 'perfumes',
+                                'children' => [
+                                    ['name' => 'Dior Sauvage', 'slug' => 'dior-sauvage'],
+                                    ['name' => 'Chanel No.5', 'slug' => 'chanel-no-5'],
+                                    ['name' => 'YSL La Nuit', 'slug' => 'ysl-la-nuit'],
+                                    ['name' => 'Versace Eros', 'slug' => 'versace-eros'],
+                                    ['name' => 'Gucci Bloom', 'slug' => 'gucci-bloom'],
+                                    ['name' => 'Paco Rabanne Invictus', 'slug' => 'paco-rabanne-invictus'],
+                                    ['name' => 'Women\'s Perfume', 'slug' => 'womens-perfume'],
+                                    ['name' => 'Men\'s Perfume', 'slug' => 'mens-perfume'],
+                                    ['name' => 'Pocket Perfume', 'slug' => 'pocket-perfume'],
+                                    ['name' => 'Body Spray', 'slug' => 'body-spray'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Oral Care',
+                                'slug' => 'oral-care',
+                                'children' => [
+                                    ['name' => 'Electric Toothbrush', 'slug' => 'electric-toothbrush'],
+                                    ['name' => 'Toothbrush', 'slug' => 'toothbrush'],
+                                    ['name' => 'Toothpaste', 'slug' => 'toothpaste'],
+                                    ['name' => 'Dental Floss', 'slug' => 'dental-floss'],
+                                    ['name' => 'Mouthwash', 'slug' => 'mouthwash'],
+                                    ['name' => 'Teeth Whitening Kit', 'slug' => 'teeth-whitening-kit'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Personal Care',
+                                'slug' => 'personal-care',
+                                'children' => [
+                                    ['name' => 'Deodorant', 'slug' => 'deodorant'],
+                                    ['name' => 'Body Wash', 'slug' => 'body-wash'],
+                                    ['name' => 'Men\'s Body Wash', 'slug' => 'mens-body-wash'],
+                                    ['name' => 'Women\'s Body Wash', 'slug' => 'womens-body-wash'],
+                                    ['name' => 'Shaving Kit', 'slug' => 'shaving-kit'],
+                                    ['name' => 'Razor', 'slug' => 'razor'],
+                                    ['name' => 'Hair Removal Cream', 'slug' => 'hair-removal-cream'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Health Supplements',
+                                'slug' => 'health-supplements',
+                                'children' => [
+                                    ['name' => 'Vitamin C', 'slug' => 'vitamin-c'],
+                                    ['name' => 'Vitamin D3', 'slug' => 'vitamin-d3'],
+                                    ['name' => 'Omega-3', 'slug' => 'omega-3'],
+                                    ['name' => 'Magnesium', 'slug' => 'magnesium'],
+                                    ['name' => 'Zinc', 'slug' => 'zinc'],
+                                    ['name' => 'B-Complex', 'slug' => 'b-complex'],
+                                    ['name' => 'Protein Powder', 'slug' => 'protein-powder'],
+                                    ['name' => 'Collagen', 'slug' => 'collagen'],
+                                ]
+                            ],
                         ]
                     ],
                 ]
@@ -933,158 +957,164 @@ class ProductDatabaseSeeder extends Seeder
                 'sort_order' => 7,
                 'children' => [
                     [
-                        'name' => 'Men\'s Clothing',
-                        'slug' => 'mens-clothing',
+                        'name' => 'Select Fashion',
+                        'slug' => 'select-fashion',
                         'children' => [
-                            ['name' => 'Men\'s T-Shirt', 'slug' => 'mens-t-shirt'],
-                            ['name' => 'Men\'s Shirt', 'slug' => 'mens-shirt'],
-                            ['name' => 'Men\'s Jeans', 'slug' => 'mens-jeans'],
-                            ['name' => 'Men\'s Suit', 'slug' => 'mens-suit'],
-                            ['name' => 'Men\'s Jacket', 'slug' => 'mens-jacket'],
-                            ['name' => 'Men\'s Coat', 'slug' => 'mens-coat'],
-                            ['name' => 'Men\'s Hoodie', 'slug' => 'mens-hoodie'],
-                            ['name' => 'Men\'s Sweatshirt', 'slug' => 'mens-sweatshirt'],
-                            ['name' => 'Men\'s Pants', 'slug' => 'mens-pants'],
-                            ['name' => 'Men\'s Shorts', 'slug' => 'mens-shorts'],
-                            ['name' => 'Men\'s Underwear', 'slug' => 'mens-underwear'],
-                            ['name' => 'Men\'s Socks', 'slug' => 'mens-socks'],
-                            ['name' => 'Men\'s Belt', 'slug' => 'mens-belt'],
-                            ['name' => 'Men\'s Tie', 'slug' => 'mens-tie'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Women\'s Clothing',
-                        'slug' => 'womens-clothing',
-                        'children' => [
-                            ['name' => 'Women\'s Dress', 'slug' => 'womens-dress'],
-                            ['name' => 'Women\'s Blouse', 'slug' => 'womens-blouse'],
-                            ['name' => 'Women\'s Jeans', 'slug' => 'womens-jeans'],
-                            ['name' => 'Women\'s Skirt', 'slug' => 'womens-skirt'],
-                            ['name' => 'Women\'s Jacket', 'slug' => 'womens-jacket'],
-                            ['name' => 'Women\'s Coat', 'slug' => 'womens-coat'],
-                            ['name' => 'Women\'s T-Shirt', 'slug' => 'womens-t-shirt'],
-                            ['name' => 'Women\'s Hoodie', 'slug' => 'womens-hoodie'],
-                            ['name' => 'Women\'s Pants', 'slug' => 'womens-pants'],
-                            ['name' => 'Women\'s Leggings', 'slug' => 'womens-leggings'],
-                            ['name' => 'Women\'s Underwear', 'slug' => 'womens-underwear'],
-                            ['name' => 'Women\'s Bra', 'slug' => 'womens-bra'],
-                            ['name' => 'Manteau', 'slug' => 'manteau'],
-                            ['name' => 'Long Manteau', 'slug' => 'long-manteau'],
-                            ['name' => 'Short Manteau', 'slug' => 'short-manteau'],
-                            ['name' => 'Open Manteau', 'slug' => 'open-manteau'],
-                            ['name' => 'Closed Manteau', 'slug' => 'closed-manteau'],
-                            ['name' => 'Formal Manteau', 'slug' => 'formal-manteau'],
-                            ['name' => 'Headscarf', 'slug' => 'headscarf'],
-                            ['name' => 'Women\'s Belt', 'slug' => 'womens-belt'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Children\'s Clothing',
-                        'slug' => 'childrens-clothing',
-                        'children' => [
-                            ['name' => 'Baby Bodysuit', 'slug' => 'baby-bodysuit'],
-                            ['name' => 'Baby Set', 'slug' => 'baby-set'],
-                            ['name' => 'Toddler T-Shirt', 'slug' => 'toddler-t-shirt'],
-                            ['name' => 'Toddler Pants', 'slug' => 'toddler-pants'],
-                            ['name' => 'Girls Dress', 'slug' => 'girls-dress'],
-                            ['name' => 'Boys T-Shirt', 'slug' => 'boys-t-shirt'],
-                            ['name' => 'Kids Jacket', 'slug' => 'kids-jacket'],
-                            ['name' => 'Kids Jeans', 'slug' => 'kids-jeans'],
-                            ['name' => 'Kids Sneakers', 'slug' => 'kids-sneakers'],
-                            ['name' => 'Kids Sandals', 'slug' => 'kids-sandals'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Shoes',
-                        'slug' => 'shoes',
-                        'children' => [
-                            ['name' => 'Nike Air Max', 'slug' => 'nike-air-max'],
-                            ['name' => 'Nike Air Force 1', 'slug' => 'nike-air-force-1'],
-                            ['name' => 'Adidas Ultraboost', 'slug' => 'adidas-ultraboost'],
-                            ['name' => 'Adidas Stan Smith', 'slug' => 'adidas-stan-smith'],
-                            ['name' => 'Puma RS-X', 'slug' => 'puma-rs-x'],
-                            ['name' => 'Men\'s Sneakers', 'slug' => 'mens-sneakers'],
-                            ['name' => 'Women\'s Sneakers', 'slug' => 'womens-sneakers'],
-                            ['name' => 'Men\'s Boots', 'slug' => 'mens-boots'],
-                            ['name' => 'Women\'s Boots', 'slug' => 'womens-boots'],
-                            ['name' => 'Men\'s Sandals', 'slug' => 'mens-sandals'],
-                            ['name' => 'Women\'s Sandals', 'slug' => 'womens-sandals'],
-                            ['name' => 'Men\'s Slippers', 'slug' => 'mens-slippers'],
-                            ['name' => 'Women\'s Slippers', 'slug' => 'womens-slippers'],
-                            ['name' => 'Leather Shoes', 'slug' => 'leather-shoes'],
-                            ['name' => 'Sports Shoes', 'slug' => 'sports-shoes'],
-                            ['name' => 'College Shoes', 'slug' => 'college-shoes'],
-                            ['name' => 'Giveh', 'slug' => 'giveh'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Bags & Accessories',
-                        'slug' => 'bags-accessories',
-                        'children' => [
-                            ['name' => 'Men\'s Wallet', 'slug' => 'mens-wallet'],
-                            ['name' => 'Women\'s Handbag', 'slug' => 'womens-handbag'],
-                            ['name' => 'Backpack', 'slug' => 'backpack'],
-                            ['name' => 'Leather Bag', 'slug' => 'leather-bag'],
-                            ['name' => 'Belt', 'slug' => 'belt'],
-                            ['name' => 'Hat', 'slug' => 'hat'],
-                            ['name' => 'Scarf', 'slug' => 'scarf'],
-                            ['name' => 'Sunglasses', 'slug' => 'sunglasses'],
-                            ['name' => 'Watch', 'slug' => 'watch'],
-                            ['name' => 'Men\'s Watch', 'slug' => 'mens-watch'],
-                            ['name' => 'Women\'s Watch', 'slug' => 'womens-watch'],
-                            ['name' => 'Casio Watch', 'slug' => 'casio-watch'],
-                            ['name' => 'Seiko Watch', 'slug' => 'seiko-watch'],
-                            ['name' => 'Rolex Watch', 'slug' => 'rolex-watch'],
-                            ['name' => 'Tissot Watch', 'slug' => 'tissot-watch'],
-                            ['name' => 'Citizen Watch', 'slug' => 'citizen-watch'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Sportswear',
-                        'slug' => 'fashion-sportswear',
-                        'children' => [
-                            ['name' => 'Sports T-Shirt', 'slug' => 'fashion-sports-t-shirt'],
-                            ['name' => 'Sports Shorts', 'slug' => 'fashion-sports-shorts'],
-                            ['name' => 'Track Suit', 'slug' => 'fashion-track-suit'],
-                            ['name' => 'Yoga Pants', 'slug' => 'fashion-yoga-pants'],
-                            ['name' => 'Sports Bra', 'slug' => 'fashion-sports-bra'],
-                            ['name' => 'Compression Wear', 'slug' => 'fashion-compression-wear'],
-                            ['name' => 'Sweatband', 'slug' => 'fashion-sweatband'],
-                            ['name' => 'Sport Socks', 'slug' => 'fashion-sport-socks'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Fashion Brands',
-                        'slug' => 'fashion-brands',
-                        'children' => [
-                            ['name' => 'Zara', 'slug' => 'zara'],
-                            ['name' => 'H&M', 'slug' => 'hm'],
-                            ['name' => 'Levi\'s', 'slug' => 'levis'],
-                            ['name' => 'Nike', 'slug' => 'nike'],
-                            ['name' => 'Adidas', 'slug' => 'adidas'],
-                            ['name' => 'Puma', 'slug' => 'puma'],
-                            ['name' => 'Novin Charm', 'slug' => 'novin-charm'],
-                            ['name' => 'Charm Mashhad', 'slug' => 'charm-mashhad'],
-                            ['name' => 'Asmara', 'slug' => 'asmara'],
-                            ['name' => 'Serjeh', 'slug' => 'serjeh'],
-                            ['name' => 'Gordieh', 'slug' => 'gordieh'],
-                            ['name' => 'Charm Ataroud', 'slug' => 'charm-ataroud'],
-                            ['name' => 'Tolika', 'slug' => 'tolika'],
-                            ['name' => 'Pama', 'slug' => 'pama'],
-                            ['name' => 'I-Tech', 'slug' => 'i-tech'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Trending Fashion',
-                        'slug' => 'trending-fashion',
-                        'children' => [
-                            ['name' => 'Mom Fit Jeans', 'slug' => 'mom-fit-jeans'],
-                            ['name' => 'Oversized T-Shirt', 'slug' => 'oversized-t-shirt'],
-                            ['name' => 'Cargo Pants', 'slug' => 'cargo-pants'],
-                            ['name' => 'Puffer Jacket', 'slug' => 'puffer-jacket'],
-                            ['name' => 'Leather Jacket', 'slug' => 'leather-jacket'],
-                            ['name' => 'Knit Sweater', 'slug' => 'knit-sweater'],
-                            ['name' => 'Hoodie', 'slug' => 'hoodie'],
+                            [
+                                'name' => 'Men\'s Clothing',
+                                'slug' => 'mens-clothing',
+                                'children' => [
+                                    ['name' => 'Men\'s T-Shirt', 'slug' => 'mens-t-shirt'],
+                                    ['name' => 'Men\'s Shirt', 'slug' => 'mens-shirt'],
+                                    ['name' => 'Men\'s Jeans', 'slug' => 'mens-jeans'],
+                                    ['name' => 'Men\'s Suit', 'slug' => 'mens-suit'],
+                                    ['name' => 'Men\'s Jacket', 'slug' => 'mens-jacket'],
+                                    ['name' => 'Men\'s Coat', 'slug' => 'mens-coat'],
+                                    ['name' => 'Men\'s Hoodie', 'slug' => 'mens-hoodie'],
+                                    ['name' => 'Men\'s Sweatshirt', 'slug' => 'mens-sweatshirt'],
+                                    ['name' => 'Men\'s Pants', 'slug' => 'mens-pants'],
+                                    ['name' => 'Men\'s Shorts', 'slug' => 'mens-shorts'],
+                                    ['name' => 'Men\'s Underwear', 'slug' => 'mens-underwear'],
+                                    ['name' => 'Men\'s Socks', 'slug' => 'mens-socks'],
+                                    ['name' => 'Men\'s Belt', 'slug' => 'mens-belt'],
+                                    ['name' => 'Men\'s Tie', 'slug' => 'mens-tie'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Women\'s Clothing',
+                                'slug' => 'womens-clothing',
+                                'children' => [
+                                    ['name' => 'Women\'s Dress', 'slug' => 'womens-dress'],
+                                    ['name' => 'Women\'s Blouse', 'slug' => 'womens-blouse'],
+                                    ['name' => 'Women\'s Jeans', 'slug' => 'womens-jeans'],
+                                    ['name' => 'Women\'s Skirt', 'slug' => 'womens-skirt'],
+                                    ['name' => 'Women\'s Jacket', 'slug' => 'womens-jacket'],
+                                    ['name' => 'Women\'s Coat', 'slug' => 'womens-coat'],
+                                    ['name' => 'Women\'s T-Shirt', 'slug' => 'womens-t-shirt'],
+                                    ['name' => 'Women\'s Hoodie', 'slug' => 'womens-hoodie'],
+                                    ['name' => 'Women\'s Pants', 'slug' => 'womens-pants'],
+                                    ['name' => 'Women\'s Leggings', 'slug' => 'womens-leggings'],
+                                    ['name' => 'Women\'s Underwear', 'slug' => 'womens-underwear'],
+                                    ['name' => 'Women\'s Bra', 'slug' => 'womens-bra'],
+                                    ['name' => 'Manteau', 'slug' => 'manteau'],
+                                    ['name' => 'Long Manteau', 'slug' => 'long-manteau'],
+                                    ['name' => 'Short Manteau', 'slug' => 'short-manteau'],
+                                    ['name' => 'Open Manteau', 'slug' => 'open-manteau'],
+                                    ['name' => 'Closed Manteau', 'slug' => 'closed-manteau'],
+                                    ['name' => 'Formal Manteau', 'slug' => 'formal-manteau'],
+                                    ['name' => 'Headscarf', 'slug' => 'headscarf'],
+                                    ['name' => 'Women\'s Belt', 'slug' => 'womens-belt'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Children\'s Clothing',
+                                'slug' => 'childrens-clothing',
+                                'children' => [
+                                    ['name' => 'Baby Bodysuit', 'slug' => 'baby-bodysuit'],
+                                    ['name' => 'Baby Set', 'slug' => 'baby-set'],
+                                    ['name' => 'Toddler T-Shirt', 'slug' => 'toddler-t-shirt'],
+                                    ['name' => 'Toddler Pants', 'slug' => 'toddler-pants'],
+                                    ['name' => 'Girls Dress', 'slug' => 'girls-dress'],
+                                    ['name' => 'Boys T-Shirt', 'slug' => 'boys-t-shirt'],
+                                    ['name' => 'Kids Jacket', 'slug' => 'kids-jacket'],
+                                    ['name' => 'Kids Jeans', 'slug' => 'kids-jeans'],
+                                    ['name' => 'Kids Sneakers', 'slug' => 'kids-sneakers'],
+                                    ['name' => 'Kids Sandals', 'slug' => 'kids-sandals'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Shoes',
+                                'slug' => 'shoes',
+                                'children' => [
+                                    ['name' => 'Nike Air Max', 'slug' => 'nike-air-max'],
+                                    ['name' => 'Nike Air Force 1', 'slug' => 'nike-air-force-1'],
+                                    ['name' => 'Adidas Ultraboost', 'slug' => 'adidas-ultraboost'],
+                                    ['name' => 'Adidas Stan Smith', 'slug' => 'adidas-stan-smith'],
+                                    ['name' => 'Puma RS-X', 'slug' => 'puma-rs-x'],
+                                    ['name' => 'Men\'s Sneakers', 'slug' => 'mens-sneakers'],
+                                    ['name' => 'Women\'s Sneakers', 'slug' => 'womens-sneakers'],
+                                    ['name' => 'Men\'s Boots', 'slug' => 'mens-boots'],
+                                    ['name' => 'Women\'s Boots', 'slug' => 'womens-boots'],
+                                    ['name' => 'Men\'s Sandals', 'slug' => 'mens-sandals'],
+                                    ['name' => 'Women\'s Sandals', 'slug' => 'womens-sandals'],
+                                    ['name' => 'Men\'s Slippers', 'slug' => 'mens-slippers'],
+                                    ['name' => 'Women\'s Slippers', 'slug' => 'womens-slippers'],
+                                    ['name' => 'Leather Shoes', 'slug' => 'leather-shoes'],
+                                    ['name' => 'Sports Shoes', 'slug' => 'sports-shoes'],
+                                    ['name' => 'College Shoes', 'slug' => 'college-shoes'],
+                                    ['name' => 'Giveh', 'slug' => 'giveh'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Bags & Accessories',
+                                'slug' => 'bags-accessories',
+                                'children' => [
+                                    ['name' => 'Men\'s Wallet', 'slug' => 'mens-wallet'],
+                                    ['name' => 'Women\'s Handbag', 'slug' => 'womens-handbag'],
+                                    ['name' => 'Backpack', 'slug' => 'backpack'],
+                                    ['name' => 'Leather Bag', 'slug' => 'leather-bag'],
+                                    ['name' => 'Belt', 'slug' => 'belt'],
+                                    ['name' => 'Hat', 'slug' => 'hat'],
+                                    ['name' => 'Scarf', 'slug' => 'scarf'],
+                                    ['name' => 'Sunglasses', 'slug' => 'sunglasses'],
+                                    ['name' => 'Watch', 'slug' => 'watch'],
+                                    ['name' => 'Men\'s Watch', 'slug' => 'mens-watch'],
+                                    ['name' => 'Women\'s Watch', 'slug' => 'womens-watch'],
+                                    ['name' => 'Casio Watch', 'slug' => 'casio-watch'],
+                                    ['name' => 'Seiko Watch', 'slug' => 'seiko-watch'],
+                                    ['name' => 'Rolex Watch', 'slug' => 'rolex-watch'],
+                                    ['name' => 'Tissot Watch', 'slug' => 'tissot-watch'],
+                                    ['name' => 'Citizen Watch', 'slug' => 'citizen-watch'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Sportswear',
+                                'slug' => 'fashion-sportswear',
+                                'children' => [
+                                    ['name' => 'Sports T-Shirt', 'slug' => 'fashion-sports-t-shirt'],
+                                    ['name' => 'Sports Shorts', 'slug' => 'fashion-sports-shorts'],
+                                    ['name' => 'Track Suit', 'slug' => 'fashion-track-suit'],
+                                    ['name' => 'Yoga Pants', 'slug' => 'fashion-yoga-pants'],
+                                    ['name' => 'Sports Bra', 'slug' => 'fashion-sports-bra'],
+                                    ['name' => 'Compression Wear', 'slug' => 'fashion-compression-wear'],
+                                    ['name' => 'Sweatband', 'slug' => 'fashion-sweatband'],
+                                    ['name' => 'Sport Socks', 'slug' => 'fashion-sport-socks'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Fashion Brands',
+                                'slug' => 'fashion-brands',
+                                'children' => [
+                                    ['name' => 'Zara', 'slug' => 'zara'],
+                                    ['name' => 'H&M', 'slug' => 'hm'],
+                                    ['name' => 'Levi\'s', 'slug' => 'levis'],
+                                    ['name' => 'Nike', 'slug' => 'nike'],
+                                    ['name' => 'Adidas', 'slug' => 'adidas'],
+                                    ['name' => 'Puma', 'slug' => 'puma'],
+                                    ['name' => 'Novin Charm', 'slug' => 'novin-charm'],
+                                    ['name' => 'Charm Mashhad', 'slug' => 'charm-mashhad'],
+                                    ['name' => 'Asmara', 'slug' => 'asmara'],
+                                    ['name' => 'Serjeh', 'slug' => 'serjeh'],
+                                    ['name' => 'Gordieh', 'slug' => 'gordieh'],
+                                    ['name' => 'Charm Ataroud', 'slug' => 'charm-ataroud'],
+                                    ['name' => 'Tolika', 'slug' => 'tolika'],
+                                    ['name' => 'Pama', 'slug' => 'pama'],
+                                    ['name' => 'I-Tech', 'slug' => 'i-tech'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Trending Fashion',
+                                'slug' => 'trending-fashion',
+                                'children' => [
+                                    ['name' => 'Mom Fit Jeans', 'slug' => 'mom-fit-jeans'],
+                                    ['name' => 'Oversized T-Shirt', 'slug' => 'oversized-t-shirt'],
+                                    ['name' => 'Cargo Pants', 'slug' => 'cargo-pants'],
+                                    ['name' => 'Puffer Jacket', 'slug' => 'puffer-jacket'],
+                                    ['name' => 'Leather Jacket', 'slug' => 'leather-jacket'],
+                                    ['name' => 'Knit Sweater', 'slug' => 'knit-sweater'],
+                                    ['name' => 'Hoodie', 'slug' => 'hoodie'],
+                                ]
+                            ],
                         ]
                     ],
                 ]
@@ -1097,86 +1127,92 @@ class ProductDatabaseSeeder extends Seeder
                 'sort_order' => 8,
                 'children' => [
                     [
-                        'name' => 'Gold Jewelry',
-                        'slug' => 'gold-jewelry-items',
+                        'name' => 'Select Jewelry',
+                        'slug' => 'select-jewelry',
                         'children' => [
-                            ['name' => 'Gold Necklace', 'slug' => 'gold-necklace'],
-                            ['name' => 'Gold Ring', 'slug' => 'gold-ring'],
-                            ['name' => 'Gold Earrings', 'slug' => 'gold-earrings'],
-                            ['name' => 'Gold Bracelet', 'slug' => 'gold-bracelet'],
-                            ['name' => 'Gold Anklet', 'slug' => 'gold-anklet'],
-                            ['name' => 'Gold Chain', 'slug' => 'gold-chain'],
-                            ['name' => 'Gold Pendant', 'slug' => 'gold-pendant'],
-                            ['name' => 'Gold Set', 'slug' => 'gold-set'],
-                            ['name' => '22K Gold', 'slug' => '22k-gold'],
-                            ['name' => '24K Gold', 'slug' => '24k-gold'],
-                            ['name' => 'Gold Under 10M', 'slug' => 'gold-under-10m'],
-                            ['name' => 'Gold Under 15M', 'slug' => 'gold-under-15m'],
-                            ['name' => 'Gold Under 20M', 'slug' => 'gold-under-20m'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Silver Jewelry',
-                        'slug' => 'silver-jewelry',
-                        'children' => [
-                            ['name' => 'Silver Necklace', 'slug' => 'silver-necklace'],
-                            ['name' => 'Silver Ring', 'slug' => 'silver-ring'],
-                            ['name' => 'Silver Earrings', 'slug' => 'silver-earrings'],
-                            ['name' => 'Silver Bracelet', 'slug' => 'silver-bracelet'],
-                            ['name' => 'Silver Chain', 'slug' => 'silver-chain'],
-                            ['name' => 'Silver Anklet', 'slug' => 'silver-anklet'],
-                            ['name' => '925 Silver', 'slug' => '925-silver'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Diamonds & Gems',
-                        'slug' => 'diamonds-gems',
-                        'children' => [
-                            ['name' => 'Diamond Ring', 'slug' => 'diamond-ring'],
-                            ['name' => 'Diamond Necklace', 'slug' => 'diamond-necklace'],
-                            ['name' => 'Diamond Earrings', 'slug' => 'diamond-earrings'],
-                            ['name' => 'Ruby Jewelry', 'slug' => 'ruby-jewelry'],
-                            ['name' => 'Sapphire Jewelry', 'slug' => 'sapphire-jewelry'],
-                            ['name' => 'Emerald Jewelry', 'slug' => 'emerald-jewelry'],
-                            ['name' => 'Pearl Jewelry', 'slug' => 'pearl-jewelry'],
-                            ['name' => 'Gemstone Ring', 'slug' => 'gemstone-ring'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Gold Coins & Bars',
-                        'slug' => 'gold-coins-bars',
-                        'children' => [
-                            ['name' => 'Gold Bar', 'slug' => 'gold-bar'],
-                            ['name' => 'Gold Coin', 'slug' => 'gold-coin'],
-                            ['name' => 'Quarter Coin', 'slug' => 'quarter-coin'],
-                            ['name' => 'Half Coin', 'slug' => 'half-coin'],
-                            ['name' => 'Full Coin', 'slug' => 'full-coin'],
-                            ['name' => 'Parsian Coin', 'slug' => 'parsian-coin'],
-                            ['name' => 'Melted Gold', 'slug' => 'melted-gold'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Gold Galleries',
-                        'slug' => 'gold-galleries',
-                        'children' => [
-                            ['name' => 'Ruby Art', 'slug' => 'ruby-art'],
-                            ['name' => 'Eli Gallery', 'slug' => 'eli-gallery'],
-                            ['name' => 'Mavi Gallery', 'slug' => 'mavi-gallery'],
-                            ['name' => 'Mostajabi', 'slug' => 'mostajabi'],
-                            ['name' => 'Taj', 'slug' => 'taj'],
-                            ['name' => 'Daris', 'slug' => 'daris'],
-                            ['name' => 'Mio Gold', 'slug' => 'mio-gold'],
-                            ['name' => 'Parasteh Gallery', 'slug' => 'parasteh-gallery'],
-                            ['name' => 'Sheida Majd', 'slug' => 'sheida-majd'],
-                            ['name' => 'Kia Gallery', 'slug' => 'kia-gallery'],
-                            ['name' => 'Naria', 'slug' => 'naria'],
-                            ['name' => 'Maya Mahak', 'slug' => 'maya-mahak'],
-                            ['name' => 'Gol Dam', 'slug' => 'gol-dam'],
-                            ['name' => 'Hor Gold Gallery', 'slug' => 'hor-gold-gallery'],
-                            ['name' => 'Parsis Gold', 'slug' => 'parsis-gold'],
-                            ['name' => 'Tokeniko', 'slug' => 'tokeniko'],
-                            ['name' => 'ZIOTO', 'slug' => 'zioto'],
-                            ['name' => 'Brillian Gold', 'slug' => 'brillian-gold'],
+                            [
+                                'name' => 'Gold Jewelry',
+                                'slug' => 'gold-jewelry-items',
+                                'children' => [
+                                    ['name' => 'Gold Necklace', 'slug' => 'gold-necklace'],
+                                    ['name' => 'Gold Ring', 'slug' => 'gold-ring'],
+                                    ['name' => 'Gold Earrings', 'slug' => 'gold-earrings'],
+                                    ['name' => 'Gold Bracelet', 'slug' => 'gold-bracelet'],
+                                    ['name' => 'Gold Anklet', 'slug' => 'gold-anklet'],
+                                    ['name' => 'Gold Chain', 'slug' => 'gold-chain'],
+                                    ['name' => 'Gold Pendant', 'slug' => 'gold-pendant'],
+                                    ['name' => 'Gold Set', 'slug' => 'gold-set'],
+                                    ['name' => '22K Gold', 'slug' => '22k-gold'],
+                                    ['name' => '24K Gold', 'slug' => '24k-gold'],
+                                    ['name' => 'Gold Under 10M', 'slug' => 'gold-under-10m'],
+                                    ['name' => 'Gold Under 15M', 'slug' => 'gold-under-15m'],
+                                    ['name' => 'Gold Under 20M', 'slug' => 'gold-under-20m'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Silver Jewelry',
+                                'slug' => 'silver-jewelry',
+                                'children' => [
+                                    ['name' => 'Silver Necklace', 'slug' => 'silver-necklace'],
+                                    ['name' => 'Silver Ring', 'slug' => 'silver-ring'],
+                                    ['name' => 'Silver Earrings', 'slug' => 'silver-earrings'],
+                                    ['name' => 'Silver Bracelet', 'slug' => 'silver-bracelet'],
+                                    ['name' => 'Silver Chain', 'slug' => 'silver-chain'],
+                                    ['name' => 'Silver Anklet', 'slug' => 'silver-anklet'],
+                                    ['name' => '925 Silver', 'slug' => '925-silver'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Diamonds & Gems',
+                                'slug' => 'diamonds-gems',
+                                'children' => [
+                                    ['name' => 'Diamond Ring', 'slug' => 'diamond-ring'],
+                                    ['name' => 'Diamond Necklace', 'slug' => 'diamond-necklace'],
+                                    ['name' => 'Diamond Earrings', 'slug' => 'diamond-earrings'],
+                                    ['name' => 'Ruby Jewelry', 'slug' => 'ruby-jewelry'],
+                                    ['name' => 'Sapphire Jewelry', 'slug' => 'sapphire-jewelry'],
+                                    ['name' => 'Emerald Jewelry', 'slug' => 'emerald-jewelry'],
+                                    ['name' => 'Pearl Jewelry', 'slug' => 'pearl-jewelry'],
+                                    ['name' => 'Gemstone Ring', 'slug' => 'gemstone-ring'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Gold Coins & Bars',
+                                'slug' => 'gold-coins-bars',
+                                'children' => [
+                                    ['name' => 'Gold Bar', 'slug' => 'gold-bar'],
+                                    ['name' => 'Gold Coin', 'slug' => 'gold-coin'],
+                                    ['name' => 'Quarter Coin', 'slug' => 'quarter-coin'],
+                                    ['name' => 'Half Coin', 'slug' => 'half-coin'],
+                                    ['name' => 'Full Coin', 'slug' => 'full-coin'],
+                                    ['name' => 'Parsian Coin', 'slug' => 'parsian-coin'],
+                                    ['name' => 'Melted Gold', 'slug' => 'melted-gold'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Gold Galleries',
+                                'slug' => 'gold-galleries',
+                                'children' => [
+                                    ['name' => 'Ruby Art', 'slug' => 'ruby-art'],
+                                    ['name' => 'Eli Gallery', 'slug' => 'eli-gallery'],
+                                    ['name' => 'Mavi Gallery', 'slug' => 'mavi-gallery'],
+                                    ['name' => 'Mostajabi', 'slug' => 'mostajabi'],
+                                    ['name' => 'Taj', 'slug' => 'taj'],
+                                    ['name' => 'Daris', 'slug' => 'daris'],
+                                    ['name' => 'Mio Gold', 'slug' => 'mio-gold'],
+                                    ['name' => 'Parasteh Gallery', 'slug' => 'parasteh-gallery'],
+                                    ['name' => 'Sheida Majd', 'slug' => 'sheida-majd'],
+                                    ['name' => 'Kia Gallery', 'slug' => 'kia-gallery'],
+                                    ['name' => 'Naria', 'slug' => 'naria'],
+                                    ['name' => 'Maya Mahak', 'slug' => 'maya-mahak'],
+                                    ['name' => 'Gol Dam', 'slug' => 'gol-dam'],
+                                    ['name' => 'Hor Gold Gallery', 'slug' => 'hor-gold-gallery'],
+                                    ['name' => 'Parsis Gold', 'slug' => 'parsis-gold'],
+                                    ['name' => 'Tokeniko', 'slug' => 'tokeniko'],
+                                    ['name' => 'ZIOTO', 'slug' => 'zioto'],
+                                    ['name' => 'Brillian Gold', 'slug' => 'brillian-gold'],
+                                ]
+                            ],
                         ]
                     ],
                 ]
@@ -1189,111 +1225,117 @@ class ProductDatabaseSeeder extends Seeder
                 'sort_order' => 9,
                 'children' => [
                     [
-                        'name' => 'Cars',
-                        'slug' => 'cars',
+                        'name' => 'Select Vehicle',
+                        'slug' => 'select-vehicle',
                         'children' => [
-                            ['name' => 'BMW 5 Series', 'slug' => 'bmw-5-series'],
-                            ['name' => 'Mercedes E-Class', 'slug' => 'mercedes-e-class'],
-                            ['name' => 'Toyota Camry', 'slug' => 'toyota-camry'],
-                            ['name' => 'Honda Civic', 'slug' => 'honda-civic'],
-                            ['name' => 'Hyundai Sonata', 'slug' => 'hyundai-sonata'],
-                            ['name' => 'Kia Sportage', 'slug' => 'kia-sportage'],
-                            ['name' => 'Peugeot 206', 'slug' => 'peugeot-206'],
-                            ['name' => 'Peugeot 207', 'slug' => 'peugeot-207'],
-                            ['name' => 'Peugeot 405', 'slug' => 'peugeot-405'],
-                            ['name' => 'Renault Sandero', 'slug' => 'renault-sandero'],
-                            ['name' => 'Pride', 'slug' => 'pride'],
-                            ['name' => 'Tiba', 'slug' => 'tiba'],
-                            ['name' => 'Samand', 'slug' => 'samand'],
-                            ['name' => 'Dena', 'slug' => 'dena'],
-                            ['name' => 'Quick', 'slug' => 'quick'],
-                            ['name' => 'Saina', 'slug' => 'saina'],
-                            ['name' => 'MVM 315', 'slug' => 'mvm-315'],
-                            ['name' => 'MVM 530', 'slug' => 'mvm-530'],
-                            ['name' => 'Lifan 620', 'slug' => 'lifan-620'],
-                            ['name' => 'Lifan X50', 'slug' => 'lifan-x50'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Motorcycles',
-                        'slug' => 'motorcycles',
-                        'children' => [
-                            ['name' => 'Honda CBR 500R', 'slug' => 'honda-cbr-500r'],
-                            ['name' => 'Honda CB 650R', 'slug' => 'honda-cb-650r'],
-                            ['name' => 'BMW R 1250 GS', 'slug' => 'bmw-r-1250-gs'],
-                            ['name' => 'Yamaha MT-07', 'slug' => 'yamaha-mt-07'],
-                            ['name' => 'Suzuki GSX-R750', 'slug' => 'suzuki-gsx-r750'],
-                            ['name' => 'Kawasaki Ninja 400', 'slug' => 'kawasaki-ninja-400'],
-                            ['name' => 'Dirt Bike', 'slug' => 'dirt-bike'],
-                            ['name' => 'Electric Scooter', 'slug' => 'electric-scooter'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Car Accessories',
-                        'slug' => 'car-accessories',
-                        'children' => [
-                            ['name' => 'Car Alloy Rims', 'slug' => 'car-alloy-rims'],
-                            ['name' => 'Car Audio System', 'slug' => 'car-audio-system'],
-                            ['name' => 'Car Speakers', 'slug' => 'car-speakers'],
-                            ['name' => 'Car Amplifier', 'slug' => 'car-amplifier'],
-                            ['name' => 'Dashcam', 'slug' => 'dashcam'],
-                            ['name' => 'GPS Navigation', 'slug' => 'gps-navigation'],
-                            ['name' => 'Car Seat Covers', 'slug' => 'car-seat-covers'],
-                            ['name' => 'Car Floor Mats', 'slug' => 'car-floor-mats'],
-                            ['name' => 'Car Tinting', 'slug' => 'car-tinting'],
-                            ['name' => 'Car Sunshade', 'slug' => 'car-sunshade'],
-                            ['name' => 'Car Cover', 'slug' => 'car-cover'],
-                            ['name' => 'Car Phone Holder', 'slug' => 'car-phone-holder'],
-                            ['name' => 'Car Air Freshener', 'slug' => 'car-air-freshener'],
-                            ['name' => 'Car Roof Rack', 'slug' => 'car-roof-rack'],
-                            ['name' => 'Car Tire Chains', 'slug' => 'car-tire-chains'],
-                            ['name' => 'Car Jack', 'slug' => 'car-jack'],
-                            ['name' => 'Car Emergency Kit', 'slug' => 'car-emergency-kit'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Motorcycle Accessories',
-                        'slug' => 'motorcycle-accessories',
-                        'children' => [
-                            ['name' => 'Motorcycle Helmet', 'slug' => 'motorcycle-helmet'],
-                            ['name' => 'Motorcycle Jacket', 'slug' => 'motorcycle-jacket'],
-                            ['name' => 'Motorcycle Gloves', 'slug' => 'motorcycle-gloves'],
-                            ['name' => 'Motorcycle Boots', 'slug' => 'motorcycle-boots'],
-                            ['name' => 'Motorcycle Cover', 'slug' => 'motorcycle-cover'],
-                            ['name' => 'Motorcycle Phone Mount', 'slug' => 'motorcycle-phone-mount'],
-                            ['name' => 'Motorcycle Saddlebag', 'slug' => 'motorcycle-saddlebag'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Car Consumables',
-                        'slug' => 'car-consumables',
-                        'children' => [
-                            ['name' => 'Engine Oil', 'slug' => 'engine-oil'],
-                            ['name' => 'Transmission Oil', 'slug' => 'transmission-oil'],
-                            ['name' => 'Brake Fluid', 'slug' => 'brake-fluid'],
-                            ['name' => 'Antifreeze', 'slug' => 'antifreeze'],
-                            ['name' => 'Car Battery', 'slug' => 'car-battery'],
-                            ['name' => 'Oil Filter', 'slug' => 'oil-filter'],
-                            ['name' => 'Air Filter', 'slug' => 'air-filter'],
-                            ['name' => 'Brake Pads', 'slug' => 'brake-pads'],
-                            ['name' => 'Spark Plug', 'slug' => 'spark-plug'],
-                            ['name' => 'Wiper Blade', 'slug' => 'wiper-blade'],
-                            ['name' => 'Car Tire', 'slug' => 'car-tire'],
-                        ]
-                    ],
-                    [
-                        'name' => 'By Car Model',
-                        'slug' => 'by-car-model',
-                        'children' => [
-                            ['name' => 'Peugeot 206-207', 'slug' => 'peugeot-206-207'],
-                            ['name' => 'Peugeot 405-Parsia', 'slug' => 'peugeot-405-parsia'],
-                            ['name' => 'Pride-Tiba', 'slug' => 'pride-tiba'],
-                            ['name' => 'Samand-Dena', 'slug' => 'samand-dena'],
-                            ['name' => 'Quick-Saina', 'slug' => 'quick-saina'],
-                            ['name' => 'Renault Sandero', 'slug' => 'renault-sandero-car'],
-                            ['name' => 'MVM-Phoenix', 'slug' => 'mvm-phoenix'],
-                            ['name' => 'Hyundai-Kia', 'slug' => 'hyundai-kia'],
-                            ['name' => 'Toyota-Renault', 'slug' => 'toyota-renault'],
+                            [
+                                'name' => 'Cars',
+                                'slug' => 'cars',
+                                'children' => [
+                                    ['name' => 'BMW 5 Series', 'slug' => 'bmw-5-series'],
+                                    ['name' => 'Mercedes E-Class', 'slug' => 'mercedes-e-class'],
+                                    ['name' => 'Toyota Camry', 'slug' => 'toyota-camry'],
+                                    ['name' => 'Honda Civic', 'slug' => 'honda-civic'],
+                                    ['name' => 'Hyundai Sonata', 'slug' => 'hyundai-sonata'],
+                                    ['name' => 'Kia Sportage', 'slug' => 'kia-sportage'],
+                                    ['name' => 'Peugeot 206', 'slug' => 'peugeot-206'],
+                                    ['name' => 'Peugeot 207', 'slug' => 'peugeot-207'],
+                                    ['name' => 'Peugeot 405', 'slug' => 'peugeot-405'],
+                                    ['name' => 'Renault Sandero', 'slug' => 'renault-sandero'],
+                                    ['name' => 'Pride', 'slug' => 'pride'],
+                                    ['name' => 'Tiba', 'slug' => 'tiba'],
+                                    ['name' => 'Samand', 'slug' => 'samand'],
+                                    ['name' => 'Dena', 'slug' => 'dena'],
+                                    ['name' => 'Quick', 'slug' => 'quick'],
+                                    ['name' => 'Saina', 'slug' => 'saina'],
+                                    ['name' => 'MVM 315', 'slug' => 'mvm-315'],
+                                    ['name' => 'MVM 530', 'slug' => 'mvm-530'],
+                                    ['name' => 'Lifan 620', 'slug' => 'lifan-620'],
+                                    ['name' => 'Lifan X50', 'slug' => 'lifan-x50'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Motorcycles',
+                                'slug' => 'motorcycles',
+                                'children' => [
+                                    ['name' => 'Honda CBR 500R', 'slug' => 'honda-cbr-500r'],
+                                    ['name' => 'Honda CB 650R', 'slug' => 'honda-cb-650r'],
+                                    ['name' => 'BMW R 1250 GS', 'slug' => 'bmw-r-1250-gs'],
+                                    ['name' => 'Yamaha MT-07', 'slug' => 'yamaha-mt-07'],
+                                    ['name' => 'Suzuki GSX-R750', 'slug' => 'suzuki-gsx-r750'],
+                                    ['name' => 'Kawasaki Ninja 400', 'slug' => 'kawasaki-ninja-400'],
+                                    ['name' => 'Dirt Bike', 'slug' => 'dirt-bike'],
+                                    ['name' => 'Electric Scooter', 'slug' => 'electric-scooter'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Car Accessories',
+                                'slug' => 'car-accessories',
+                                'children' => [
+                                    ['name' => 'Car Alloy Rims', 'slug' => 'car-alloy-rims'],
+                                    ['name' => 'Car Audio System', 'slug' => 'car-audio-system'],
+                                    ['name' => 'Car Speakers', 'slug' => 'car-speakers'],
+                                    ['name' => 'Car Amplifier', 'slug' => 'car-amplifier'],
+                                    ['name' => 'Dashcam', 'slug' => 'dashcam'],
+                                    ['name' => 'GPS Navigation', 'slug' => 'gps-navigation'],
+                                    ['name' => 'Car Seat Covers', 'slug' => 'car-seat-covers'],
+                                    ['name' => 'Car Floor Mats', 'slug' => 'car-floor-mats'],
+                                    ['name' => 'Car Tinting', 'slug' => 'car-tinting'],
+                                    ['name' => 'Car Sunshade', 'slug' => 'car-sunshade'],
+                                    ['name' => 'Car Cover', 'slug' => 'car-cover'],
+                                    ['name' => 'Car Phone Holder', 'slug' => 'car-phone-holder'],
+                                    ['name' => 'Car Air Freshener', 'slug' => 'car-air-freshener'],
+                                    ['name' => 'Car Roof Rack', 'slug' => 'car-roof-rack'],
+                                    ['name' => 'Car Tire Chains', 'slug' => 'car-tire-chains'],
+                                    ['name' => 'Car Jack', 'slug' => 'car-jack'],
+                                    ['name' => 'Car Emergency Kit', 'slug' => 'car-emergency-kit'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Motorcycle Accessories',
+                                'slug' => 'motorcycle-accessories',
+                                'children' => [
+                                    ['name' => 'Motorcycle Helmet', 'slug' => 'motorcycle-helmet'],
+                                    ['name' => 'Motorcycle Jacket', 'slug' => 'motorcycle-jacket'],
+                                    ['name' => 'Motorcycle Gloves', 'slug' => 'motorcycle-gloves'],
+                                    ['name' => 'Motorcycle Boots', 'slug' => 'motorcycle-boots'],
+                                    ['name' => 'Motorcycle Cover', 'slug' => 'motorcycle-cover'],
+                                    ['name' => 'Motorcycle Phone Mount', 'slug' => 'motorcycle-phone-mount'],
+                                    ['name' => 'Motorcycle Saddlebag', 'slug' => 'motorcycle-saddlebag'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Car Consumables',
+                                'slug' => 'car-consumables',
+                                'children' => [
+                                    ['name' => 'Engine Oil', 'slug' => 'engine-oil'],
+                                    ['name' => 'Transmission Oil', 'slug' => 'transmission-oil'],
+                                    ['name' => 'Brake Fluid', 'slug' => 'brake-fluid'],
+                                    ['name' => 'Antifreeze', 'slug' => 'antifreeze'],
+                                    ['name' => 'Car Battery', 'slug' => 'car-battery'],
+                                    ['name' => 'Oil Filter', 'slug' => 'oil-filter'],
+                                    ['name' => 'Air Filter', 'slug' => 'air-filter'],
+                                    ['name' => 'Brake Pads', 'slug' => 'brake-pads'],
+                                    ['name' => 'Spark Plug', 'slug' => 'spark-plug'],
+                                    ['name' => 'Wiper Blade', 'slug' => 'wiper-blade'],
+                                    ['name' => 'Car Tire', 'slug' => 'car-tire'],
+                                ]
+                            ],
+                            [
+                                'name' => 'By Car Model',
+                                'slug' => 'by-car-model',
+                                'children' => [
+                                    ['name' => 'Peugeot 206-207', 'slug' => 'peugeot-206-207'],
+                                    ['name' => 'Peugeot 405-Parsia', 'slug' => 'peugeot-405-parsia'],
+                                    ['name' => 'Pride-Tiba', 'slug' => 'pride-tiba'],
+                                    ['name' => 'Samand-Dena', 'slug' => 'samand-dena'],
+                                    ['name' => 'Quick-Saina', 'slug' => 'quick-saina'],
+                                    ['name' => 'Renault Sandero', 'slug' => 'renault-sandero-car'],
+                                    ['name' => 'MVM-Phoenix', 'slug' => 'mvm-phoenix'],
+                                    ['name' => 'Hyundai-Kia', 'slug' => 'hyundai-kia'],
+                                    ['name' => 'Toyota-Renault', 'slug' => 'toyota-renault'],
+                                ]
+                            ],
                         ]
                     ],
                 ]
@@ -1306,95 +1348,101 @@ class ProductDatabaseSeeder extends Seeder
                 'sort_order' => 10,
                 'children' => [
                     [
-                        'name' => 'Medical Equipment',
-                        'slug' => 'medical-equipment',
+                        'name' => 'Select Medical',
+                        'slug' => 'select-medical',
                         'children' => [
-                            ['name' => 'Blood Pressure Monitor', 'slug' => 'blood-pressure-monitor'],
-                            ['name' => 'Digital Thermometer', 'slug' => 'digital-thermometer'],
-                            ['name' => 'Glucose Meter', 'slug' => 'glucose-meter'],
-                            ['name' => 'Nebulizer', 'slug' => 'nebulizer'],
-                            ['name' => 'Pulse Oximeter', 'slug' => 'pulse-oximeter'],
-                            ['name' => 'Stethoscope', 'slug' => 'stethoscope'],
-                            ['name' => 'Hearing Aid', 'slug' => 'hearing-aid'],
-                            ['name' => 'Medical Mask', 'slug' => 'medical-mask'],
-                            ['name' => 'Medical Gloves', 'slug' => 'medical-gloves'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Orthopedic',
-                        'slug' => 'orthopedic',
-                        'children' => [
-                            ['name' => 'Back Brace', 'slug' => 'back-brace'],
-                            ['name' => 'Knee Brace', 'slug' => 'knee-brace'],
-                            ['name' => 'Wrist Brace', 'slug' => 'wrist-brace'],
-                            ['name' => 'Ankle Support', 'slug' => 'ankle-support'],
-                            ['name' => 'Neck Brace', 'slug' => 'neck-brace'],
-                            ['name' => 'Orthopedic Shoes', 'slug' => 'orthopedic-shoes'],
-                            ['name' => 'Orthopedic Insole', 'slug' => 'orthopedic-insole'],
-                            ['name' => 'Compression Socks', 'slug' => 'compression-socks'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Supplements',
-                        'slug' => 'supplements',
-                        'children' => [
-                            ['name' => 'Vitamin C', 'slug' => 'vitamin-c-supplement'],
-                            ['name' => 'Vitamin D3', 'slug' => 'vitamin-d3-supplement'],
-                            ['name' => 'Omega-3', 'slug' => 'omega-3-supplement'],
-                            ['name' => 'Magnesium', 'slug' => 'magnesium-supplement'],
-                            ['name' => 'Zinc', 'slug' => 'zinc-supplement'],
-                            ['name' => 'B-Complex', 'slug' => 'b-complex-supplement'],
-                            ['name' => 'Protein Powder', 'slug' => 'protein-powder-supplement'],
-                            ['name' => 'Collagen', 'slug' => 'collagen-supplement'],
-                            ['name' => 'Probiotic', 'slug' => 'probiotic-supplement'],
-                            ['name' => 'Multivitamin', 'slug' => 'multivitamin-supplement'],
-                            ['name' => 'Calcium', 'slug' => 'calcium-supplement'],
-                            ['name' => 'Iron Supplement', 'slug' => 'iron-supplement-item'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Dental Care',
-                        'slug' => 'dental-care',
-                        'children' => [
-                            ['name' => 'Electric Toothbrush', 'slug' => 'electric-toothbrush'],
-                            ['name' => 'Toothbrush', 'slug' => 'toothbrush'],
-                            ['name' => 'Toothpaste', 'slug' => 'toothpaste'],
-                            ['name' => 'Dental Floss', 'slug' => 'dental-floss'],
-                            ['name' => 'Mouthwash', 'slug' => 'mouthwash'],
-                            ['name' => 'Teeth Whitening Kit', 'slug' => 'teeth-whitening-kit'],
-                            ['name' => 'Water Flosser', 'slug' => 'water-flosser'],
-                            ['name' => 'Tongue Cleaner', 'slug' => 'tongue-cleaner'],
-                        ]
-                    ],
-                    [
-                        'name' => 'First Aid',
-                        'slug' => 'first-aid',
-                        'children' => [
-                            ['name' => 'First Aid Kit', 'slug' => 'first-aid-kit'],
-                            ['name' => 'Bandage', 'slug' => 'bandage'],
-                            ['name' => 'Gauze', 'slug' => 'gauze'],
-                            ['name' => 'Medical Tape', 'slug' => 'medical-tape'],
-                            ['name' => 'Antiseptic Cream', 'slug' => 'antiseptic-cream'],
-                            ['name' => 'Pain Reliever', 'slug' => 'pain-reliever'],
-                            ['name' => 'Cold Pack', 'slug' => 'cold-pack'],
-                            ['name' => 'Hot Pack', 'slug' => 'hot-pack'],
-                            ['name' => 'Band-aid', 'slug' => 'band-aid'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Fitness Equipment',
-                        'slug' => 'fitness-equipment',
-                        'children' => [
-                            ['name' => 'Treadmill', 'slug' => 'treadmill'],
-                            ['name' => 'Exercise Bike', 'slug' => 'exercise-bike'],
-                            ['name' => 'Dumbbell Set', 'slug' => 'dumbbell-set'],
-                            ['name' => 'Yoga Mat', 'slug' => 'yoga-mat'],
-                            ['name' => 'Resistance Band', 'slug' => 'resistance-band'],
-                            ['name' => 'Kettlebell', 'slug' => 'kettlebell'],
-                            ['name' => 'Pull Up Bar', 'slug' => 'pull-up-bar'],
-                            ['name' => 'Ab Wheel', 'slug' => 'ab-wheel'],
-                            ['name' => 'Jump Rope', 'slug' => 'jump-rope'],
-                            ['name' => 'Fitness Ball', 'slug' => 'fitness-ball'],
+                            [
+                                'name' => 'Medical Equipment',
+                                'slug' => 'medical-equipment',
+                                'children' => [
+                                    ['name' => 'Blood Pressure Monitor', 'slug' => 'blood-pressure-monitor'],
+                                    ['name' => 'Digital Thermometer', 'slug' => 'digital-thermometer'],
+                                    ['name' => 'Glucose Meter', 'slug' => 'glucose-meter'],
+                                    ['name' => 'Nebulizer', 'slug' => 'nebulizer'],
+                                    ['name' => 'Pulse Oximeter', 'slug' => 'pulse-oximeter'],
+                                    ['name' => 'Stethoscope', 'slug' => 'stethoscope'],
+                                    ['name' => 'Hearing Aid', 'slug' => 'hearing-aid'],
+                                    ['name' => 'Medical Mask', 'slug' => 'medical-mask'],
+                                    ['name' => 'Medical Gloves', 'slug' => 'medical-gloves'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Orthopedic',
+                                'slug' => 'orthopedic',
+                                'children' => [
+                                    ['name' => 'Back Brace', 'slug' => 'back-brace'],
+                                    ['name' => 'Knee Brace', 'slug' => 'knee-brace'],
+                                    ['name' => 'Wrist Brace', 'slug' => 'wrist-brace'],
+                                    ['name' => 'Ankle Support', 'slug' => 'ankle-support'],
+                                    ['name' => 'Neck Brace', 'slug' => 'neck-brace'],
+                                    ['name' => 'Orthopedic Shoes', 'slug' => 'orthopedic-shoes'],
+                                    ['name' => 'Orthopedic Insole', 'slug' => 'orthopedic-insole'],
+                                    ['name' => 'Compression Socks', 'slug' => 'compression-socks'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Supplements',
+                                'slug' => 'supplements',
+                                'children' => [
+                                    ['name' => 'Vitamin C', 'slug' => 'vitamin-c-supplement'],
+                                    ['name' => 'Vitamin D3', 'slug' => 'vitamin-d3-supplement'],
+                                    ['name' => 'Omega-3', 'slug' => 'omega-3-supplement'],
+                                    ['name' => 'Magnesium', 'slug' => 'magnesium-supplement'],
+                                    ['name' => 'Zinc', 'slug' => 'zinc-supplement'],
+                                    ['name' => 'B-Complex', 'slug' => 'b-complex-supplement'],
+                                    ['name' => 'Protein Powder', 'slug' => 'protein-powder-supplement'],
+                                    ['name' => 'Collagen', 'slug' => 'collagen-supplement'],
+                                    ['name' => 'Probiotic', 'slug' => 'probiotic-supplement'],
+                                    ['name' => 'Multivitamin', 'slug' => 'multivitamin-supplement'],
+                                    ['name' => 'Calcium', 'slug' => 'calcium-supplement'],
+                                    ['name' => 'Iron Supplement', 'slug' => 'iron-supplement-item'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Dental Care',
+                                'slug' => 'dental-care',
+                                'children' => [
+                                    ['name' => 'Electric Toothbrush', 'slug' => 'electric-toothbrush'],
+                                    ['name' => 'Toothbrush', 'slug' => 'toothbrush'],
+                                    ['name' => 'Toothpaste', 'slug' => 'toothpaste'],
+                                    ['name' => 'Dental Floss', 'slug' => 'dental-floss'],
+                                    ['name' => 'Mouthwash', 'slug' => 'mouthwash'],
+                                    ['name' => 'Teeth Whitening Kit', 'slug' => 'teeth-whitening-kit'],
+                                    ['name' => 'Water Flosser', 'slug' => 'water-flosser'],
+                                    ['name' => 'Tongue Cleaner', 'slug' => 'tongue-cleaner'],
+                                ]
+                            ],
+                            [
+                                'name' => 'First Aid',
+                                'slug' => 'first-aid',
+                                'children' => [
+                                    ['name' => 'First Aid Kit', 'slug' => 'first-aid-kit'],
+                                    ['name' => 'Bandage', 'slug' => 'bandage'],
+                                    ['name' => 'Gauze', 'slug' => 'gauze'],
+                                    ['name' => 'Medical Tape', 'slug' => 'medical-tape'],
+                                    ['name' => 'Antiseptic Cream', 'slug' => 'antiseptic-cream'],
+                                    ['name' => 'Pain Reliever', 'slug' => 'pain-reliever'],
+                                    ['name' => 'Cold Pack', 'slug' => 'cold-pack'],
+                                    ['name' => 'Hot Pack', 'slug' => 'hot-pack'],
+                                    ['name' => 'Band-aid', 'slug' => 'band-aid'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Fitness Equipment',
+                                'slug' => 'fitness-equipment',
+                                'children' => [
+                                    ['name' => 'Treadmill', 'slug' => 'treadmill'],
+                                    ['name' => 'Exercise Bike', 'slug' => 'exercise-bike'],
+                                    ['name' => 'Dumbbell Set', 'slug' => 'dumbbell-set'],
+                                    ['name' => 'Yoga Mat', 'slug' => 'yoga-mat'],
+                                    ['name' => 'Resistance Band', 'slug' => 'resistance-band'],
+                                    ['name' => 'Kettlebell', 'slug' => 'kettlebell'],
+                                    ['name' => 'Pull Up Bar', 'slug' => 'pull-up-bar'],
+                                    ['name' => 'Ab Wheel', 'slug' => 'ab-wheel'],
+                                    ['name' => 'Jump Rope', 'slug' => 'jump-rope'],
+                                    ['name' => 'Fitness Ball', 'slug' => 'fitness-ball'],
+                                ]
+                            ],
                         ]
                     ],
                 ]
@@ -1407,87 +1455,93 @@ class ProductDatabaseSeeder extends Seeder
                 'sort_order' => 11,
                 'children' => [
                     [
-                        'name' => 'Power Tools',
-                        'slug' => 'power-tools',
+                        'name' => 'Select Tool',
+                        'slug' => 'select-tool',
                         'children' => [
-                            ['name' => 'Electric Drill', 'slug' => 'electric-drill'],
-                            ['name' => 'Angle Grinder', 'slug' => 'angle-grinder'],
-                            ['name' => 'Circular Saw', 'slug' => 'circular-saw'],
-                            ['name' => 'Jigsaw', 'slug' => 'jigsaw'],
-                            ['name' => 'Impact Wrench', 'slug' => 'impact-wrench'],
-                            ['name' => 'Sander', 'slug' => 'sander'],
-                            ['name' => 'Router', 'slug' => 'router-tool'],
-                            ['name' => 'Planer', 'slug' => 'planer'],
-                            ['name' => 'Makita Drill', 'slug' => 'makita-drill'],
-                            ['name' => 'DeWalt Grinder', 'slug' => 'dewalt-grinder'],
-                            ['name' => 'Bosch Saw', 'slug' => 'bosch-saw'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Hand Tools',
-                        'slug' => 'hand-tools',
-                        'children' => [
-                            ['name' => 'Screwdriver Set', 'slug' => 'screwdriver-set'],
-                            ['name' => 'Wrench Set', 'slug' => 'wrench-set'],
-                            ['name' => 'Pliers', 'slug' => 'pliers'],
-                            ['name' => 'Hammer', 'slug' => 'hammer'],
-                            ['name' => 'Tape Measure', 'slug' => 'tape-measure'],
-                            ['name' => 'Level', 'slug' => 'level'],
-                            ['name' => 'Utility Knife', 'slug' => 'utility-knife'],
-                            ['name' => 'Stanley Tool Set', 'slug' => 'stanley-tool-set'],
-                            ['name' => 'Milwaukee Tool Set', 'slug' => 'milwaukee-tool-set'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Gardening Tools',
-                        'slug' => 'gardening-tools',
-                        'children' => [
-                            ['name' => 'Lawn Mower', 'slug' => 'lawn-mower'],
-                            ['name' => 'Hedge Trimmer', 'slug' => 'hedge-trimmer'],
-                            ['name' => 'Garden Shears', 'slug' => 'garden-shears'],
-                            ['name' => 'Shovel', 'slug' => 'shovel'],
-                            ['name' => 'Rake', 'slug' => 'rake'],
-                            ['name' => 'Hoe', 'slug' => 'hoe'],
-                            ['name' => 'Watering Can', 'slug' => 'watering-can'],
-                            ['name' => 'Garden Hose', 'slug' => 'garden-hose'],
-                            ['name' => 'Pruning Saw', 'slug' => 'pruning-saw'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Safety Equipment',
-                        'slug' => 'safety-equipment',
-                        'children' => [
-                            ['name' => 'Safety Helmet', 'slug' => 'safety-helmet'],
-                            ['name' => 'Safety Glasses', 'slug' => 'safety-glasses'],
-                            ['name' => 'Work Gloves', 'slug' => 'work-gloves'],
-                            ['name' => 'Ear Protection', 'slug' => 'ear-protection'],
-                            ['name' => 'Safety Boots', 'slug' => 'safety-boots'],
-                            ['name' => 'High Visibility Vest', 'slug' => 'high-visibility-vest'],
-                            ['name' => 'Knee Pads', 'slug' => 'knee-pads'],
-                            ['name' => 'Dust Mask', 'slug' => 'dust-mask'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Measuring Tools',
-                        'slug' => 'measuring-tools',
-                        'children' => [
-                            ['name' => 'Laser Measure', 'slug' => 'laser-measure'],
-                            ['name' => 'Spirit Level', 'slug' => 'spirit-level'],
-                            ['name' => 'Caliper', 'slug' => 'caliper'],
-                            ['name' => 'Micrometer', 'slug' => 'micrometer'],
-                            ['name' => 'Angle Finder', 'slug' => 'angle-finder'],
-                            ['name' => 'Tape Measure 50m', 'slug' => 'tape-measure-50m'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Tool Sets',
-                        'slug' => 'tool-sets',
-                        'children' => [
-                            ['name' => 'Mechanic Tool Set', 'slug' => 'mechanic-tool-set'],
-                            ['name' => 'Home Tool Set', 'slug' => 'home-tool-set'],
-                            ['name' => 'Electrician Tool Set', 'slug' => 'electrician-tool-set'],
-                            ['name' => 'Automotive Tool Set', 'slug' => 'automotive-tool-set'],
-                            ['name' => 'Precision Tool Set', 'slug' => 'precision-tool-set'],
+                            [
+                                'name' => 'Power Tools',
+                                'slug' => 'power-tools',
+                                'children' => [
+                                    ['name' => 'Electric Drill', 'slug' => 'electric-drill'],
+                                    ['name' => 'Angle Grinder', 'slug' => 'angle-grinder'],
+                                    ['name' => 'Circular Saw', 'slug' => 'circular-saw'],
+                                    ['name' => 'Jigsaw', 'slug' => 'jigsaw'],
+                                    ['name' => 'Impact Wrench', 'slug' => 'impact-wrench'],
+                                    ['name' => 'Sander', 'slug' => 'sander'],
+                                    ['name' => 'Router', 'slug' => 'router-tool'],
+                                    ['name' => 'Planer', 'slug' => 'planer'],
+                                    ['name' => 'Makita Drill', 'slug' => 'makita-drill'],
+                                    ['name' => 'DeWalt Grinder', 'slug' => 'dewalt-grinder'],
+                                    ['name' => 'Bosch Saw', 'slug' => 'bosch-saw'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Hand Tools',
+                                'slug' => 'hand-tools',
+                                'children' => [
+                                    ['name' => 'Screwdriver Set', 'slug' => 'screwdriver-set'],
+                                    ['name' => 'Wrench Set', 'slug' => 'wrench-set'],
+                                    ['name' => 'Pliers', 'slug' => 'pliers'],
+                                    ['name' => 'Hammer', 'slug' => 'hammer'],
+                                    ['name' => 'Tape Measure', 'slug' => 'tape-measure'],
+                                    ['name' => 'Level', 'slug' => 'level'],
+                                    ['name' => 'Utility Knife', 'slug' => 'utility-knife'],
+                                    ['name' => 'Stanley Tool Set', 'slug' => 'stanley-tool-set'],
+                                    ['name' => 'Milwaukee Tool Set', 'slug' => 'milwaukee-tool-set'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Gardening Tools',
+                                'slug' => 'gardening-tools',
+                                'children' => [
+                                    ['name' => 'Lawn Mower', 'slug' => 'lawn-mower'],
+                                    ['name' => 'Hedge Trimmer', 'slug' => 'hedge-trimmer'],
+                                    ['name' => 'Garden Shears', 'slug' => 'garden-shears'],
+                                    ['name' => 'Shovel', 'slug' => 'shovel'],
+                                    ['name' => 'Rake', 'slug' => 'rake'],
+                                    ['name' => 'Hoe', 'slug' => 'hoe'],
+                                    ['name' => 'Watering Can', 'slug' => 'watering-can'],
+                                    ['name' => 'Garden Hose', 'slug' => 'garden-hose'],
+                                    ['name' => 'Pruning Saw', 'slug' => 'pruning-saw'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Safety Equipment',
+                                'slug' => 'safety-equipment',
+                                'children' => [
+                                    ['name' => 'Safety Helmet', 'slug' => 'safety-helmet'],
+                                    ['name' => 'Safety Glasses', 'slug' => 'safety-glasses'],
+                                    ['name' => 'Work Gloves', 'slug' => 'work-gloves'],
+                                    ['name' => 'Ear Protection', 'slug' => 'ear-protection'],
+                                    ['name' => 'Safety Boots', 'slug' => 'safety-boots'],
+                                    ['name' => 'High Visibility Vest', 'slug' => 'high-visibility-vest'],
+                                    ['name' => 'Knee Pads', 'slug' => 'knee-pads'],
+                                    ['name' => 'Dust Mask', 'slug' => 'dust-mask'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Measuring Tools',
+                                'slug' => 'measuring-tools',
+                                'children' => [
+                                    ['name' => 'Laser Measure', 'slug' => 'laser-measure'],
+                                    ['name' => 'Spirit Level', 'slug' => 'spirit-level'],
+                                    ['name' => 'Caliper', 'slug' => 'caliper'],
+                                    ['name' => 'Micrometer', 'slug' => 'micrometer'],
+                                    ['name' => 'Angle Finder', 'slug' => 'angle-finder'],
+                                    ['name' => 'Tape Measure 50m', 'slug' => 'tape-measure-50m'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Tool Sets',
+                                'slug' => 'tool-sets',
+                                'children' => [
+                                    ['name' => 'Mechanic Tool Set', 'slug' => 'mechanic-tool-set'],
+                                    ['name' => 'Home Tool Set', 'slug' => 'home-tool-set'],
+                                    ['name' => 'Electrician Tool Set', 'slug' => 'electrician-tool-set'],
+                                    ['name' => 'Automotive Tool Set', 'slug' => 'automotive-tool-set'],
+                                    ['name' => 'Precision Tool Set', 'slug' => 'precision-tool-set'],
+                                ]
+                            ],
                         ]
                     ],
                 ]
@@ -1500,62 +1554,68 @@ class ProductDatabaseSeeder extends Seeder
                 'sort_order' => 12,
                 'children' => [
                     [
-                        'name' => 'Books',
-                        'slug' => 'books',
+                        'name' => 'Select Book',
+                        'slug' => 'select-book',
                         'children' => [
-                            ['name' => '1984 George Orwell', 'slug' => '1984-george-orwell'],
-                            ['name' => 'Animal Farm', 'slug' => 'animal-farm'],
-                            ['name' => 'Metamorphosis Kafka', 'slug' => 'metamorphosis-kafka'],
-                            ['name' => 'The Trial', 'slug' => 'the-trial'],
-                            ['name' => 'Blindness', 'slug' => 'blindness'],
-                            ['name' => 'The Alchemist', 'slug' => 'the-alchemist'],
-                            ['name' => 'Atomic Habits', 'slug' => 'atomic-habits'],
-                            ['name' => 'Rich Dad Poor Dad', 'slug' => 'rich-dad-poor-dad'],
-                            ['name' => 'Think and Grow Rich', 'slug' => 'think-and-grow-rich'],
-                            ['name' => 'Psychology of Money', 'slug' => 'psychology-of-money'],
-                            ['name' => 'Deep Work', 'slug' => 'deep-work'],
-                            ['name' => 'The Power of Habit', 'slug' => 'the-power-of-habit'],
-                            ['name' => 'Sapiens', 'slug' => 'sapiens'],
-                            ['name' => 'Homo Deus', 'slug' => 'homo-deus'],
-                            ['name' => '21 Lessons for 21st Century', 'slug' => '21-lessons'],
-                            ['name' => 'Persian Poetry', 'slug' => 'persian-poetry'],
-                            ['name' => 'Rumi Poetry', 'slug' => 'rumi-poetry'],
-                            ['name' => 'Hafez Poetry', 'slug' => 'hafez-poetry'],
-                            ['name' => 'Saadi Poetry', 'slug' => 'saadi-poetry'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Art & Painting',
-                        'slug' => 'art-painting',
-                        'children' => [
-                            ['name' => 'Oil Painting Canvas', 'slug' => 'oil-painting-canvas'],
-                            ['name' => 'Watercolor Set', 'slug' => 'watercolor-set'],
-                            ['name' => 'Calligraphy Set', 'slug' => 'calligraphy-set'],
-                            ['name' => 'Art Brush Set', 'slug' => 'art-brush-set'],
-                            ['name' => 'Acrylic Paint', 'slug' => 'acrylic-paint'],
-                            ['name' => 'Sketchbook', 'slug' => 'sketchbook'],
-                            ['name' => 'Drawing Pencil Set', 'slug' => 'drawing-pencil-set'],
-                            ['name' => 'Canvas Board', 'slug' => 'canvas-board'],
-                            ['name' => 'Easel', 'slug' => 'easel'],
-                            ['name' => 'Palette', 'slug' => 'palette'],
-                            ['name' => 'Art Print', 'slug' => 'art-print'],
-                            ['name' => 'Framed Painting', 'slug' => 'framed-painting'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Handicrafts',
-                        'slug' => 'handicrafts',
-                        'children' => [
-                            ['name' => 'Pottery Vase', 'slug' => 'pottery-vase'],
-                            ['name' => 'Ceramic Bowl', 'slug' => 'ceramic-bowl'],
-                            ['name' => 'Wood Carving', 'slug' => 'wood-carving'],
-                            ['name' => 'Metal Sculpture', 'slug' => 'metal-sculpture'],
-                            ['name' => 'Handmade Rug', 'slug' => 'handmade-rug'],
-                            ['name' => 'Handwoven Basket', 'slug' => 'handwoven-basket'],
-                            ['name' => 'Glass Art', 'slug' => 'glass-art'],
-                            ['name' => 'Handmade Jewelry', 'slug' => 'handmade-jewelry'],
-                            ['name' => 'Embroidered Textile', 'slug' => 'embroidered-textile'],
-                            ['name' => 'Traditional Pottery', 'slug' => 'traditional-pottery'],
+                            [
+                                'name' => 'Books',
+                                'slug' => 'books',
+                                'children' => [
+                                    ['name' => '1984 George Orwell', 'slug' => '1984-george-orwell'],
+                                    ['name' => 'Animal Farm', 'slug' => 'animal-farm'],
+                                    ['name' => 'Metamorphosis Kafka', 'slug' => 'metamorphosis-kafka'],
+                                    ['name' => 'The Trial', 'slug' => 'the-trial'],
+                                    ['name' => 'Blindness', 'slug' => 'blindness'],
+                                    ['name' => 'The Alchemist', 'slug' => 'the-alchemist'],
+                                    ['name' => 'Atomic Habits', 'slug' => 'atomic-habits'],
+                                    ['name' => 'Rich Dad Poor Dad', 'slug' => 'rich-dad-poor-dad'],
+                                    ['name' => 'Think and Grow Rich', 'slug' => 'think-and-grow-rich'],
+                                    ['name' => 'Psychology of Money', 'slug' => 'psychology-of-money'],
+                                    ['name' => 'Deep Work', 'slug' => 'deep-work'],
+                                    ['name' => 'The Power of Habit', 'slug' => 'the-power-of-habit'],
+                                    ['name' => 'Sapiens', 'slug' => 'sapiens'],
+                                    ['name' => 'Homo Deus', 'slug' => 'homo-deus'],
+                                    ['name' => '21 Lessons for 21st Century', 'slug' => '21-lessons'],
+                                    ['name' => 'Persian Poetry', 'slug' => 'persian-poetry'],
+                                    ['name' => 'Rumi Poetry', 'slug' => 'rumi-poetry'],
+                                    ['name' => 'Hafez Poetry', 'slug' => 'hafez-poetry'],
+                                    ['name' => 'Saadi Poetry', 'slug' => 'saadi-poetry'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Art & Painting',
+                                'slug' => 'art-painting',
+                                'children' => [
+                                    ['name' => 'Oil Painting Canvas', 'slug' => 'oil-painting-canvas'],
+                                    ['name' => 'Watercolor Set', 'slug' => 'watercolor-set'],
+                                    ['name' => 'Calligraphy Set', 'slug' => 'calligraphy-set'],
+                                    ['name' => 'Art Brush Set', 'slug' => 'art-brush-set'],
+                                    ['name' => 'Acrylic Paint', 'slug' => 'acrylic-paint'],
+                                    ['name' => 'Sketchbook', 'slug' => 'sketchbook'],
+                                    ['name' => 'Drawing Pencil Set', 'slug' => 'drawing-pencil-set'],
+                                    ['name' => 'Canvas Board', 'slug' => 'canvas-board'],
+                                    ['name' => 'Easel', 'slug' => 'easel'],
+                                    ['name' => 'Palette', 'slug' => 'palette'],
+                                    ['name' => 'Art Print', 'slug' => 'art-print'],
+                                    ['name' => 'Framed Painting', 'slug' => 'framed-painting'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Handicrafts',
+                                'slug' => 'handicrafts',
+                                'children' => [
+                                    ['name' => 'Pottery Vase', 'slug' => 'pottery-vase'],
+                                    ['name' => 'Ceramic Bowl', 'slug' => 'ceramic-bowl'],
+                                    ['name' => 'Wood Carving', 'slug' => 'wood-carving'],
+                                    ['name' => 'Metal Sculpture', 'slug' => 'metal-sculpture'],
+                                    ['name' => 'Handmade Rug', 'slug' => 'handmade-rug'],
+                                    ['name' => 'Handwoven Basket', 'slug' => 'handwoven-basket'],
+                                    ['name' => 'Glass Art', 'slug' => 'glass-art'],
+                                    ['name' => 'Handmade Jewelry', 'slug' => 'handmade-jewelry'],
+                                    ['name' => 'Embroidered Textile', 'slug' => 'embroidered-textile'],
+                                    ['name' => 'Traditional Pottery', 'slug' => 'traditional-pottery'],
+                                ]
+                            ],
                         ]
                     ],
                 ]
@@ -1568,119 +1628,125 @@ class ProductDatabaseSeeder extends Seeder
                 'sort_order' => 13,
                 'children' => [
                     [
-                        'name' => 'Sports Equipment',
-                        'slug' => 'sports-equipment',
+                        'name' => 'Select Sport',
+                        'slug' => 'select-sport',
                         'children' => [
-                            ['name' => 'Boxing Punching Bag', 'slug' => 'boxing-punching-bag'],
-                            ['name' => 'Boxing Gloves', 'slug' => 'boxing-gloves'],
-                            ['name' => 'Basketball', 'slug' => 'basketball'],
-                            ['name' => 'Football', 'slug' => 'football-sport'],
-                            ['name' => 'Volleyball', 'slug' => 'volleyball'],
-                            ['name' => 'Tennis Racket', 'slug' => 'tennis-racket'],
-                            ['name' => 'Tennis Ball Set', 'slug' => 'tennis-ball-set'],
-                            ['name' => 'Badminton Set', 'slug' => 'badminton-set'],
-                            ['name' => 'Table Tennis Set', 'slug' => 'table-tennis-set'],
-                            ['name' => 'Yoga Mat', 'slug' => 'yoga-mat'],
-                            ['name' => 'Yoga Block', 'slug' => 'yoga-block'],
-                            ['name' => 'Yoga Strap', 'slug' => 'yoga-strap'],
-                            ['name' => 'Resistance Band Set', 'slug' => 'resistance-band-set'],
-                            ['name' => 'Dumbbell Set', 'slug' => 'dumbbell-set'],
-                            ['name' => 'Kettlebell', 'slug' => 'kettlebell'],
-                            ['name' => 'Pull Up Bar', 'slug' => 'pull-up-bar'],
-                            ['name' => 'Ab Wheel', 'slug' => 'ab-wheel'],
-                            ['name' => 'Jump Rope', 'slug' => 'jump-rope'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Sportswear',
-                        'slug' => 'travel-sportswear',
-                        'children' => [
-                            ['name' => 'Sports T-Shirt', 'slug' => 'travel-sports-t-shirt'],
-                            ['name' => 'Sports Shorts', 'slug' => 'travel-sports-shorts'],
-                            ['name' => 'Track Suit', 'slug' => 'travel-track-suit'],
-                            ['name' => 'Compression Shirt', 'slug' => 'travel-compression-shirt'],
-                            ['name' => 'Compression Pants', 'slug' => 'travel-compression-pants'],
-                            ['name' => 'Sports Bra', 'slug' => 'travel-sports-bra'],
-                            ['name' => 'Sports Socks', 'slug' => 'travel-sports-socks'],
-                            ['name' => 'Sweatband', 'slug' => 'travel-sweatband'],
-                            ['name' => 'Headband', 'slug' => 'travel-headband'],
-                            ['name' => 'Wristband', 'slug' => 'travel-wristband'],
-                            ['name' => 'Sports Jacket', 'slug' => 'travel-sports-jacket'],
-                            ['name' => 'Sports Pants', 'slug' => 'travel-sports-pants'],
-                            ['name' => 'Nike Sportswear', 'slug' => 'travel-nike-sportswear'],
-                            ['name' => 'Adidas Sportswear', 'slug' => 'travel-adidas-sportswear'],
-                            ['name' => 'Puma Sportswear', 'slug' => 'travel-puma-sportswear'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Travel Equipment',
-                        'slug' => 'travel-equipment',
-                        'children' => [
-                            ['name' => 'Suitcase 4 Wheels', 'slug' => 'suitcase-4-wheels'],
-                            ['name' => 'Travel Backpack', 'slug' => 'travel-backpack'],
-                            ['name' => 'Travel Bag', 'slug' => 'travel-bag'],
-                            ['name' => 'Travel Pillow', 'slug' => 'travel-pillow'],
-                            ['name' => 'Luggage Tag', 'slug' => 'luggage-tag'],
-                            ['name' => 'Travel Adapter', 'slug' => 'travel-adapter'],
-                            ['name' => 'Travel Wallet', 'slug' => 'travel-wallet'],
-                            ['name' => 'Travel Toiletry Bag', 'slug' => 'travel-toiletry-bag'],
-                            ['name' => 'Travel Scale', 'slug' => 'travel-scale'],
-                            ['name' => 'Travel Umbrella', 'slug' => 'travel-umbrella'],
-                            ['name' => 'Neck Wallet', 'slug' => 'neck-wallet'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Camping Gear',
-                        'slug' => 'camping-gear',
-                        'children' => [
-                            ['name' => 'Camping Tent', 'slug' => 'camping-tent'],
-                            ['name' => 'Sleeping Bag', 'slug' => 'sleeping-bag'],
-                            ['name' => 'Camping Chair', 'slug' => 'camping-chair'],
-                            ['name' => 'Camping Table', 'slug' => 'camping-table'],
-                            ['name' => 'Camping Stove', 'slug' => 'camping-stove'],
-                            ['name' => 'Camping Lantern', 'slug' => 'camping-lantern'],
-                            ['name' => 'Camping Cookware Set', 'slug' => 'camping-cookware-set'],
-                            ['name' => 'Camping Water Bottle', 'slug' => 'camping-water-bottle'],
-                            ['name' => 'Camping Knife', 'slug' => 'camping-knife'],
-                            ['name' => 'Camping First Aid Kit', 'slug' => 'camping-first-aid-kit'],
-                            ['name' => 'Camping Sleeping Pad', 'slug' => 'camping-sleeping-pad'],
-                            ['name' => 'Camping Tarp', 'slug' => 'camping-tarp'],
-                            ['name' => 'Camping Rope', 'slug' => 'camping-rope'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Outdoor Sports',
-                        'slug' => 'outdoor-sports',
-                        'children' => [
-                            ['name' => 'Hiking Boots', 'slug' => 'hiking-boots'],
-                            ['name' => 'Hiking Backpack', 'slug' => 'hiking-backpack'],
-                            ['name' => 'Trekking Pole', 'slug' => 'trekking-pole'],
-                            ['name' => 'Climbing Rope', 'slug' => 'climbing-rope'],
-                            ['name' => 'Climbing Carabiner', 'slug' => 'climbing-carabiner'],
-                            ['name' => 'Fishing Rod', 'slug' => 'fishing-rod'],
-                            ['name' => 'Fishing Reel', 'slug' => 'fishing-reel'],
-                            ['name' => 'Fishing Lure Set', 'slug' => 'fishing-lure-set'],
-                            ['name' => 'Ski Gear', 'slug' => 'ski-gear'],
-                            ['name' => 'Snowboard', 'slug' => 'snowboard'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Cycling',
-                        'slug' => 'cycling',
-                        'children' => [
-                            ['name' => 'Mountain Bike', 'slug' => 'mountain-bike'],
-                            ['name' => 'City Bike', 'slug' => 'city-bike'],
-                            ['name' => 'Electric Bike', 'slug' => 'electric-bike'],
-                            ['name' => 'Cycling Helmet', 'slug' => 'cycling-helmet'],
-                            ['name' => 'Cycling Gloves', 'slug' => 'cycling-gloves'],
-                            ['name' => 'Bike Light Set', 'slug' => 'bike-light-set'],
-                            ['name' => 'Bike Lock', 'slug' => 'bike-lock'],
-                            ['name' => 'Bike Pump', 'slug' => 'bike-pump'],
-                            ['name' => 'Bike Repair Kit', 'slug' => 'bike-repair-kit'],
-                            ['name' => 'Bike Water Bottle', 'slug' => 'bike-water-bottle'],
-                            ['name' => 'Bike Phone Mount', 'slug' => 'bike-phone-mount'],
-                            ['name' => 'Bike Seat', 'slug' => 'bike-seat'],
-                            ['name' => 'Bike Tires', 'slug' => 'bike-tires'],
+                            [
+                                'name' => 'Sports Equipment',
+                                'slug' => 'sports-equipment',
+                                'children' => [
+                                    ['name' => 'Boxing Punching Bag', 'slug' => 'boxing-punching-bag'],
+                                    ['name' => 'Boxing Gloves', 'slug' => 'boxing-gloves'],
+                                    ['name' => 'Basketball', 'slug' => 'basketball'],
+                                    ['name' => 'Football', 'slug' => 'football-sport'],
+                                    ['name' => 'Volleyball', 'slug' => 'volleyball'],
+                                    ['name' => 'Tennis Racket', 'slug' => 'tennis-racket'],
+                                    ['name' => 'Tennis Ball Set', 'slug' => 'tennis-ball-set'],
+                                    ['name' => 'Badminton Set', 'slug' => 'badminton-set'],
+                                    ['name' => 'Table Tennis Set', 'slug' => 'table-tennis-set'],
+                                    ['name' => 'Yoga Mat', 'slug' => 'yoga-mat'],
+                                    ['name' => 'Yoga Block', 'slug' => 'yoga-block'],
+                                    ['name' => 'Yoga Strap', 'slug' => 'yoga-strap'],
+                                    ['name' => 'Resistance Band Set', 'slug' => 'resistance-band-set'],
+                                    ['name' => 'Dumbbell Set', 'slug' => 'dumbbell-set'],
+                                    ['name' => 'Kettlebell', 'slug' => 'kettlebell'],
+                                    ['name' => 'Pull Up Bar', 'slug' => 'pull-up-bar'],
+                                    ['name' => 'Ab Wheel', 'slug' => 'ab-wheel'],
+                                    ['name' => 'Jump Rope', 'slug' => 'jump-rope'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Sportswear',
+                                'slug' => 'travel-sportswear',
+                                'children' => [
+                                    ['name' => 'Sports T-Shirt', 'slug' => 'travel-sports-t-shirt'],
+                                    ['name' => 'Sports Shorts', 'slug' => 'travel-sports-shorts'],
+                                    ['name' => 'Track Suit', 'slug' => 'travel-track-suit'],
+                                    ['name' => 'Compression Shirt', 'slug' => 'travel-compression-shirt'],
+                                    ['name' => 'Compression Pants', 'slug' => 'travel-compression-pants'],
+                                    ['name' => 'Sports Bra', 'slug' => 'travel-sports-bra'],
+                                    ['name' => 'Sports Socks', 'slug' => 'travel-sports-socks'],
+                                    ['name' => 'Sweatband', 'slug' => 'travel-sweatband'],
+                                    ['name' => 'Headband', 'slug' => 'travel-headband'],
+                                    ['name' => 'Wristband', 'slug' => 'travel-wristband'],
+                                    ['name' => 'Sports Jacket', 'slug' => 'travel-sports-jacket'],
+                                    ['name' => 'Sports Pants', 'slug' => 'travel-sports-pants'],
+                                    ['name' => 'Nike Sportswear', 'slug' => 'travel-nike-sportswear'],
+                                    ['name' => 'Adidas Sportswear', 'slug' => 'travel-adidas-sportswear'],
+                                    ['name' => 'Puma Sportswear', 'slug' => 'travel-puma-sportswear'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Travel Equipment',
+                                'slug' => 'travel-equipment',
+                                'children' => [
+                                    ['name' => 'Suitcase 4 Wheels', 'slug' => 'suitcase-4-wheels'],
+                                    ['name' => 'Travel Backpack', 'slug' => 'travel-backpack'],
+                                    ['name' => 'Travel Bag', 'slug' => 'travel-bag'],
+                                    ['name' => 'Travel Pillow', 'slug' => 'travel-pillow'],
+                                    ['name' => 'Luggage Tag', 'slug' => 'luggage-tag'],
+                                    ['name' => 'Travel Adapter', 'slug' => 'travel-adapter'],
+                                    ['name' => 'Travel Wallet', 'slug' => 'travel-wallet'],
+                                    ['name' => 'Travel Toiletry Bag', 'slug' => 'travel-toiletry-bag'],
+                                    ['name' => 'Travel Scale', 'slug' => 'travel-scale'],
+                                    ['name' => 'Travel Umbrella', 'slug' => 'travel-umbrella'],
+                                    ['name' => 'Neck Wallet', 'slug' => 'neck-wallet'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Camping Gear',
+                                'slug' => 'camping-gear',
+                                'children' => [
+                                    ['name' => 'Camping Tent', 'slug' => 'camping-tent'],
+                                    ['name' => 'Sleeping Bag', 'slug' => 'sleeping-bag'],
+                                    ['name' => 'Camping Chair', 'slug' => 'camping-chair'],
+                                    ['name' => 'Camping Table', 'slug' => 'camping-table'],
+                                    ['name' => 'Camping Stove', 'slug' => 'camping-stove'],
+                                    ['name' => 'Camping Lantern', 'slug' => 'camping-lantern'],
+                                    ['name' => 'Camping Cookware Set', 'slug' => 'camping-cookware-set'],
+                                    ['name' => 'Camping Water Bottle', 'slug' => 'camping-water-bottle'],
+                                    ['name' => 'Camping Knife', 'slug' => 'camping-knife'],
+                                    ['name' => 'Camping First Aid Kit', 'slug' => 'camping-first-aid-kit'],
+                                    ['name' => 'Camping Sleeping Pad', 'slug' => 'camping-sleeping-pad'],
+                                    ['name' => 'Camping Tarp', 'slug' => 'camping-tarp'],
+                                    ['name' => 'Camping Rope', 'slug' => 'camping-rope'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Outdoor Sports',
+                                'slug' => 'outdoor-sports',
+                                'children' => [
+                                    ['name' => 'Hiking Boots', 'slug' => 'hiking-boots'],
+                                    ['name' => 'Hiking Backpack', 'slug' => 'hiking-backpack'],
+                                    ['name' => 'Trekking Pole', 'slug' => 'trekking-pole'],
+                                    ['name' => 'Climbing Rope', 'slug' => 'climbing-rope'],
+                                    ['name' => 'Climbing Carabiner', 'slug' => 'climbing-carabiner'],
+                                    ['name' => 'Fishing Rod', 'slug' => 'fishing-rod'],
+                                    ['name' => 'Fishing Reel', 'slug' => 'fishing-reel'],
+                                    ['name' => 'Fishing Lure Set', 'slug' => 'fishing-lure-set'],
+                                    ['name' => 'Ski Gear', 'slug' => 'ski-gear'],
+                                    ['name' => 'Snowboard', 'slug' => 'snowboard'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Cycling',
+                                'slug' => 'cycling',
+                                'children' => [
+                                    ['name' => 'Mountain Bike', 'slug' => 'mountain-bike'],
+                                    ['name' => 'City Bike', 'slug' => 'city-bike'],
+                                    ['name' => 'Electric Bike', 'slug' => 'electric-bike'],
+                                    ['name' => 'Cycling Helmet', 'slug' => 'cycling-helmet'],
+                                    ['name' => 'Cycling Gloves', 'slug' => 'cycling-gloves'],
+                                    ['name' => 'Bike Light Set', 'slug' => 'bike-light-set'],
+                                    ['name' => 'Bike Lock', 'slug' => 'bike-lock'],
+                                    ['name' => 'Bike Pump', 'slug' => 'bike-pump'],
+                                    ['name' => 'Bike Repair Kit', 'slug' => 'bike-repair-kit'],
+                                    ['name' => 'Bike Water Bottle', 'slug' => 'bike-water-bottle'],
+                                    ['name' => 'Bike Phone Mount', 'slug' => 'bike-phone-mount'],
+                                    ['name' => 'Bike Seat', 'slug' => 'bike-seat'],
+                                    ['name' => 'Bike Tires', 'slug' => 'bike-tires'],
+                                ]
+                            ],
                         ]
                     ],
                 ]
@@ -1693,50 +1759,56 @@ class ProductDatabaseSeeder extends Seeder
                 'sort_order' => 14,
                 'children' => [
                     [
-                        'name' => 'Store Gift Cards',
-                        'slug' => 'store-gift-cards',
+                        'name' => 'Select Gift',
+                        'slug' => 'select-gift',
                         'children' => [
-                            ['name' => 'Digikala Gift Card', 'slug' => 'digikala-gift-card'],
-                            ['name' => 'Snapp Gift Card', 'slug' => 'snapp-gift-card'],
-                            ['name' => 'Alibaba Gift Card', 'slug' => 'alibaba-gift-card'],
-                            ['name' => 'Bamilo Gift Card', 'slug' => 'bamilo-gift-card'],
-                            ['name' => 'Hyperstar Gift Card', 'slug' => 'hyperstar-gift-card'],
-                            ['name' => 'Refah Gift Card', 'slug' => 'refah-gift-card'],
-                            ['name' => 'Shahrvand Gift Card', 'slug' => 'shahrvand-gift-card'],
-                            ['name' => 'Ofogh Koorosh Gift Card', 'slug' => 'ofogh-koorosh-gift-card'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Digital Gift Cards',
-                        'slug' => 'digital-gift-cards',
-                        'children' => [
-                            ['name' => 'E-Gift Card', 'slug' => 'e-gift-card'],
-                            ['name' => 'Virtual Gift Card', 'slug' => 'virtual-gift-card'],
-                            ['name' => 'PlayStation Gift Card', 'slug' => 'playstation-gift-card'],
-                            ['name' => 'Xbox Gift Card', 'slug' => 'xbox-gift-card'],
-                            ['name' => 'Nintendo Gift Card', 'slug' => 'nintendo-gift-card'],
-                            ['name' => 'Steam Gift Card', 'slug' => 'steam-gift-card'],
-                            ['name' => 'Google Play Gift Card', 'slug' => 'google-play-gift-card'],
-                            ['name' => 'App Store Gift Card', 'slug' => 'app-store-gift-card'],
-                            ['name' => 'Netflix Gift Card', 'slug' => 'netflix-gift-card'],
-                            ['name' => 'Spotify Gift Card', 'slug' => 'spotify-gift-card'],
-                            ['name' => 'Amazon Gift Card', 'slug' => 'amazon-gift-card'],
-                        ]
-                    ],
-                    [
-                        'name' => 'Custom Gift Cards',
-                        'slug' => 'custom-gift-cards',
-                        'children' => [
-                            ['name' => 'Personalized Gift Card', 'slug' => 'personalized-gift-card'],
-                            ['name' => 'Birthday Gift Card', 'slug' => 'birthday-gift-card'],
-                            ['name' => 'Wedding Gift Card', 'slug' => 'wedding-gift-card'],
-                            ['name' => 'Holiday Gift Card', 'slug' => 'holiday-gift-card'],
-                            ['name' => 'Corporate Gift Card', 'slug' => 'corporate-gift-card'],
-                            ['name' => 'Anniversary Gift Card', 'slug' => 'anniversary-gift-card'],
-                            ['name' => 'Thank You Gift Card', 'slug' => 'thank-you-gift-card'],
-                            ['name' => 'Congratulations Gift Card', 'slug' => 'congratulations-gift-card'],
-                            ['name' => 'New Year Gift Card', 'slug' => 'new-year-gift-card'],
-                            ['name' => 'Nowruz Gift Card', 'slug' => 'nowruz-gift-card'],
+                            [
+                                'name' => 'Store Gift Cards',
+                                'slug' => 'store-gift-cards',
+                                'children' => [
+                                    ['name' => 'Digikala Gift Card', 'slug' => 'digikala-gift-card'],
+                                    ['name' => 'Snapp Gift Card', 'slug' => 'snapp-gift-card'],
+                                    ['name' => 'Alibaba Gift Card', 'slug' => 'alibaba-gift-card'],
+                                    ['name' => 'Bamilo Gift Card', 'slug' => 'bamilo-gift-card'],
+                                    ['name' => 'Hyperstar Gift Card', 'slug' => 'hyperstar-gift-card'],
+                                    ['name' => 'Refah Gift Card', 'slug' => 'refah-gift-card'],
+                                    ['name' => 'Shahrvand Gift Card', 'slug' => 'shahrvand-gift-card'],
+                                    ['name' => 'Ofogh Koorosh Gift Card', 'slug' => 'ofogh-koorosh-gift-card'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Digital Gift Cards',
+                                'slug' => 'digital-gift-cards',
+                                'children' => [
+                                    ['name' => 'E-Gift Card', 'slug' => 'e-gift-card'],
+                                    ['name' => 'Virtual Gift Card', 'slug' => 'virtual-gift-card'],
+                                    ['name' => 'PlayStation Gift Card', 'slug' => 'playstation-gift-card'],
+                                    ['name' => 'Xbox Gift Card', 'slug' => 'xbox-gift-card'],
+                                    ['name' => 'Nintendo Gift Card', 'slug' => 'nintendo-gift-card'],
+                                    ['name' => 'Steam Gift Card', 'slug' => 'steam-gift-card'],
+                                    ['name' => 'Google Play Gift Card', 'slug' => 'google-play-gift-card'],
+                                    ['name' => 'App Store Gift Card', 'slug' => 'app-store-gift-card'],
+                                    ['name' => 'Netflix Gift Card', 'slug' => 'netflix-gift-card'],
+                                    ['name' => 'Spotify Gift Card', 'slug' => 'spotify-gift-card'],
+                                    ['name' => 'Amazon Gift Card', 'slug' => 'amazon-gift-card'],
+                                ]
+                            ],
+                            [
+                                'name' => 'Custom Gift Cards',
+                                'slug' => 'custom-gift-cards',
+                                'children' => [
+                                    ['name' => 'Personalized Gift Card', 'slug' => 'personalized-gift-card'],
+                                    ['name' => 'Birthday Gift Card', 'slug' => 'birthday-gift-card'],
+                                    ['name' => 'Wedding Gift Card', 'slug' => 'wedding-gift-card'],
+                                    ['name' => 'Holiday Gift Card', 'slug' => 'holiday-gift-card'],
+                                    ['name' => 'Corporate Gift Card', 'slug' => 'corporate-gift-card'],
+                                    ['name' => 'Anniversary Gift Card', 'slug' => 'anniversary-gift-card'],
+                                    ['name' => 'Thank You Gift Card', 'slug' => 'thank-you-gift-card'],
+                                    ['name' => 'Congratulations Gift Card', 'slug' => 'congratulations-gift-card'],
+                                    ['name' => 'New Year Gift Card', 'slug' => 'new-year-gift-card'],
+                                    ['name' => 'Nowruz Gift Card', 'slug' => 'nowruz-gift-card'],
+                                ]
+                            ],
                         ]
                     ],
                 ]
@@ -2086,8 +2158,8 @@ class ProductDatabaseSeeder extends Seeder
             }
             $title = $productData['title'] . ' ' . Str::random(4);
             $slug = Str::slug($title) . '-' . uniqid();
-            $price = rand(100000, 50000000);
-            $price = round($price / 1000) * 1000;
+            $price = rand(1000, 500000) / 100; 
+            $price = round($price, 2);
             $salePrice = $price * rand(7, 9) / 10;
             $salePrice = round($salePrice / 1000) * 1000;
 
@@ -2117,10 +2189,11 @@ class ProductDatabaseSeeder extends Seeder
             $variantCountPerProduct = rand(2, 4);
             for ($v = 1; $v <= $variantCountPerProduct; $v++) {
                 $variantPrice = $price * rand(8, 13) / 10;
-                $variantPrice = round($variantPrice / 1000) * 1000;
+                $variantPrice = round($variantPrice, 2);
                 
+              
                 $variantSalePrice = $variantPrice * rand(6, 9) / 10;
-                $variantSalePrice = round($variantSalePrice / 1000) * 1000;
+                $variantSalePrice = round($variantSalePrice, 2);
 
                 DB::table('product_variants')->insert([
                     'product_id' => $productId,

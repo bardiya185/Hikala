@@ -40,11 +40,7 @@ class ProductResource extends JsonResource
             'variants' => ProductVariantResource::collection(
                 $this->whenLoaded('variants')
             ),
-
-            // ===== حذف کن این خط رو =====
-            // 'attributes' => AttributeValue::collection(
-            //     $this->whenLoaded('attributeValues')
-            // ),
+           
         ];
     }
 }
