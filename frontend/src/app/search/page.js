@@ -1,10 +1,8 @@
-import AllMobile from '@/components/templates/allProductsMobile'
-import React from 'react'
+import AllMobile from "@/components/templates/products";
+import React from "react";
 
 function page() {
-  return (
-    <AllMobile/>
-  )
+  return <AllMobile />;
 }
 
-export default page
+export default page;
