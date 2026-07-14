@@ -1,22 +1,35 @@
 import Products from "@/components/templates/products";
 
-
-async function getCategoryProducts(category_id,sort_by,sort_order) {
+async function getCategoryProducts(category_id, sort_by, sort_order) {
   try {
-    
-    const sortByParam = sort_by || "price";
-    const sortOrderParam = sort_order || "desc";
-    let url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/infinite?category_id=${category_id}`;
-    if(category_id,sort_by&&sort_order){
-        url+= `&sort_by=${sort_by}&sort_order=${sort_order}`
+    // تنظیم مقادیر پیش‌فرض (هماهنگ با بک‌اند)
+    const sortBy = sort_by || "created_at";
+    const sortOrder = sort_order || "desc";
+
+    // ساخت URL
+    let url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/products?`;
+
+    // اضافه کردن پارامترها
+    const params = new URLSearchParams();
+
+    if (category_id) {
+      params.append("category_id", category_id);
     }
-   
+
+    params.append("sort_by", sortBy);
+    params.append("sort_order", sortOrder);
+    params.append("per_page", 20);
+
+    url += params.toString();
+
     const res = await fetch(url, {
       cache: "no-store",
     });
+
     if (!res.ok) {
       throw new Error("failed");
     }
+
     const data = await res.json();
     return data?.data || data || [];
   } catch (error) {
@@ -25,15 +38,22 @@ async function getCategoryProducts(category_id,sort_by,sort_order) {
   }
 }
 
-export default async function searchResultPage({ params,searchParams }) {
-    const{category_id,sort_by,sort_order} = await searchParams
-    console.log(params)
+export default async function SearchResultPage({ params, searchParams }) {
+  // دریافت پارامترها
+  const { category_id, sort_by, sort_order } = await searchParams;
   const { slug, id } = await params;
-  const products = await getCategoryProducts(category_id,sort_by,sort_order);
+
+  // دریافت محصولات
+  const products = await getCategoryProducts(category_id, sort_by, sort_order);
 
   return (
     <div>
-      <Products data={products} current_sort={sort_by||""} current_sortorder={sort_order||""}category_id={category_id||""} />
+      <Products
+        data={products}
+        current_sort={sort_by || "created_at"}
+        current_sortorder={sort_order || "desc"}
+        category_id={category_id || ""}
+      />
     </div>
   );
 }
