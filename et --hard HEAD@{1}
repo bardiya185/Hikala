@@ -1,0 +1,128 @@
+[33mbf331857[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m HEAD@{0}: checkout: moving from frontend to frontend
+[33mbf331857[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m HEAD@{1}: checkout: moving from frontend to frontend
+[33mbf331857[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m HEAD@{2}: checkout: moving from backend to frontend
+[33m37f4caaa[m[33m ([m[1;32mbackend[m[33m)[m HEAD@{3}: rebase (finish): returning to refs/heads/backend
+[33m37f4caaa[m[33m ([m[1;32mbackend[m[33m)[m HEAD@{4}: rebase (pick): Merge frontend changes into backend
+[33m82d20c05[m HEAD@{5}: rebase (continue): main
+[33m526c663d[m[33m ([m[1;31morigin/backend[m[33m)[m HEAD@{6}: pull origin backend --rebase (start): checkout 526c663db6efb499c58ed1c5861c4ca9613cc5bf
+[33me7964631[m HEAD@{7}: commit: Merge frontend changes into backend
+[33m9b17b9f6[m HEAD@{8}: checkout: moving from frontend to backend
+[33mbf331857[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m HEAD@{9}: reset: moving to HEAD
+[33mbf331857[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m HEAD@{10}: checkout: moving from backend to frontend
+[33m9b17b9f6[m HEAD@{11}: checkout: moving from frontend to backend
+[33mbf331857[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m HEAD@{12}: commit: feat: implement product filtering with infinite scroll and optimize Swagger documentation
+[33m2630fa06[m HEAD@{13}: pull: Fast-forward
+[33m4f9143bc[m HEAD@{14}: pull: Fast-forward
+[33m1fbe8b1f[m HEAD@{15}: pull: Fast-forward
+[33m525e31c8[m HEAD@{16}: pull: Fast-forward
+[33ma50588f8[m HEAD@{17}: checkout: moving from backend to frontend
+[33m9b17b9f6[m HEAD@{18}: reset: moving to HEAD
+[33m9b17b9f6[m HEAD@{19}: checkout: moving from main to backend
+[33m42a641a9[m[33m ([m[1;32mmain[m[33m)[m HEAD@{20}: commit: change
+[33m3edbd746[m HEAD@{21}: checkout: moving from backend to main
+[33m9b17b9f6[m HEAD@{22}: checkout: moving from frontend to backend
+[33ma50588f8[m HEAD@{23}: commit: Ignore .history and .hintrc files
+[33m044e8f37[m HEAD@{24}: pull --rebase origin frontend (finish): returning to refs/heads/frontend
+[33m044e8f37[m HEAD@{25}: pull --rebase origin frontend (pick): change
+[33mc971d485[m HEAD@{26}: pull --rebase origin frontend (start): checkout c971d48577f393631e9491daa7c4a44f654428cb
+[33m3761e17e[m HEAD@{27}: reset: moving to HEAD
+[33m3761e17e[m HEAD@{28}: checkout: moving from main to frontend
+[33m3edbd746[m HEAD@{29}: reset: moving to HEAD
+[33m3edbd746[m HEAD@{30}: pull: Fast-forward
+[33m07c5fcf0[m HEAD@{31}: checkout: moving from backend to main
+[33m9b17b9f6[m HEAD@{32}: reset: moving to HEAD
+[33m9b17b9f6[m HEAD@{33}: commit: main
+[33mb2d30ba0[m HEAD@{34}: commit: Fix image uploader
+[33mb734224b[m HEAD@{35}: checkout: moving from frontend to backend
+[33m3761e17e[m HEAD@{36}: commit: change
+[33me37e264e[m HEAD@{37}: checkout: moving from backend to frontend
+[33mb734224b[m HEAD@{38}: commit: chore: update frontend files and cleanup history
+[33mc81df97f[m HEAD@{39}: checkout: moving from backend to backend
+[33mc81df97f[m HEAD@{40}: commit: ✨ feat: Complete e-commerce API with infinite scroll, sorting, filtering, product images, and full Swagger documentation
+[33m3be574ac[m HEAD@{41}: commit (merge): Merge remote-tracking branch 'origin/frontend' into backend
+[33m553962fb[m HEAD@{42}: commit: Remove .next folder from tracking
+[33meb1c1212[m HEAD@{43}: pull origin frontend --no-commit: updating HEAD
+[33meb1c1212[m HEAD@{44}: merge origin/frontend: updating HEAD
+[33meb1c1212[m HEAD@{45}: reset: moving to HEAD
+[33meb1c1212[m HEAD@{46}: checkout: moving from frontend to backend
+[33me37e264e[m HEAD@{47}: checkout: moving from backend to frontend
+[33meb1c1212[m HEAD@{48}: checkout: moving from frontend to backend
+[33me37e264e[m HEAD@{49}: reset: moving to HEAD
+[33me37e264e[m HEAD@{50}: checkout: moving from backend to frontend
+[33meb1c1212[m HEAD@{51}: reset: moving to HEAD
+[33meb1c1212[m HEAD@{52}: pull origin main: Fast-forward
+[33m483c426e[m HEAD@{53}: commit: ✨ feat: Full e-commerce backend API - Products CRUD, categories menu tree, brands, attributes with color codes, advanced filtering, infinite scroll, image upload, cart system, and Swagger/OpenAPI documentation
+[33m67d802e2[m HEAD@{54}: commit: ✨ feat: Add category menu tree endpoint for header navigation
+[33mbb2e84db[m HEAD@{55}: commit (merge): ✨ feat: Add category menu tree endpoint for header navigation
+[33m2a45c4a2[m HEAD@{56}: commit (merge): change docker file
+[33m4fff2deb[m HEAD@{57}: commit: تغییرات محلی قبل از آپدیت
+[33m28e8a25f[m HEAD@{58}: reset: moving to HEAD
+[33m28e8a25f[m HEAD@{59}: checkout: moving from main to backend
+[33m07c5fcf0[m HEAD@{60}: commit: ✨ feat: Complete database seeding with products, categories, brands, and attributes
+[33mab891531[m HEAD@{61}: reset: moving to HEAD
+[33mab891531[m HEAD@{62}: pull origin main: Fast-forward
+[33mf95ce504[m HEAD@{63}: clone: from https://github.com/bardiya185/Hikala.git
+[33mbf331857[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m HEAD@{0}: checkout: moving from frontend to frontend
+[33mbf331857[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m HEAD@{1}: checkout: moving from frontend to frontend
+[33mbf331857[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m HEAD@{2}: checkout: moving from backend to frontend
+[33m37f4caaa[m[33m ([m[1;32mbackend[m[33m)[m HEAD@{3}: rebase (finish): returning to refs/heads/backend
+[33m37f4caaa[m[33m ([m[1;32mbackend[m[33m)[m HEAD@{4}: rebase (pick): Merge frontend changes into backend
+[33m82d20c05[m HEAD@{5}: rebase (continue): main
+[33m526c663d[m[33m ([m[1;31morigin/backend[m[33m)[m HEAD@{6}: pull origin backend --rebase (start): checkout 526c663db6efb499c58ed1c5861c4ca9613cc5bf
+[33me7964631[m HEAD@{7}: commit: Merge frontend changes into backend
+[33m9b17b9f6[m HEAD@{8}: checkout: moving from frontend to backend
+[33mbf331857[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m HEAD@{9}: reset: moving to HEAD
+[33mbf331857[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m HEAD@{10}: checkout: moving from backend to frontend
+[33m9b17b9f6[m HEAD@{11}: checkout: moving from frontend to backend
+[33mbf331857[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfrontend[m[33m, [m[1;31morigin/frontend[m[33m)[m HEAD@{12}: commit: feat: implement product filtering with infinite scroll and optimize Swagger documentation
+[33m2630fa06[m HEAD@{13}: pull: Fast-forward
+[33m4f9143bc[m HEAD@{14}: pull: Fast-forward
+[33m1fbe8b1f[m HEAD@{15}: pull: Fast-forward
+[33m525e31c8[m HEAD@{16}: pull: Fast-forward
+[33ma50588f8[m HEAD@{17}: checkout: moving from backend to frontend
+[33m9b17b9f6[m HEAD@{18}: reset: moving to HEAD
+[33m9b17b9f6[m HEAD@{19}: checkout: moving from main to backend
+[33m42a641a9[m[33m ([m[1;32mmain[m[33m)[m HEAD@{20}: commit: change
+[33m3edbd746[m HEAD@{21}: checkout: moving from backend to main
+[33m9b17b9f6[m HEAD@{22}: checkout: moving from frontend to backend
+[33ma50588f8[m HEAD@{23}: commit: Ignore .history and .hintrc files
+[33m044e8f37[m HEAD@{24}: pull --rebase origin frontend (finish): returning to refs/heads/frontend
+[33m044e8f37[m HEAD@{25}: pull --rebase origin frontend (pick): change
+[33mc971d485[m HEAD@{26}: pull --rebase origin frontend (start): checkout c971d48577f393631e9491daa7c4a44f654428cb
+[33m3761e17e[m HEAD@{27}: reset: moving to HEAD
+[33m3761e17e[m HEAD@{28}: checkout: moving from main to frontend
+[33m3edbd746[m HEAD@{29}: reset: moving to HEAD
+[33m3edbd746[m HEAD@{30}: pull: Fast-forward
+[33m07c5fcf0[m HEAD@{31}: checkout: moving from backend to main
+[33m9b17b9f6[m HEAD@{32}: reset: moving to HEAD
+[33m9b17b9f6[m HEAD@{33}: commit: main
+[33mb2d30ba0[m HEAD@{34}: commit: Fix image uploader
+[33mb734224b[m HEAD@{35}: checkout: moving from frontend to backend
+[33m3761e17e[m HEAD@{36}: commit: change
+[33me37e264e[m HEAD@{37}: checkout: moving from backend to frontend
+[33mb734224b[m HEAD@{38}: commit: chore: update frontend files and cleanup history
+[33mc81df97f[m HEAD@{39}: checkout: moving from backend to backend
+[33mc81df97f[m HEAD@{40}: commit: ✨ feat: Complete e-commerce API with infinite scroll, sorting, filtering, product images, and full Swagger documentation
+[33m3be574ac[m HEAD@{41}: commit (merge): Merge remote-tracking branch 'origin/frontend' into backend
+[33m553962fb[m HEAD@{42}: commit: Remove .next folder from tracking
+[33meb1c1212[m HEAD@{43}: pull origin frontend --no-commit: updating HEAD
+[33meb1c1212[m HEAD@{44}: merge origin/frontend: updating HEAD
+[33meb1c1212[m HEAD@{45}: reset: moving to HEAD
+[33meb1c1212[m HEAD@{46}: checkout: moving from frontend to backend
+[33me37e264e[m HEAD@{47}: checkout: moving from backend to frontend
+[33meb1c1212[m HEAD@{48}: checkout: moving from frontend to backend
+[33me37e264e[m HEAD@{49}: reset: moving to HEAD
+[33me37e264e[m HEAD@{50}: checkout: moving from backend to frontend
+[33meb1c1212[m HEAD@{51}: reset: moving to HEAD
+[33meb1c1212[m HEAD@{52}: pull origin main: Fast-forward
+[33m483c426e[m HEAD@{53}: commit: ✨ feat: Full e-commerce backend API - Products CRUD, categories menu tree, brands, attributes with color codes, advanced filtering, infinite scroll, image upload, cart system, and Swagger/OpenAPI documentation
+[33m67d802e2[m HEAD@{54}: commit: ✨ feat: Add category menu tree endpoint for header navigation
+[33mbb2e84db[m HEAD@{55}: commit (merge): ✨ feat: Add category menu tree endpoint for header navigation
+[33m2a45c4a2[m HEAD@{56}: commit (merge): change docker file
+[33m4fff2deb[m HEAD@{57}: commit: تغییرات محلی قبل از آپدیت
+[33m28e8a25f[m HEAD@{58}: reset: moving to HEAD
+[33m28e8a25f[m HEAD@{59}: checkout: moving from main to backend
+[33m07c5fcf0[m HEAD@{60}: commit: ✨ feat: Complete database seeding with products, categories, brands, and attributes
+[33mab891531[m HEAD@{61}: reset: moving to HEAD
+[33mab891531[m HEAD@{62}: pull origin main: Fast-forward
+[33mf95ce504[m HEAD@{63}: clone: from https://github.com/bardiya185/Hikala.git
