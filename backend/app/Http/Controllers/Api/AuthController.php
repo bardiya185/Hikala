@@ -92,12 +92,12 @@ class AuthController extends Controller
     )]
     public function sendOtp(Request $request)
     {
-        // ۱. ابتدا ولیدیشن انجام می‌شود تا دیتای خراب وارد دیتابیس نشود
+       
         $request->validate([
-            'mobile' => ['required', 'regex:/^09[0-9]{9}$/'], // ولیدیشن دقیق‌تر برای شماره موبایل‌های ایران
+            'mobile' => ['required', 'regex:/^09[0-9]{9}$/'],
         ]);
 
-        // ۲. جلوگیری از اسپم (Rate Limiting تجربی): بررسی اینکه در ۲ دقیقه اخیر کدی صادر نشده باشد
+     
         $throttled = OtpCode::where('mobile', $request->mobile)
             ->where('created_at', '>', now()->subMinutes(2))
             ->exists();
@@ -110,14 +110,12 @@ class AuthController extends Controller
 
         $code = random_int(100000, 999999);
 
-        // ذخیره در دیتابیس
         OtpCode::create([
             'mobile'     => $request->mobile,
             'code'       => $code,
             'expires_at' => now()->addMinutes(2),
         ]);
 
-        // TODO: در این بخش متد ارسال SMS خود را صدا بزنید.
 
         return response()->json([
             'message' => 'کد تایید با موفقیت ارسال شد.',
