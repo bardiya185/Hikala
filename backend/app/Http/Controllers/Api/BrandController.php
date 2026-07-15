@@ -7,39 +7,83 @@ use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
 use App\Http\Resources\BrandResource;
 use App\Models\Brand;
+use App\Models\Category;
 use OpenApi\Attributes as OA; 
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
     #[OA\Get(
         path: "/api/brands",
         tags: ["Brands"],
-        summary: "List Brands",
-        description: "Get all active brands.",
-        // بخش سکیوریتی حذف شد چون این روت عمومی است
+        summary: "List brands with category filter",
+        description: "Get all brands, optionally filtered by category slug",
+        parameters: [
+            new OA\Parameter(
+                name: "q",
+                in: "query",
+                description: "Search by brand name",
+                schema: new OA\Schema(type: "string", example: "apple")
+            ),
+            new OA\Parameter(
+                name: "category",
+                in: "query",
+                description: "Filter brands by category slug (e.g., mobile, apple-phones, laptops, fashion)",
+                schema: new OA\Schema(type: "string", example: "mobile")
+            )
+        ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Brands retrieved successfully."
+                description: "Brands retrieved successfully"
             )
         ]
     )]
-    public function index()
+    public function index(Request $request)
     {
-        // بهینه‌سازی: فقط برندهای فعال فراخوانی شوند و در صورت نیاز دیتابیس سنگین نشود
-        $brands = Brand::where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
+        $search = $request->input('q');
+        $categorySlug = $request->input('category');
+
+        // شروع کوئری - فقط برندهای فعال
+        $query = Brand::where('is_active', true);
+
+        // جستجو در نام برند
+        if ($search) {
+            $query->where('name', 'LIKE', "%{$search}%");
+        }
+
+        // ✅ فیلتر بر اساس دسته‌بندی (از طریق جدول category_brand)
+        if ($categorySlug) {
+            $category = Category::where('slug', $categorySlug)->first();
+
+            if ($category) {
+                // برندهایی که به این دسته‌بندی متصل هستند
+                $query->whereHas('categories', function($q) use ($category) {
+                    $q->where('category_id', $category->id);
+                });
+            } else {
+                // اگه دسته‌بندی پیدا نشد، خالی برگردون
+                return response()->json([
+                    'data' => [],
+                    'message' => 'Category not found: ' . $categorySlug
+                ], 200);
+            }
+        }
+
+        // مرتب‌سازی
+        $brands = $query->orderBy('sort_order')
+                        ->orderBy('name')
+                        ->get();
 
         return BrandResource::collection($brands);
     }
-
+    
     #[OA\Post(
         path: "/api/brands",
         tags: ["Brands"],
-        summary: "Create Brand",
-        description: "Create a new brand.",
+        summary: "Create a new brand",
+        description: "Create a new brand in the system",
         security: [
             ["bearerAuth" => []]
         ],
@@ -48,18 +92,49 @@ class BrandController extends Controller
             content: new OA\JsonContent(
                 required: ["name", "slug"],
                 properties: [
-                    new OA\Property(property: "name", type: "string", example: "Apple"),
-                    new OA\Property(property: "slug", type: "string", example: "apple"),
-                    new OA\Property(property: "logo", type: "string", example: "brands/apple.png", nullable: true),
-                    new OA\Property(property: "description", type: "string", example: "Apple official brand", nullable: true),
-                    new OA\Property(property: "sort_order", type: "integer", example: 1),
-                    new OA\Property(property: "is_active", type: "boolean", example: true),
+                    new OA\Property(property: "name", type: "string", example: "Apple", description: "Brand name"),
+                    new OA\Property(property: "slug", type: "string", example: "apple", description: "URL friendly name"),
+                    new OA\Property(property: "logo", type: "string", example: "brands/apple.png", nullable: true, description: "Logo path"),
+                    new OA\Property(property: "description", type: "string", example: "Apple official brand", nullable: true, description: "Brand description"),
+                    new OA\Property(property: "sort_order", type: "integer", example: 1, description: "Display order"),
+                    new OA\Property(property: "is_active", type: "boolean", example: true, description: "Active status"),
                 ]
             )
         ),
         responses: [
-            new OA\Response(response: 201, description: "Brand created successfully."),
-            new OA\Response(response: 422, description: "Validation Error"),
+            new OA\Response(
+                response: 201, 
+                description: "Brand created successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "data", type: "object",
+                            properties: [
+                                new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "name", type: "string", example: "Apple"),
+                                new OA\Property(property: "slug", type: "string", example: "apple"),
+                                new OA\Property(property: "logo", type: "string", example: "brands/apple.png"),
+                                new OA\Property(property: "description", type: "string", example: "Apple official brand"),
+                                new OA\Property(property: "is_active", type: "boolean", example: true),
+                                new OA\Property(property: "sort_order", type: "integer", example: 1),
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 422, 
+                description: "Validation error",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "message", type: "string", example: "The name field is required."),
+                        new OA\Property(property: "errors", type: "object")
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 401, 
+                description: "Unauthenticated"
+            )
         ]
     )]
     public function store(StoreBrandRequest $request)
@@ -68,15 +143,14 @@ class BrandController extends Controller
 
         return (new BrandResource($brand))
             ->response()
-            ->setStatusCode(Response::HTTP_CREATED); // استفاده از ثابت‌های استاندارد لاراول
+            ->setStatusCode(Response::HTTP_CREATED);
     }
 
     #[OA\Get(
         path: "/api/brands/{brand}",
         tags: ["Brands"],
-        summary: "Show Brand",
-        description: "Get brand details.",
-        // بخش سکیوریتی حذف شد چون این روت عمومی است
+        summary: "Get brand details",
+        description: "Get detailed information about a specific brand",
         parameters: [
             new OA\Parameter(
                 name: "brand",
@@ -87,8 +161,30 @@ class BrandController extends Controller
             )
         ],
         responses: [
-            new OA\Response(response: 200, description: "Brand retrieved successfully."),
-            new OA\Response(response: 404, description: "Brand not found."),
+            new OA\Response(
+                response: 200, 
+                description: "Brand retrieved successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "data", type: "object",
+                            properties: [
+                                new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "name", type: "string", example: "Apple"),
+                                new OA\Property(property: "slug", type: "string", example: "apple"),
+                                new OA\Property(property: "logo", type: "string", example: "brands/apple.png"),
+                                new OA\Property(property: "description", type: "string", example: "American technology company"),
+                                new OA\Property(property: "is_active", type: "boolean", example: true),
+                                new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                new OA\Property(property: "products_count", type: "integer", example: 25),
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404, 
+                description: "Brand not found"
+            )
         ]
     )]
     public function show(Brand $brand)
@@ -99,8 +195,8 @@ class BrandController extends Controller
     #[OA\Put(
         path: "/api/brands/{brand}",
         tags: ["Brands"],
-        summary: "Update Brand",
-        description: "Update brand information.",
+        summary: "Update brand",
+        description: "Update brand information",
         security: [
             ["bearerAuth" => []]
         ],
@@ -117,19 +213,32 @@ class BrandController extends Controller
             required: true,
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property(property: "name", type: "string", example: "Apple"),
-                    new OA\Property(property: "slug", type: "string", example: "apple"),
-                    new OA\Property(property: "logo", type: "string", example: "brands/apple.png"),
-                    new OA\Property(property: "description", type: "string", example: "Apple official brand"),
-                    new OA\Property(property: "sort_order", type: "integer", example: 1),
+                    new OA\Property(property: "name", type: "string", example: "Apple Inc."),
+                    new OA\Property(property: "slug", type: "string", example: "apple-inc"),
+                    new OA\Property(property: "logo", type: "string", example: "brands/apple-new.png"),
+                    new OA\Property(property: "description", type: "string", example: "Apple official brand updated"),
+                    new OA\Property(property: "sort_order", type: "integer", example: 2),
                     new OA\Property(property: "is_active", type: "boolean", example: true),
                 ]
             )
         ),
         responses: [
-            new OA\Response(response: 200, description: "Brand updated successfully."),
-            new OA\Response(response: 404, description: "Brand not found."),
-            new OA\Response(response: 422, description: "Validation Error"),
+            new OA\Response(
+                response: 200, 
+                description: "Brand updated successfully"
+            ),
+            new OA\Response(
+                response: 404, 
+                description: "Brand not found"
+            ),
+            new OA\Response(
+                response: 422, 
+                description: "Validation error"
+            ),
+            new OA\Response(
+                response: 401, 
+                description: "Unauthenticated"
+            )
         ]
     )]
     public function update(UpdateBrandRequest $request, Brand $brand)
@@ -142,8 +251,8 @@ class BrandController extends Controller
     #[OA\Delete(
         path: "/api/brands/{brand}",
         tags: ["Brands"],
-        summary: "Delete Brand",
-        description: "Delete a brand.",
+        summary: "Delete brand",
+        description: "Delete a brand from the system (only if it has no products)",
         security: [
             ["bearerAuth" => []]
         ],
@@ -157,19 +266,43 @@ class BrandController extends Controller
             )
         ],
         responses: [
-            new OA\Response(response: 200, description: "Brand deleted successfully."),
-            new OA\Response(response: 400, description: "Cannot delete brand with associated products."),
-            new OA\Response(response: 404, description: "Brand not found."),
+            new OA\Response(
+                response: 200, 
+                description: "Brand deleted successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "success", type: "boolean", example: true),
+                        new OA\Property(property: "message", type: "string", example: "Brand deleted successfully.")
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 400, 
+                description: "Cannot delete brand with products",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "success", type: "boolean", example: false),
+                        new OA\Property(property: "message", type: "string", example: "Cannot delete this brand because it has associated products.")
+                    ]
+                )
+            ),
+            new OA\Response(
+                response: 404, 
+                description: "Brand not found"
+            ),
+            new OA\Response(
+                response: 401, 
+                description: "Unauthenticated"
+            )
         ]
     )]
     public function destroy(Brand $brand)
     {
-        // پیشگیری از باگ دیتابیس: بررسی وجود رابطه با محصولات (با فرض وجود داشتن رابطه products در مدل)
         if ($brand->products()->exists()) {
             return response()->json([
                 'success' => false,
-                'message' => 'امکان حذف این برند وجود ندارد، زیرا محصولاتی به آن متصل هستند.'
-            ], Response::HTTP_BAD_REQUEST); // خطای ۴۰۰
+                'message' => 'Cannot delete this brand because it has associated products.'
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         $brand->delete();

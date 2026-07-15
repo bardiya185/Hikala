@@ -20,6 +20,7 @@ class ProductResource extends JsonResource
             'meta_keywords' => $this->meta_keywords,
             'meta_description' => $this->meta_description,
             'view_count' => $this->view_count,
+            'rating' => $this->rating,
             'sort_order' => $this->sort_order,
             'is_active' => $this->is_active,
             'created_at' => $this->created_at,

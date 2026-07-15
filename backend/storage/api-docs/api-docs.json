@@ -366,12 +366,32 @@
                 "tags": [
                     "Brands"
                 ],
-                "summary": "List Brands",
-                "description": "Get all active brands.",
+                "summary": "List brands with category filter",
+                "description": "Get all brands, optionally filtered by category slug",
                 "operationId": "130f2bd423b6fe2355253e2c39878d99",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Search by brand name",
+                        "schema": {
+                            "type": "string",
+                            "example": "apple"
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter brands by category slug (e.g., mobile, apple-phones, laptops, fashion)",
+                        "schema": {
+                            "type": "string",
+                            "example": "mobile"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Brands retrieved successfully."
+                        "description": "Brands retrieved successfully"
                     }
                 }
             },
@@ -379,8 +399,8 @@
                 "tags": [
                     "Brands"
                 ],
-                "summary": "Create Brand",
-                "description": "Create a new brand.",
+                "summary": "Create a new brand",
+                "description": "Create a new brand in the system",
                 "operationId": "283de011874bd2a1ada6efafb676e83f",
                 "requestBody": {
                     "required": true,
@@ -393,28 +413,34 @@
                                 ],
                                 "properties": {
                                     "name": {
+                                        "description": "Brand name",
                                         "type": "string",
                                         "example": "Apple"
                                     },
                                     "slug": {
+                                        "description": "URL friendly name",
                                         "type": "string",
                                         "example": "apple"
                                     },
                                     "logo": {
+                                        "description": "Logo path",
                                         "type": "string",
                                         "example": "brands/apple.png",
                                         "nullable": true
                                     },
                                     "description": {
+                                        "description": "Brand description",
                                         "type": "string",
                                         "example": "Apple official brand",
                                         "nullable": true
                                     },
                                     "sort_order": {
+                                        "description": "Display order",
                                         "type": "integer",
                                         "example": 1
                                     },
                                     "is_active": {
+                                        "description": "Active status",
                                         "type": "boolean",
                                         "example": true
                                     }
@@ -426,10 +452,71 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Brand created successfully."
+                        "description": "Brand created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Apple"
+                                                },
+                                                "slug": {
+                                                    "type": "string",
+                                                    "example": "apple"
+                                                },
+                                                "logo": {
+                                                    "type": "string",
+                                                    "example": "brands/apple.png"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Apple official brand"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "sort_order": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Validation Error"
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The name field is required."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -444,8 +531,8 @@
                 "tags": [
                     "Brands"
                 ],
-                "summary": "Show Brand",
-                "description": "Get brand details.",
+                "summary": "Get brand details",
+                "description": "Get detailed information about a specific brand",
                 "operationId": "3d96df73cdcb756852b6818c2ab3cfd1",
                 "parameters": [
                     {
@@ -460,10 +547,56 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Brand retrieved successfully."
+                        "description": "Brand retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Apple"
+                                                },
+                                                "slug": {
+                                                    "type": "string",
+                                                    "example": "apple"
+                                                },
+                                                "logo": {
+                                                    "type": "string",
+                                                    "example": "brands/apple.png"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "American technology company"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "sort_order": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "products_count": {
+                                                    "type": "integer",
+                                                    "example": 25
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Brand not found."
+                        "description": "Brand not found"
                     }
                 }
             },
@@ -471,8 +604,8 @@
                 "tags": [
                     "Brands"
                 ],
-                "summary": "Update Brand",
-                "description": "Update brand information.",
+                "summary": "Update brand",
+                "description": "Update brand information",
                 "operationId": "51442e7561e7014a84e4cc45cd2a5ce3",
                 "parameters": [
                     {
@@ -493,23 +626,23 @@
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "example": "Apple"
+                                        "example": "Apple Inc."
                                     },
                                     "slug": {
                                         "type": "string",
-                                        "example": "apple"
+                                        "example": "apple-inc"
                                     },
                                     "logo": {
                                         "type": "string",
-                                        "example": "brands/apple.png"
+                                        "example": "brands/apple-new.png"
                                     },
                                     "description": {
                                         "type": "string",
-                                        "example": "Apple official brand"
+                                        "example": "Apple official brand updated"
                                     },
                                     "sort_order": {
                                         "type": "integer",
-                                        "example": 1
+                                        "example": 2
                                     },
                                     "is_active": {
                                         "type": "boolean",
@@ -523,13 +656,16 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Brand updated successfully."
+                        "description": "Brand updated successfully"
                     },
                     "404": {
-                        "description": "Brand not found."
+                        "description": "Brand not found"
                     },
                     "422": {
-                        "description": "Validation Error"
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -542,8 +678,8 @@
                 "tags": [
                     "Brands"
                 ],
-                "summary": "Delete Brand",
-                "description": "Delete a brand.",
+                "summary": "Delete brand",
+                "description": "Delete a brand from the system (only if it has no products)",
                 "operationId": "6f697728ec03b01b5b1dbe50e023688c",
                 "parameters": [
                     {
@@ -558,13 +694,50 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Brand deleted successfully."
+                        "description": "Brand deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Brand deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Cannot delete brand with associated products."
+                        "description": "Cannot delete brand with products",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cannot delete this brand because it has associated products."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Brand not found."
+                        "description": "Brand not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
