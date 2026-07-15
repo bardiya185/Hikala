@@ -44,26 +44,21 @@ class BrandController extends Controller
     {
         $search = $request->input('q');
         $categorySlug = $request->input('category');
-
-        // شروع کوئری - فقط برندهای فعال
+      
         $query = Brand::where('is_active', true);
 
-        // جستجو در نام برند
         if ($search) {
             $query->where('name', 'LIKE', "%{$search}%");
         }
 
-        // ✅ فیلتر بر اساس دسته‌بندی (از طریق جدول category_brand)
         if ($categorySlug) {
             $category = Category::where('slug', $categorySlug)->first();
 
             if ($category) {
-                // برندهایی که به این دسته‌بندی متصل هستند
                 $query->whereHas('categories', function($q) use ($category) {
                     $q->where('category_id', $category->id);
                 });
             } else {
-                // اگه دسته‌بندی پیدا نشد، خالی برگردون
                 return response()->json([
                     'data' => [],
                     'message' => 'Category not found: ' . $categorySlug
@@ -71,7 +66,6 @@ class BrandController extends Controller
             }
         }
 
-        // مرتب‌سازی
         $brands = $query->orderBy('sort_order')
                         ->orderBy('name')
                         ->get();
