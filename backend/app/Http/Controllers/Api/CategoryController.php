@@ -15,12 +15,69 @@ class CategoryController extends Controller
     #[OA\Get(
         path: "/api/categories",
         tags: ["Categories"],
-        summary: "List Categories",
-        description: "Get all root categories with their children.",
+        summary: "Get all categories",
+        description: "Retrieve all root categories with their nested children structure. Use this for displaying full category tree.",
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Categories retrieved successfully."
+                description: "Categories retrieved successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "data",
+                            type: "array",
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: "id", type: "integer", example: 1),
+                                    new OA\Property(property: "parent_id", type: "integer", nullable: true, example: null),
+                                    new OA\Property(property: "name", type: "string", example: "Mobile"),
+                                    new OA\Property(property: "slug", type: "string", example: "mobile"),
+                                    new OA\Property(property: "icon_key", type: "string", nullable: true, example: "mobile"),
+                                    new OA\Property(property: "banner", type: "string", nullable: true, example: null),
+                                    new OA\Property(property: "description", type: "string", nullable: true, example: null),
+                                    new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                    new OA\Property(property: "is_active", type: "boolean", example: true),
+                                    new OA\Property(property: "created_at", type: "string", format: "date-time", example: "2024-01-01T10:00:00.000000Z"),
+                                    new OA\Property(property: "updated_at", type: "string", format: "date-time", example: "2024-01-01T10:00:00.000000Z"),
+                                    new OA\Property(
+                                        property: "children",
+                                        type: "array",
+                                        description: "Nested subcategories",
+                                        items: new OA\Items(
+                                            properties: [
+                                                new OA\Property(property: "id", type: "integer", example: 2),
+                                                new OA\Property(property: "name", type: "string", example: "Select Mobile"),
+                                                new OA\Property(property: "slug", type: "string", example: "select-mobile"),
+                                                new OA\Property(
+                                                    property: "children",
+                                                    type: "array",
+                                                    items: new OA\Items(
+                                                        properties: [
+                                                            new OA\Property(property: "id", type: "integer", example: 3),
+                                                            new OA\Property(property: "name", type: "string", example: "Apple Phones"),
+                                                            new OA\Property(property: "slug", type: "string", example: "apple-phones"),
+                                                            new OA\Property(
+                                                                property: "children",
+                                                                type: "array",
+                                                                items: new OA\Items(
+                                                                    properties: [
+                                                                        new OA\Property(property: "id", type: "integer", example: 4),
+                                                                        new OA\Property(property: "name", type: "string", example: "iPhone 16"),
+                                                                        new OA\Property(property: "slug", type: "string", example: "iphone-16"),
+                                                                    ]
+                                                                )
+                                                            )
+                                                        ]
+                                                    )
+                                                )
+                                            ]
+                                        )
+                                    )
+                                ]
+                            )
+                        )
+                    ]
+                )
             )
         ]
     )]
@@ -34,8 +91,8 @@ class CategoryController extends Controller
     #[OA\Post(
         path: "/api/categories",
         tags: ["Categories"],
-        summary: "Create Category",
-        description: "Create a new category.",
+        summary: "Create a new category",
+        description: "Create a new category. You can set parent_id to create subcategories.",
         security: [
             ["bearerAuth" => []]
         ],
@@ -44,25 +101,108 @@ class CategoryController extends Controller
             content: new OA\JsonContent(
                 required: ["name", "slug"],
                 properties: [
-                    new OA\Property(property: "parent_id", type: "integer", example: 1, nullable: true),
-                    new OA\Property(property: "name", type: "string", example: "موبایل"),
-                    new OA\Property(property: "slug", type: "string", example: "mobile"),
-                    new OA\Property(property: "icon_key", type: "string", example: "mobile", nullable: true),
-                    new OA\Property(property: "image", type: "string", example: "categories/mobile.png", nullable: true),
-                    new OA\Property(property: "sort_order", type: "integer", example: 1),
-                    new OA\Property(property: "is_active", type: "boolean", example: true),
+                    new OA\Property(
+                        property: "parent_id",
+                        type: "integer",
+                        nullable: true,
+                        example: null,
+                        description: "Parent category ID. Leave null for root category."
+                    ),
+                    new OA\Property(
+                        property: "name",
+                        type: "string",
+                        example: "Mobile",
+                        description: "Category display name"
+                    ),
+                    new OA\Property(
+                        property: "slug",
+                        type: "string",
+                        example: "mobile",
+                        description: "URL friendly unique slug"
+                    ),
+                    new OA\Property(
+                        property: "icon_key",
+                        type: "string",
+                        nullable: true,
+                        example: "mobile",
+                        description: "Icon identifier (e.g., fontawesome class)"
+                    ),
+                    new OA\Property(
+                        property: "banner",
+                        type: "string",
+                        nullable: true,
+                        example: "categories/mobile-banner.jpg",
+                        description: "Banner image path"
+                    ),
+                    new OA\Property(
+                        property: "description",
+                        type: "string",
+                        nullable: true,
+                        example: "Mobile phones and accessories",
+                        description: "Category description"
+                    ),
+                    new OA\Property(
+                        property: "sort_order",
+                        type: "integer",
+                        example: 1,
+                        description: "Display order (lower numbers appear first)"
+                    ),
+                    new OA\Property(
+                        property: "is_active",
+                        type: "boolean",
+                        example: true,
+                        description: "Whether the category is visible"
+                    ),
                 ]
             )
         ),
         responses: [
             new OA\Response(
                 response: 201,
-                description: "Category created successfully."
+                description: "Category created successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "data",
+                            type: "object",
+                            properties: [
+                                new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "parent_id", type: "integer", nullable: true, example: null),
+                                new OA\Property(property: "name", type: "string", example: "Mobile"),
+                                new OA\Property(property: "slug", type: "string", example: "mobile"),
+                                new OA\Property(property: "icon_key", type: "string", nullable: true, example: "mobile"),
+                                new OA\Property(property: "banner", type: "string", nullable: true),
+                                new OA\Property(property: "description", type: "string", nullable: true),
+                                new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                new OA\Property(property: "is_active", type: "boolean", example: true),
+                                new OA\Property(property: "created_at", type: "string", format: "date-time"),
+                                new OA\Property(property: "updated_at", type: "string", format: "date-time"),
+                            ]
+                        )
+                    ]
+                )
             ),
             new OA\Response(
                 response: 422,
-                description: "Validation Error"
+                description: "Validation error",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "message", type: "string", example: "The name field is required."),
+                        new OA\Property(property: "errors", type: "object", example: [
+                            "name" => ["The name field is required."],
+                            "slug" => ["The slug has already been taken."]
+                        ])
+                    ]
+                )
             ),
+            new OA\Response(
+                response: 401,
+                description: "Unauthenticated"
+            ),
+            new OA\Response(
+                response: 403,
+                description: "Forbidden - Admin access required"
+            )
         ]
     )]
     public function store(StoreCategoryRequest $request)
@@ -77,8 +217,8 @@ class CategoryController extends Controller
     #[OA\Get(
         path: "/api/categories/{category}",
         tags: ["Categories"],
-        summary: "Show Category",
-        description: "Get category details.",
+        summary: "Get a specific category",
+        description: "Get detailed information about a single category with its children.",
         parameters: [
             new OA\Parameter(
                 name: "category",
@@ -91,12 +231,56 @@ class CategoryController extends Controller
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Category retrieved successfully."
+                description: "Category retrieved successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "data",
+                            type: "object",
+                            properties: [
+                                new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "parent_id", type: "integer", nullable: true),
+                                new OA\Property(property: "name", type: "string", example: "Mobile"),
+                                new OA\Property(property: "slug", type: "string", example: "mobile"),
+                                new OA\Property(property: "icon_key", type: "string", nullable: true, example: "mobile"),
+                                new OA\Property(property: "banner", type: "string", nullable: true),
+                                new OA\Property(property: "description", type: "string", nullable: true),
+                                new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                new OA\Property(property: "is_active", type: "boolean", example: true),
+                                new OA\Property(property: "created_at", type: "string", format: "date-time"),
+                                new OA\Property(property: "updated_at", type: "string", format: "date-time"),
+                                new OA\Property(
+                                    property: "children",
+                                    type: "array",
+                                    description: "Direct subcategories",
+                                    items: new OA\Items(
+                                        properties: [
+                                            new OA\Property(property: "id", type: "integer", example: 2),
+                                            new OA\Property(property: "name", type: "string", example: "Select Mobile"),
+                                            new OA\Property(property: "slug", type: "string", example: "select-mobile"),
+                                            new OA\Property(
+                                                property: "children",
+                                                type: "array",
+                                                items: new OA\Items(
+                                                    properties: [
+                                                        new OA\Property(property: "id", type: "integer", example: 3),
+                                                        new OA\Property(property: "name", type: "string", example: "Apple Phones"),
+                                                        new OA\Property(property: "slug", type: "string", example: "apple-phones"),
+                                                    ]
+                                                )
+                                            )
+                                        ]
+                                    )
+                                )
+                            ]
+                        )
+                    ]
+                )
             ),
             new OA\Response(
                 response: 404,
-                description: "Category not found."
-            ),
+                description: "Category not found"
+            )
         ]
     )]
     public function show(Category $category)
@@ -109,8 +293,8 @@ class CategoryController extends Controller
     #[OA\Put(
         path: "/api/categories/{category}",
         tags: ["Categories"],
-        summary: "Update Category",
-        description: "Update category information.",
+        summary: "Update a category",
+        description: "Update category information. All fields are optional.",
         security: [
             ["bearerAuth" => []]
         ],
@@ -119,7 +303,7 @@ class CategoryController extends Controller
                 name: "category",
                 in: "path",
                 required: true,
-                description: "Category ID",
+                description: "Category ID to update",
                 schema: new OA\Schema(type: "integer")
             )
         ],
@@ -127,29 +311,97 @@ class CategoryController extends Controller
             required: true,
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property(property: "parent_id", type: "integer", example: 1, nullable: true),
-                    new OA\Property(property: "name", type: "string", example: "موبایل"),
-                    new OA\Property(property: "slug", type: "string", example: "mobile"),
-                    new OA\Property(property: "icon_key", type: "string", example: "mobile"),
-                    new OA\Property(property: "image", type: "string", example: "categories/mobile.png"),
-                    new OA\Property(property: "sort_order", type: "integer", example: 2),
-                    new OA\Property(property: "is_active", type: "boolean", example: true),
+                    new OA\Property(
+                        property: "parent_id",
+                        type: "integer",
+                        nullable: true,
+                        example: null,
+                        description: "Change parent category. Null for root."
+                    ),
+                    new OA\Property(
+                        property: "name",
+                        type: "string",
+                        example: "Mobile & Tablets",
+                        description: "New category name"
+                    ),
+                    new OA\Property(
+                        property: "slug",
+                        type: "string",
+                        example: "mobile-tablets",
+                        description: "New URL friendly slug"
+                    ),
+                    new OA\Property(
+                        property: "icon_key",
+                        type: "string",
+                        nullable: true,
+                        example: "mobile",
+                        description: "Icon identifier"
+                    ),
+                    new OA\Property(
+                        property: "banner",
+                        type: "string",
+                        nullable: true,
+                        example: "categories/mobile-banner.jpg",
+                        description: "Banner image path"
+                    ),
+                    new OA\Property(
+                        property: "description",
+                        type: "string",
+                        nullable: true,
+                        example: "Mobile phones and tablets",
+                        description: "Category description"
+                    ),
+                    new OA\Property(
+                        property: "sort_order",
+                        type: "integer",
+                        example: 1,
+                        description: "Display order"
+                    ),
+                    new OA\Property(
+                        property: "is_active",
+                        type: "boolean",
+                        example: true,
+                        description: "Active status"
+                    ),
                 ]
             )
         ),
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Category updated successfully."
+                description: "Category updated successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "data",
+                            type: "object",
+                            properties: [
+                                new OA\Property(property: "id", type: "integer", example: 1),
+                                new OA\Property(property: "name", type: "string", example: "Mobile & Tablets"),
+                                new OA\Property(property: "slug", type: "string", example: "mobile-tablets"),
+                                new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                new OA\Property(property: "is_active", type: "boolean", example: true),
+                            ]
+                        )
+                    ]
+                )
             ),
             new OA\Response(
                 response: 404,
-                description: "Category not found."
+                description: "Category not found"
             ),
             new OA\Response(
                 response: 422,
-                description: "Validation Error"
+                description: "Validation error"
             ),
+            new OA\Response(
+                response: 401,
+                description: "Unauthenticated"
+            ),
+            new OA\Response(
+                response: 403,
+                description: "Forbidden - Admin access required"
+            )
         ]
     )]
     public function update(UpdateCategoryRequest $request, Category $category)
@@ -162,8 +414,8 @@ class CategoryController extends Controller
     #[OA\Delete(
         path: "/api/categories/{category}",
         tags: ["Categories"],
-        summary: "Delete Category",
-        description: "Delete a category.",
+        summary: "Delete a category",
+        description: "Delete a category. Also deletes all subcategories (cascade).",
         security: [
             ["bearerAuth" => []]
         ],
@@ -172,19 +424,32 @@ class CategoryController extends Controller
                 name: "category",
                 in: "path",
                 required: true,
-                description: "Category ID",
+                description: "Category ID to delete",
                 schema: new OA\Schema(type: "integer")
             )
         ],
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Category deleted successfully."
+                description: "Category deleted successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "message", type: "string", example: "Category deleted successfully")
+                    ]
+                )
             ),
             new OA\Response(
                 response: 404,
-                description: "Category not found."
+                description: "Category not found"
             ),
+            new OA\Response(
+                response: 401,
+                description: "Unauthenticated"
+            ),
+            new OA\Response(
+                response: 403,
+                description: "Forbidden - Admin access required"
+            )
         ]
     )]
     public function destroy(Category $category)
@@ -199,12 +464,71 @@ class CategoryController extends Controller
     #[OA\Get(
         path: "/api/categories/menu",
         tags: ["Categories"],
-        summary: "Get Category Menu Tree",
-        description: "Get categories tree for header menu (like Digikala).",
+        summary: "Get category menu for header",
+        description: "Get categories tree for use in header/footer navigation menus. Returns only active categories sorted by order.\n\nExample structure:\n- Mobile\n  - Select Mobile\n    - Apple Phones\n      - iPhone 16\n      - iPhone 16 Pro\n    - Samsung Phones\n      - Galaxy S24 Ultra\n      - Galaxy S24 Plus\n    - Xiaomi Phones\n      - Xiaomi 14 Ultra\n      - Xiaomi 14 Pro",
         responses: [
             new OA\Response(
                 response: 200,
-                description: "Categories menu retrieved successfully."
+                description: "Menu retrieved successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: "success", type: "boolean", example: true),
+                        new OA\Property(
+                            property: "data",
+                            type: "array",
+                            description: "Category tree for menu",
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: "id", type: "integer", example: 1),
+                                    new OA\Property(property: "parent_id", type: "integer", nullable: true, example: null),
+                                    new OA\Property(property: "name", type: "string", example: "Mobile"),
+                                    new OA\Property(property: "slug", type: "string", example: "mobile"),
+                                    new OA\Property(property: "icon_key", type: "string", nullable: true, example: "mobile"),
+                                    new OA\Property(property: "banner", type: "string", nullable: true),
+                                    new OA\Property(property: "description", type: "string", nullable: true),
+                                    new OA\Property(property: "sort_order", type: "integer", example: 1),
+                                    new OA\Property(property: "is_active", type: "boolean", example: true),
+                                    new OA\Property(property: "created_at", type: "string", format: "date-time"),
+                                    new OA\Property(property: "updated_at", type: "string", format: "date-time"),
+                                    new OA\Property(
+                                        property: "children",
+                                        type: "array",
+                                        description: "Nested subcategories",
+                                        items: new OA\Items(
+                                            properties: [
+                                                new OA\Property(property: "id", type: "integer", example: 2),
+                                                new OA\Property(property: "name", type: "string", example: "Select Mobile"),
+                                                new OA\Property(property: "slug", type: "string", example: "select-mobile"),
+                                                new OA\Property(
+                                                    property: "children",
+                                                    type: "array",
+                                                    items: new OA\Items(
+                                                        properties: [
+                                                            new OA\Property(property: "id", type: "integer", example: 3),
+                                                            new OA\Property(property: "name", type: "string", example: "Apple Phones"),
+                                                            new OA\Property(property: "slug", type: "string", example: "apple-phones"),
+                                                            new OA\Property(
+                                                                property: "children",
+                                                                type: "array",
+                                                                items: new OA\Items(
+                                                                    properties: [
+                                                                        new OA\Property(property: "id", type: "integer", example: 4),
+                                                                        new OA\Property(property: "name", type: "string", example: "iPhone 16"),
+                                                                        new OA\Property(property: "slug", type: "string", example: "iphone-16"),
+                                                                    ]
+                                                                )
+                                                            )
+                                                        ]
+                                                    )
+                                                )
+                                            ]
+                                        )
+                                    )
+                                ]
+                            )
+                        )
+                    ]
+                )
             )
         ]
     )]
@@ -221,11 +545,16 @@ class CategoryController extends Controller
         ]);
     }
     
+    /**
+     * Recursively format categories for menu structure
+     * 
+     * @param \Illuminate\Support\Collection $categories
+     * @return array
+     */
     private function formatMenu($categories)
     {
         $result = [];
         foreach ($categories as $category) {
-            // بارگذاری فرزندان مستقیم از دیتابیس
             $children = Category::where('parent_id', $category->id)
                 ->where('is_active', 1)
                 ->orderBy('sort_order')
@@ -240,9 +569,9 @@ class CategoryController extends Controller
                 'banner' => $category->banner,
                 'description' => $category->description,
                 'sort_order' => $category->sort_order,
-                'is_active' => $category->is_active,
-                'created_at' => $category->created_at,
-                'updated_at' => $category->updated_at,
+                'is_active' => (bool) $category->is_active,
+                'created_at' => $category->created_at?->toISOString(),
+                'updated_at' => $category->updated_at?->toISOString(),
                 'children' => [],
             ];
     
@@ -255,4 +584,4 @@ class CategoryController extends Controller
     
         return $result;
     }
-     }
+}

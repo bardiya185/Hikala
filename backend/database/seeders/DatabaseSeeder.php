@@ -9,8 +9,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            ProductDatabaseSeeder::class,   // محصولات و دسته‌بندی‌ها
-            AttributeSeeder::class,       // ویژگی‌ها و مقادیر
+            ProvinceSeeder::class,
+            CitySeeder::class,     
+            ProductDatabaseSeeder::class,  
+            AttributeSeeder::class, 
         ]);
     }
 }

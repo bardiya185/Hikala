@@ -24,23 +24,13 @@ class StoreCategoryRequest extends FormRequest
             'is_active' => 'nullable|boolean',
         ];
     }
-
-    public function messages(): array
-    {
-        return [
-            'name.required' => 'نام دسته‌بندی الزامی است',
-            'name.unique' => 'این نام دسته‌بندی قبلاً ثبت شده است',
-            'slug.required' => 'اسلاگ دسته‌بندی الزامی است',
-            'slug.unique' => 'این اسلاگ قبلاً ثبت شده است',
-            'parent_id.exists' => 'دسته‌بندی والد انتخاب شده معتبر نیست',
-        ];
-    }
+  
 
     public function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
         throw new \Illuminate\Validation\ValidationException($validator, response()->json([
             'success' => false,
-            'message' => 'خطاهای اعتبارسنجی',
+            'message' => 'Validation failed',
             'errors' => $validator->errors()
         ], 422));
     }

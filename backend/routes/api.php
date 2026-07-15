@@ -9,79 +9,68 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AttributeController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductImageController;
+use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\Api\ProvinceController;
+use App\Http\Controllers\Api\CityController;
 
 // ================================================================
-// USERS & AUTHENTICATION
+// PUBLIC ROUTES
 // ================================================================
+
 Route::post('/send-otp', [AuthController::class, 'sendOtp']);
 Route::post('/check-otp', [AuthController::class, 'checkOtp']);
 Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-    Route::get('/who-am-i', [AuthController::class, 'whoAmI']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-});
-
-// ================================================================
-// PRODUCTS (همه چیز در یک روت)
-// ================================================================
-Route::get('/products', [ProductController::class, 'index']); // ← اصلی (فیلتر + جستجو + مرتب‌سازی + اسکرول)
+Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{product}', [ProductController::class, 'show']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/products', [ProductController::class, 'store']);
-    Route::put('/products/{product}', [ProductController::class, 'update']);
-    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
-});
-
-// ================================================================
-// PRODUCT IMAGES
-// ================================================================
 Route::get('/products/{product}/images', [ProductImageController::class, 'index']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/products/{product}/images', [ProductImageController::class, 'store']);
-    Route::delete('/products/{product}/images/{image}', [ProductImageController::class, 'destroy'])->scopeBindings();
-    Route::put('/products/{product}/images/{image}/main', [ProductImageController::class, 'setMain'])->scopeBindings();
-    Route::put('/products/{product}/images/reorder', [ProductImageController::class, 'reorder'])->scopeBindings();
-});
-
-// ================================================================
-// CATEGORIES
-// ================================================================
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/all', [CategoryController::class, 'all']);
 Route::get('/categories/menu', [CategoryController::class, 'menu']);
 Route::get('/categories/{category}', [CategoryController::class, 'show']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/categories', [CategoryController::class, 'store']);
-    Route::put('/categories/{category}', [CategoryController::class, 'update']);
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
-});
-
-// ================================================================
-// BRANDS & ATTRIBUTES
-// ================================================================
 Route::get('/brands', [BrandController::class, 'index']);
 Route::get('/brands/{brand}', [BrandController::class, 'show']);
 
 Route::get('/attributes', [AttributeController::class, 'index']);
 Route::get('/attributes/{attribute}', [AttributeController::class, 'show']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('brands', BrandController::class)->except(['index', 'show']);
-    Route::apiResource('attributes', AttributeController::class)->except(['index', 'show']);
-});
+Route::get('/provinces', [ProvinceController::class, 'index']);
+
+Route::get('/cities', [CityController::class, 'index']);
 
 // ================================================================
-// ROLES & TEST
+// PROTECTED ROUTES
 // ================================================================
+
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/user', fn(Request $request) => $request->user());
+
+    Route::get('/who-am-i', [AuthController::class, 'whoAmI']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::apiResource('products', ProductController::class)
+        ->except(['index', 'show']);
+
+    Route::post('/products/{product}/images', [ProductImageController::class, 'store']);
+    Route::delete('/products/{product}/images/{image}', [ProductImageController::class, 'destroy'])->scopeBindings();
+    Route::put('/products/{product}/images/{image}/main', [ProductImageController::class, 'setMain'])->scopeBindings();
+    Route::put('/products/{product}/images/reorder', [ProductImageController::class, 'reorder'])->scopeBindings();
+
+    Route::apiResource('categories', CategoryController::class)
+        ->except(['index', 'show']);
+
+    Route::apiResource('brands', BrandController::class)
+        ->except(['index', 'show']);
+
+    Route::apiResource('attributes', AttributeController::class)
+        ->except(['index', 'show']);
+
+    Route::apiResource('addresses', AddressController::class);
+
     Route::apiResource('roles', RoleController::class);
-});
 
-Route::get('/test', [AuthController::class, 'test']);
+});
