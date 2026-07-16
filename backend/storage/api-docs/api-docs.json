@@ -10,6 +10,737 @@
         }
     ],
     "paths": {
+        "/api/addresses": {
+            "get": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Get user addresses",
+                "description": "Get all addresses of the authenticated user with pagination.",
+                "operationId": "dc6b190d3f07db7ed032fa181dc45150",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Addresses retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "user_id": {
+                                                        "type": "integer",
+                                                        "example": 5
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Home"
+                                                    },
+                                                    "recipient_name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "recipient_phone": {
+                                                        "type": "string",
+                                                        "example": "09123456789"
+                                                    },
+                                                    "province_id": {
+                                                        "type": "integer",
+                                                        "example": 8
+                                                    },
+                                                    "city_id": {
+                                                        "type": "integer",
+                                                        "example": 120
+                                                    },
+                                                    "address": {
+                                                        "type": "string",
+                                                        "example": "Valiasr St, No. 123"
+                                                    },
+                                                    "postal_code": {
+                                                        "type": "string",
+                                                        "example": "1234567890"
+                                                    },
+                                                    "latitude": {
+                                                        "type": "string",
+                                                        "example": "35.6892",
+                                                        "nullable": true
+                                                    },
+                                                    "longitude": {
+                                                        "type": "string",
+                                                        "example": "51.3890",
+                                                        "nullable": true
+                                                    },
+                                                    "unit": {
+                                                        "type": "string",
+                                                        "example": "3",
+                                                        "nullable": true
+                                                    },
+                                                    "plaque": {
+                                                        "type": "string",
+                                                        "example": "12",
+                                                        "nullable": true
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Near the park",
+                                                        "nullable": true
+                                                    },
+                                                    "is_default": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "province": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 8
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Tehran"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string",
+                                                                "example": "tehran"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "city": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 120
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Tehran"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string",
+                                                                "example": "tehran"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "links": {
+                                            "properties": {
+                                                "first": {
+                                                    "type": "string"
+                                                },
+                                                "last": {
+                                                    "type": "string"
+                                                },
+                                                "prev": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "next": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "from": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer"
+                                                },
+                                                "to": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Create a new address",
+                "description": "Create a new address for the authenticated user.",
+                "operationId": "6344fc023028e43a5490f1c6372bd391",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "recipient_name",
+                                    "recipient_phone",
+                                    "province_id",
+                                    "city_id",
+                                    "address"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "description": "Address title (e.g., Home, Work)",
+                                        "type": "string",
+                                        "example": "Home",
+                                        "nullable": true
+                                    },
+                                    "recipient_name": {
+                                        "description": "Full name of the recipient",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "recipient_phone": {
+                                        "description": "Phone number of the recipient",
+                                        "type": "string",
+                                        "example": "09123456789"
+                                    },
+                                    "province_id": {
+                                        "description": "ID of the province",
+                                        "type": "integer",
+                                        "example": 8
+                                    },
+                                    "city_id": {
+                                        "description": "ID of the city",
+                                        "type": "integer",
+                                        "example": 120
+                                    },
+                                    "address": {
+                                        "description": "Full address details",
+                                        "type": "string",
+                                        "example": "Valiasr St, No. 123"
+                                    },
+                                    "postal_code": {
+                                        "description": "Postal code",
+                                        "type": "string",
+                                        "example": "1234567890",
+                                        "nullable": true
+                                    },
+                                    "latitude": {
+                                        "description": "Latitude coordinate",
+                                        "type": "string",
+                                        "example": "35.6892",
+                                        "nullable": true
+                                    },
+                                    "longitude": {
+                                        "description": "Longitude coordinate",
+                                        "type": "string",
+                                        "example": "51.3890",
+                                        "nullable": true
+                                    },
+                                    "unit": {
+                                        "description": "Unit number",
+                                        "type": "string",
+                                        "example": "3",
+                                        "nullable": true
+                                    },
+                                    "plaque": {
+                                        "description": "Plaque number",
+                                        "type": "string",
+                                        "example": "12",
+                                        "nullable": true
+                                    },
+                                    "description": {
+                                        "description": "Additional description",
+                                        "type": "string",
+                                        "example": "Near the park",
+                                        "nullable": true
+                                    },
+                                    "is_default": {
+                                        "description": "Set as default address",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Address created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Home"
+                                                },
+                                                "recipient_name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "recipient_phone": {
+                                                    "type": "string",
+                                                    "example": "09123456789"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "Valiasr St, No. 123"
+                                                },
+                                                "is_default": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The recipient name field is required."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/addresses/{address}": {
+            "get": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Get a specific address",
+                "description": "Get detailed information of a specific address.",
+                "operationId": "85431c549062d0c537257448ad3eedda",
+                "parameters": [
+                    {
+                        "name": "address",
+                        "in": "path",
+                        "description": "Address ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Address retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Home"
+                                                },
+                                                "recipient_name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "recipient_phone": {
+                                                    "type": "string",
+                                                    "example": "09123456789"
+                                                },
+                                                "province_id": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "city_id": {
+                                                    "type": "integer",
+                                                    "example": 120
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "Valiasr St, No. 123"
+                                                },
+                                                "postal_code": {
+                                                    "type": "string",
+                                                    "example": "1234567890"
+                                                },
+                                                "latitude": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "longitude": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "unit": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "plaque": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "is_default": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "province": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 8
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Tehran"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "city": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 120
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Tehran"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden - You don't own this address"
+                    },
+                    "404": {
+                        "description": "Address not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Update an address",
+                "description": "Update an existing address. All fields are optional.",
+                "operationId": "e062d20a3459dd0b1ad80bb7ac32609e",
+                "parameters": [
+                    {
+                        "name": "address",
+                        "in": "path",
+                        "description": "Address ID to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Address title",
+                                        "type": "string",
+                                        "example": "Work",
+                                        "nullable": true
+                                    },
+                                    "recipient_name": {
+                                        "description": "Recipient full name",
+                                        "type": "string",
+                                        "example": "Jane Doe"
+                                    },
+                                    "recipient_phone": {
+                                        "description": "Recipient phone number",
+                                        "type": "string",
+                                        "example": "09129876543"
+                                    },
+                                    "province_id": {
+                                        "description": "Province ID",
+                                        "type": "integer",
+                                        "example": 8
+                                    },
+                                    "city_id": {
+                                        "description": "City ID",
+                                        "type": "integer",
+                                        "example": 120
+                                    },
+                                    "address": {
+                                        "description": "Full address",
+                                        "type": "string",
+                                        "example": "Valiasr St, No. 456"
+                                    },
+                                    "postal_code": {
+                                        "description": "Postal code",
+                                        "type": "string",
+                                        "example": "1234567890",
+                                        "nullable": true
+                                    },
+                                    "latitude": {
+                                        "description": "Latitude coordinate",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "longitude": {
+                                        "description": "Longitude coordinate",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "unit": {
+                                        "description": "Unit number",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "plaque": {
+                                        "description": "Plaque number",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "description": {
+                                        "description": "Additional description",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "is_default": {
+                                        "description": "Set as default address",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Address updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Work"
+                                                },
+                                                "recipient_name": {
+                                                    "type": "string",
+                                                    "example": "Jane Doe"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "Valiasr St, No. 456"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden - You don't own this address"
+                    },
+                    "404": {
+                        "description": "Address not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Delete an address",
+                "description": "Delete an address. If it's the default address, another address will become default.",
+                "operationId": "fc2684b35fd67400b287e6b5638d75b2",
+                "parameters": [
+                    {
+                        "name": "address",
+                        "in": "path",
+                        "description": "Address ID to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Address deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Address deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden - You don't own this address"
+                    },
+                    "404": {
+                        "description": "Address not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/attributes": {
             "get": {
                 "tags": [
@@ -752,12 +1483,140 @@
                 "tags": [
                     "Categories"
                 ],
-                "summary": "List Categories",
-                "description": "Get all root categories with their children.",
+                "summary": "Get all categories",
+                "description": "Retrieve all root categories with their nested children structure. Use this for displaying full category tree.",
                 "operationId": "ac9c4d978ea4e5b72915ca9728e5b8b1",
                 "responses": {
                     "200": {
-                        "description": "Categories retrieved successfully."
+                        "description": "Categories retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "parent_id": {
+                                                        "type": "integer",
+                                                        "example": null,
+                                                        "nullable": true
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Mobile"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "example": "mobile"
+                                                    },
+                                                    "icon_key": {
+                                                        "type": "string",
+                                                        "example": "mobile",
+                                                        "nullable": true
+                                                    },
+                                                    "banner": {
+                                                        "type": "string",
+                                                        "example": null,
+                                                        "nullable": true
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": null,
+                                                        "nullable": true
+                                                    },
+                                                    "sort_order": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-01-01T10:00:00.000000Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-01-01T10:00:00.000000Z"
+                                                    },
+                                                    "children": {
+                                                        "description": "Nested subcategories",
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer",
+                                                                    "example": 2
+                                                                },
+                                                                "name": {
+                                                                    "type": "string",
+                                                                    "example": "Select Mobile"
+                                                                },
+                                                                "slug": {
+                                                                    "type": "string",
+                                                                    "example": "select-mobile"
+                                                                },
+                                                                "children": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "type": "integer",
+                                                                                "example": 3
+                                                                            },
+                                                                            "name": {
+                                                                                "type": "string",
+                                                                                "example": "Apple Phones"
+                                                                            },
+                                                                            "slug": {
+                                                                                "type": "string",
+                                                                                "example": "apple-phones"
+                                                                            },
+                                                                            "children": {
+                                                                                "type": "array",
+                                                                                "items": {
+                                                                                    "properties": {
+                                                                                        "id": {
+                                                                                            "type": "integer",
+                                                                                            "example": 4
+                                                                                        },
+                                                                                        "name": {
+                                                                                            "type": "string",
+                                                                                            "example": "iPhone 16"
+                                                                                        },
+                                                                                        "slug": {
+                                                                                            "type": "string",
+                                                                                            "example": "iphone-16"
+                                                                                        }
+                                                                                    },
+                                                                                    "type": "object"
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -765,8 +1624,8 @@
                 "tags": [
                     "Categories"
                 ],
-                "summary": "Create Category",
-                "description": "Create a new category.",
+                "summary": "Create a new category",
+                "description": "Create a new category. You can set parent_id to create subcategories.",
                 "operationId": "cca49a87d9b0ebb9a98ad7c154b71737",
                 "requestBody": {
                     "required": true,
@@ -779,33 +1638,46 @@
                                 ],
                                 "properties": {
                                     "parent_id": {
+                                        "description": "Parent category ID. Leave null for root category.",
                                         "type": "integer",
-                                        "example": 1,
+                                        "example": null,
                                         "nullable": true
                                     },
                                     "name": {
+                                        "description": "Category display name",
                                         "type": "string",
-                                        "example": "موبایل"
+                                        "example": "Mobile"
                                     },
                                     "slug": {
+                                        "description": "URL friendly unique slug",
                                         "type": "string",
                                         "example": "mobile"
                                     },
                                     "icon_key": {
+                                        "description": "Icon identifier (e.g., fontawesome class)",
                                         "type": "string",
                                         "example": "mobile",
                                         "nullable": true
                                     },
-                                    "image": {
+                                    "banner": {
+                                        "description": "Banner image path",
                                         "type": "string",
-                                        "example": "categories/mobile.png",
+                                        "example": "categories/mobile-banner.jpg",
+                                        "nullable": true
+                                    },
+                                    "description": {
+                                        "description": "Category description",
+                                        "type": "string",
+                                        "example": "Mobile phones and accessories",
                                         "nullable": true
                                     },
                                     "sort_order": {
+                                        "description": "Display order (lower numbers appear first)",
                                         "type": "integer",
                                         "example": 1
                                     },
                                     "is_active": {
+                                        "description": "Whether the category is visible",
                                         "type": "boolean",
                                         "example": true
                                     }
@@ -817,10 +1689,100 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Category created successfully."
+                        "description": "Category created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "parent_id": {
+                                                    "type": "integer",
+                                                    "example": null,
+                                                    "nullable": true
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Mobile"
+                                                },
+                                                "slug": {
+                                                    "type": "string",
+                                                    "example": "mobile"
+                                                },
+                                                "icon_key": {
+                                                    "type": "string",
+                                                    "example": "mobile",
+                                                    "nullable": true
+                                                },
+                                                "banner": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "sort_order": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Validation Error"
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The name field is required."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "name": [
+                                                    "The name field is required."
+                                                ],
+                                                "slug": [
+                                                    "The slug has already been taken."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin access required"
                     }
                 },
                 "security": [
@@ -835,8 +1797,8 @@
                 "tags": [
                     "Categories"
                 ],
-                "summary": "Show Category",
-                "description": "Get category details.",
+                "summary": "Get a specific category",
+                "description": "Get detailed information about a single category with its children.",
                 "operationId": "ff3ab984d3fe877eb16da6009394d694",
                 "parameters": [
                     {
@@ -851,10 +1813,110 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Category retrieved successfully."
+                        "description": "Category retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "parent_id": {
+                                                    "type": "integer",
+                                                    "nullable": true
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Mobile"
+                                                },
+                                                "slug": {
+                                                    "type": "string",
+                                                    "example": "mobile"
+                                                },
+                                                "icon_key": {
+                                                    "type": "string",
+                                                    "example": "mobile",
+                                                    "nullable": true
+                                                },
+                                                "banner": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "sort_order": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "children": {
+                                                    "description": "Direct subcategories",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 2
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Select Mobile"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string",
+                                                                "example": "select-mobile"
+                                                            },
+                                                            "children": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "integer",
+                                                                            "example": 3
+                                                                        },
+                                                                        "name": {
+                                                                            "type": "string",
+                                                                            "example": "Apple Phones"
+                                                                        },
+                                                                        "slug": {
+                                                                            "type": "string",
+                                                                            "example": "apple-phones"
+                                                                        }
+                                                                    },
+                                                                    "type": "object"
+                                                                }
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Category not found."
+                        "description": "Category not found"
                     }
                 }
             },
@@ -862,14 +1924,14 @@
                 "tags": [
                     "Categories"
                 ],
-                "summary": "Update Category",
-                "description": "Update category information.",
+                "summary": "Update a category",
+                "description": "Update category information. All fields are optional.",
                 "operationId": "3146e96866d62a90bd01a7070fd61470",
                 "parameters": [
                     {
                         "name": "category",
                         "in": "path",
-                        "description": "Category ID",
+                        "description": "Category ID to update",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -883,31 +1945,46 @@
                             "schema": {
                                 "properties": {
                                     "parent_id": {
+                                        "description": "Change parent category. Null for root.",
                                         "type": "integer",
-                                        "example": 1,
+                                        "example": null,
                                         "nullable": true
                                     },
                                     "name": {
+                                        "description": "New category name",
                                         "type": "string",
-                                        "example": "موبایل"
+                                        "example": "Mobile & Tablets"
                                     },
                                     "slug": {
+                                        "description": "New URL friendly slug",
                                         "type": "string",
-                                        "example": "mobile"
+                                        "example": "mobile-tablets"
                                     },
                                     "icon_key": {
+                                        "description": "Icon identifier",
                                         "type": "string",
-                                        "example": "mobile"
+                                        "example": "mobile",
+                                        "nullable": true
                                     },
-                                    "image": {
+                                    "banner": {
+                                        "description": "Banner image path",
                                         "type": "string",
-                                        "example": "categories/mobile.png"
+                                        "example": "categories/mobile-banner.jpg",
+                                        "nullable": true
+                                    },
+                                    "description": {
+                                        "description": "Category description",
+                                        "type": "string",
+                                        "example": "Mobile phones and tablets",
+                                        "nullable": true
                                     },
                                     "sort_order": {
+                                        "description": "Display order",
                                         "type": "integer",
-                                        "example": 2
+                                        "example": 1
                                     },
                                     "is_active": {
+                                        "description": "Active status",
                                         "type": "boolean",
                                         "example": true
                                     }
@@ -919,13 +1996,53 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Category updated successfully."
+                        "description": "Category updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Mobile & Tablets"
+                                                },
+                                                "slug": {
+                                                    "type": "string",
+                                                    "example": "mobile-tablets"
+                                                },
+                                                "sort_order": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Category not found."
+                        "description": "Category not found"
                     },
                     "422": {
-                        "description": "Validation Error"
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin access required"
                     }
                 },
                 "security": [
@@ -938,14 +2055,14 @@
                 "tags": [
                     "Categories"
                 ],
-                "summary": "Delete Category",
-                "description": "Delete a category.",
+                "summary": "Delete a category",
+                "description": "Delete a category. Also deletes all subcategories (cascade).",
                 "operationId": "88c22abd8149aea4b3bdcb280a0fddf7",
                 "parameters": [
                     {
                         "name": "category",
                         "in": "path",
-                        "description": "Category ID",
+                        "description": "Category ID to delete",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -954,10 +2071,29 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Category deleted successfully."
+                        "description": "Category deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Category deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "404": {
-                        "description": "Category not found."
+                        "description": "Category not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden - Admin access required"
                     }
                 },
                 "security": [
@@ -972,12 +2108,241 @@
                 "tags": [
                     "Categories"
                 ],
-                "summary": "Get Category Menu Tree",
-                "description": "Get categories tree for header menu (like Digikala).",
+                "summary": "Get category menu for header",
+                "description": "Get categories tree for use in header/footer navigation menus. Returns only active categories sorted by order.\n\nExample structure:\n- Mobile\n  - Select Mobile\n    - Apple Phones\n      - iPhone 16\n      - iPhone 16 Pro\n    - Samsung Phones\n      - Galaxy S24 Ultra\n      - Galaxy S24 Plus\n    - Xiaomi Phones\n      - Xiaomi 14 Ultra\n      - Xiaomi 14 Pro",
                 "operationId": "36398f4d449211050f1d2a17aae7211c",
                 "responses": {
                     "200": {
-                        "description": "Categories menu retrieved successfully."
+                        "description": "Menu retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "description": "Category tree for menu",
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "parent_id": {
+                                                        "type": "integer",
+                                                        "example": null,
+                                                        "nullable": true
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Mobile"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "example": "mobile"
+                                                    },
+                                                    "icon_key": {
+                                                        "type": "string",
+                                                        "example": "mobile",
+                                                        "nullable": true
+                                                    },
+                                                    "banner": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "sort_order": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "children": {
+                                                        "description": "Nested subcategories",
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer",
+                                                                    "example": 2
+                                                                },
+                                                                "name": {
+                                                                    "type": "string",
+                                                                    "example": "Select Mobile"
+                                                                },
+                                                                "slug": {
+                                                                    "type": "string",
+                                                                    "example": "select-mobile"
+                                                                },
+                                                                "children": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "type": "integer",
+                                                                                "example": 3
+                                                                            },
+                                                                            "name": {
+                                                                                "type": "string",
+                                                                                "example": "Apple Phones"
+                                                                            },
+                                                                            "slug": {
+                                                                                "type": "string",
+                                                                                "example": "apple-phones"
+                                                                            },
+                                                                            "children": {
+                                                                                "type": "array",
+                                                                                "items": {
+                                                                                    "properties": {
+                                                                                        "id": {
+                                                                                            "type": "integer",
+                                                                                            "example": 4
+                                                                                        },
+                                                                                        "name": {
+                                                                                            "type": "string",
+                                                                                            "example": "iPhone 16"
+                                                                                        },
+                                                                                        "slug": {
+                                                                                            "type": "string",
+                                                                                            "example": "iphone-16"
+                                                                                        }
+                                                                                    },
+                                                                                    "type": "object"
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "type": "object"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/cities": {
+            "get": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Get cities by province",
+                "description": "Get all cities of a specific province. Use this for dropdowns and address selection.",
+                "operationId": "185d0aefb5fd6e9d4e5f1263e2734df4",
+                "parameters": [
+                    {
+                        "name": "province_id",
+                        "in": "query",
+                        "description": "Province ID to filter cities",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 8
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cities retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "province_id": {
+                                                        "type": "integer",
+                                                        "example": 8
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Tehran"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "example": "tehran"
+                                                    },
+                                                    "code": {
+                                                        "type": "string",
+                                                        "example": null,
+                                                        "nullable": true
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    },
+                                                    "sort_order": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error - province_id is required",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The province id field is required."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1734,6 +3099,77 @@
                 ]
             }
         },
+        "/api/provinces": {
+            "get": {
+                "tags": [
+                    "Provinces"
+                ],
+                "summary": "Get all provinces",
+                "description": "Retrieve a list of all active provinces. Use this for dropdowns and address selection forms.",
+                "operationId": "bf3eec2042b4664e35d45ded5a22344d",
+                "responses": {
+                    "200": {
+                        "description": "Provinces retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Tehran"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "example": "tehran"
+                                                    },
+                                                    "code": {
+                                                        "type": "string",
+                                                        "example": "08",
+                                                        "nullable": true
+                                                    },
+                                                    "country_code": {
+                                                        "type": "string",
+                                                        "example": "IR"
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    },
+                                                    "sort_order": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-01-01T10:00:00.000000Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-01-01T10:00:00.000000Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/roles": {
             "get": {
                 "tags": [
@@ -2152,6 +3588,10 @@
             "description": "Manage product images"
         },
         {
+            "name": "Addresses",
+            "description": "Addresses"
+        },
+        {
             "name": "Attributes",
             "description": "Attributes"
         },
@@ -2166,6 +3606,14 @@
         {
             "name": "Categories",
             "description": "Categories"
+        },
+        {
+            "name": "Cities",
+            "description": "Cities"
+        },
+        {
+            "name": "Provinces",
+            "description": "Provinces"
         },
         {
             "name": "Roles",
