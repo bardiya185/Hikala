@@ -26,3 +26,16 @@ export const useGetSubCategory = (activeId) => {
     enabled: !!activeId, 
   });
 };
+
+
+export const usegetBrandsFilter = () => {
+  const queryFn = () => api.get("/api/brands");
+  const queryKey = ["brands-filter"];
+  
+  return useQuery({
+    queryFn,
+    queryKey,
+    
+    select: (response) => response?.data?.data || [], 
+  });
+};

@@ -176,7 +176,7 @@ function Products({ data, current_sort, current_sortorder }) {
                         )}
                       </div>
 
-                    
+                      {/* توضیحات کوتاه */}
                       <p className="w-full mt-3 line-clamp-2 text-xs text-neutral-500 leading-5">
                         {ddd?.short_description}
                       </p>

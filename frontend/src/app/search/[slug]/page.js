@@ -1,21 +1,24 @@
+import CategoryPage from "@/components/templates/CategoryPage";
 import Products from "@/components/templates/products";
 
-async function getCategoryProducts(category_id, sort_by, sort_order) {
+async function getCategoryProducts(category_id, sort_by, sort_order,brands) {
   try {
-    // تنظیم مقادیر پیش‌فرض (هماهنگ با بک‌اند)
+    
     const sortBy = sort_by || "created_at";
     const sortOrder = sort_order || "asc";
 
     // ساخت URL
     let url = `${process.env.NEXT_PUBLIC_BASE_URL}/api/products?`;
 
-    // اضافه کردن پارامترها
+    
     const params = new URLSearchParams();
 
     if (category_id) {
       params.append("category_id", category_id);
     }
-
+    if(brands){
+      params.append("brand_id",brands)
+    }  
     params.append("sort_by", sortBy);
     params.append("sort_order", sortOrder);
     params.append("per_page", 20);
@@ -39,16 +42,16 @@ async function getCategoryProducts(category_id, sort_by, sort_order) {
 }
 
 export default async function SearchResultPage({ params, searchParams }) {
-  // دریافت پارامترها
-  const { category_id, sort_by, sort_order } = await searchParams;
+
+  const { category_id, sort_by, sort_order,brands } = await searchParams;
   const { slug, id } = await params;
 
-  // دریافت محصولات
-  const products = await getCategoryProducts(category_id, sort_by, sort_order);
+
+  const products = await getCategoryProducts(category_id, sort_by, sort_order,brands);
 
   return (
     <div>
-      <Products
+      <CategoryPage
         data={products}
         current_sort={sort_by || "created_at"}
         current_sortorder={sort_order || "desc"}
