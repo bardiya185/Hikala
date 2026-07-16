@@ -7,6 +7,7 @@ import { ChevronDown, ChevronLeft, Search, Check } from "lucide-react";
 import { LuMessageSquareWarning } from "react-icons/lu";
 import { usegetBrandsFilter } from "@/core/services/queries";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useBrandFilter } from "@/core/hooks/useBrandFilter";
 
 
 const FilterSection = ({ value, title, children }) => (
@@ -32,62 +33,13 @@ export default function DigikalaFilterSidebar({ products }) {
   const { data: allBrandsFromApi, isLoading } = usegetBrandsFilter();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  
-  const selectedBrands = useMemo(() => {
-    return searchParams.get("brands")?.split(",") || [];
-  }, [searchParams]);
+  const { selectedBrands, filteredBrands, handleCheckboxChange } = useBrandFilter({
+    products,
+    allBrandsFromApi,
+    searchTerm,
+  });
 
 
-  const allowedBrandIds = useMemo(() => {
-    
-    const items = Array.isArray(products) ? products : products?.data || [];
-    if (!items.length) return new Set();
-
-    const ids = items.map((p) => String(p?.brand?.id || p?.brand_id || "")).filter(Boolean);
-    return new Set(ids);
-  }, [products]);
-
-  
-  const filteredBrands = useMemo(() => {
-    
-    const brandsArray = allBrandsFromApi?.data || allBrandsFromApi;
-    
-    if (!Array.isArray(brandsArray)) return [];
-    
-    return brandsArray.filter((brand) => {
-      const brandId = String(brand.id);
-      const isChecked = selectedBrands.includes(brandId);
-      
-      
-      const isAllowed = allowedBrandIds.has(brandId) || isChecked;
-      if (!isAllowed) return false;
-
-      if (!searchTerm.trim()) return true;
-
-      const term = searchTerm.toLowerCase();
-      const name = brand.name?.toLowerCase() || "";
-      const slug = brand.slug?.toLowerCase() || "";
-
-      return name.includes(term) || slug.includes(term);
-    });
-  }, [allBrandsFromApi, allowedBrandIds, searchTerm, selectedBrands]);
-
-  const handleCheckboxChange = (id) => {
-    const stringId = String(id);
-    const updated = selectedBrands.includes(stringId)
-      ? selectedBrands.filter((b) => b !== stringId)
-      : [...selectedBrands, stringId];
-
-    const params = new URLSearchParams(searchParams);
-    if (updated.length) params.set("brands", updated.join(","));
-    else params.delete("brands");
-
-    router.push(`${pathname}?${params}`);
-  };
 
   return (
     <div className="w-full bg-white lg:border lg:border-neutral-200 lg:rounded-xl font-sans text-right" dir="rtl">
@@ -175,7 +127,7 @@ export default function DigikalaFilterSidebar({ products }) {
         
         <FilterSection value="price" title="محدوده قیمت">
           <div className="pb-5 pt-2">
-            <p className="text-xs text-neutral-400 text-center"></p>
+            <p className="text-xs text-neutral-400 text-center">...</p>
           </div>
         </FilterSection>
 
