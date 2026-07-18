@@ -6,28 +6,30 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { formatPrice } from "@/core/utils/formatPrice";
 import ReactStars from "react-stars";
+import { useEffect, useRef } from "react";
 
+import { gsap } from "gsap";
+import { SplitText } from "gsap/SplitText"; // ایمپورت مستقیم از خود gsap
+import { Link } from "lucide-react";
+
+gsap.registerPlugin(SplitText);
 
 function ProductSkeleton() {
   return (
     <div className="w-full h-auto rounded-[20px] border border-neutral-100 bg-white p-3 animate-pulse">
       <div className="rounded-[10px] w-full h-full border border-solid border-neutral-100 p-4">
-        
         <div className="w-full aspect-[4/5] bg-neutral-200 rounded-[20px]" />
 
-        
         <div className="flex justify-between items-center mt-5">
           <div className="h-4 bg-neutral-200 rounded w-1/2" />
           <div className="h-5 bg-neutral-200 rounded w-1/4" />
         </div>
 
-        
         <div className="flex justify-between items-center mt-4">
           <div className="h-4 bg-neutral-200 rounded w-1/3" />
           <div className="h-5 bg-neutral-200 rounded-md w-1/5" />
         </div>
 
-        
         <div className="space-y-2 mt-4">
           <div className="h-3 bg-neutral-200 rounded w-full" />
           <div className="h-3 bg-neutral-200 rounded w-5/6" />
@@ -40,6 +42,7 @@ function ProductSkeleton() {
 function Products({ data, current_sort, current_sortorder }) {
   const router = useRouter();
   const pathname = usePathname();
+  const containerRef = useRef(null);
 
   const handleSortChange = (sort_by, sort_order) => {
     const params = new URLSearchParams(window.location.search);
@@ -56,9 +59,59 @@ function Products({ data, current_sort, current_sortorder }) {
 
   const isLoading = !data || data.length === 0;
 
+  useEffect(() => {
+    if (isLoading || !containerRef.current) return;
+
+    const cards = containerRef.current.querySelectorAll(".product-card");
+    const textTargets = containerRef.current.querySelectorAll(
+      ".animate-text-split",
+    );
+
+    if (cards.length === 0) return;
+
+    const tl = gsap.timeline();
+
+    // انیمیشن کارت‌ها با استفاده از autoAlpha برای جلوگیری از پرش یا تداخل با استایل وب‌سایت
+    tl.from(cards, {
+      duration: 0.7,
+      y: 40,
+      autoAlpha: 0, // ترکیبی هوشمند از opacity و visibility
+      stagger: 0.06,
+      ease: "power3.out", // یک Ease نرم‌تر برای حرکت روان کارت‌ها
+    });
+
+    if (textTargets.length > 0) {
+      const split = new SplitText(textTargets, {
+        type: "words",
+        wordsClass: "inline-block overflow-hidden pt-1",
+      });
+
+      tl.from(
+        split.words,
+        {
+          duration: 0.5,
+          y: 15,
+          autoAlpha: 0,
+          stagger: 0.01,
+          ease: "power2.out",
+        },
+        "-=0.4",
+      ); // شروع انیمیشن متن کمی قبل از اتمام حرکت کارت‌ها
+
+      return () => {
+        tl.kill();
+        split.revert();
+      };
+    }
+
+    return () => {
+      tl.kill();
+    };
+  }, [data, isLoading]);
+
   return (
     <>
-      
+      {/* بخش مرتب سازی */}
       <div className="flex gap-4 pl-4 mb-4 items-center" dir="ltr">
         <div className="flex items-center gap-2 text-neutral-700">
           <TfiAlignLeft size={18} />
@@ -86,18 +139,17 @@ function Products({ data, current_sort, current_sortorder }) {
         </button>
       </div>
 
-      
+      {/* ⚡ اضافه شدن کانتینر رفرنس به گرید اصلی کارت‌ها */}
       <div
+        ref={containerRef}
         className="max-w-[1270px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         dir="rtl"
       >
         {isLoading
-          ? 
-            Array.from({ length: 8 }).map((_, index) => (
+          ? Array.from({ length: 8 }).map((_, index) => (
               <ProductSkeleton key={index} />
             ))
-          : 
-            data.map((ddd) => {
+          : data.map((ddd) => {
               const mainVariant = ddd?.variants?.[0];
               const price = mainVariant ? Number(mainVariant.price) : 0;
               const salePrice = mainVariant
@@ -111,12 +163,12 @@ function Products({ data, current_sort, current_sortorder }) {
 
               return (
                 <div
-                  className="group transform transition-all duration-300 ease-in-out hover:-translate-y-1.5 hover:shadow-md rounded-[20px] bg-white border border-neutral-100 p-3"
+                  className="product-card group rounded-[20px] bg-white border border-neutral-100 p-3"
                   key={ddd.id}
                 >
                   <div className="rounded-[10px] w-full h-full border border-solid border-neutral-100 p-4 flex flex-col justify-between">
                     <div>
-                  
+                      {/* تصویر محصول */}
                       <div className="w-full overflow-hidden rounded-[20px] aspect-[4/5] relative flex items-center justify-center">
                         <Image
                           src="/icons/images.jfif"
@@ -128,9 +180,9 @@ function Products({ data, current_sort, current_sortorder }) {
                         />
                       </div>
 
-                      
+                      {/* ⚡ عنوان محصول با کلاس متحرک‌سازی */}
                       <div className="flex justify-between items-start mt-5 gap-2">
-                        <h3 className="font-bold text-sm text-neutral-800 line-clamp-2 leading-6 h-12">
+                        <h3 className="font-bold text-sm text-neutral-800 line-clamp-2 leading-6 h-12 animate-text-split">
                           {ddd?.title}
                         </h3>
                         <div className="flex items-center shrink-0">
@@ -147,17 +199,17 @@ function Products({ data, current_sort, current_sortorder }) {
                     </div>
 
                     <div>
-                      
+                      {/* ⚡ قیمت‌ها با کلاس متحرک‌سازی */}
                       <div
                         className="flex justify-between items-center mt-4"
                         dir="ltr"
                       >
                         <div className="flex items-center gap-2">
-                          <p className="text-green-600 font-bold text-base">
+                          <p className="text-green-600 font-bold text-base animate-text-split">
                             ${formatPrice(salePrice || price)}
                           </p>
                           {discountPercent > 0 && (
-                            <span className="text-neutral-400 line-through text-xs">
+                            <span className="text-neutral-400 line-through text-xs animate-text-split">
                               ${formatPrice(price)}
                             </span>
                           )}
@@ -171,13 +223,15 @@ function Products({ data, current_sort, current_sortorder }) {
                             >
                               <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
                             </svg>
-                            {discountPercent}% Off
+                            <span className="animate-text-split">
+                              {discountPercent}% Off
+                            </span>
                           </div>
                         )}
                       </div>
 
-                      {/* توضیحات کوتاه */}
-                      <p className="w-full mt-3 line-clamp-2 text-xs text-neutral-500 leading-5">
+                      {/* ⚡ توضیحات کوتاه با کلاس متحرک‌سازی */}
+                      <p className="w-full mt-3 line-clamp-2 text-xs text-neutral-500 leading-5 animate-text-split">
                         {ddd?.short_description}
                       </p>
                     </div>
