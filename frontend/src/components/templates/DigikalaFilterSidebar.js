@@ -42,7 +42,7 @@ export default function DigikalaFilterSidebar({ products }) {
 
 
   return (
-    <div className="w-full bg-white lg:border lg:border-neutral-200 lg:rounded-xl font-sans text-right" dir="rtl">
+    <div className="w-full bg-white lg:border lg:border-neutral-200 lg:rounded-xl font-sans text-right lg:sticky lg:top-10 self-start" dir="rtl">
       <div className="px-5 py-4 text-base font-bold text-neutral-800 border-b border-neutral-100">
         فیلترها
       </div>

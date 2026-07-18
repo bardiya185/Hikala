@@ -1,7 +1,7 @@
 
 export default function Loading() {
   return (
-    <div className="max-w-[1440px] mx-auto px-4 py-6" dir="rtl">
+    <div className="max-w-[1440px] mx-auto px-4 py-6" dir="ltr">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         
         
