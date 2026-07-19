@@ -2,74 +2,69 @@
 
 namespace App\Services\Discount;
 
+use App\Models\Coupon;
 use App\Models\Discount;
 use App\Services\Discount\DTO\DiscountResult;
-use App\Models\Coupon;
 
 class DiscountCalculator
 {
-
-
     public function calculate(
-        float $price,
+        float $basePrice,
         ?Discount $discount,
         ?Coupon $coupon = null
     ): DiscountResult
     {
 
-
         if (!$discount) {
 
             return new DiscountResult(
-                $price,
+                $basePrice,
                 0,
-                $price,
-                null
+                $basePrice,
+                null,
+                $coupon
             );
-
         }
 
 
-        $amount = 0;
+        $discountAmount = 0;
 
 
         if ($discount->type === 'percent') {
 
-            $amount = ($price * $discount->value) / 100;
+            $discountAmount =
+                ($basePrice * $discount->value) / 100;
 
         }
-
 
 
         if ($discount->type === 'fixed') {
 
-            $amount = $discount->value;
+            $discountAmount = $discount->value;
 
         }
 
 
- 
-
-        $amount = min(
-            $amount,
-            $price
+        $discountAmount = min(
+            $discountAmount,
+            $basePrice
         );
 
+
+        $price = $basePrice - $discountAmount;
 
 
         return new DiscountResult(
 
+            $basePrice,
+
+            $discountAmount,
+
             $price,
 
-            $amount,
+            $discount,
 
-            $price - $amount,
-
-            $discount
-
+            $coupon
         );
-
     }
-
-
 }

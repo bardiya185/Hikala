@@ -1288,9 +1288,6 @@ class ProductDatabaseSeeder extends Seeder
 
             $title = $productData['title'];
             $slug = Str::slug($title) . '-' . Str::random(6);
-            $price = rand(100, 5000);
-            $salePrice = $price * rand(7, 9) / 10;
-            $salePrice = round($salePrice / 100) * 100;
 
             $description = "Premium " . $title . " with high-quality features. Perfect for everyday use.";
 
@@ -1376,16 +1373,20 @@ if ($grandParentCategory) {
 
                 $storage = $storages[array_rand($storages)];
 
-                $priceModifier = rand(85, 115) / 100;
-                $variantPrice = round($price * $priceModifier, 2);
-                $variantSalePrice = round($variantPrice * rand(7, 9) / 10, 2);
+                $basePrice = rand(100,5000);
+                $discountPercent = rand(5,15);
+                $finalPrice = round(
+                    $basePrice - 
+                    ($basePrice * $discountPercent /100)
+                );
+                
 
                 $variantId = DB::table('product_variants')->insertGetId([
                     'product_id' => $productId,
                     'sku' => 'SKU-' . $productId . '-' . $v . '-' . Str::random(4),
                     'barcode' => rand(1000000000000, 9999999999999),
-                    'price' => $variantPrice,
-                    'sale_price' => $variantSalePrice,
+                    'price'=>$finalPrice,
+                    'base_price'=>$basePrice,
                     'stock' => rand(5, 50),
                     'weight' => rand(100, 1000),
                     'is_active' => 1,

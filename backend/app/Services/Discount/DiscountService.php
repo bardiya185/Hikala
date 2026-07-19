@@ -43,10 +43,10 @@ class DiscountService
         if(!$discount){
     
             return $this->calculator
-                ->calculate(
-                    $variant->price,
-                    null
-                );
+            ->calculate(
+                $variant->base_price,
+                null
+            );
     
         }
     
@@ -61,10 +61,10 @@ class DiscountService
         ){
     
             return $this->calculator
-                ->calculate(
-                    $variant->price,
-                    null
-                );
+            ->calculate(
+                $variant->base_price,
+                null
+            );
     
         }
     
@@ -80,17 +80,17 @@ class DiscountService
         ){
     
             return $this->calculator
-                ->calculate(
-                    $variant->price,
-                    null
-                );
+            ->calculate(
+                $variant->base_price,
+                null
+            );
     
         }
     
     
     
         return $this->calculator->calculate(
-            $variant->price,
+            $variant->base_price,
             $discount,
             $coupon
         );

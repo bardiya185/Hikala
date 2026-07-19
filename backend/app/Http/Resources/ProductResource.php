@@ -30,8 +30,8 @@ class ProductResource extends JsonResource
                 $this->whenLoaded('brand')
             ),
 
-            'categories' => CategoryResource::collection(
-                $this->whenLoaded('categories')
+             'categories' => ProductCategoryResource::collection(
+            $this->whenLoaded('categories')
             ),
 
             'images' => ProductImageResource::collection(
@@ -41,6 +41,8 @@ class ProductResource extends JsonResource
             'variants' => ProductVariantResource::collection(
                 $this->whenLoaded('variants')
             ),
+
+            'discounts' => $this->whenLoaded('discounts'),
            
         ];
     }

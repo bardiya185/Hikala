@@ -19,7 +19,7 @@ return new class extends Migration
                 'fixed',
             ]);
 
-            $table->boolean('stackable');
+            $table->boolean('stackable')->default(0);
    
             $table->decimal('value', 12, 2);
       
