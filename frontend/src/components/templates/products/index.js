@@ -150,16 +150,17 @@ function Products({ data, current_sort, current_sortorder }) {
               <ProductSkeleton key={index} />
             ))
           : data.map((ddd , index) => {
-              const mainVariant = ddd?.variants?.[0];
-              const price = mainVariant ? Number(mainVariant.price) : 0;
-              const salePrice = mainVariant
-                ? Number(mainVariant.sale_price)
-                : 0;
+            const mainVariant = ddd?.variants?.[0];
 
-              const discountPercent =
-                price > 0 && salePrice < price
-                  ? Math.round(((price - salePrice) / price) * 100)
-                  : 0;
+            const basePrice = Number(mainVariant?.base_price);
+            const price = Number(mainVariant?.price);
+            
+            const discountAmount = Number(mainVariant?.discount_amount);
+            
+            const discountPercent = 
+              basePrice > 0 && discountAmount > 0
+                ? Math.round((discountAmount / basePrice) * 100)
+                : 0;
 
               return (
                 <motion.div
@@ -209,11 +210,11 @@ function Products({ data, current_sort, current_sortorder }) {
                       >
                         <div className="flex items-center gap-2">
                           <p className="text-green-600 font-bold text-base animate-text-split">
-                            ${formatPrice(salePrice || price)}
+                            ${price.toLocaleString()}
                           </p>
                           {discountPercent > 0 && (
                             <span className="text-neutral-400 line-through text-xs animate-text-split">
-                              ${formatPrice(price)}
+                              ${formatPrice(basePrice)}
                             </span>
                           )}
                         </div>
