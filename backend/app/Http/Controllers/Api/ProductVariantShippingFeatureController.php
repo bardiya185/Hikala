@@ -35,9 +35,6 @@ class ProductVariantShippingFeatureController extends Controller
                 )
             )
         ],
-        security: [
-            ["bearerAuth" => []]
-        ],
         responses: [
             new OA\Response(
                 response: 200,
@@ -111,9 +108,6 @@ class ProductVariantShippingFeatureController extends Controller
                     type: "integer"
                 )
             )
-        ],
-        security: [
-            ["bearerAuth" => []]
         ],
         responses: [
             new OA\Response(

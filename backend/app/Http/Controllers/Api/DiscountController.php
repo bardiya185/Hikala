@@ -160,10 +160,6 @@ class DiscountController extends Controller
         path: "/api/discounts/{discount}",
         summary: "Get single discount",
         tags: ["Discounts"],
-        security: [
-            ["bearerAuth" => []]
-        ],
-
         parameters: [
 
             new OA\Parameter(

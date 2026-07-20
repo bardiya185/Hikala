@@ -2480,12 +2480,7 @@
                     "404": {
                         "description": "Discount not found"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             },
             "put": {
                 "tags": [
@@ -3346,12 +3341,7 @@
                     "200": {
                         "description": "Shipping features retrieved successfully"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             },
             "post": {
                 "tags": [
@@ -3404,12 +3394,7 @@
                     "200": {
                         "description": "Shipping feature retrieved successfully"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             },
             "put": {
                 "tags": [

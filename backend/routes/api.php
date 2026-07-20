@@ -44,9 +44,20 @@ Route::get('/provinces', [ProvinceController::class, 'index']);
 
 Route::get('/cities', [CityController::class, 'index']);
 
-Route::get('/', [DiscountController::class, 'index']);
+Route::get(
+    'variants/{variant}/shipping-features',
+    [ProductVariantShippingFeatureController::class, 'index']
+);
 
-Route::get('/{discount}', [DiscountController::class, 'show']);
+Route::get(
+    'shipping-features/{feature}',
+    [ProductVariantShippingFeatureController::class, 'show']
+);
+
+
+Route::get('/discounts', [DiscountController::class, 'index']);
+
+Route::get('/discounts/{discount}', [DiscountController::class, 'show']);
 
 // ================================================================
 // PROTECTED ROUTES
@@ -80,34 +91,26 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('roles', RoleController::class);
 
-    Route::prefix('discounts')->group(function () {
+    Route::post('/discounts', [DiscountController::class, 'store']);
 
+    Route::put('/discounts/{discount}', [DiscountController::class, 'update']);
 
-        Route::post('/', [DiscountController::class, 'store']);
+    Route::delete('/discounts/{discount}', [DiscountController::class, 'destroy']);
 
+    Route::post(
+        'variants/{variant}/shipping-features',
+        [ProductVariantShippingFeatureController::class, 'store']
+    );
 
-        Route::put('/{discount}', [DiscountController::class, 'update']);
+    Route::put(
+        'shipping-features/{feature}',
+        [ProductVariantShippingFeatureController::class, 'update']
+    );
 
-        Route::delete('/{discount}', [DiscountController::class, 'destroy']);
-
-    });
-
-    Route::apiResource(
-        'variants.shipping-features',
-        ProductVariantShippingFeatureController::class
-    )->only([
-        'index',
-        'store'
-    ]);
-
-
-    Route::apiResource(
-        'shipping-features',
-        ProductVariantShippingFeatureController::class
-    )->only([
-        'update',
-        'destroy'
-    ]);
+    Route::delete(
+        'shipping-features/{feature}',
+        [ProductVariantShippingFeatureController::class, 'destroy']
+    );
 
 });
 
