@@ -2347,6 +2347,236 @@
                 }
             }
         },
+        "/api/discounts": {
+            "get": {
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "Get all discounts",
+                "operationId": "eaa03209dcdee72030b74953ddb84bee",
+                "responses": {
+                    "200": {
+                        "description": "Discount list returned successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "Create new discount",
+                "operationId": "9fad542c7104853a4bcb49d059f4d242",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "type",
+                                    "value",
+                                    "discountable_type",
+                                    "discountable_ids"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Summer Sale"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "percent",
+                                        "enum": [
+                                            "percent",
+                                            "fixed"
+                                        ]
+                                    },
+                                    "value": {
+                                        "type": "number",
+                                        "example": 20
+                                    },
+                                    "stackable": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "starts_at": {
+                                        "type": "string",
+                                        "example": "2026-07-20 00:00:00"
+                                    },
+                                    "ends_at": {
+                                        "type": "string",
+                                        "example": "2026-08-01 00:00:00"
+                                    },
+                                    "discountable_type": {
+                                        "type": "string",
+                                        "example": "product",
+                                        "enum": [
+                                            "product",
+                                            "variant",
+                                            "category",
+                                            "brand"
+                                        ]
+                                    },
+                                    "discountable_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Discount created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/discounts/{discount}": {
+            "get": {
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "Get single discount",
+                "operationId": "ccaae593ea86c2a6c08aa6cf18db066d",
+                "parameters": [
+                    {
+                        "name": "discount",
+                        "in": "path",
+                        "description": "Discount ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Discount returned successfully"
+                    },
+                    "404": {
+                        "description": "Discount not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "Update discount",
+                "operationId": "1df9b593b2ee9e21cb05ebf7dd167076",
+                "parameters": [
+                    {
+                        "name": "discount",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Discount"
+                                    },
+                                    "value": {
+                                        "type": "number",
+                                        "example": 30
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Discount updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "Delete discount",
+                "operationId": "43a43305d77f7d6660dd69a55f3d8b47",
+                "parameters": [
+                    {
+                        "name": "discount",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Discount deleted successfully"
+                    },
+                    "404": {
+                        "description": "Discount not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/products": {
             "get": {
                 "tags": [
@@ -3574,8 +3804,8 @@
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
-                "bearerFormat": "JWT",
-                "scheme": "bearer"
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
         }
     },
@@ -3611,6 +3841,10 @@
         {
             "name": "Cities",
             "description": "Cities"
+        },
+        {
+            "name": "Discounts",
+            "description": "Discounts"
         },
         {
             "name": "Provinces",

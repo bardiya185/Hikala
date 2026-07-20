@@ -8,10 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AttributeController;
 use App\Http\Controllers\Api\ProductController;
+//use App\Http\Controllers\Api\DiscountController;
 use App\Http\Controllers\Api\ProductImageController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\CityController;
+use App\Http\Controllers\Api\DiscountController;
 
 // ================================================================
 // PUBLIC ROUTES
@@ -73,4 +75,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('roles', RoleController::class);
 
+    Route::prefix('discounts')->group(function () {
+
+        Route::get('/', [DiscountController::class, 'index']);
+
+        Route::post('/', [DiscountController::class, 'store']);
+
+        Route::get('/{discount}', [DiscountController::class, 'show']);
+
+        Route::put('/{discount}', [DiscountController::class, 'update']);
+
+        Route::delete('/{discount}', [DiscountController::class, 'destroy']);
+
+    });
+
 });
+
