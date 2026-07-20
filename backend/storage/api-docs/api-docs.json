@@ -3499,9 +3499,10 @@
                                 "price": {
                                     "type": "integer"
                                 },
-                                "sale_price": {
+                                "final_price": {
+                                    "description": "Final price after discount calculation",
                                     "type": "integer",
-                                    "nullable": true
+                                    "example": 800
                                 },
                                 "stock": {
                                     "type": "integer"

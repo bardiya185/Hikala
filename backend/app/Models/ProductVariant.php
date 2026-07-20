@@ -15,16 +15,20 @@ class ProductVariant extends Model
         'sku',
         'barcode',
         'price',
-        'sale_price',
+        'base_price',
         'stock',
         'weight',
         'is_active',
+        'is_default',
     ];
+
 
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
+
+
 
     public function attributeValues(): BelongsToMany
     {
@@ -36,13 +40,44 @@ class ProductVariant extends Model
         );
     }
 
+
+
     public function attributeValuesPivot(): HasMany
     {
-        return $this->hasMany(ProductVariantAttributeValue::class, 'product_variant_id');
+        return $this->hasMany(
+            ProductVariantAttributeValue::class,
+            'product_variant_id'
+        );
     }
+
+
 
     public function inventory(): HasOne
     {
-        return $this->hasOne(Inventory::class);
+        return $this->hasOne(
+            Inventory::class
+        );
     }
+
+
+
+    public function discounts()
+    {
+        return $this->morphToMany(
+            Discount::class,
+            'discountable'
+        );
+    }
+
+
+
+    /**
+     * قیمت قابل استفاده قبل از تخفیف
+     */
+    public function getBasePriceAttribute()
+    {
+        return $this->attributes['base_price']
+            ?? $this->attributes['price'];
+    }
+
 }

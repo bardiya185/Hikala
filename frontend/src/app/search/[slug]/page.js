@@ -21,7 +21,7 @@ async function getCategoryProducts(category_id, sort_by, sort_order,brands) {
     }  
     params.append("sort_by", sortBy);
     params.append("sort_order", sortOrder);
-    params.append("per_page", 20);
+    params.append("per_page", 50);
 
     url += params.toString();
 
