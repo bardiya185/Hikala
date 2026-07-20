@@ -80,4 +80,11 @@ class ProductVariant extends Model
             ?? $this->attributes['price'];
     }
 
+    public function shippingFeatures()
+    {
+        return $this->hasMany(
+            ProductVariantShippingFeature::class
+        );
+    }
+
 }

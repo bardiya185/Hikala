@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\DiscountController;
+use App\Http\Controllers\Api\ProductVariantShippingFeatureController;
 
 // ================================================================
 // PUBLIC ROUTES
@@ -42,6 +43,10 @@ Route::get('/attributes/{attribute}', [AttributeController::class, 'show']);
 Route::get('/provinces', [ProvinceController::class, 'index']);
 
 Route::get('/cities', [CityController::class, 'index']);
+
+Route::get('/', [DiscountController::class, 'index']);
+
+Route::get('/{discount}', [DiscountController::class, 'show']);
 
 // ================================================================
 // PROTECTED ROUTES
@@ -77,17 +82,32 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('discounts')->group(function () {
 
-        Route::get('/', [DiscountController::class, 'index']);
 
         Route::post('/', [DiscountController::class, 'store']);
 
-        Route::get('/{discount}', [DiscountController::class, 'show']);
 
         Route::put('/{discount}', [DiscountController::class, 'update']);
 
         Route::delete('/{discount}', [DiscountController::class, 'destroy']);
 
     });
+
+    Route::apiResource(
+        'variants.shipping-features',
+        ProductVariantShippingFeatureController::class
+    )->only([
+        'index',
+        'store'
+    ]);
+
+
+    Route::apiResource(
+        'shipping-features',
+        ProductVariantShippingFeatureController::class
+    )->only([
+        'update',
+        'destroy'
+    ]);
 
 });
 

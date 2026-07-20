@@ -22,10 +22,6 @@ class DiscountController extends Controller
         path: "/api/discounts",
         summary: "Get all discounts",
         tags: ["Discounts"],
-        security: [
-            ["bearerAuth" => []]
-        ],
-
         responses: [
             new OA\Response(
                 response: 200,

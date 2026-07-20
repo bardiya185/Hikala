@@ -2361,12 +2361,7 @@
                     "401": {
                         "description": "Unauthenticated"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             },
             "post": {
                 "tags": [
@@ -3329,6 +3324,150 @@
                 ]
             }
         },
+        "/api/variants/{variant}/shipping-features": {
+            "get": {
+                "tags": [
+                    "Shipping Features"
+                ],
+                "summary": "Get variant shipping features",
+                "operationId": "b14457f2118623254852cc48dd339328",
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "path",
+                        "description": "Product variant id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shipping features retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Shipping Features"
+                ],
+                "summary": "Create shipping feature for variant",
+                "operationId": "103a581775d9f9d1a6068e0c94d4204c",
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "path",
+                        "description": "Product variant id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Shipping feature created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/shipping-features/{feature}": {
+            "get": {
+                "tags": [
+                    "Shipping Features"
+                ],
+                "summary": "Get shipping feature",
+                "operationId": "489750a860fb495d2f537dedb53ca1e8",
+                "parameters": [
+                    {
+                        "name": "feature",
+                        "in": "path",
+                        "description": "Shipping feature id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shipping feature retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Shipping Features"
+                ],
+                "summary": "Update shipping feature",
+                "operationId": "891b9878966b49432773ba5dda7c05f6",
+                "parameters": [
+                    {
+                        "name": "feature",
+                        "in": "path",
+                        "description": "Shipping feature id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shipping feature updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Shipping Features"
+                ],
+                "summary": "Delete shipping feature",
+                "operationId": "bb226e891607fdf2f268e52c038047ec",
+                "parameters": [
+                    {
+                        "name": "feature",
+                        "in": "path",
+                        "description": "Shipping feature id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shipping feature deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/provinces": {
             "get": {
                 "tags": [
@@ -3845,6 +3984,10 @@
         {
             "name": "Discounts",
             "description": "Discounts"
+        },
+        {
+            "name": "Shipping Features",
+            "description": "Shipping Features"
         },
         {
             "name": "Provinces",
