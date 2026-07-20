@@ -32,4 +32,13 @@ class Brand extends Model
 {
     return $this->belongsToMany(Category::class, 'category_brand');
 }
+
+public function discounts()
+{
+    return $this->morphToMany(
+        Discount::class,
+        'discountable'
+    );
+}
+
 }

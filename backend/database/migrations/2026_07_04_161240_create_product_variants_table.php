@@ -10,24 +10,52 @@ return new class extends Migration
         public function up(): void
         {
             Schema::create('product_variants', function (Blueprint $table) {
+
                 $table->id();
-                $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-                $table->string('sku')->unique();
-                $table->string('barcode')->nullable();
+            
+                $table->foreignId('product_id')
+                    ->constrained()
+                    ->cascadeOnDelete();
+            
+                $table->string('sku')
+                    ->unique();
+            
+                $table->string('barcode')
+                    ->nullable();
+            
+            
+                // قیمت اصلی
                 $table->decimal('price', 15, 0);
-                $table->decimal('sale_price', 15, 0)->nullable();
-                $table->unsignedInteger('stock')->default(0);
-                $table->unsignedInteger('weight')->nullable();
-                
-                // ✅ اصلاح: بدون after
-                $table->boolean('is_active')->default(true);
-                $table->boolean('is_default')->default(false);
-        
+            
+            
+                // قیمت پایه فروش
+                $table->decimal('base_price', 15, 0)
+                    ->nullable();
+            
+            
+                $table->unsignedInteger('stock')
+                    ->default(0);
+            
+            
+                $table->unsignedInteger('weight')
+                    ->nullable();
+            
+            
+                $table->boolean('is_active')
+                    ->default(true);
+            
+            
+                $table->boolean('is_default')
+                    ->default(false);
+            
+            
                 $table->timestamps();
-        
+            
+            
                 $table->index('product_id');
                 $table->index('sku');
                 $table->index('is_active');
+            
             });
         }
     

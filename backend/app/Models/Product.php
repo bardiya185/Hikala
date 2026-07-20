@@ -42,5 +42,13 @@ class Product extends Model
         return $this->belongsToMany(Category::class);
     }
 
+    public function discounts()
+{
+    return $this->morphToMany(
+        Discount::class,
+        'discountable'
+    );
+}
+
     use HasFactory;
 }

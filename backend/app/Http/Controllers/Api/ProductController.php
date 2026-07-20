@@ -73,7 +73,12 @@ use OpenApi\Attributes as OA;
                     new OA\Property(property: "id", type: "integer"),
                     new OA\Property(property: "sku", type: "string"),
                     new OA\Property(property: "price", type: "integer"),
-                    new OA\Property(property: "sale_price", type: "integer", nullable: true),
+                    new OA\Property(
+                        property: "final_price",
+                        type: "integer",
+                        example: 800,
+                        description: "Final price after discount calculation"
+                    ),
                     new OA\Property(property: "stock", type: "integer"),
                     new OA\Property(property: "is_default", type: "boolean"),
                     new OA\Property(
@@ -99,7 +104,8 @@ class ProductController extends Controller
         'brand',
         'categories',
         'images',
-        'variants'
+        'variants',
+        'discounts'
     ];
 
     public function __construct(
@@ -236,14 +242,12 @@ class ProductController extends Controller
             $query->whereHas('variants', function($q) use ($request) {
                 if ($request->has('min_price')) {
                     $q->where(function($sub) use ($request) {
-                        $sub->where('sale_price', '>=', $request->min_price)
-                            ->orWhere('price', '>=', $request->min_price);
+                        $sub->where('base_price', '>=', $request->min_price);
                     });
                 }
                 if ($request->has('max_price')) {
                     $q->where(function($sub) use ($request) {
-                        $sub->where('sale_price', '<=', $request->max_price)
-                            ->orWhere('price', '<=', $request->max_price);
+                        $sub->where('base_price', '<=', $request->max_price);
                     });
                 }
             });
@@ -275,11 +279,18 @@ class ProductController extends Controller
         }
 
         if ($sortBy === 'price') {
+
+            
             $query->orderBy(
-                ProductVariant::selectRaw($sortOrder === 'desc' ? 'MAX(sale_price)' : 'MIN(sale_price)')
+                ProductVariant::selectRaw(
+                    $sortOrder === 'desc'
+                    ? 'MAX(price)'
+                    : 'MIN(price)'
+                    )
                     ->whereColumn('product_variants.product_id', 'products.id'),
                 $sortOrder
             );
+
         } else {
             $query->orderBy($sortBy, $sortOrder);
         }

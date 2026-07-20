@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { formatPrice } from "@/core/utils/formatPrice";
 import ReactStars from "react-stars";
 import { useEffect, useRef } from "react";
-
+import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText"; // ایمپورت مستقیم از خود gsap
 import { Link } from "lucide-react";
@@ -59,55 +59,55 @@ function Products({ data, current_sort, current_sortorder }) {
 
   const isLoading = !data || data.length === 0;
 
-  useEffect(() => {
-    if (isLoading || !containerRef.current) return;
+  // useEffect(() => {
+  //   if (isLoading || !containerRef.current) return;
 
-    const cards = containerRef.current.querySelectorAll(".product-card");
-    const textTargets = containerRef.current.querySelectorAll(
-      ".animate-text-split",
-    );
+  //   const cards = containerRef.current.querySelectorAll(".product-card");
+  //   const textTargets = containerRef.current.querySelectorAll(
+  //     ".animate-text-split",
+  //   );
 
-    if (cards.length === 0) return;
+  //   if (cards.length === 0) return;
 
-    const tl = gsap.timeline();
+    // const tl = gsap.timeline();
 
-    // انیمیشن کارت‌ها با استفاده از autoAlpha برای جلوگیری از پرش یا تداخل با استایل وب‌سایت
-    tl.from(cards, {
-      duration: 0.7,
-      y: 40,
-      autoAlpha: 0, // ترکیبی هوشمند از opacity و visibility
-      stagger: 0.06,
-      ease: "power3.out", // یک Ease نرم‌تر برای حرکت روان کارت‌ها
-    });
+    // // انیمیشن کارت‌ها با استفاده از autoAlpha برای جلوگیری از پرش یا تداخل با استایل وب‌سایت
+    // tl.from(cards, {
+    //   duration: 0.7,
+    //   y: 40,
+    //   autoAlpha: 0, // ترکیبی هوشمند از opacity و visibility
+    //   stagger: 0.06,
+    //   ease: "power3.out", // یک Ease نرم‌تر برای حرکت روان کارت‌ها
+    // });
 
-    if (textTargets.length > 0) {
-      const split = new SplitText(textTargets, {
-        type: "words",
-        wordsClass: "inline-block overflow-hidden pt-1",
-      });
+  //   if (textTargets.length > 0) {
+  //     const split = new SplitText(textTargets, {
+  //       type: "words",
+  //       wordsClass: "inline-block overflow-hidden pt-1",
+  //     });
 
-      tl.from(
-        split.words,
-        {
-          duration: 0.5,
-          y: 15,
-          autoAlpha: 0,
-          stagger: 0.01,
-          ease: "power2.out",
-        },
-        "-=0.4",
-      ); // شروع انیمیشن متن کمی قبل از اتمام حرکت کارت‌ها
+  //     tl.from(
+  //       split.words,
+  //       {
+  //         duration: 0.5,
+  //         y: 15,
+  //         autoAlpha: 0,
+  //         stagger: 0.01,
+  //         ease: "power2.out",
+  //       },
+  //       "-=0.4",
+  //     ); // شروع انیمیشن متن کمی قبل از اتمام حرکت کارت‌ها
 
-      return () => {
-        tl.kill();
-        split.revert();
-      };
-    }
+  //     return () => {
+  //       tl.kill();
+  //       split.revert();
+  //     };
+  //   }
 
-    return () => {
-      tl.kill();
-    };
-  }, [data, isLoading]);
+  //   return () => {
+  //     tl.kill();
+  //   };
+  // }, [data, isLoading]);
 
   return (
     <>
@@ -149,20 +149,24 @@ function Products({ data, current_sort, current_sortorder }) {
           ? Array.from({ length: 8 }).map((_, index) => (
               <ProductSkeleton key={index} />
             ))
-          : data.map((ddd) => {
-              const mainVariant = ddd?.variants?.[0];
-              const price = mainVariant ? Number(mainVariant.price) : 0;
-              const salePrice = mainVariant
-                ? Number(mainVariant.sale_price)
+          : data.map((ddd , index) => {
+            const mainVariant = ddd?.variants?.[0];
+
+            const basePrice = Number(mainVariant?.base_price);
+            const price = Number(mainVariant?.price);
+            
+            const discountAmount = Number(mainVariant?.discount_amount);
+            
+            const discountPercent = 
+              basePrice > 0 && discountAmount > 0
+                ? Math.round((discountAmount / basePrice) * 100)
                 : 0;
 
-              const discountPercent =
-                price > 0 && salePrice < price
-                  ? Math.round(((price - salePrice) / price) * 100)
-                  : 0;
-
               return (
-                <div
+                <motion.div
+                initial={{opacity:0 , y:20 , filter:'blur(10px)'}}
+                animate={{ opacity:100 , y:0 , filter:'blur(0px)'}}
+                transition={{ ease:'easeInOut', duration:0.5, delay: 0.1 * index  }}
                   className="product-card group rounded-[20px] bg-white border border-neutral-100 p-3"
                   key={ddd.id}
                 >
@@ -206,11 +210,11 @@ function Products({ data, current_sort, current_sortorder }) {
                       >
                         <div className="flex items-center gap-2">
                           <p className="text-green-600 font-bold text-base animate-text-split">
-                            ${formatPrice(salePrice || price)}
+                            ${price.toLocaleString()}
                           </p>
                           {discountPercent > 0 && (
                             <span className="text-neutral-400 line-through text-xs animate-text-split">
-                              ${formatPrice(price)}
+                              ${formatPrice(basePrice)}
                             </span>
                           )}
                         </div>
@@ -236,7 +240,7 @@ function Products({ data, current_sort, current_sortorder }) {
                       </p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
       </div>
