@@ -1,5 +1,42 @@
-// CountdownTimer.jsx
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, useRef } from "react";
+
+function FlipUnit({ value, label }) {
+  const [displayValue, setDisplayValue] = useState(value);
+  const [flipping, setFlipping] = useState(false);
+  const prevValue = useRef(value);
+
+  useEffect(() => {
+    if (value === prevValue.current) return;
+    prevValue.current = value;
+    setFlipping(true);
+    const t1 = setTimeout(() => setDisplayValue(value), 300);
+    const t2 = setTimeout(() => setFlipping(false), 600);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, [value]);
+
+  return (
+    <div className="flex flex-col items-center gap-1.5">
+      <div style={{ perspective: "200px", width: 44, height: 48 }}>
+        <div
+          className={`w-full h-full bg-white rounded-lg flex items-center justify-center ${
+            flipping ? "animate-flip3d" : ""
+          }`}
+        >
+          <span className="text-lg font-bold text-red-900 tabular-nums">
+            {displayValue}
+          </span>
+        </div>
+      </div>
+      <span className="text-[10px] text-red-200 tracking-wide font-medium">
+        {label}
+      </span>
+    </div>
+  );
+}
 
 export default function CountdownTimer({ targetDate }) {
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
@@ -31,12 +68,12 @@ export default function CountdownTimer({ targetDate }) {
   const formatNumber = (num) => String(num || 0).padStart(2, "0");
 
   return (
-    <div className="flex items-center gap-1 text-white font-bold dir-ltr">
-      <span className="bg-white/20 px-2 py-1 rounded text-sm">{formatNumber(timeLeft.hours)}</span>
-      <span>:</span>
-      <span className="bg-white/20 px-2 py-1 rounded text-sm">{formatNumber(timeLeft.minutes)}</span>
-      <span>:</span>
-      <span className="bg-white/20 px-2 py-1 rounded text-sm">{formatNumber(timeLeft.seconds)}</span>
+    <div className="flex items-center gap-2" dir="ltr">
+      <FlipUnit value={formatNumber(timeLeft.hours)} label="hours" />
+      <span className="text-red-200 text-lg font-bold -mt-4">:</span>
+      <FlipUnit value={formatNumber(timeLeft.minutes)} label="minutes" />
+      <span className="text-red-200 text-lg font-bold -mt-4">:</span>
+      <FlipUnit value={formatNumber(timeLeft.seconds)} label="seconds" />
     </div>
   );
 }

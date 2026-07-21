@@ -16,14 +16,14 @@ async function getAmazingProducts(){
 }
 
 export default async function Home() {
-  // const productDiscounts = await getAmazingProducts()
+  const productDiscounts = await getAmazingProducts()
   return (
    <div>
     <Stories/>
     <TopBanner/>
     {/* <AmazingProducts/> */}
     <div className=" container  mx-auto px-28">
-    <AmazingSliders  />
+    <AmazingSliders data={productDiscounts?.data}  />
     <CardShop/>
 
     </div>
