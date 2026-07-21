@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import OtpInput from "react18-input-otp";
 
 function CheckOtpForm({ mobile, setStep }) {
-  const [code, setCode] = useState();
+  const [code, setCode] = useState("");
   const router = useRouter()
 
   const { isPending, mutate } = useCheckOtp()
