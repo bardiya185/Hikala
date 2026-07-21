@@ -8,10 +8,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AttributeController;
 use App\Http\Controllers\Api\ProductController;
+//use App\Http\Controllers\Api\DiscountController;
 use App\Http\Controllers\Api\ProductImageController;
 use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\CityController;
+use App\Http\Controllers\Api\DiscountController;
+use App\Http\Controllers\Api\ProductVariantShippingFeatureController;
 
 // ================================================================
 // PUBLIC ROUTES
@@ -40,6 +43,21 @@ Route::get('/attributes/{attribute}', [AttributeController::class, 'show']);
 Route::get('/provinces', [ProvinceController::class, 'index']);
 
 Route::get('/cities', [CityController::class, 'index']);
+
+Route::get(
+    'variants/{variant}/shipping-features',
+    [ProductVariantShippingFeatureController::class, 'index']
+);
+
+Route::get(
+    'shipping-features/{feature}',
+    [ProductVariantShippingFeatureController::class, 'show']
+);
+
+
+Route::get('/discounts', [DiscountController::class, 'index']);
+
+Route::get('/discounts/{discount}', [DiscountController::class, 'show']);
 
 // ================================================================
 // PROTECTED ROUTES
@@ -73,4 +91,26 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('roles', RoleController::class);
 
+    Route::post('/discounts', [DiscountController::class, 'store']);
+
+    Route::put('/discounts/{discount}', [DiscountController::class, 'update']);
+
+    Route::delete('/discounts/{discount}', [DiscountController::class, 'destroy']);
+
+    Route::post(
+        'variants/{variant}/shipping-features',
+        [ProductVariantShippingFeatureController::class, 'store']
+    );
+
+    Route::put(
+        'shipping-features/{feature}',
+        [ProductVariantShippingFeatureController::class, 'update']
+    );
+
+    Route::delete(
+        'shipping-features/{feature}',
+        [ProductVariantShippingFeatureController::class, 'destroy']
+    );
+
 });
+

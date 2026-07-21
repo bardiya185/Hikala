@@ -2347,6 +2347,226 @@
                 }
             }
         },
+        "/api/discounts": {
+            "get": {
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "Get all discounts",
+                "operationId": "eaa03209dcdee72030b74953ddb84bee",
+                "responses": {
+                    "200": {
+                        "description": "Discount list returned successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "Create new discount",
+                "operationId": "9fad542c7104853a4bcb49d059f4d242",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "type",
+                                    "value",
+                                    "discountable_type",
+                                    "discountable_ids"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Summer Sale"
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "percent",
+                                        "enum": [
+                                            "percent",
+                                            "fixed"
+                                        ]
+                                    },
+                                    "value": {
+                                        "type": "number",
+                                        "example": 20
+                                    },
+                                    "stackable": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "starts_at": {
+                                        "type": "string",
+                                        "example": "2026-07-20 00:00:00"
+                                    },
+                                    "ends_at": {
+                                        "type": "string",
+                                        "example": "2026-08-01 00:00:00"
+                                    },
+                                    "discountable_type": {
+                                        "type": "string",
+                                        "example": "product",
+                                        "enum": [
+                                            "product",
+                                            "variant",
+                                            "category",
+                                            "brand"
+                                        ]
+                                    },
+                                    "discountable_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Discount created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/discounts/{discount}": {
+            "get": {
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "Get single discount",
+                "operationId": "ccaae593ea86c2a6c08aa6cf18db066d",
+                "parameters": [
+                    {
+                        "name": "discount",
+                        "in": "path",
+                        "description": "Discount ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Discount returned successfully"
+                    },
+                    "404": {
+                        "description": "Discount not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "Update discount",
+                "operationId": "1df9b593b2ee9e21cb05ebf7dd167076",
+                "parameters": [
+                    {
+                        "name": "discount",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Discount"
+                                    },
+                                    "value": {
+                                        "type": "number",
+                                        "example": 30
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Discount updated successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Discounts"
+                ],
+                "summary": "Delete discount",
+                "operationId": "43a43305d77f7d6660dd69a55f3d8b47",
+                "parameters": [
+                    {
+                        "name": "discount",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Discount deleted successfully"
+                    },
+                    "404": {
+                        "description": "Discount not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/products": {
             "get": {
                 "tags": [
@@ -3099,6 +3319,140 @@
                 ]
             }
         },
+        "/api/variants/{variant}/shipping-features": {
+            "get": {
+                "tags": [
+                    "Shipping Features"
+                ],
+                "summary": "Get variant shipping features",
+                "operationId": "b14457f2118623254852cc48dd339328",
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "path",
+                        "description": "Product variant id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shipping features retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Shipping Features"
+                ],
+                "summary": "Create shipping feature for variant",
+                "operationId": "103a581775d9f9d1a6068e0c94d4204c",
+                "parameters": [
+                    {
+                        "name": "variant",
+                        "in": "path",
+                        "description": "Product variant id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Shipping feature created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/shipping-features/{feature}": {
+            "get": {
+                "tags": [
+                    "Shipping Features"
+                ],
+                "summary": "Get shipping feature",
+                "operationId": "489750a860fb495d2f537dedb53ca1e8",
+                "parameters": [
+                    {
+                        "name": "feature",
+                        "in": "path",
+                        "description": "Shipping feature id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shipping feature retrieved successfully"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Shipping Features"
+                ],
+                "summary": "Update shipping feature",
+                "operationId": "891b9878966b49432773ba5dda7c05f6",
+                "parameters": [
+                    {
+                        "name": "feature",
+                        "in": "path",
+                        "description": "Shipping feature id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shipping feature updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Shipping Features"
+                ],
+                "summary": "Delete shipping feature",
+                "operationId": "bb226e891607fdf2f268e52c038047ec",
+                "parameters": [
+                    {
+                        "name": "feature",
+                        "in": "path",
+                        "description": "Shipping feature id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shipping feature deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/provinces": {
             "get": {
                 "tags": [
@@ -3574,8 +3928,8 @@
         "securitySchemes": {
             "bearerAuth": {
                 "type": "http",
-                "bearerFormat": "JWT",
-                "scheme": "bearer"
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
         }
     },
@@ -3611,6 +3965,14 @@
         {
             "name": "Cities",
             "description": "Cities"
+        },
+        {
+            "name": "Discounts",
+            "description": "Discounts"
+        },
+        {
+            "name": "Shipping Features",
+            "description": "Shipping Features"
         },
         {
             "name": "Provinces",
