@@ -12,8 +12,11 @@ class DatabaseSeeder extends Seeder
             ProvinceSeeder::class,
             CitySeeder::class,     
             ProductDatabaseSeeder::class,  
-            AttributeSeeder::class, 
             DiscountSeeder::class,
+            RolePermissionSeeder::class,
+            BannerPositionSeeder::class,
+            BannerSeeder::class
+
         ]);
     }
 }

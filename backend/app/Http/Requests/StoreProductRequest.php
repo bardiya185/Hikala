@@ -110,17 +110,10 @@ class StoreProductRequest extends FormRequest
                 'max:255',
             ],
 
-            'variants.*.price' => [
+            'variants.*.base_price' => [
                 'required',
                 'integer',
                 'min:0',
-            ],
-
-            'variants.*.sale_price' => [
-                'nullable',
-                'integer',
-                'min:0',
-                'lt:variants.*.price',
             ],
 
             'variants.*.stock' => [

@@ -23,15 +23,7 @@ return new class extends Migration
                 $table->string('barcode')
                     ->nullable();
             
-            
-                // قیمت اصلی
-                $table->decimal('price', 15, 0);
-            
-            
-                // قیمت پایه فروش
-                $table->decimal('base_price', 15, 0)
-                    ->nullable();
-            
+                $table->decimal('base_price', 15, 0);
             
                 $table->unsignedInteger('stock')
                     ->default(0);

@@ -11,38 +11,31 @@ class ProductVariantResource extends JsonResource
 
     public function toArray(Request $request): array
     {
-        $discount = app(DiscountService::class)
+        $pricing = app(\App\Services\Discount\DiscountService::class)
             ->calculate($this->resource);
-            return [
-                'id' => $this->id,
-                'sku' => $this->sku,
-                'barcode' => $this->barcode,
-            
-            
-                'base_price' => $discount->basePrice,
-            
-            
-                'price' => $discount->price,
-            
-            
-                'discount_amount' => $discount->discountAmount,
-            
-            
-                'discount_percent' => $discount->basePrice > 0
-                    ? round(
-                        ($discount->discountAmount / $discount->basePrice) * 100
-                    )
-                    : 0,
-            
-            
-                'stock' => $this->stock,
-                'weight' => $this->weight,
-                'is_active' => $this->is_active,
-            
-            
-                'attributes' => AttributeValueResource::collection(
-                    $this->whenLoaded('attributeValues')
-                ),
-            ];
+    
+        return [
+            'id' => $this->id,
+            'sku' => $this->sku,
+            'barcode' => $this->barcode,
+    
+            'base_price' => $pricing->basePrice,
+            'final_price' => $pricing->price,
+            'discount_amount' => $pricing->discountAmount,
+            'discount_percent' => $pricing->basePrice > 0
+                ? round(($pricing->discountAmount / $pricing->basePrice) * 100)
+                : 0,
+    
+            'stock' => $this->stock,
+            'weight' => $this->weight,
+    
+            // ✅ اضافه شد - برای انتخاب درست در فرانت
+            'is_default' => $this->is_default,
+            'is_active' => $this->is_active,
+    
+            'attributes' => AttributeValueResource::collection(
+                $this->whenLoaded('attributeValues')
+            ),
+        ];
     }
      }

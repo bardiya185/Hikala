@@ -15,6 +15,8 @@ use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\DiscountController;
 use App\Http\Controllers\Api\ProductVariantShippingFeatureController;
+use App\Http\Controllers\Api\BannerController;
+use App\Http\Controllers\Api\BannerPositionController;
 
 // ================================================================
 // PUBLIC ROUTES
@@ -58,6 +60,15 @@ Route::get(
 Route::get('/discounts', [DiscountController::class, 'index']);
 
 Route::get('/discounts/{discount}', [DiscountController::class, 'show']);
+
+// routes/api.php
+
+Route::prefix('banners')->group(function () {
+    Route::get('/', [BannerController::class, 'all']);
+    Route::get('/position/{key}', [BannerController::class, 'byPosition']);
+    Route::post('/{banner}/click', [BannerController::class, 'trackClick']);
+});
+
 
 // ================================================================
 // PROTECTED ROUTES
@@ -111,6 +122,17 @@ Route::middleware('auth:sanctum')->group(function () {
         'shipping-features/{feature}',
         [ProductVariantShippingFeatureController::class, 'destroy']
     );
+
+    Route::prefix('admin')->group(function () {
+        Route::get('banners', [BannerController::class, 'adminIndex']);
+        Route::post('banners', [BannerController::class, 'store']);
+        Route::get('banners/{banner}', [BannerController::class, 'show']);
+        Route::post('banners/{banner}', [BannerController::class, 'update']); // POST + _method=PUT
+        Route::delete('banners/{banner}', [BannerController::class, 'destroy']);
+
+        // Banner Positions
+        Route::apiResource('banner-positions', BannerPositionController::class);
+    });
 
 });
 

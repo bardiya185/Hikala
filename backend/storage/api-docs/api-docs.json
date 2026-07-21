@@ -1092,6 +1092,634 @@
                 ]
             }
         },
+        "/api/banners": {
+            "get": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Get all active banners grouped by position",
+                "description": "Returns all active banner positions with their banners",
+                "operationId": "4807171bc5fd2737f3d43e35577f1cb6",
+                "responses": {
+                    "200": {
+                        "description": "Banners retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BannerPosition"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/banners/position/{key}": {
+            "get": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Get banners of a specific position",
+                "description": "Returns active banners of a position by key",
+                "operationId": "fce38484dd8c5bcd39f46dd1dcd55928",
+                "parameters": [
+                    {
+                        "name": "key",
+                        "in": "path",
+                        "description": "Position key",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "home_middle_4"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Banners retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/BannerPosition"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Position not found"
+                    }
+                }
+            }
+        },
+        "/api/banners/{banner}/click": {
+            "post": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Track banner click",
+                "description": "Increment click counter and return banner URL",
+                "operationId": "43c37c4b85bfa9d92d5fb4356625227f",
+                "parameters": [
+                    {
+                        "name": "banner",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Click tracked",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "url": {
+                                            "type": "string",
+                                            "example": "/category/5"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/admin/banners": {
+            "get": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "List all banners (admin)",
+                "description": "Get all banners with pagination for admin panel",
+                "operationId": "6a641505adcdec58a2906e198c4425a6",
+                "parameters": [
+                    {
+                        "name": "position_id",
+                        "in": "query",
+                        "description": "Filter by position",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Banners retrieved successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Create new banner",
+                "description": "Upload and create a new banner",
+                "operationId": "0987f78621133ffb8269747fa142287d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "banner_position_id",
+                                    "image"
+                                ],
+                                "properties": {
+                                    "banner_position_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "subtitle": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "mobile_image": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "alt_text": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "linkable_type": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "enum": [
+                                            "App\\Models\\Product",
+                                            "App\\Models\\Category",
+                                            "App\\Models\\Brand"
+                                        ]
+                                    },
+                                    "linkable_id": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "custom_url": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "background_color": {
+                                        "type": "string",
+                                        "example": "#E53E3E",
+                                        "nullable": true
+                                    },
+                                    "text_color": {
+                                        "type": "string",
+                                        "example": "#FFFFFF",
+                                        "nullable": true
+                                    },
+                                    "starts_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "ends_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "sort_order": {
+                                        "type": "integer",
+                                        "example": 0
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Banner created"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/banners/{banner}": {
+            "get": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Show banner details",
+                "operationId": "bad5f978762881604de406ac4150c891",
+                "parameters": [
+                    {
+                        "name": "banner",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Banner details"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Update banner (use POST with _method=PUT for file upload)",
+                "operationId": "8e1f2f0f0d20500743360b5825797e9f",
+                "parameters": [
+                    {
+                        "name": "banner",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PUT"
+                                    },
+                                    "banner_position_id": {
+                                        "type": "integer"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "is_active": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Banner updated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Delete banner",
+                "operationId": "5307ee6883533ee6e856b7e6f6b5bb52",
+                "parameters": [
+                    {
+                        "name": "banner",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Banner deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Banner deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/banner-positions": {
+            "get": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "List all banner positions",
+                "operationId": "5f305449a5140d6601149d9d48fa7cf5",
+                "responses": {
+                    "200": {
+                        "description": "Positions list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BannerPosition"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Create new banner position",
+                "operationId": "5683c1948d8c311f6f06a5725285d084",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "key",
+                                    "name"
+                                ],
+                                "properties": {
+                                    "key": {
+                                        "type": "string",
+                                        "example": "home_middle_4"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "۴ بنر وسط صفحه اصلی"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "max_banners": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Position created"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/banner-positions/{position}": {
+            "get": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Show position details",
+                "operationId": "a7a2a2a8c1e4d8118ba561b8f2f3f29e",
+                "parameters": [
+                    {
+                        "name": "position",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Position details"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Update banner position",
+                "operationId": "50e3ee107da5cab274a55b990ff10f22",
+                "parameters": [
+                    {
+                        "name": "position",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "key": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "max_banners": {
+                                        "type": "integer"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Position updated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Banners"
+                ],
+                "summary": "Delete banner position",
+                "description": "Deletes position and all its banners",
+                "operationId": "ca3c41401e536e696459bd7b71bd6116",
+                "parameters": [
+                    {
+                        "name": "position",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Position deleted"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/brands": {
             "get": {
                 "tags": [
@@ -2573,7 +3201,7 @@
                     "Products"
                 ],
                 "summary": "List products with filters",
-                "description": "Get products with filtering, search, sorting and pagination",
+                "description": "Get products with filtering, search, sorting and pagination. Supports discount filtering for deal pages.",
                 "operationId": "d97d1c3727cbac49708b85f7d11f7d58",
                 "parameters": [
                     {
@@ -2597,7 +3225,7 @@
                     {
                         "name": "min_price",
                         "in": "query",
-                        "description": "Minimum price",
+                        "description": "Minimum price (based on base_price)",
                         "schema": {
                             "type": "integer",
                             "example": 100000
@@ -2606,7 +3234,7 @@
                     {
                         "name": "max_price",
                         "in": "query",
-                        "description": "Maximum price",
+                        "description": "Maximum price (based on base_price)",
                         "schema": {
                             "type": "integer",
                             "example": 500000
@@ -2631,6 +3259,37 @@
                         }
                     },
                     {
+                        "name": "min_discount",
+                        "in": "query",
+                        "description": "Minimum discount percentage. Only returns products with discount >= this value",
+                        "schema": {
+                            "type": "integer",
+                            "example": 20,
+                            "maximum": 100,
+                            "minimum": 0
+                        }
+                    },
+                    {
+                        "name": "max_discount",
+                        "in": "query",
+                        "description": "Maximum discount percentage",
+                        "schema": {
+                            "type": "integer",
+                            "example": 50,
+                            "maximum": 100,
+                            "minimum": 0
+                        }
+                    },
+                    {
+                        "name": "has_discount",
+                        "in": "query",
+                        "description": "Show only products with any discount",
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    },
+                    {
                         "name": "sort_by",
                         "in": "query",
                         "description": "Sort field",
@@ -2638,7 +3297,7 @@
                             "type": "string",
                             "default": "created_at",
                             "enum": [
-                                "price",
+                                "base_price",
                                 "view_count",
                                 "created_at",
                                 "title"
@@ -2742,7 +3401,6 @@
                     "Products"
                 ],
                 "summary": "Create new product",
-                "description": "Create a new product",
                 "operationId": "785644b7d7dd38af4b51dafd0fbc1b6d",
                 "requestBody": {
                     "required": true,
@@ -2812,23 +3470,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Product created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/Product"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Product created"
                     },
                     "422": {
                         "description": "Validation error"
@@ -2894,13 +3536,11 @@
                     "Products"
                 ],
                 "summary": "Update product",
-                "description": "Update product information",
                 "operationId": "f47cf55f4f3e0b134b5e7d9a8373725d",
                 "parameters": [
                     {
                         "name": "product",
                         "in": "path",
-                        "description": "Product ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -2915,16 +3555,13 @@
                             "schema": {
                                 "properties": {
                                     "brand_id": {
-                                        "type": "integer",
-                                        "example": 1
+                                        "type": "integer"
                                     },
                                     "title": {
-                                        "type": "string",
-                                        "example": "iPhone 15 Pro"
+                                        "type": "string"
                                     },
                                     "slug": {
-                                        "type": "string",
-                                        "example": "iphone-15-pro"
+                                        "type": "string"
                                     },
                                     "short_description": {
                                         "type": "string",
@@ -2936,32 +3573,14 @@
                                     },
                                     "status": {
                                         "type": "string",
-                                        "example": "active",
                                         "enum": [
                                             "draft",
                                             "active",
                                             "inactive"
                                         ]
                                     },
-                                    "meta_title": {
-                                        "type": "string",
-                                        "nullable": true
-                                    },
-                                    "meta_keywords": {
-                                        "type": "string",
-                                        "nullable": true
-                                    },
-                                    "meta_description": {
-                                        "type": "string",
-                                        "nullable": true
-                                    },
-                                    "sort_order": {
-                                        "type": "integer",
-                                        "example": 0
-                                    },
                                     "is_active": {
-                                        "type": "boolean",
-                                        "example": true
+                                        "type": "boolean"
                                     }
                                 },
                                 "type": "object"
@@ -2971,32 +3590,13 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Product updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/Product"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Product updated"
                     },
                     "404": {
-                        "description": "Product not found"
+                        "description": "Not found"
                     },
                     "422": {
                         "description": "Validation error"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -3010,13 +3610,11 @@
                     "Products"
                 ],
                 "summary": "Delete product",
-                "description": "Delete a product",
                 "operationId": "ac878db81fdb1333b21fc79e574a5a17",
                 "parameters": [
                     {
                         "name": "product",
                         "in": "path",
-                        "description": "Product ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -3026,30 +3624,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Product deleted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Product deleted successfully."
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Deleted successfully"
                     },
                     "404": {
-                        "description": "Product not found"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
+                        "description": "Not found"
                     }
                 },
                 "security": [
@@ -3740,6 +4318,79 @@
     },
     "components": {
         "schemas": {
+            "Banner": {
+                "title": "Banner",
+                "description": "Banner model",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "همه چیز برای کودک",
+                        "nullable": true
+                    },
+                    "subtitle": {
+                        "type": "string",
+                        "example": "تا ۵۰٪ تخفیف",
+                        "nullable": true
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "https://example.com/storage/banners/1.jpg"
+                    },
+                    "mobile_image": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "alt_text": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "url": {
+                        "type": "string",
+                        "example": "/category/5",
+                        "nullable": true
+                    },
+                    "background_color": {
+                        "type": "string",
+                        "example": "#E53E3E",
+                        "nullable": true
+                    },
+                    "text_color": {
+                        "type": "string",
+                        "example": "#FFFFFF",
+                        "nullable": true
+                    },
+                    "sort_order": {
+                        "type": "integer",
+                        "example": 0
+                    }
+                },
+                "type": "object"
+            },
+            "BannerPosition": {
+                "title": "BannerPosition",
+                "description": "Banner Position model",
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "example": "home_middle_4"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "۴ بنر وسط صفحه اصلی"
+                    },
+                    "banners": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Banner"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "Product": {
                 "title": "Product",
                 "description": "Product model",
@@ -3850,13 +4501,21 @@
                                 "sku": {
                                     "type": "string"
                                 },
-                                "price": {
+                                "base_price": {
                                     "type": "integer"
                                 },
                                 "final_price": {
                                     "description": "Final price after discount calculation",
                                     "type": "integer",
                                     "example": 800
+                                },
+                                "discount_amount": {
+                                    "type": "integer",
+                                    "example": 200
+                                },
+                                "discount_percent": {
+                                    "type": "integer",
+                                    "example": 20
                                 },
                                 "stock": {
                                     "type": "integer"
@@ -3934,6 +4593,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Banners",
+            "description": "Banner management and display"
+        },
         {
             "name": "Products",
             "description": "Product management"
