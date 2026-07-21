@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/templates/header";
 import TanstackQueryProvider from "@/components/partials/provider/TanstackQueryProvider";
 import { Toaster } from "react-hot-toast";
+import NextTopLoader from "nextjs-toploader";
 
 
 export const metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
         <TanstackQueryProvider>
 
         <Header/>
+        <NextTopLoader color="#DC2626" showSpinner={false} />
         <main>
         {children}
 
