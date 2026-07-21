@@ -55,11 +55,11 @@ function SendOtpForm({ setStep, mobile, setMobile }) {
             />
           </div>
 
-          <button 
+          <button isPending={isPending}
             type="submit" 
             className="w-full h-[50px] bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white rounded-xl mt-5 font-semibold text-sm shadow-md shadow-red-600/10 hover:shadow-lg hover:shadow-red-600/20 transition-all duration-200 cursor-pointer flex items-center justify-center"
           >
-            Continue
+            {isPending ?"Sending..." :"Continue"}    
           </button>
 
           <p className="text-[11px] text-neutral-400 text-center mt-6 leading-relaxed">
