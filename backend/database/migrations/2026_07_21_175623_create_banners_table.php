@@ -16,39 +16,32 @@ return new class extends Migration
             $table->foreignId('banner_position_id')
                   ->constrained('banner_positions')
                   ->cascadeOnDelete();
-        
-            $table->string('title')->nullable();     // مثل: "همه چیز برای کودک"
-            $table->string('subtitle')->nullable();  // مثل: "تا ۵۰٪ تخفیف"
-            $table->string('image');                 // مسیر تصویر
-            $table->string('mobile_image')->nullable(); // نسخه موبایل (اختیاری)
-            $table->string('alt_text')->nullable();  // برای SEO
-        
-            // ✅ لینک - Polymorphic (میتونه به هر چیزی وصل بشه)
-            $table->string('linkable_type')->nullable(); // Product, Category, Brand
-            $table->unsignedBigInteger('linkable_id')->nullable();
-            $table->string('custom_url')->nullable();    // اگه لینک خارجی/سفارشی
-        
-            // ✅ استایل (اختیاری - برای رنگ پس‌زمینه و ...)
-            $table->string('background_color')->nullable(); // مثل: #E53E3E
+            
+            // محتوا
+            $table->string('title')->nullable();
+            $table->string('subtitle')->nullable();
+            $table->string('image');
+            $table->string('mobile_image')->nullable();
+            $table->string('alt_text')->nullable();
+            
+            // لینک (فقط custom_url!)
+            $table->string('custom_url')->nullable();
+            
+            // استایل
+            $table->string('background_color')->nullable();
             $table->string('text_color')->nullable();
-        
-            // ✅ زمانبندی
+            
+            // زمانبندی
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();
-        
-            // ✅ ترتیب و وضعیت
+            
+            // مدیریت
             $table->unsignedInteger('sort_order')->default(0);
             $table->boolean('is_active')->default(true);
-        
-            // ✅ آمار
-            $table->unsignedBigInteger('click_count')->default(0);
-            $table->unsignedBigInteger('view_count')->default(0);
-        
+            
             $table->timestamps();
-        
+            
             $table->index(['banner_position_id', 'is_active']);
-            $table->index(['linkable_type', 'linkable_id']);
-            $table->index('sort_order');
         });
     }
 

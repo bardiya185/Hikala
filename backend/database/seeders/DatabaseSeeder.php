@@ -12,7 +12,9 @@ class DatabaseSeeder extends Seeder
             ProvinceSeeder::class,
             CitySeeder::class,     
             ProductDatabaseSeeder::class,  
+            ShippingFeatureSeeder::class,  
             DiscountSeeder::class,
+            CouponSeeder::class,
             RolePermissionSeeder::class,
             BannerPositionSeeder::class,
             BannerSeeder::class

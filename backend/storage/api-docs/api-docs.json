@@ -2106,6 +2106,358 @@
                 ]
             }
         },
+        "/api/cart": {
+            "get": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Get current cart",
+                "description": "Returns cart for logged-in user or guest (based on session). Both authenticated users and guests can use this endpoint.",
+                "operationId": "7fdb9b40bd4ad2baf12aa15164eab788",
+                "parameters": [
+                    {
+                        "name": "X-Session-Id",
+                        "in": "header",
+                        "description": "Session ID for guest users (optional if authenticated)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "guest-abc123"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cart retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Cart"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Clear entire cart",
+                "operationId": "2c37760f7c1c679d2a0c391e6a666105",
+                "parameters": [
+                    {
+                        "name": "X-Session-Id",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cart cleared"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cart/items": {
+            "post": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Add item to cart",
+                "description": "Add a product variant to cart. Available for both users and guests.",
+                "operationId": "71655c1ea70dfbb034f059570d0ab4a0",
+                "parameters": [
+                    {
+                        "name": "X-Session-Id",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "product_variant_id"
+                                ],
+                                "properties": {
+                                    "product_variant_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "quantity": {
+                                        "type": "integer",
+                                        "example": 2,
+                                        "default": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Item added"
+                    },
+                    "422": {
+                        "description": "Validation error or insufficient stock"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cart/items/{item}": {
+            "put": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Update item quantity",
+                "operationId": "246288c786b8f37c9198b43e352570fb",
+                "parameters": [
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "X-Session-Id",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "quantity"
+                                ],
+                                "properties": {
+                                    "quantity": {
+                                        "type": "integer",
+                                        "example": 3
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Quantity updated"
+                    },
+                    "404": {
+                        "description": "Item not found"
+                    },
+                    "422": {
+                        "description": "Insufficient stock"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Remove item from cart",
+                "operationId": "9dbb9df4b692828778980163d3dd0faa",
+                "parameters": [
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "X-Session-Id",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item removed"
+                    },
+                    "404": {
+                        "description": "Item not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cart/coupon": {
+            "post": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Apply coupon to cart",
+                "operationId": "6252a5ed2dbc3eef379b79bd4178dd4f",
+                "parameters": [
+                    {
+                        "name": "X-Session-Id",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "SUMMER20"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Coupon applied"
+                    },
+                    "422": {
+                        "description": "Invalid coupon"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Remove coupon from cart",
+                "operationId": "e78372f8317f86ef1940a737ba0f8856",
+                "parameters": [
+                    {
+                        "name": "X-Session-Id",
+                        "in": "header",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Coupon removed"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cart/merge": {
+            "post": {
+                "tags": [
+                    "Cart"
+                ],
+                "summary": "Merge guest cart with user cart",
+                "description": "Called after user login to merge their guest cart with their user cart. Requires authentication.",
+                "operationId": "fcf18e13e0400f295c8cc2353fba4b95",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "session_id"
+                                ],
+                                "properties": {
+                                    "session_id": {
+                                        "type": "string",
+                                        "example": "guest-abc123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Carts merged"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/categories": {
             "get": {
                 "tags": [
@@ -2975,6 +3327,277 @@
                 }
             }
         },
+        "/api/coupons/validate": {
+            "post": {
+                "tags": [
+                    "Coupons"
+                ],
+                "summary": "Validate coupon code",
+                "description": "Check if a coupon code is valid and returns its details",
+                "operationId": "ddaeac30cd91fbf6ab48e61f87ade17f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "SUMMER20"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Coupon is valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Coupon is valid"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Coupon"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid or expired coupon"
+                    }
+                }
+            }
+        },
+        "/api/admin/coupons": {
+            "get": {
+                "tags": [
+                    "Coupons"
+                ],
+                "summary": "List all coupons (Admin)",
+                "operationId": "bd3b24c2f0e0ce6783d6fdda5227068c",
+                "parameters": [
+                    {
+                        "name": "is_active",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by code",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Coupons list"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Coupons"
+                ],
+                "summary": "Create new coupon",
+                "operationId": "7891864870d6eefb85c0c7a13cb038cf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code",
+                                    "discount_id"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "SUMMER20"
+                                    },
+                                    "discount_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "usage_limit": {
+                                        "type": "integer",
+                                        "example": 100,
+                                        "nullable": true
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Coupon created"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/coupons/{coupon}": {
+            "get": {
+                "tags": [
+                    "Coupons"
+                ],
+                "summary": "Show coupon details",
+                "operationId": "e7074f2b70534132d43da19f4d185512",
+                "parameters": [
+                    {
+                        "name": "coupon",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Coupon details"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Coupons"
+                ],
+                "summary": "Update coupon",
+                "operationId": "ff57f8d232a28a37ecef902abb160a3c",
+                "parameters": [
+                    {
+                        "name": "coupon",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "discount_id": {
+                                        "type": "integer"
+                                    },
+                                    "usage_limit": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "is_active": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Coupon updated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Coupons"
+                ],
+                "summary": "Delete coupon",
+                "operationId": "04943bf7cd5cf024466c32ecf42e101b",
+                "parameters": [
+                    {
+                        "name": "coupon",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Coupon deleted"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/discounts": {
             "get": {
                 "tags": [
@@ -3186,6 +3809,330 @@
                     },
                     "404": {
                         "description": "Discount not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/checkout": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Place an order from cart",
+                "description": "Converts current cart to an order. Requires authentication and a valid address.",
+                "operationId": "fe9b55a49d82c434f029698c42c13c80",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "address_id",
+                                    "payment_method"
+                                ],
+                                "properties": {
+                                    "address_id": {
+                                        "description": "ID of the shipping address",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "payment_method": {
+                                        "type": "string",
+                                        "example": "online",
+                                        "enum": [
+                                            "online",
+                                            "cash_on_delivery",
+                                            "wallet"
+                                        ]
+                                    },
+                                    "customer_note": {
+                                        "type": "string",
+                                        "example": "Please deliver in the morning",
+                                        "nullable": true,
+                                        "maxLength": 1000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Order created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "order": {
+                                                    "$ref": "#/components/schemas/Order"
+                                                },
+                                                "payment": {
+                                                    "properties": {
+                                                        "payment_url": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        },
+                                                        "transaction_id": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation error or empty cart"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "List user orders",
+                "description": "Get paginated list of authenticated user orders",
+                "operationId": "955bb77a45ae173a485fadb8befed93f",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "paid",
+                                "processing",
+                                "shipped",
+                                "delivered",
+                                "canceled",
+                                "refunded"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Orders list"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/{order}": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get order details",
+                "description": "Get full details of a specific order including items and status history",
+                "operationId": "8114ac185cc1bf301d8862617e497098",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Order details"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/{order}/cancel": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Cancel an order",
+                "description": "Cancel an order (only if status allows it: pending, paid, processing, shipped)",
+                "operationId": "6b3a53e3f3f98b4e5da616fa85e4f37d",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "reason": {
+                                        "type": "string",
+                                        "example": "Changed my mind",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Order canceled"
+                    },
+                    "403": {
+                        "description": "Cannot cancel this order"
+                    },
+                    "422": {
+                        "description": "Order cannot be canceled at this stage"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/{order}/refund": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Request refund",
+                "description": "Request a refund for a delivered order",
+                "operationId": "cc0a1f8688d25d636c245899d2ceb75a",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "reason"
+                                ],
+                                "properties": {
+                                    "reason": {
+                                        "type": "string",
+                                        "example": "Product is defective",
+                                        "minLength": 10
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Refund requested"
+                    },
+                    "422": {
+                        "description": "Cannot refund this order"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/{order}/pay": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Pay for order (Fake payment)",
+                "description": "Simulates payment for testing. In production, this will be replaced with real gateway.",
+                "operationId": "92174e0a9e0db3e62bbf57ea9e2f7c32",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Payment successful"
+                    },
+                    "422": {
+                        "description": "Order already paid or invalid"
                     }
                 },
                 "security": [
@@ -4391,6 +5338,342 @@
                 },
                 "type": "object"
             },
+            "Cart": {
+                "title": "Cart",
+                "description": "Shopping cart model",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "items_count": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "quantity": {
+                                    "type": "integer",
+                                    "example": 2
+                                },
+                                "base_price": {
+                                    "type": "number",
+                                    "example": 1000
+                                },
+                                "final_price": {
+                                    "type": "number",
+                                    "example": 800
+                                },
+                                "discount_amount": {
+                                    "type": "number",
+                                    "example": 200
+                                },
+                                "discount_percent": {
+                                    "type": "integer",
+                                    "example": 20
+                                },
+                                "total": {
+                                    "type": "number",
+                                    "example": 1600
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "summary": {
+                        "properties": {
+                            "subtotal": {
+                                "type": "number",
+                                "example": 2000
+                            },
+                            "products_discount": {
+                                "type": "number",
+                                "example": 400
+                            },
+                            "total_before_coupon": {
+                                "type": "number",
+                                "example": 1600
+                            },
+                            "coupon_discount": {
+                                "type": "number",
+                                "example": 100
+                            },
+                            "final_total": {
+                                "type": "number",
+                                "example": 1500
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "is_empty": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
+            "Coupon": {
+                "title": "Coupon",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "SUMMER20"
+                    },
+                    "usage_limit": {
+                        "type": "integer",
+                        "example": 100,
+                        "nullable": true
+                    },
+                    "used_count": {
+                        "type": "integer",
+                        "example": 25
+                    },
+                    "remaining": {
+                        "type": "integer",
+                        "example": 75,
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "discount": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string",
+                                "enum": [
+                                    "percent",
+                                    "fixed"
+                                ]
+                            },
+                            "value": {
+                                "type": "number"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "Order": {
+                "title": "Order",
+                "description": "Order model",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "order_number": {
+                        "type": "string",
+                        "example": "ORD-20241027-0001"
+                    },
+                    "status": {
+                        "properties": {
+                            "value": {
+                                "type": "string",
+                                "example": "pending"
+                            },
+                            "label": {
+                                "type": "string",
+                                "example": "Pending Payment"
+                            },
+                            "color": {
+                                "type": "string",
+                                "example": "yellow"
+                            },
+                            "icon": {
+                                "type": "string",
+                                "example": "⏳"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "payment_status": {
+                        "properties": {
+                            "value": {
+                                "type": "string",
+                                "example": "pending"
+                            },
+                            "label": {
+                                "type": "string",
+                                "example": "Pending"
+                            },
+                            "color": {
+                                "type": "string",
+                                "example": "yellow"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "payment_method": {
+                        "properties": {
+                            "value": {
+                                "type": "string",
+                                "example": "online"
+                            },
+                            "label": {
+                                "type": "string",
+                                "example": "Online Payment"
+                            },
+                            "icon": {
+                                "type": "string",
+                                "example": "💳"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "subtotal": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 2000
+                    },
+                    "discount_amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 200
+                    },
+                    "coupon_amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 100
+                    },
+                    "shipping_cost": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 50000
+                    },
+                    "total_amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 51700
+                    },
+                    "items_count": {
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "customer_note": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "can_be_canceled": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "can_be_refunded": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "paid_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "shipped_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "delivered_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "canceled_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "product_title": {
+                                    "type": "string",
+                                    "example": "iPhone 15"
+                                },
+                                "product_sku": {
+                                    "type": "string",
+                                    "nullable": true
+                                },
+                                "product_image": {
+                                    "type": "string",
+                                    "nullable": true
+                                },
+                                "quantity": {
+                                    "type": "integer",
+                                    "example": 2
+                                },
+                                "base_price": {
+                                    "type": "number",
+                                    "example": 1000
+                                },
+                                "final_price": {
+                                    "type": "number",
+                                    "example": 800
+                                },
+                                "discount_amount": {
+                                    "type": "number",
+                                    "example": 200
+                                },
+                                "discount_percent": {
+                                    "type": "integer",
+                                    "example": 20
+                                },
+                                "total": {
+                                    "type": "number",
+                                    "example": 1600
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "status_history": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "to_status": {
+                                    "type": "object"
+                                },
+                                "note": {
+                                    "type": "string",
+                                    "nullable": true
+                                },
+                                "created_at": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "Product": {
                 "title": "Product",
                 "description": "Product model",
@@ -4596,6 +5879,18 @@
         {
             "name": "Banners",
             "description": "Banner management and display"
+        },
+        {
+            "name": "Cart",
+            "description": "Shopping cart management for users and guests"
+        },
+        {
+            "name": "Coupons",
+            "description": "Coupon code management"
+        },
+        {
+            "name": "Orders",
+            "description": "Order management for customers"
         },
         {
             "name": "Products",
