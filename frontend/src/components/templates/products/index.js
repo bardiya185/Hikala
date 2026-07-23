@@ -100,7 +100,6 @@ function Products({ data, current_sort, current_sortorder }) {
           ? Array.from({ length: 8 }).map((_, index) => (
               <ProductSkeleton key={index} />
             ))
-<<<<<<< Updated upstream
           : data.map((ddd , index) => {
             const mainVariant = ddd?.variants?.[0];
 
@@ -113,22 +112,6 @@ function Products({ data, current_sort, current_sortorder }) {
               basePrice > 0 && discountAmount > 0
                 ? Math.round((discountAmount / basePrice) * 100)
                 : 0;
-=======
-          : data.map((product , index) => {
-            const variant =
-            product.variants?.find(v => v.is_default && v.is_active) ??
-            product.variants?.find(v => v.is_active) ??
-            product.variants?.[0];
-    
-        const basePrice = variant?.base_price ?? 0;
-        const finalPrice = variant?.final_price ?? 0;
-        const discountPercent = variant?.discount_percent ?? 0;
-        const discountAmount = variant?.discount_amount ?? 0;
-    
-        
-        const hasDiscount = finalPrice < basePrice && basePrice > 0;
-    
->>>>>>> Stashed changes
 
               return (
                 <motion.div
@@ -159,19 +142,14 @@ function Products({ data, current_sort, current_sortorder }) {
                         </h3>
                         <div className="flex items-center shrink-0 gap-1">
                           <ReactStars
-<<<<<<< Updated upstream
-                            count={5}
-                            value={Number(ddd.rating) || 0}
-=======
                             count={1}
-                            value={Number(product.rating) || 0}
->>>>>>> Stashed changes
+                            value={Number(ddd.rating) || 0}
                             size={18}
                             color2="#fbbf24"
                             edit={false}
                             half={true}
                           />
-                          <span>{product.rating}</span>
+                          <span>{ddd?.rating}</span>
                         </div>
                       </div>
                     </div>
