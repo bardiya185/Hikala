@@ -80,9 +80,11 @@ function AmazingSliders({ data }) {
                     </p>
                   </div>
                   <div className="flex items-center">
-                    <del>{}</del>
+                    {/* <del>{p?.variants[0]?.base_price}</del> */}
+                    <span>{p?.variants[0]?.discount_percent} %</span>
 
                   </div>
+                  <p>{p?.variants[0]?.discount_amount}</p>
               </div>
                 </div>
             ))}
