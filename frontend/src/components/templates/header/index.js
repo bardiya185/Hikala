@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation";
 import AuthForm from "../AuthForm";
 
 import { useGetMainCategories, useGetSubCategory } from "@/core/services/queries";
+import SearchBar from "@/components/atom/SearchBar";
 
 const iconMap = {
   "mobile": CiMobile1,
@@ -92,7 +93,7 @@ function Header() {
 
   return (
     <div dir="ltr" className="lg:w-full font-sans select-none">
-      {/* بنر */}
+      
       <div>
         <Image
           src="/icons/1.png"
@@ -108,10 +109,7 @@ function Header() {
           <Image src="/icons/en-logo.svg" width={195} height={30} alt="logo" />
           <div className="relative flex items-center">
             <CiSearch className="absolute left-3 text-neutral-500 w-5 h-5" />
-            <input
-              placeholder="Search..."
-              className="lg:w-[500px] lg:h-[44px] bg-neutral-100 rounded-full pl-[35px] pr-[15px] outline-none text-sm text-neutral-800"
-            />
+            <SearchBar/>
           </div>
         </div>
 
