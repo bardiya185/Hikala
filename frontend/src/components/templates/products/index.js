@@ -144,16 +144,16 @@ function Products({ data, current_sort, current_sortorder }) {
                         </h3>
                         <div className="flex items-center shrink-0 gap-1">
                           <ReactStars
-                            count={5}
-                            value={Number(product.rating) || 0}
+
+
                             count={1}
-                            value={Number(ddd.rating) || 0}
+                            value={product?.rating || 0}
                             size={18}
                             color2="#fbbf24"
                             edit={false}
                             half={true}
                           />
-                          <span>{ddd?.rating}</span>
+                          <span>{product?.rating}</span>
                         </div>
                       </div>
                     </div>

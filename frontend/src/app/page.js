@@ -15,12 +15,19 @@ async function getAmazingProducts(){
 
 }
 
+async function getIamgeBanner(){
+const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL+ "/api/banners")
+
+return res.json()
+}
+
 export default async function Home() {
   const productDiscounts = await getAmazingProducts()
+  const banner = await getIamgeBanner()
   return (
    <div>
     <Stories/>
-    <TopBanner/>
+    <TopBanner data={banner} />
     {/* <AmazingProducts/> */}
     <div className=" container  mx-auto px-28">
     <AmazingSliders data={productDiscounts?.data}  />
