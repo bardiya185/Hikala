@@ -9,7 +9,7 @@ import ReactStars from "react-stars";
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
-import { SplitText } from "gsap/SplitText"; // ایمپورت مستقیم از خود gsap
+import { SplitText } from "gsap/SplitText"; 
 import { Link } from "lucide-react";
 
 gsap.registerPlugin(SplitText);
@@ -59,59 +59,10 @@ function Products({ data, current_sort, current_sortorder }) {
 
   const isLoading = !data || data.length === 0;
 
-  // useEffect(() => {
-  //   if (isLoading || !containerRef.current) return;
-
-  //   const cards = containerRef.current.querySelectorAll(".product-card");
-  //   const textTargets = containerRef.current.querySelectorAll(
-  //     ".animate-text-split",
-  //   );
-
-  //   if (cards.length === 0) return;
-
-    // const tl = gsap.timeline();
-
-    // // انیمیشن کارت‌ها با استفاده از autoAlpha برای جلوگیری از پرش یا تداخل با استایل وب‌سایت
-    // tl.from(cards, {
-    //   duration: 0.7,
-    //   y: 40,
-    //   autoAlpha: 0, // ترکیبی هوشمند از opacity و visibility
-    //   stagger: 0.06,
-    //   ease: "power3.out", // یک Ease نرم‌تر برای حرکت روان کارت‌ها
-    // });
-
-  //   if (textTargets.length > 0) {
-  //     const split = new SplitText(textTargets, {
-  //       type: "words",
-  //       wordsClass: "inline-block overflow-hidden pt-1",
-  //     });
-
-  //     tl.from(
-  //       split.words,
-  //       {
-  //         duration: 0.5,
-  //         y: 15,
-  //         autoAlpha: 0,
-  //         stagger: 0.01,
-  //         ease: "power2.out",
-  //       },
-  //       "-=0.4",
-  //     ); // شروع انیمیشن متن کمی قبل از اتمام حرکت کارت‌ها
-
-  //     return () => {
-  //       tl.kill();
-  //       split.revert();
-  //     };
-  //   }
-
-  //   return () => {
-  //     tl.kill();
-  //   };
-  // }, [data, isLoading]);
 
   return (
     <>
-      {/* بخش مرتب سازی */}
+      
       <div className="flex gap-4 pl-4 mb-4 items-center" dir="ltr">
         <div className="flex items-center gap-2 text-neutral-700">
           <TfiAlignLeft size={18} />
@@ -139,16 +90,17 @@ function Products({ data, current_sort, current_sortorder }) {
         </button>
       </div>
 
-      {/* ⚡ اضافه شدن کانتینر رفرنس به گرید اصلی کارت‌ها */}
+      
       <div
         ref={containerRef}
         className="max-w-[1270px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-        dir="rtl"
+        dir="ltr"
       >
         {isLoading
           ? Array.from({ length: 8 }).map((_, index) => (
               <ProductSkeleton key={index} />
             ))
+<<<<<<< Updated upstream
           : data.map((ddd , index) => {
             const mainVariant = ddd?.variants?.[0];
 
@@ -161,6 +113,22 @@ function Products({ data, current_sort, current_sortorder }) {
               basePrice > 0 && discountAmount > 0
                 ? Math.round((discountAmount / basePrice) * 100)
                 : 0;
+=======
+          : data.map((product , index) => {
+            const variant =
+            product.variants?.find(v => v.is_default && v.is_active) ??
+            product.variants?.find(v => v.is_active) ??
+            product.variants?.[0];
+    
+        const basePrice = variant?.base_price ?? 0;
+        const finalPrice = variant?.final_price ?? 0;
+        const discountPercent = variant?.discount_percent ?? 0;
+        const discountAmount = variant?.discount_amount ?? 0;
+    
+        
+        const hasDiscount = finalPrice < basePrice && basePrice > 0;
+    
+>>>>>>> Stashed changes
 
               return (
                 <motion.div
@@ -172,7 +140,7 @@ function Products({ data, current_sort, current_sortorder }) {
                 >
                   <div className="rounded-[10px] w-full h-full border border-solid border-neutral-100 p-4 flex flex-col justify-between">
                     <div>
-                      {/* تصویر محصول */}
+                      
                       <div className="w-full overflow-hidden rounded-[20px] aspect-[4/5] relative flex items-center justify-center">
                         <Image
                           src="/icons/images.jfif"
@@ -184,26 +152,32 @@ function Products({ data, current_sort, current_sortorder }) {
                         />
                       </div>
 
-                      {/* ⚡ عنوان محصول با کلاس متحرک‌سازی */}
+                      
                       <div className="flex justify-between items-start mt-5 gap-2">
                         <h3 className="font-bold text-sm text-neutral-800 line-clamp-2 leading-6 h-12 animate-text-split">
                           {ddd?.title}
                         </h3>
-                        <div className="flex items-center shrink-0">
+                        <div className="flex items-center shrink-0 gap-1">
                           <ReactStars
+<<<<<<< Updated upstream
                             count={5}
                             value={Number(ddd.rating) || 0}
+=======
+                            count={1}
+                            value={Number(product.rating) || 0}
+>>>>>>> Stashed changes
                             size={18}
                             color2="#fbbf24"
                             edit={false}
                             half={true}
                           />
+                          <span>{product.rating}</span>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      {/* ⚡ قیمت‌ها با کلاس متحرک‌سازی */}
+                      
                       <div
                         className="flex justify-between items-center mt-4"
                         dir="ltr"
@@ -234,7 +208,7 @@ function Products({ data, current_sort, current_sortorder }) {
                         )}
                       </div>
 
-                      {/* ⚡ توضیحات کوتاه با کلاس متحرک‌سازی */}
+                    
                       <p className="w-full mt-3 line-clamp-2 text-xs text-neutral-500 leading-5 animate-text-split">
                         {ddd?.short_description}
                       </p>

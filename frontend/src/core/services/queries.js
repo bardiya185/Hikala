@@ -39,3 +39,19 @@ export const usegetBrandsFilter = () => {
     select: (response) => response?.data?.data || [], 
   });
 };
+
+const searchProducts = async (query) => {
+  const res = await api.get(`/api/products`, {
+    params: { search: query, },
+  });
+  return res.data;
+};
+
+export function useSearchProducts(query) {
+  return useQuery({
+    queryKey: ["search-products", query],
+    queryFn: () => searchProducts(query),
+    enabled: query.trim().length >= 2, 
+    staleTime: 1000 * 30,
+  });
+}

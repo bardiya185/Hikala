@@ -4,6 +4,7 @@ import CountdownTimer from "../atom/CountDownTimer";
 import Image from "next/image";
 
 function AmazingSliders({ data }) {
+  console.log(data)
   const sliderRef = useRef(null);
 
   
@@ -21,7 +22,7 @@ function AmazingSliders({ data }) {
   const targetEndDate = data?.[0]?.ends_at;
 
   
-  const allProducts = data?.flatMap((discount) => discount.products) || [];
+ 
 
   return (
     <div className="relative bg-red-600 rounded-2xl p-4 my-8 select-none ltr">
@@ -54,7 +55,7 @@ function AmazingSliders({ data }) {
             className="flex items-center gap-4 overflow-x-auto scrollbar-hide scroll-smooth py-2 px-1"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            {allProducts.map((p) => (
+            {data?.map((p) => (
               <div
                 key={p.id}
                 className="w-[260px] h-[350px] bg-white rounded-2xl p-4 border border-neutral-400 shadow-sm shrink-0 flex flex-col justify-between hover:shadow-md transition-shadow"
@@ -72,7 +73,7 @@ function AmazingSliders({ data }) {
 
                   <div className="flex flex-col gap-1">
                     <h3 className="font-semibold text-gray-800 text-sm line-clamp-2">
-                      {p.title}
+                      {p?.title}
                     </h3>
                     <p className="text-xs text-gray-400 line-clamp-1 mt-3">
                       {p.short_description}

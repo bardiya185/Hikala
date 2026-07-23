@@ -8,7 +8,7 @@ import CardShop from "@/components/templates/cardStore";
 
 
 async function getAmazingProducts(){
-  const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL + "/api/discounts")
+  const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL + "/api/products?is_flash_sale=1")
 
   return res.json()
 
