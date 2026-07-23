@@ -70,21 +70,21 @@ function Products({ data, current_sort, current_sortorder }) {
         </div>
         <button
           className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
-            current_sort === "price" && current_sortorder === "asc"
+            current_sort === "base_price" && current_sortorder === "asc"
               ? "text-red-500 bg-red-50"
               : "text-neutral-400 hover:text-neutral-600"
           }`}
-          onClick={() => handleSortChange("price", "asc")}
+          onClick={() => handleSortChange("base_price", "asc")}
         >
           The cheapest
         </button>
         <button
           className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
-            current_sort === "price" && current_sortorder === "desc"
+            current_sort === "base_price" && current_sortorder === "desc"
               ? "text-red-500 bg-red-50"
               : "text-neutral-400 hover:text-neutral-600"
           }`}
-          onClick={() => handleSortChange("price", "desc")}
+          onClick={() => handleSortChange("base_price", "desc")}
         >
           The most expensive
         </button>
@@ -100,18 +100,20 @@ function Products({ data, current_sort, current_sortorder }) {
           ? Array.from({ length: 8 }).map((_, index) => (
               <ProductSkeleton key={index} />
             ))
-          : data.map((ddd , index) => {
-            const mainVariant = ddd?.variants?.[0];
-
-            const basePrice = Number(mainVariant?.base_price);
-            const price = Number(mainVariant?.price);
-            
-            const discountAmount = Number(mainVariant?.discount_amount);
-            
-            const discountPercent = 
-              basePrice > 0 && discountAmount > 0
-                ? Math.round((discountAmount / basePrice) * 100)
-                : 0;
+          : data.map((product , index) => {
+            const variant =
+            product.variants?.find(v => v.is_default && v.is_active) ??
+            product.variants?.find(v => v.is_active) ??
+            product.variants?.[0];
+    
+        const basePrice = variant?.base_price ?? 0;
+        const finalPrice = variant?.final_price ?? 0;
+        const discountPercent = variant?.discount_percent ?? 0;
+        const discountAmount = variant?.discount_amount ?? 0;
+    
+        // ✅ چک واقعی تخفیف
+        const hasDiscount = finalPrice < basePrice && basePrice > 0;
+    
 
               return (
                 <motion.div
@@ -119,7 +121,7 @@ function Products({ data, current_sort, current_sortorder }) {
                 animate={{ opacity:100 , y:0 , filter:'blur(0px)'}}
                 transition={{ ease:'easeInOut', duration:0.5, delay: 0.1 * index  }}
                   className="product-card group rounded-[20px] bg-white border border-neutral-100 p-3"
-                  key={ddd.id}
+                  key={product.id}
                 >
                   <div className="rounded-[10px] w-full h-full border border-solid border-neutral-100 p-4 flex flex-col justify-between">
                     <div>
@@ -130,7 +132,7 @@ function Products({ data, current_sort, current_sortorder }) {
                           className="object-contain transform transition-transform duration-500 group-hover:scale-105"
                           width={200}
                           height={250}
-                          alt={ddd?.title || "product"}
+                          alt={product?.title || "product"}
                           priority
                         />
                       </div>
@@ -138,18 +140,18 @@ function Products({ data, current_sort, current_sortorder }) {
                       
                       <div className="flex justify-between items-start mt-5 gap-2">
                         <h3 className="font-bold text-sm text-neutral-800 line-clamp-2 leading-6 h-12 animate-text-split">
-                          {ddd?.title}
+                          {product?.title}
                         </h3>
                         <div className="flex items-center shrink-0 gap-1">
                           <ReactStars
                             count={1}
-                            value={Number(ddd.rating) || 0}
+                            value={product?.rating || 0}
                             size={18}
                             color2="#fbbf24"
                             edit={false}
                             half={true}
                           />
-                          <span>{ddd?.rating}</span>
+                          <span>{product?.rating}</span>
                         </div>
                       </div>
                     </div>
@@ -162,7 +164,7 @@ function Products({ data, current_sort, current_sortorder }) {
                       >
                         <div className="flex items-center gap-2">
                           <p className="text-green-600 font-bold text-base animate-text-split">
-                            ${price.toLocaleString()}
+                            ${formatPrice(finalPrice)}
                           </p>
                           {discountPercent > 0 && (
                             <span className="text-neutral-400 line-through text-xs animate-text-split">
@@ -188,7 +190,7 @@ function Products({ data, current_sort, current_sortorder }) {
 
                     
                       <p className="w-full mt-3 line-clamp-2 text-xs text-neutral-500 leading-5 animate-text-split">
-                        {ddd?.short_description}
+                        {product?.short_description}
                       </p>
                     </div>
                   </div>

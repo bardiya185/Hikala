@@ -25,7 +25,7 @@ function AmazingSliders({ data }) {
  
 
   return (
-    <div className="relative bg-red-600 rounded-2xl p-4 my-8 select-none ltr">
+    <div className="relative bg-red-600 rounded-2xl p-4 my-8 select-none  ltr">
       <div className="flex flex-col lg:flex-row items-center gap-4">
       
         <div className="flex flex-col items-center justify-center text-white p-4 min-w-[200px] shrink-0">

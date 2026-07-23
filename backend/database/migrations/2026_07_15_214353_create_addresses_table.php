@@ -58,6 +58,10 @@ return new class extends Migration
                 ->default(false);
         
             $table->timestamps();
+
+            $table->index(['user_id', 'is_default']);
+
+
         });
     }
 

@@ -13,114 +13,60 @@ class DiscountFinder
 
     public function find(ProductVariant $variant): Collection
     {
-
         $discounts = collect();
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Variant Discounts
-        |--------------------------------------------------------------------------
-        */
-
+    
+        // ✅ از relation cache استفاده می‌کنیم
         $discounts = $discounts->merge(
-
-            $variant
-                ->discounts()
-                ->get()
-
+            $variant->relationLoaded('discounts')
+                ? $variant->discounts
+                : $variant->discounts()->active()->get()
         );
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Product Discounts
-        |--------------------------------------------------------------------------
-        */
-
-        $product = $variant->product;
-
-
-        if($product){
-
+    
+        $product = $variant->relationLoaded('product')
+            ? $variant->product
+            : $variant->product()->first();
+    
+        if ($product) {
+            // ✅ Product discounts
             $discounts = $discounts->merge(
-
-                $product
-                    ->discounts()
-                    ->get()
-
+                $product->relationLoaded('discounts')
+                    ? $product->discounts
+                    : $product->discounts()->active()->get()
             );
-
-        }
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Category Discounts
-        |--------------------------------------------------------------------------
-        */
-
-        if($product){
-
-
-            foreach($product->categories as $category){
-
-
+    
+            // ✅ Category discounts
+            $categories = $product->relationLoaded('categories')
+                ? $product->categories
+                : $product->categories()->get();
+    
+            foreach ($categories as $category) {
                 $discounts = $discounts->merge(
-
-                    $category
-                        ->discounts()
-                        ->get()
-
+                    $category->relationLoaded('discounts')
+                        ? $category->discounts
+                        : $category->discounts()->active()->get()
                 );
-
-
             }
-
+    
+            // ✅ Brand discounts
+            $brand = $product->relationLoaded('brand')
+                ? $product->brand
+                : $product->brand()->first();
+    
+            if ($brand) {
+                $discounts = $discounts->merge(
+                    $brand->relationLoaded('discounts')
+                        ? $brand->discounts
+                        : $brand->discounts()->active()->get()
+                );
+            }
         }
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Brand Discounts
-        |--------------------------------------------------------------------------
-        */
-
-
-        if($product && $product->brand){
-
-
-            $discounts = $discounts->merge(
-
-                $product
-                    ->brand
-                    ->discounts()
-                    ->get()
-
-            );
-
-
-        }
-
-
-
+    
         $priority = new DiscountPriority();
-
-
+    
         return $discounts
             ->unique('id')
-            ->sortByDesc(function($discount) use ($priority){
-        
-                return $priority->calculate($discount);
-        
-            })
+            ->sortByDesc(fn($d) => $priority->calculate($d))
             ->values();
-
-
     }
 
 
