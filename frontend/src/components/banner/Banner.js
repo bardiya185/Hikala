@@ -12,14 +12,14 @@ function Banner({ data }) {
 
   const positions = data?.data || data || [];
 
-  // پیدا کردن بنرهای کلید مورد نظر (مثلاً home_middle_4 یا home_slider)
+
   const middleBannersPosition = positions.find(
     (pos) => pos.key === "home_middle_4"
   );
 
   const banners = middleBannersPosition?.banners || [];
 
-  // اسلاید بعدی
+  
   const nextSlide = () => {
     if (banners.length === 0) return;
     setCurrentIndex((prevIndex) =>
@@ -27,7 +27,7 @@ function Banner({ data }) {
     );
   };
 
-  // اسلاید قبلی
+
   const prevSlide = () => {
     if (banners.length === 0) return;
     setCurrentIndex((prevIndex) =>
@@ -35,7 +35,7 @@ function Banner({ data }) {
     );
   };
 
-  // تایمر خودکار
+  
   useEffect(() => {
     if (banners.length <= 1) return;
     autoPlayRef.current = setInterval(nextSlide, 3000);
@@ -45,7 +45,7 @@ function Banner({ data }) {
     };
   }, [currentIndex, banners.length]);
 
-  // انیمیشن GSAP موقع تغییر اسلاید
+
   useEffect(() => {
     if (slideRef.current) {
       gsap.fromTo(
@@ -64,7 +64,7 @@ function Banner({ data }) {
 
   return (
     <div className="relative w-full h-[350px] md:h-[500px] overflow-hidden rounded-[20px] group select-none my-6">
-      {/* تصویر اسلاید جاری */}
+      
       <div ref={slideRef} className="w-full h-full relative">
         {currentBanner?.image ? (
           <Link href={currentBanner?.url || "#"}>
@@ -79,7 +79,7 @@ function Banner({ data }) {
         ) : null}
       </div>
 
-      {/* دکمه قبلی */}
+      
       {banners.length > 1 && (
         <button
           onClick={prevSlide}
@@ -89,7 +89,7 @@ function Banner({ data }) {
         </button>
       )}
 
-      {/* دکمه بعدی */}
+      
       {banners.length > 1 && (
         <button
           onClick={nextSlide}
@@ -99,7 +99,7 @@ function Banner({ data }) {
         </button>
       )}
 
-      {/* نقطه‌های پایین اسلایدر */}
+      
       {banners.length > 1 && (
         <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 z-10">
           {banners.map((_, index) => (
