@@ -14,7 +14,6 @@ class ProductVariant extends Model
         'product_id',
         'sku',
         'barcode',
-        'price',
         'base_price',
         'stock',
         'weight',
@@ -78,6 +77,13 @@ class ProductVariant extends Model
     {
         return $this->attributes['base_price']
             ?? $this->attributes['price'];
+    }
+
+    public function shippingFeatures()
+    {
+        return $this->hasMany(
+            ProductVariantShippingFeature::class
+        );
     }
 
 }

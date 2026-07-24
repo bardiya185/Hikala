@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import OtpInput from "react18-input-otp";
 
 function CheckOtpForm({ mobile, setStep }) {
-  const [code, setCode] = useState();
+  const [code, setCode] = useState("");
   const router = useRouter()
 
   const { isPending, mutate } = useCheckOtp()
@@ -15,6 +15,10 @@ function CheckOtpForm({ mobile, setStep }) {
   const handleChange = (otp) => setCode(otp);
   const submitHandler = (event) => {
     event.preventDefault();
+    if (code.length !== 6) {
+      toast.error("لطفاً کد ۶ رقمی را کامل وارد کنید");
+      return;
+    }
     mutate({ mobile, code }, {
       onSuccess: (data) => {
         setStep(0)
@@ -65,11 +69,12 @@ function CheckOtpForm({ mobile, setStep }) {
         </div>
 
         
-        <button 
+        <button isPending={isPending}
           type="submit" 
           className="w-full h-[50px] bg-red-600 hover:bg-red-700 active:scale-[0.99] text-white rounded-xl mt-6 font-semibold text-sm shadow-md shadow-red-600/10 hover:shadow-lg hover:shadow-red-600/20 transition-all duration-200 cursor-pointer flex items-center justify-center"
         >
-          Verify & Proceed
+          {isPending ? "Under review...":"Verify & Proceed"}
+          
         </button>
 
         

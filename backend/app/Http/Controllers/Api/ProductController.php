@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductVariant;
 use App\Services\ProductService;
+use App\Services\Discount\DiscountService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OA;
@@ -72,13 +73,15 @@ use OpenApi\Attributes as OA;
                 properties: [
                     new OA\Property(property: "id", type: "integer"),
                     new OA\Property(property: "sku", type: "string"),
-                    new OA\Property(property: "price", type: "integer"),
+                    new OA\Property(property: "base_price", type: "integer"),
                     new OA\Property(
                         property: "final_price",
                         type: "integer",
                         example: 800,
                         description: "Final price after discount calculation"
                     ),
+                    new OA\Property(property: "discount_amount", type: "integer", example: 200),
+                    new OA\Property(property: "discount_percent", type: "integer", example: 20),
                     new OA\Property(property: "stock", type: "integer"),
                     new OA\Property(property: "is_default", type: "boolean"),
                     new OA\Property(
@@ -101,10 +104,11 @@ use OpenApi\Attributes as OA;
 class ProductController extends Controller
 {
     private array $defaultRelations = [
-        'brand',
-        'categories',
+        'brand.discounts',
+        'categories.discounts',
         'images',
-        'variants',
+        'variants.discounts',
+        'variants.attributeValues',
         'discounts'
     ];
 
@@ -113,13 +117,13 @@ class ProductController extends Controller
     ) {}
 
     // ================================================================
-    // INDEX (Filter + Search + Sort + Pagination + Scroll)
+    // INDEX
     // ================================================================
     #[OA\Get(
         path: '/api/products',
         tags: ['Products'],
         summary: 'List products with filters',
-        description: 'Get products with filtering, search, sorting and pagination',
+        description: 'Get products with filtering, search, sorting and pagination. Supports discount filtering for deal pages.',
         parameters: [
             new OA\Parameter(
                 name: 'category_id',
@@ -136,13 +140,13 @@ class ProductController extends Controller
             new OA\Parameter(
                 name: 'min_price',
                 in: 'query',
-                description: 'Minimum price',
+                description: 'Minimum price (based on base_price)',
                 schema: new OA\Schema(type: 'integer', example: 100000)
             ),
             new OA\Parameter(
                 name: 'max_price',
                 in: 'query',
-                description: 'Maximum price',
+                description: 'Maximum price (based on base_price)',
                 schema: new OA\Schema(type: 'integer', example: 500000)
             ),
             new OA\Parameter(
@@ -158,16 +162,52 @@ class ProductController extends Controller
                 schema: new OA\Schema(type: 'string', example: '1,2,3')
             ),
             new OA\Parameter(
+                name: 'min_discount',
+                in: 'query',
+                description: 'Minimum discount percentage. Only returns products with discount >= this value',
+                schema: new OA\Schema(
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 100,
+                    example: 20
+                )
+            ),
+            new OA\Parameter(
+                name: 'max_discount',
+                in: 'query',
+                description: 'Maximum discount percentage',
+                schema: new OA\Schema(
+                    type: 'integer',
+                    minimum: 0,
+                    maximum: 100,
+                    example: 50
+                )
+            ),
+            new OA\Parameter(
+                name: 'has_discount',
+                in: 'query',
+                description: 'Show only products with any discount',
+                schema: new OA\Schema(type: 'boolean', example: true)
+            ),
+            new OA\Parameter(
                 name: 'sort_by',
                 in: 'query',
                 description: 'Sort field',
-                schema: new OA\Schema(type: 'string', default: 'created_at', enum: ['price', 'view_count', 'created_at', 'title'])
+                schema: new OA\Schema(
+                    type: 'string',
+                    default: 'created_at',
+                    enum: ['base_price', 'view_count', 'created_at', 'title']
+                )
             ),
             new OA\Parameter(
                 name: 'sort_order',
                 in: 'query',
                 description: 'Sort order',
-                schema: new OA\Schema(type: 'string', default: 'desc', enum: ['asc', 'desc'])
+                schema: new OA\Schema(
+                    type: 'string',
+                    default: 'desc',
+                    enum: ['asc', 'desc']
+                )
             ),
             new OA\Parameter(
                 name: 'per_page',
@@ -202,6 +242,7 @@ class ProductController extends Controller
                         ),
                         new OA\Property(
                             property: 'meta',
+                            type: 'object',
                             properties: [
                                 new OA\Property(property: 'current_page', type: 'integer'),
                                 new OA\Property(property: 'last_page', type: 'integer'),
@@ -209,8 +250,7 @@ class ProductController extends Controller
                                 new OA\Property(property: 'total', type: 'integer'),
                                 new OA\Property(property: 'has_more', type: 'boolean'),
                                 new OA\Property(property: 'next_cursor', type: 'string', nullable: true),
-                            ],
-                            type: 'object'
+                            ]
                         )
                     ]
                 )
@@ -226,10 +266,14 @@ class ProductController extends Controller
         // ===== 1. Category filter =====
         if ($request->has('category_id')) {
             $categoryId = $request->category_id;
-            $subCategoryIds = Category::where('parent_id', $categoryId)->pluck('id')->toArray();
+            $subCategoryIds = Category::where('parent_id', $categoryId)
+                ->pluck('id')
+                ->toArray();
             $allCategoryIds = array_merge([$categoryId], $subCategoryIds);
-            
-            $query->whereHas('categories', fn($q) => $q->whereIn('category_id', $allCategoryIds));
+
+            $query->whereHas('categories', fn($q) =>
+                $q->whereIn('category_id', $allCategoryIds)
+            );
         }
 
         // ===== 2. Brand filter =====
@@ -239,16 +283,12 @@ class ProductController extends Controller
 
         // ===== 3. Price filter =====
         if ($request->has('min_price') || $request->has('max_price')) {
-            $query->whereHas('variants', function($q) use ($request) {
+            $query->whereHas('variants', function ($q) use ($request) {
                 if ($request->has('min_price')) {
-                    $q->where(function($sub) use ($request) {
-                        $sub->where('base_price', '>=', $request->min_price);
-                    });
+                    $q->where('base_price', '>=', $request->min_price);
                 }
                 if ($request->has('max_price')) {
-                    $q->where(function($sub) use ($request) {
-                        $sub->where('base_price', '<=', $request->max_price);
-                    });
+                    $q->where('base_price', '<=', $request->max_price);
                 }
             });
         }
@@ -256,13 +296,15 @@ class ProductController extends Controller
         // ===== 4. Attribute filter =====
         if ($request->has('attributes_id')) {
             $attributeIds = explode(',', $request->attributes_id);
-            $query->whereHas('variants.attributeValues', fn($q) => $q->whereIn('attribute_value_id', $attributeIds));
+            $query->whereHas('variants.attributeValues', fn($q) =>
+                $q->whereIn('attribute_value_id', $attributeIds)
+            );
         }
 
         // ===== 5. Search =====
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(fn($q) => 
+            $query->where(fn($q) =>
                 $q->where('title', 'LIKE', "%{$search}%")
                   ->orWhere('short_description', 'LIKE', "%{$search}%")
                   ->orWhere('description', 'LIKE', "%{$search}%")
@@ -272,43 +314,239 @@ class ProductController extends Controller
         // ===== 6. Sorting =====
         $sortBy = $request->get('sort_by', 'created_at');
         $sortOrder = $request->get('sort_order', 'desc');
-        $allowedSortFields = ['price', 'view_count', 'created_at', 'title', 'sort_order'];
+        $sortByPrice = $sortBy === 'base_price';
 
-        if (!in_array($sortBy, $allowedSortFields)) {
-            $sortBy = 'created_at';
-        }
+        if (!$sortByPrice) {
+            $allowedSortFields = ['view_count', 'created_at', 'title', 'sort_order'];
 
-        if ($sortBy === 'price') {
+            if (!in_array($sortBy, $allowedSortFields)) {
+                $sortBy = 'created_at';
+            }
 
-            
-            $query->orderBy(
-                ProductVariant::selectRaw(
-                    $sortOrder === 'desc'
-                    ? 'MAX(price)'
-                    : 'MIN(price)'
-                    )
-                    ->whereColumn('product_variants.product_id', 'products.id'),
-                $sortOrder
-            );
-
-        } else {
             $query->orderBy($sortBy, $sortOrder);
         }
 
-        // ===== 7. Pagination method =====
-        if ($request->has('cursor')) {
-            return $this->cursorPaginate($query, $request);
+        // ===== 7.5. ✅ Flash Sale filter (تخفیف شگفت‌انگیز) =====
+if ($request->boolean('is_flash_sale')) {
+    return $this->filterByFlashSale($query, $request, $sortByPrice, $sortOrder);
+}
+
+        // ===== 7. ✅ Discount filter (PHP-side) =====
+        $hasDiscountFilter = $request->has('min_discount') 
+            || $request->has('max_discount') 
+            || $request->boolean('has_discount');
+
+        if ($hasDiscountFilter) {
+            return $this->filterByDiscount($query, $request, $sortByPrice, $sortOrder);
         }
 
-        return $this->standardPaginate($query, $request);
+        // ===== 8. Pagination =====
+        if ($request->has('cursor')) {
+            return $this->cursorPaginate($query, $request, $sortByPrice, $sortOrder);
+        }
+
+        return $this->standardPaginate($query, $request, $sortByPrice, $sortOrder);
+    }
+
+    // ================================================================
+// 🔥 Flash Sale Filter (تخفیف شگفت‌انگیز)
+// ================================================================
+private function filterByFlashSale($query, $request, bool $sortByPrice, string $sortOrder)
+{
+    $discountService = app(\App\Services\Discount\DiscountService::class);
+
+    $products = $query->get()
+        ->map(function ($product) use ($discountService) {
+            $variant = $product->variants->firstWhere('is_default', true)
+                    ?? $product->variants->firstWhere('is_active', true)
+                    ?? $product->variants->first();
+
+            if (!$variant) {
+                $product->_is_flash_sale = false;
+                $product->_discount_percent = 0;
+                $product->_final_price = 0;
+                return $product;
+            }
+
+            $pricing = $discountService->calculate($variant);
+
+            // ✅ چک کن discount اعمال شده is_flash_sale هست یا نه
+            $product->_is_flash_sale = $pricing->discount 
+                ? (bool) $pricing->discount->is_flash_sale 
+                : false;
+
+            $product->_discount_percent = $pricing->basePrice > 0
+                ? round(($pricing->discountAmount / $pricing->basePrice) * 100)
+                : 0;
+            $product->_final_price = $pricing->price;
+
+            return $product;
+        })
+        ->filter(function ($product) {
+            // ✅ فقط محصولاتی که flash sale دارن
+            return $product->_is_flash_sale === true;
+        });
+
+    // سورت
+    if ($sortByPrice) {
+        $products = $products->sortBy('_final_price', SORT_REGULAR, $sortOrder === 'desc');
+    } else {
+        // پیش‌فرض: بیشترین تخفیف اول
+        $products = $products->sortByDesc('_discount_percent');
+    }
+
+    $products = $products->values();
+
+    // Pagination
+    $perPage = min((int) $request->get('per_page', 20), 100);
+    $page = max((int) $request->get('page', 1), 1);
+    $total = $products->count();
+    $items = $products->slice(($page - 1) * $perPage, $perPage)->values();
+    $lastPage = (int) ceil($total / $perPage);
+
+    return response()->json([
+        'success' => true,
+        'data' => ProductResource::collection($items),
+        'meta' => [
+            'current_page' => $page,
+            'last_page' => $lastPage,
+            'per_page' => $perPage,
+            'total' => $total,
+            'has_more' => $page < $lastPage,
+            'is_flash_sale' => true,
+        ]
+    ]);
+}
+    // ================================================================
+    // ✅ Discount Filter (PHP-side because discount is dynamic)
+    // ================================================================
+    private function filterByDiscount($query, $request, bool $sortByPrice, string $sortOrder)
+    {
+        $discountService = app(DiscountService::class);
+
+        // گرفتن همه محصولات و محاسبه قیمت نهایی
+        $products = $query->get()
+            ->map(function ($product) use ($discountService) {
+                $variant = $product->variants->firstWhere('is_default', true)
+                        ?? $product->variants->firstWhere('is_active', true)
+                        ?? $product->variants->first();
+
+                if (!$variant) {
+                    $product->_discount_percent = 0;
+                    $product->_final_price = 0;
+                    return $product;
+                }
+
+                $pricing = $discountService->calculate($variant);
+
+                $product->_discount_percent = $pricing->basePrice > 0
+                    ? round(($pricing->discountAmount / $pricing->basePrice) * 100)
+                    : 0;
+                $product->_final_price = $pricing->price;
+
+                return $product;
+            })
+            ->filter(function ($product) use ($request) {
+                // فقط تخفیف‌دارها
+                if ($product->_discount_percent <= 0) return false;
+
+                // فیلتر حداقل درصد
+                if ($request->has('min_discount')) {
+                    if ($product->_discount_percent < (int) $request->min_discount) return false;
+                }
+
+                // فیلتر حداکثر درصد
+                if ($request->has('max_discount')) {
+                    if ($product->_discount_percent > (int) $request->max_discount) return false;
+                }
+
+                return true;
+            });
+
+        // سورت
+        if ($sortByPrice) {
+            $products = $products->sortBy(
+                '_final_price',
+                SORT_REGULAR,
+                $sortOrder === 'desc'
+            );
+        }
+
+        $products = $products->values();
+
+        // Pagination
+        $perPage = min((int) $request->get('per_page', 20), 100);
+        $page = max((int) $request->get('page', 1), 1);
+        $total = $products->count();
+        $items = $products->slice(($page - 1) * $perPage, $perPage)->values();
+        $lastPage = (int) ceil($total / $perPage);
+
+        return response()->json([
+            'success' => true,
+            'data' => ProductResource::collection($items),
+            'meta' => [
+                'current_page' => $page,
+                'last_page' => $lastPage,
+                'per_page' => $perPage,
+                'total' => $total,
+                'has_more' => $page < $lastPage,
+                'next_cursor' => null,
+                'filters_applied' => [
+                    'min_discount' => (int) $request->get('min_discount', 0),
+                    'max_discount' => $request->has('max_discount') 
+                        ? (int) $request->max_discount 
+                        : null,
+                    'has_discount' => $request->boolean('has_discount'),
+                ]
+            ]
+        ]);
     }
 
     // ================================================================
     // Standard Pagination
     // ================================================================
-    private function standardPaginate($query, $request)
+    private function standardPaginate($query, $request, bool $sortByPrice = false, string $sortOrder = 'desc')
     {
         $perPage = min($request->get('per_page', 20), 100);
+        $page = max($request->get('page', 1), 1);
+
+        if ($sortByPrice) {
+            $discountService = app(DiscountService::class);
+
+            $sorted = $query->get()
+                ->map(function ($product) use ($discountService) {
+                    $variant = $product->variants->firstWhere('is_default', true)
+                            ?? $product->variants->firstWhere('is_active', true)
+                            ?? $product->variants->first();
+
+                    $product->_effective_price = $variant
+                        ? $discountService->calculate($variant)->price
+                        : 0;
+
+                    return $product;
+                })
+                ->sortBy('_effective_price', SORT_REGULAR, $sortOrder === 'desc')
+                ->values();
+
+            $total = $sorted->count();
+            $items = $sorted->slice(($page - 1) * $perPage, $perPage)->values();
+            $lastPage = (int) ceil($total / $perPage);
+
+            return response()->json([
+                'success' => true,
+                'data' => ProductResource::collection($items),
+                'meta' => [
+                    'current_page' => $page,
+                    'last_page' => $lastPage,
+                    'per_page' => $perPage,
+                    'total' => $total,
+                    'has_more' => $page < $lastPage,
+                    'next_cursor' => null,
+                    'sort_note' => 'sorted_by_final_price',
+                ]
+            ]);
+        }
+
         $products = $query->paginate($perPage);
 
         return response()->json([
@@ -326,17 +564,68 @@ class ProductController extends Controller
     }
 
     // ================================================================
-    // Infinite Scroll (Cursor-based)
+    // Cursor Pagination
     // ================================================================
-    private function cursorPaginate($query, $request)
+    private function cursorPaginate($query, $request, bool $sortByPrice = false, string $sortOrder = 'desc')
     {
         $limit = min($request->get('limit', 20), 50);
         $cursor = $request->get('cursor');
 
+        if ($sortByPrice) {
+            $discountService = app(DiscountService::class);
+
+            $allProducts = $query->get()
+                ->map(function ($product) use ($discountService) {
+                    $variant = $product->variants->firstWhere('is_default', true)
+                            ?? $product->variants->firstWhere('is_active', true)
+                            ?? $product->variants->first();
+
+                    $product->_effective_price = $variant
+                        ? $discountService->calculate($variant)->price
+                        : 0;
+
+                    return $product;
+                })
+                ->sortBy('_effective_price', SORT_REGULAR, $sortOrder === 'desc')
+                ->values();
+
+            $startIndex = 0;
+            if ($cursor) {
+                $decoded = json_decode(base64_decode($cursor), true);
+                if ($decoded && isset($decoded['index'])) {
+                    $startIndex = $decoded['index'];
+                }
+            }
+
+            $items = $allProducts->slice($startIndex, $limit + 1)->values();
+            $hasMore = $items->count() > $limit;
+            $items = $items->take($limit);
+
+            $nextCursor = null;
+            if ($hasMore) {
+                $nextCursor = base64_encode(json_encode([
+                    'index' => $startIndex + $limit
+                ]));
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => ProductResource::collection($items),
+                'meta' => [
+                    'has_more' => $hasMore,
+                    'next_cursor' => $nextCursor,
+                    'limit' => $limit,
+                    'current_page' => null,
+                    'last_page' => null,
+                    'per_page' => $limit,
+                    'total' => $allProducts->count(),
+                ]
+            ]);
+        }
+
         if ($cursor) {
             $decoded = json_decode(base64_decode($cursor), true);
             if ($decoded && isset($decoded['id'])) {
-                $sortOrder = $request->get('sort_order', 'desc');
                 $operator = $sortOrder === 'asc' ? '>' : '<';
                 $query->where('id', $operator, $decoded['id']);
             }
@@ -348,8 +637,9 @@ class ProductController extends Controller
 
         $nextCursor = null;
         if ($hasMore && $products->isNotEmpty()) {
-            $lastProduct = $products->last();
-            $nextCursor = base64_encode(json_encode(['id' => $lastProduct->id]));
+            $nextCursor = base64_encode(json_encode([
+                'id' => $products->last()->id
+            ]));
         }
 
         return response()->json([
@@ -395,10 +685,7 @@ class ProductController extends Controller
                     ]
                 )
             ),
-            new OA\Response(
-                response: 404,
-                description: 'Product not found'
-            )
+            new OA\Response(response: 404, description: 'Product not found')
         ]
     )]
     public function show(Product $product)
@@ -417,7 +704,6 @@ class ProductController extends Controller
         path: '/api/products',
         tags: ['Products'],
         summary: 'Create new product',
-        description: 'Create a new product',
         security: [['bearerAuth' => []]],
         requestBody: new OA\RequestBody(
             required: true,
@@ -439,24 +725,9 @@ class ProductController extends Controller
             )
         ),
         responses: [
-            new OA\Response(
-                response: 201,
-                description: 'Product created successfully',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(property: 'data', ref: '#/components/schemas/Product')
-                    ]
-                )
-            ),
-            new OA\Response(
-                response: 422,
-                description: 'Validation error'
-            ),
-            new OA\Response(
-                response: 401,
-                description: 'Unauthenticated'
-            )
+            new OA\Response(response: 201, description: 'Product created'),
+            new OA\Response(response: 422, description: 'Validation error'),
+            new OA\Response(response: 401, description: 'Unauthenticated')
         ]
     )]
     public function store(StoreProductRequest $request)
@@ -475,14 +746,12 @@ class ProductController extends Controller
         path: '/api/products/{product}',
         tags: ['Products'],
         summary: 'Update product',
-        description: 'Update product information',
         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: 'product',
                 in: 'path',
                 required: true,
-                description: 'Product ID',
                 schema: new OA\Schema(type: 'integer', example: 1)
             )
         ],
@@ -490,49 +759,25 @@ class ProductController extends Controller
             required: true,
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property(property: 'brand_id', type: 'integer', example: 1),
-                    new OA\Property(property: 'title', type: 'string', example: 'iPhone 15 Pro'),
-                    new OA\Property(property: 'slug', type: 'string', example: 'iphone-15-pro'),
+                    new OA\Property(property: 'brand_id', type: 'integer'),
+                    new OA\Property(property: 'title', type: 'string'),
+                    new OA\Property(property: 'slug', type: 'string'),
                     new OA\Property(property: 'short_description', type: 'string', nullable: true),
                     new OA\Property(property: 'description', type: 'string', nullable: true),
-                    new OA\Property(property: 'status', type: 'string', enum: ['draft', 'active', 'inactive'], example: 'active'),
-                    new OA\Property(property: 'meta_title', type: 'string', nullable: true),
-                    new OA\Property(property: 'meta_keywords', type: 'string', nullable: true),
-                    new OA\Property(property: 'meta_description', type: 'string', nullable: true),
-                    new OA\Property(property: 'sort_order', type: 'integer', example: 0),
-                    new OA\Property(property: 'is_active', type: 'boolean', example: true),
+                    new OA\Property(property: 'status', type: 'string', enum: ['draft', 'active', 'inactive']),
+                    new OA\Property(property: 'is_active', type: 'boolean'),
                 ]
             )
         ),
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Product updated successfully',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(property: 'data', ref: '#/components/schemas/Product')
-                    ]
-                )
-            ),
-            new OA\Response(
-                response: 404,
-                description: 'Product not found'
-            ),
-            new OA\Response(
-                response: 422,
-                description: 'Validation error'
-            ),
-            new OA\Response(
-                response: 401,
-                description: 'Unauthenticated'
-            )
+            new OA\Response(response: 200, description: 'Product updated'),
+            new OA\Response(response: 404, description: 'Not found'),
+            new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
     public function update(UpdateProductRequest $request, Product $product)
     {
         $product = $this->productService->update($product, $request->validated());
-
         return new ProductResource($product);
     }
 
@@ -543,36 +788,18 @@ class ProductController extends Controller
         path: '/api/products/{product}',
         tags: ['Products'],
         summary: 'Delete product',
-        description: 'Delete a product',
         security: [['bearerAuth' => []]],
         parameters: [
             new OA\Parameter(
                 name: 'product',
                 in: 'path',
                 required: true,
-                description: 'Product ID',
                 schema: new OA\Schema(type: 'integer', example: 1)
             )
         ],
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Product deleted successfully',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(property: 'message', type: 'string', example: 'Product deleted successfully.')
-                    ]
-                )
-            ),
-            new OA\Response(
-                response: 404,
-                description: 'Product not found'
-            ),
-            new OA\Response(
-                response: 401,
-                description: 'Unauthenticated'
-            )
+            new OA\Response(response: 200, description: 'Deleted successfully'),
+            new OA\Response(response: 404, description: 'Not found'),
         ]
     )]
     public function destroy(Product $product)
