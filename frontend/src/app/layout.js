@@ -1,10 +1,9 @@
-
 import "./globals.css";
 import Header from "@/components/templates/header";
 import TanstackQueryProvider from "@/components/partials/provider/TanstackQueryProvider";
 import { Toaster } from "react-hot-toast";
 import NextTopLoader from "nextjs-toploader";
-
+import PageTransition from "@/components/atom/PageTransition";
 
 export const metadata = {
   title: "Create Next App",
@@ -16,15 +15,13 @@ export default function RootLayout({ children }) {
     <html lang="en" dir="ltr">
       <body className={``}>
         <TanstackQueryProvider>
-
-        <Header/>
-        <NextTopLoader color="#DC2626" showSpinner={false} />
-        <main>
-        {children}
-
-        </main>
+          <Header />
+          <NextTopLoader color="#DC2626" showSpinner={false} />
+          <main>
+            <PageTransition>{children}</PageTransition>
+          </main>
         </TanstackQueryProvider>
-        <Toaster/>
+        <Toaster />
       </body>
     </html>
   );

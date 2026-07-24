@@ -8,19 +8,26 @@ import CardShop from "@/components/templates/cardStore";
 
 
 async function getAmazingProducts(){
-  const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL + "/api/discounts")
+  const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL + "/api/products?is_flash_sale=1")
 
   return res.json()
 
 
 }
 
+async function getIamgeBanner(){
+const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL+ "/api/banners")
+
+return res.json()
+}
+
 export default async function Home() {
   const productDiscounts = await getAmazingProducts()
+  const banner = await getIamgeBanner()
   return (
    <div>
     <Stories/>
-    <TopBanner/>
+    <TopBanner data={banner} />
     {/* <AmazingProducts/> */}
     <div className=" container  mx-auto px-28">
     <AmazingSliders data={productDiscounts?.data}  />
