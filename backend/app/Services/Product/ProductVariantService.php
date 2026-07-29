@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Product; 
 
 use App\Models\Product;
 use Illuminate\Support\Str;
 
-class ProductService
+class ProductVariantService 
 {
     public function create(array $data): Product
     {

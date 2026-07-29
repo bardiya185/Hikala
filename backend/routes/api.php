@@ -38,6 +38,7 @@ Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::get('/{product}', [ProductController::class, 'show']);
     Route::get('/{product}/images', [ProductImageController::class, 'index']);
+    Route::get('/{product}/related', [ProductController::class, 'related']); 
 });
 
 

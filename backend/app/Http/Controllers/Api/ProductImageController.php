@@ -7,7 +7,7 @@ use App\Http\Requests\StoreProductImageRequest;
 use App\Http\Resources\ProductImageResource;
 use App\Models\Product;
 use App\Models\ProductImage;
-use App\Services\ProductImage\ProductImageService;
+use App\Services\Product\ProductImageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;

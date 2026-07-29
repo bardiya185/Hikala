@@ -975,7 +975,7 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "ارسال کد OTP",
+                "summary": "Send OTP code",
                 "operationId": "f23a700e9df831a8a1af7bd4c092fcf7",
                 "requestBody": {
                     "required": true,
@@ -4602,6 +4602,79 @@
                         "bearerAuth": []
                     }
                 ]
+            }
+        },
+        "/api/products/{product}/related": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get related products",
+                "description": "Returns similar products based on category, brand and popularity",
+                "operationId": "b7f5d639efe4dbf4ce0cc7df3819e528",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Maximum number of related products",
+                        "schema": {
+                            "type": "integer",
+                            "default": 8,
+                            "maximum": 20,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Related products retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Product"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "source_product_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
             }
         },
         "/api/products/{product}/images": {

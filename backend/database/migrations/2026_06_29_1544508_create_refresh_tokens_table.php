@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('ip_address')->nullable();
             $table->string('fingerprint')->nullable();
             $table->timestamp('expires_at');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
             $table->timestamp('last_used_at')->nullable();
         });
     }

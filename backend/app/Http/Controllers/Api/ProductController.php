@@ -8,8 +8,9 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\Category;
+use App\Services\Product\RelatedProductsService;
 use App\Models\ProductVariant;
-use App\Services\ProductService;
+use App\Services\Product\ProductService; 
 use App\Services\Discount\DiscountService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -114,7 +115,8 @@ class ProductController extends Controller
     ];
 
     public function __construct(
-        private ProductService $productService
+        private ProductService $productService,
+        private RelatedProductsService $relatedProductsService
     ) {}
 
     // ================================================================
@@ -696,6 +698,74 @@ private function filterByFlashSale($query, $request, bool $sortByPrice, string $
         ]));
 
         return new ProductResource($product);
+    }
+
+        // ================================================================
+    // 🎯 Get Related Products
+    // ================================================================
+    #[OA\Get(
+        path: '/api/products/{product}/related',
+        tags: ['Products'],
+        summary: 'Get related products',
+        description: 'Returns similar products based on category, brand and popularity',
+        parameters: [
+            new OA\Parameter(
+                name: 'product',
+                in: 'path',
+                required: true,
+                description: 'Product ID',
+                schema: new OA\Schema(type: 'integer', example: 1)
+            ),
+            new OA\Parameter(
+                name: 'limit',
+                in: 'query',
+                description: 'Maximum number of related products',
+                schema: new OA\Schema(type: 'integer', default: 8, minimum: 1, maximum: 20)
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Related products retrieved successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'success', type: 'boolean', example: true),
+                        new OA\Property(
+                            property: 'data',
+                            type: 'array',
+                            items: new OA\Items(ref: '#/components/schemas/Product')
+                        ),
+                        new OA\Property(
+                            property: 'meta',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'total', type: 'integer', example: 8),
+                                new OA\Property(property: 'source_product_id', type: 'integer', example: 1),
+                            ]
+                        )
+                    ]
+                )
+            ),
+            new OA\Response(response: 404, description: 'Product not found')
+        ]
+    )]
+    public function related(Request $request, Product $product)
+    {
+
+        $product->load(['brand', 'categories']);
+
+        $limit = min((int) $request->get('limit', 8), 20);
+
+        $relatedProducts = $this->relatedProductsService->find($product, $limit);
+
+        return response()->json([
+            'success' => true,
+            'data' => ProductResource::collection($relatedProducts),
+            'meta' => [
+                'total' => $relatedProducts->count(),
+                'source_product_id' => $product->id,
+            ],
+        ]);
     }
 
     // ================================================================
