@@ -10,7 +10,7 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText"; 
-import { Link } from "lucide-react";
+import Link from "next/link";
 
 gsap.registerPlugin(SplitText);
 
@@ -125,6 +125,7 @@ function Products({ data, current_sort, current_sortorder }) {
                 >
                   <div className="rounded-[10px] w-full h-full border border-solid border-neutral-100 p-4 flex flex-col justify-between">
                     <div>
+                      <Link href={`/product/${product?.id}`}>
                       
                       <div className="w-full overflow-hidden rounded-[20px] aspect-[4/5] relative flex items-center justify-center">
                         <Image
@@ -156,6 +157,7 @@ function Products({ data, current_sort, current_sortorder }) {
                           <span>{product?.rating}</span>
                         </div>
                       </div>
+                    </Link>
                     </div>
 
                     <div>
