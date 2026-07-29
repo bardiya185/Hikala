@@ -17,6 +17,8 @@ import ColorSwatchSelector from "@/components/atom/ColorSwatchSelector";
 import { IoWarningOutline } from "react-icons/io5";
 import { FaRegStar } from "react-icons/fa";
 import { BsDot } from "react-icons/bs";
+import ViewDetailsButton from "@/components/atom/ViewDetailsButton";
+import ProductMoreDetials from "@/components/organisms/ProductMoreDetials";
 
 gsap.registerPlugin(SplitText);
 
@@ -143,7 +145,7 @@ function ProductsDe({ data }) {
                   </div>
                 </div>
               </div>
-              <button className="mt-10">مشاهده همه ویژگی ها</button>
+              <ViewDetailsButton/>
               <div className="  flex mt-5">
                 <IoWarningOutline className=" text-neutral-400" />
 
@@ -271,6 +273,9 @@ function ProductsDe({ data }) {
         </div>
       </div>
       <div className="border-b border-solid border-neutral-400 w-1/1 mx-10 mt-8"></div>
+      <div>
+        <ProductMoreDetials data={data} selectedVariant={selectedVariant} />
+      </div>
     </>
   );
 }
