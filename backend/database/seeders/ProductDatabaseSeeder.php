@@ -689,7 +689,7 @@ $this->command->info('✅ Attributes created!');
                 'meta_keywords'     => $title . ', buy, shop, best price, ' . $productData['brand'],
                 'meta_description'  => 'Buy ' . $title . ' with best price.',
                 'view_count'        => rand(100, 50000),
-                'rating'            => rand(30, 50) / 10,
+                'rating'            => rand(0, 5),
                 'sort_order'        => $productCount,
                 'is_active'         => 1,
                 'created_at'        => now(),

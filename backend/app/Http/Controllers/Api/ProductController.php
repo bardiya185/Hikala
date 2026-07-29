@@ -109,6 +109,7 @@ class ProductController extends Controller
         'images',
         'variants.discounts',
         'variants.attributeValues',
+        'variants.shippingFeatures',
         'discounts'
     ];
 

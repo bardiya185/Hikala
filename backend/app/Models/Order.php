@@ -8,6 +8,8 @@ use App\Enums\PaymentStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Enums\DeliveryTimeSlot;
+use App\Enums\ShippingCarrier;
 
 class Order extends Model
 {
@@ -30,6 +32,14 @@ class Order extends Model
         'paid_at',
         'shipped_at',
         'delivered_at',
+        'preferred_delivery_date',
+        'preferred_delivery_time_slot',
+        'estimated_delivery_from',
+        'estimated_delivery_to',
+        'tracking_code',
+        'shipping_carrier',
+        'cancel_reason',
+        'refund_reason',
         'canceled_at',
         'refunded_at',
     ];
@@ -53,6 +63,12 @@ class Order extends Model
         'delivered_at' => 'datetime',
         'canceled_at' => 'datetime',
         'refunded_at' => 'datetime',
+
+        'preferred_delivery_date' => 'date',
+        'preferred_delivery_time_slot' => DeliveryTimeSlot::class, 
+        'estimated_delivery_from' => 'datetime',
+        'estimated_delivery_to' => 'datetime',
+        'shipping_carrier' => ShippingCarrier::class,
     ];
 
     // ================================================================

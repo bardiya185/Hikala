@@ -36,6 +36,10 @@ class ProductVariantResource extends JsonResource
             'attributes' => AttributeValueResource::collection(
                 $this->whenLoaded('attributeValues')
             ),
+
+            'shipping_features' => ShippingFeatureResource::collection(
+                $this->whenLoaded('shippingFeatures')   
+),
         ];
     }
      }

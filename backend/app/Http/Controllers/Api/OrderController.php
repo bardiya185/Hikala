@@ -15,9 +15,11 @@ use App\Services\Order\OrderCreationService;
 use App\Services\Order\OrderService;
 use App\Services\Order\OrderStatusService;
 use App\Services\Payment\FakePaymentService;
+use App\Services\Delivery\DeliveryCalculator; 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use OpenApi\Attributes as OA;
+
 
 #[OA\Tag(
     name: "Orders",
@@ -111,7 +113,8 @@ class OrderController extends Controller
         private OrderCreationService $creationService,
         private OrderStatusService $statusService,
         private CartService $cartService,
-        private FakePaymentService $paymentService
+        private FakePaymentService $paymentService,
+        private DeliveryCalculator $deliveryCalculator
     ) {}
 
     // ================================================================
@@ -199,6 +202,10 @@ class OrderController extends Controller
             $shippingMethod = $request->shipping_method 
                 ? \App\Enums\ShippingMethod::from($request->shipping_method)
                 : \App\Enums\ShippingMethod::STANDARD;
+
+                $preferredTimeSlot = $request->preferred_delivery_time_slot
+                ? \App\Enums\DeliveryTimeSlot::from($request->preferred_delivery_time_slot)
+                : null;
             
             // ✅ ساخت سفارش با shipping
             $order = $this->creationService->createFromCart(
@@ -207,7 +214,9 @@ class OrderController extends Controller
                 $address,
                 $paymentMethod,
                 $request->customer_note,
-                $shippingMethod
+                $shippingMethod,
+                $request->preferred_delivery_date,  
+                $preferredTimeSlot 
             );
             
             $paymentData = null;
@@ -398,6 +407,11 @@ class OrderController extends Controller
                 'message' => 'Order canceled successfully',
                 'data' => new OrderResource($order),
             ]);
+
+                // ✅ ذخیره دلیل لغو
+        if ($request->reason) {
+            $order->update(['cancel_reason' => $request->reason]);
+        }
             
         } catch (\Exception $e) {
             return response()->json([
@@ -405,6 +419,51 @@ class OrderController extends Controller
                 'message' => $e->getMessage(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+    }
+
+    #[OA\Get(
+        path: '/api/orders/delivery/options',
+        tags: ['Orders'],
+        summary: 'Get available delivery dates based on cart items',
+        description: 'Returns available delivery dates calculated from cart items shipping features',
+        security: [['bearerAuth' => []]],
+        responses: [
+            new OA\Response(response: 200, description: 'Delivery options'),
+        ]
+    )]
+    public function deliveryOptions(Request $request)
+    {
+        $user = $request->user();
+        
+        // گرفتن سبد کاربر
+        $cart = $this->cartService->getOrCreate(
+            $user,
+            $request->header('X-Session-Id')
+        );
+        
+        // بارگذاری shipping features
+        $cart->load(['items.variant.shippingFeatures']);
+        
+        // اگه سبد خالیه
+        if ($cart->items->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cart is empty',
+            ], 422);
+        }
+        
+        // محاسبه
+        $dates = $this->deliveryCalculator->getAvailableDates($cart, 7);
+        $info = $this->deliveryCalculator->getDeliveryInfo($cart);
+        
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'delivery_info' => $info,
+                'dates' => $dates,
+                'time_slots' => \App\Enums\DeliveryTimeSlot::options(),
+            ],
+        ]);
     }
 
     // ================================================================

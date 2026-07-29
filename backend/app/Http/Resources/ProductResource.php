@@ -44,6 +44,8 @@ class ProductResource extends JsonResource
 
             'discounts' => $this->whenLoaded('discounts'),
            
+           
+           
         ];
     }
 }

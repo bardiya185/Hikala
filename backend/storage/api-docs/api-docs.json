@@ -61,11 +61,11 @@
                                                         "type": "string",
                                                         "example": "Home"
                                                     },
-                                                    "recipient_name": {
+                                                    "receiver_name": {
                                                         "type": "string",
                                                         "example": "John Doe"
                                                     },
-                                                    "recipient_phone": {
+                                                    "receiver_mobile": {
                                                         "type": "string",
                                                         "example": "09123456789"
                                                     },
@@ -248,12 +248,12 @@
                                         "example": "Home",
                                         "nullable": true
                                     },
-                                    "recipient_name": {
+                                    "receiver_name": {
                                         "description": "Full name of the recipient",
                                         "type": "string",
                                         "example": "John Doe"
                                     },
-                                    "recipient_phone": {
+                                    "receiver_mobile": {
                                         "description": "Phone number of the recipient",
                                         "type": "string",
                                         "example": "09123456789"
@@ -337,11 +337,11 @@
                                                     "type": "string",
                                                     "example": "Home"
                                                 },
-                                                "recipient_name": {
+                                                "receiver_name": {
                                                     "type": "string",
                                                     "example": "John Doe"
                                                 },
-                                                "recipient_phone": {
+                                                "receiver_mobile": {
                                                     "type": "string",
                                                     "example": "09123456789"
                                                 },
@@ -428,11 +428,11 @@
                                                     "type": "string",
                                                     "example": "Home"
                                                 },
-                                                "recipient_name": {
+                                                "receiver_name": {
                                                     "type": "string",
                                                     "example": "John Doe"
                                                 },
-                                                "recipient_phone": {
+                                                "receiver_mobile": {
                                                     "type": "string",
                                                     "example": "09123456789"
                                                 },
@@ -569,12 +569,12 @@
                                         "example": "Work",
                                         "nullable": true
                                     },
-                                    "recipient_name": {
+                                    "receiver_name": {
                                         "description": "Recipient full name",
                                         "type": "string",
                                         "example": "Jane Doe"
                                     },
-                                    "recipient_phone": {
+                                    "receiver_mobile": {
                                         "description": "Recipient phone number",
                                         "type": "string",
                                         "example": "09129876543"
@@ -4047,6 +4047,26 @@
                     },
                     "422": {
                         "description": "Order cannot be canceled at this stage"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/delivery/options": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get available delivery dates based on cart items",
+                "description": "Returns available delivery dates calculated from cart items shipping features",
+                "operationId": "1a40a927d8364e6f02c08841a4f28a59",
+                "responses": {
+                    "200": {
+                        "description": "Delivery options"
                     }
                 },
                 "security": [

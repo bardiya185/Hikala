@@ -51,10 +51,39 @@ class OrderResource extends JsonResource
             
             // 📝 Notes
             'customer_note' => $this->customer_note,
+
+            'delivery' => [
+                'preferred_date' => $this->preferred_delivery_date?->format('Y-m-d'),
+                'preferred_date_formatted' => $this->preferred_delivery_date?->format('l, F j, Y'),
+                'time_slot' => $this->when($this->preferred_delivery_time_slot, [
+                    'value' => $this->preferred_delivery_time_slot?->value,
+                    'label' => $this->preferred_delivery_time_slot?->label(),
+                    'time_range' => $this->preferred_delivery_time_slot?->timeRange(),
+                    'icon' => $this->preferred_delivery_time_slot?->icon(),
+                ]),
+                'estimated' => $this->when($this->estimated_delivery_from, [
+                    'from' => $this->estimated_delivery_from,
+                    'to' => $this->estimated_delivery_to,
+                ]),
+            ],
+            
+            // ✅ جدید: Shipping/Tracking
+            'shipping' => [
+                'tracking_code' => $this->tracking_code,
+                'carrier' => $this->when($this->shipping_carrier, [
+                    'value' => $this->shipping_carrier?->value,
+                    'label' => $this->shipping_carrier?->label(),
+                ]),
+                'tracking_url' => $this->tracking_url,
+            ],
             
             // 🎯 Actions available
             'can_be_canceled' => $this->canBeCanceled(),
             'can_be_refunded' => $this->canBeRefunded(),
+
+            //Reasons
+            'cancel_reason' => $this->cancel_reason,
+            'refund_reason' => $this->refund_reason,
             
             // 🔗 Relations
             'items' => OrderItemResource::collection($this->whenLoaded('items')),
