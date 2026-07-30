@@ -3598,6 +3598,193 @@
                 ]
             }
         },
+        "/api/campaigns": {
+            "get": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Get all active campaigns",
+                "operationId": "d0f47c77b3682ddf2c7429c63a0ae952",
+                "responses": {
+                    "200": {
+                        "description": "Campaigns list"
+                    }
+                }
+            }
+        },
+        "/api/campaigns/{slug}": {
+            "get": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Get campaign details by slug",
+                "operationId": "e7f4d4a0b48a951d05a9d14ee267b130",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "flash-sale"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Campaign details"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/api/admin/campaigns": {
+            "get": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "List all campaigns (admin)",
+                "operationId": "e8970aa1c891a27904ba8f0b6e9197aa",
+                "responses": {
+                    "200": {
+                        "description": "All campaigns"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Create new campaign",
+                "operationId": "1faa4df572ad1877c66a25f04e54a4ea",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "slug"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Flash Sale"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "flash-sale"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "icon": {
+                                        "type": "string",
+                                        "example": "⚡",
+                                        "nullable": true
+                                    },
+                                    "color": {
+                                        "type": "string",
+                                        "example": "#DC2626",
+                                        "nullable": true
+                                    },
+                                    "priority": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "starts_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "ends_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Campaign created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/campaigns/{campaign}": {
+            "get": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Show campaign details",
+                "operationId": "77ac27785b23a795a27a1f2f7194510c",
+                "responses": {
+                    "200": {
+                        "description": "Campaign details"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Update campaign",
+                "operationId": "9e8e1da3590f9bc3e72e187a183673c9",
+                "responses": {
+                    "200": {
+                        "description": "Updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Delete campaign",
+                "operationId": "8924a9017de8b77132cdd0e07ffff86a",
+                "responses": {
+                    "200": {
+                        "description": "Deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/discounts": {
             "get": {
                 "tags": [
@@ -5980,6 +6167,10 @@
         {
             "name": "Coupons",
             "description": "Coupon code management"
+        },
+        {
+            "name": "Discount Campaigns",
+            "description": "Manage discount campaigns"
         },
         {
             "name": "Orders",

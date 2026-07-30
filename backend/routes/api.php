@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\RoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\DiscountCampaignController;
 
 
 /*
@@ -108,6 +109,13 @@ Route::prefix('cart')->middleware('optional.auth')->group(function () {
 
     Route::post('/coupon', [CartController::class, 'applyCoupon']);
     Route::delete('/coupon', [CartController::class, 'removeCoupon']);
+});
+
+
+// ===== 🎯 Discount Campaigns (Public) =====
+Route::prefix('campaigns')->group(function () {
+    Route::get('/', [DiscountCampaignController::class, 'index']);
+    Route::get('/{slug}', [DiscountCampaignController::class, 'showBySlug']);
 });
 
 
@@ -229,4 +237,17 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     // ⏰ Delivery Options
     Route::get('/delivery/options', [OrderController::class, 'deliveryOptions']);
+});
+
+Route::prefix('admin')->group(function () {
+    // ... routes قبلی
+    
+    // ===== 🎯 Discount Campaigns =====
+    Route::prefix('campaigns')->group(function () {
+        Route::get('/', [DiscountCampaignController::class, 'adminIndex']);
+        Route::post('/', [DiscountCampaignController::class, 'store']);
+        Route::get('/{campaign}', [DiscountCampaignController::class, 'show']);
+        Route::put('/{campaign}', [DiscountCampaignController::class, 'update']);
+        Route::delete('/{campaign}', [DiscountCampaignController::class, 'destroy']);
+    });
 });

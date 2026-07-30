@@ -16,7 +16,7 @@ class Discount extends Model
         'quantity_limit',
         'used_quantity',
         'priority',
-        'is_flash_sale',
+        'campaign_id',
         'is_active',
     ];
 
@@ -75,6 +75,11 @@ public function coupons()
     return $this->hasMany(
         Coupon::class
     );
+}
+
+public function campaign()
+{
+    return $this->belongsTo(DiscountCampaign::class, 'campaign_id');
 }
 
 // Discount.php
