@@ -442,32 +442,38 @@ class ReviewController extends Controller
         ]
     )]
     public function update(UpdateReviewRequest $request, Review $review)
-    {
-        $user = $request->user();
+{
+    $user = $request->user();
 
-        if ($review->user_id !== $user->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not allowed to update this review.',
-            ], 403);
-        }
-
-        $review->update([
-            'body' => $request->input('body', $review->body),
-            'rating' => $request->input('rating', $review->rating),
-            'advantages' => $request->input('advantages', $review->advantages),
-            'disadvantages' => $request->input('disadvantages', $review->disadvantages),
-            'status' => 'pending',
-        ]);
-
-        $review->load('user');
-
+    if ($review->user_id !== $user->id) {
         return response()->json([
-            'success' => true,
-            'message' => 'Your review has been updated and is awaiting approval again.',
-            'data' => new ReviewResource($review),
-        ]);
+            'success' => false,
+            'message' => 'You are not allowed to update this review.',
+        ], 403);
     }
+
+    $wasApproved = $review->status === 'approved';
+
+    $review->update([
+        'body' => $request->input('body', $review->body),
+        'rating' => $request->input('rating', $review->rating),
+        'advantages' => $request->input('advantages', $review->advantages),
+        'disadvantages' => $request->input('disadvantages', $review->disadvantages),
+        'status' => 'pending',
+    ]);
+
+    if ($wasApproved) {
+        $this->updateProductRating($review->product_id);
+    }
+
+    $review->load('user');
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Your review has been updated and is awaiting approval again.',
+        'data' => new ReviewResource($review),
+    ]);
+}
 
     // ================================================================
     // Delete Review (Owner Only)
@@ -521,23 +527,30 @@ class ReviewController extends Controller
         ]
     )]
     public function destroy(Request $request, Review $review)
-    {
-        $user = $request->user();
+{
+    $user = $request->user();
 
-        if ($review->user_id !== $user->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'You are not allowed to delete this review.',
-            ], 403);
-        }
-
-        $review->delete();
-
+    if ($review->user_id !== $user->id) {
         return response()->json([
-            'success' => true,
-            'message' => 'Your review has been deleted successfully.',
-        ]);
+            'success' => false,
+            'message' => 'You are not allowed to delete this review.',
+        ], 403);
     }
+
+    $productId = $review->product_id;
+    $wasApproved = $review->status === 'approved';
+
+    $review->delete();
+
+    if ($wasApproved) {
+        $this->updateProductRating($productId);
+    }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Your review has been deleted successfully.',
+    ]);
+}
 
     // ================================================================
     // My Review for a Product (Authenticated)
@@ -793,7 +806,7 @@ class ReviewController extends Controller
             ->avg('rating');
 
         Product::where('id', $productId)->update([
-            'rating' => $average ? round($average, 1) : 0,
+            'rating' => $average ? round($average, 2) : 0,
         ]);
     }
 }

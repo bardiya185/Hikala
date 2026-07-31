@@ -123,12 +123,9 @@ class DiscountSeeder extends Seeder
                 'type' => $discount['type'],
                 'value' => $discount['value'],
                 'stackable' => $discount['stackable'],
-                'starts_at' => $discount['starts_at'],
-                'ends_at' => $discount['ends_at'],
                 'quantity_limit' => $discount['quantity_limit'],
                 'used_quantity' => $discount['used_quantity'],
                 'priority' => $discount['priority'],
-                // ❌ is_flash_sale حذف شد (چون از campaign استفاده می‌کنیم)
                 'is_active' => true,
                 'created_at' => now(),
                 'updated_at' => now(),

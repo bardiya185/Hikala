@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             CouponSeeder::class,
             RolePermissionSeeder::class,
             BannerPositionSeeder::class,
-            BannerSeeder::class
+            BannerSeeder::class,
+            ReviewSeeder::class,
 
         ]);
     }

@@ -20,6 +20,10 @@ class Product extends Model
         'sort_order',
         'is_active',
     ];
+    protected $casts = [
+        'rating' => 'float',
+    ];
+
 
     public function brand()
     {
