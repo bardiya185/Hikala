@@ -28,7 +28,12 @@ class User extends Authenticatable
         'remember_token',
     ];
     public function addresses()
-{
-    return $this->hasMany(Address::class);
-}
+    {
+        return $this->hasMany(Address::class);
+    }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
 }

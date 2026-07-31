@@ -111,7 +111,9 @@ class ProductController extends Controller
         'variants.discounts',
         'variants.attributeValues',
         'variants.shippingFeatures',
-        'discounts'
+        'discounts',
+        'discounts.campaign',
+        'approvedReviews.user',
     ];
 
     public function __construct(
@@ -696,6 +698,8 @@ private function filterByFlashSale($query, $request, bool $sortByPrice, string $
         $product->load(array_merge($this->defaultRelations, [
             'variants.attributeValues.attribute'
         ]));
+
+        $product->loadCount('approvedReviews');
 
         return new ProductResource($product);
     }

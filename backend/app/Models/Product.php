@@ -42,13 +42,22 @@ class Product extends Model
         return $this->belongsToMany(Category::class);
     }
 
-    public function discounts()
-{
-    return $this->morphToMany(
-        Discount::class,
-        'discountable'
-    );
-}
+            public function discounts()
+        {
+            return $this->morphToMany(
+                Discount::class,
+                'discountable'
+            );
+        }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(Review::class)->where('status', 'approved');
+    }
 
 
     use HasFactory;

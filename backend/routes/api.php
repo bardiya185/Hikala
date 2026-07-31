@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\ProductVariantShippingFeatureController;
 use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\RoleController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\ReviewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\DiscountCampaignController;
 
@@ -118,6 +119,9 @@ Route::prefix('campaigns')->group(function () {
     Route::get('/{slug}', [DiscountCampaignController::class, 'showBySlug']);
 });
 
+Route::prefix('products/{product}/reviews')->group(function () {
+    Route::get('/', [ReviewController::class, 'index']);
+});
 
 /*
 |==================================================================================
@@ -188,6 +192,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('shipping-features/{feature}', [ProductVariantShippingFeatureController::class, 'destroy']);
 
 
+   
     /*
     |------------------------------------------------------------------
     | 🛡️ ADMIN ROUTES
@@ -251,3 +256,19 @@ Route::prefix('admin')->group(function () {
         Route::delete('/{campaign}', [DiscountCampaignController::class, 'destroy']);
     });
 });
+
+    // ===== ⭐ Reviews (Authenticated) =====
+    Route::post('/reviews', [ReviewController::class, 'store']);
+    Route::put('/reviews/{review}', [ReviewController::class, 'update']);
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
+    Route::get('/products/{product}/my-review', [ReviewController::class, 'myReview']);
+
+    // ===== ⭐ Reviews (َAdmin) =====
+    Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
+        Route::get('/reviews', [ReviewController::class, 'adminIndex']);
+        Route::post('/reviews/{review}/approve', [ReviewController::class, 'approve']);
+        Route::post('/reviews/{review}/reject', [ReviewController::class, 'reject']);
+    });
+
+
+
