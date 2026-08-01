@@ -48,7 +48,7 @@ return new class extends Migration
                 $table->unsignedBigInteger('view_count')->default(0);
 
                 //امتیاز
-                $table->decimal('rating', 3, 2)->default(0)->change();
+                $table->decimal('rating', 3, 2)->default(0);
         
                 // ترتیب نمایش
                 $table->unsignedInteger('sort_order')->default(0);

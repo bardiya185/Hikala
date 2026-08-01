@@ -1075,11 +1075,11 @@
                     "Auth"
                 ],
                 "summary": "Who Am I",
-                "description": "Get authenticated user information",
+                "description": "Get authenticated user information or auth status",
                 "operationId": "df5ae5103354bd83da5161c94dcd772b",
                 "responses": {
                     "200": {
-                        "description": "User information retrieved successfully"
+                        "description": "Auth status retrieved successfully"
                     },
                     "401": {
                         "description": "Unauthenticated"

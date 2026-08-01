@@ -302,17 +302,27 @@ class AuthController extends Controller
         path: '/api/who-am-i',
         tags: ['Auth'],
         summary: 'Who Am I',
-        description: 'Get authenticated user information',
+        description: 'Get authenticated user information or auth status',
         security: [["bearerAuth" => []]],
         responses: [
-            new OA\Response(response: 200, description: 'User information retrieved successfully'),
+            new OA\Response(response: 200, description: 'Auth status retrieved successfully'),
             new OA\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function whoAmI(Request $request)
     {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'authenticated' => false,
+                'data' => null,
+            ], 200);
+        }
+
         return response()->json([
-            'data' => new UserResource($request->user()),
+            'authenticated' => true,
+            'data' => new UserResource($user),
         ]);
     }
 }
