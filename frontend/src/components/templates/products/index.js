@@ -113,7 +113,7 @@ function Products({ data, current_sort, current_sortorder }) {
     
         // ✅ چک واقعی تخفیف
         const hasDiscount = finalPrice < basePrice && basePrice > 0;
-    
+            let video = fra
 
               return (
                 <motion.div
