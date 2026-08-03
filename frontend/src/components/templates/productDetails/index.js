@@ -19,6 +19,13 @@ import { FaRegStar } from "react-icons/fa";
 import { BsDot } from "react-icons/bs";
 import ViewDetailsButton from "@/components/atom/ViewDetailsButton";
 import ProductMoreDetials from "@/components/organisms/ProductMoreDetials";
+import {
+  useAddProductsBasket,
+  useRemoveCartItem,
+  useUpdateCartItem,
+} from "@/core/services/mutations";
+import toast from "react-hot-toast";
+import { useCart } from "@/core/services/queries";
 
 gsap.registerPlugin(SplitText);
 
@@ -26,7 +33,60 @@ function ProductsDe({ data }) {
   const [selectedVariant, setSelectedVariant] = useState(
     data?.variants?.[0] || null,
   );
+
+  const [quantity, setQuantity] = useState(1);
+
   console.log(data);
+  const { data: p, isPending, mutate } = useAddProductsBasket();
+
+  const { data: cart } = useCart();
+  const { mutate: updateCartItem } = useUpdateCartItem();
+  const { mutate: removeCartItem } = useRemoveCartItem();
+
+  const cartItem = cart?.items?.find(
+    (item) => item.product_variant_id === selectedVariant?.id,
+  );
+
+  const handleIncrease = () => {
+    if (quantity >= (selectedVariant?.stock ?? 1)) return;
+    updateCartItem({
+      cartItemId: cartItem.id,
+      quantity: cartItem.quantity + 1,
+    });
+  };
+
+  const handleDeacrease = () => {
+    if (cartItem.quantity === 1) {
+      removeCartItem(cartItem.id, {
+        onSuccess: () => toast.success("Removed from cart"),
+      });
+      return;
+    }
+    updateCartItem({
+      cartItemId: cartItem.id,
+      quantity: cartItem.quantity - 1,
+    });
+  };
+
+  useEffect(() => {
+    if (selectedVariant && quantity > selectedVariant.stock) {
+      setQuantity(selectedVariant.stock > 0 ? selectedVariant.stock : 1);
+    }
+  }, [selectedVariant]);
+
+  const handleAddToCarts = async () => {
+    if (!data) return;
+    mutate(
+      { product_variant_id: selectedVariant?.id, quantity: quantity },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+          toast.success("add succesfully");
+        },
+      },
+    );
+  };
+
   const colors = [
     { id: 1, name: "White", hex: "#ffffff", borderClass: "border-neutral-300" },
     { id: 2, name: "Black", hex: "#000000", borderClass: "border-black" },
@@ -145,7 +205,7 @@ function ProductsDe({ data }) {
                   </div>
                 </div>
               </div>
-              <ViewDetailsButton/>
+              <ViewDetailsButton />
               <div className="  flex mt-5">
                 <IoWarningOutline className=" text-neutral-400" />
 
@@ -239,7 +299,10 @@ function ProductsDe({ data }) {
               </span>
             </div>
             <div className="px-5 mt-4">
-              <button className="w-[310px] h-[40px]  bg-red-500 rounded-lg px-5 pl-5 text-white">
+              <button
+                onClick={handleAddToCarts}
+                className="w-[310px] h-[40px]  bg-red-500 rounded-lg px-5 pl-5 text-white"
+              >
                 Add to Basket
               </button>
               <div className="flex items-center text-neutral-400 mt-4 gap-3">
@@ -263,12 +326,22 @@ function ProductsDe({ data }) {
           <Image src="/icons/support.svg" width={70} height={70} alt="+" />
           <p>24 hours a day ,7 days a week</p>
 
-          <Image src="/icons/cash-on-delivery.svg" width={70} height={70} alt="+" />
+          <Image
+            src="/icons/cash-on-delivery.svg"
+            width={70}
+            height={70}
+            alt="+"
+          />
           <p>Possibility of payment on site</p>
           <Image src="/icons/days-return.svg" width={70} height={70} alt="+" />
           <p>Seven-day return guaratee</p>
 
-          <Image src="/icons/original-products.svg" width={70} height={70} alt="+" />
+          <Image
+            src="/icons/original-products.svg"
+            width={70}
+            height={70}
+            alt="+"
+          />
           <p>Guarantee of authenticity of the product</p>
         </div>
       </div>
