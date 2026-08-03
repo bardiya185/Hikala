@@ -61,10 +61,10 @@ export const useUpdateCartItem = () => {
   const queryClient = useQueryClient();
 
   const mutationFn = ({ cartItemId, quantity }) =>
-    api.patch(`/api/cart/items/${cartItemId}`, { quantity });
+    api.put(`/api/cart/items/${cartItemId}`, { quantity });
 
   const onSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: ["cart"] });
+    queryClient.invalidateQueries({ queryKey: ["cart"],refetchType:"active" });
   };
 
   return useMutation({ mutationFn, onSuccess });
@@ -73,7 +73,8 @@ export const useUpdateCartItem = () => {
 export const useRemoveCartItem = () => {
   const queryClient = useQueryClient();
 
-  const mutationFn = (cartItemId) => api.delete(`/api/cart/items/${cartItemId}`);
+  const mutationFn = (cartItemId) =>
+    api.delete(`/api/cart/items/${cartItemId}`);
 
   const onSuccess = () => {
     queryClient.invalidateQueries({ queryKey: ["cart"] });
