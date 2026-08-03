@@ -55,3 +55,16 @@ export function useSearchProducts(query) {
     staleTime: 1000 * 30,
   });
 }
+
+const fetchCart = async () => {
+  const res = await api.get("/api/cart/items");
+  return res.data;
+};
+
+export function useCart() {
+  return useQuery({
+    queryKey: ["cart"],
+    queryFn: fetchCart,
+    staleTime: 1000 * 30,
+  });
+}
