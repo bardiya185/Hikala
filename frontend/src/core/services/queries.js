@@ -57,14 +57,15 @@ export function useSearchProducts(query) {
 }
 
 const fetchCart = async () => {
-  const res = await api.get("/api/cart/items");
+  const res = await api.get("/api/cart");
   return res.data;
+  
 };
 
 export function useCart() {
   return useQuery({
     queryKey: ["cart"],
     queryFn: fetchCart,
-    staleTime: 1000 * 30,
+    
   });
 }

@@ -15,17 +15,21 @@ import { usePathname } from "next/navigation";
 
 import AuthForm from "../AuthForm";
 
-import { useGetMainCategories, useGetSubCategory } from "@/core/services/queries";
+import {
+  useCart,
+  useGetMainCategories,
+  useGetSubCategory,
+} from "@/core/services/queries";
 import SearchBar from "@/components/atom/SearchBar";
 
 const iconMap = {
-  "mobile": CiMobile1,
-  "laptops": TbDeviceLaptop,
-  "digital": TbDeviceLaptop,
+  mobile: CiMobile1,
+  laptops: TbDeviceLaptop,
+  digital: TbDeviceLaptop,
   "home-kitchen": TbFridge,
-  "fashion": TbShirt,
+  fashion: TbShirt,
   "gold-jewelry": GiGoldBar,
-  "vehicles": GiCarKey,
+  vehicles: GiCarKey,
 };
 
 function CategoryIcon({ iconKey, className }) {
@@ -39,17 +43,24 @@ function Header() {
   const [activeId, setActiveId] = useState(null);
   const closeTimer = useRef(null);
 
+  const { data: cart, isLoading } = useCart;
+
+  const totalCount =
+    cart?.data?.items?.reduce((sum, item) => sum + (item?.quantity || 0), 0) ||
+    0;
+
   const router = useRouter();
   const pathname = usePathname();
 
   const { data: categoriess } = useGetMainCategories();
   const mainDataArray = categoriess?.data?.data || [];
 
-  const { data: categoryMenu, isLoading: isSubLoading } = useGetSubCategory(activeId);
+  const { data: categoryMenu, isLoading: isSubLoading } =
+    useGetSubCategory(activeId);
   console.log(categoryMenu);
   const subDataArray = categoryMenu?.data?.data || [];
 
-// ✅ Initialize activeId with "mobile" category
+  
   useEffect(() => {
     if (mainDataArray.length > 0 && !activeId) {
       const targetCategory = mainDataArray.find((c) => c.slug === "mobile");
@@ -74,9 +85,10 @@ function Header() {
     if (!isOpen) setIsOpen(true);
   }, [clearCloseTimer, isOpen]);
 
-  const activeCategory = mainDataArray?.find((c) => c.id === activeId) || mainDataArray[0];
+  const activeCategory =
+    mainDataArray?.find((c) => c.id === activeId) || mainDataArray[0];
 
- // Helper function: if category has children, return the first child, otherwise return itself
+ 
   const getTargetCategory = (category) => {
     if (!category) return null;
     if (category.children && category.children.length > 0) {
@@ -89,11 +101,13 @@ function Header() {
 
   const finalSubList = Array.isArray(subDataArray)
     ? subDataArray
-    : subDataArray?.children || subDataArray?.subs || subDataArray?.subcategories || [];
+    : subDataArray?.children ||
+      subDataArray?.subs ||
+      subDataArray?.subcategories ||
+      [];
 
   return (
     <div dir="ltr" className="lg:w-full font-sans select-none">
-      
       <div>
         <Image
           src="/icons/1.png"
@@ -109,21 +123,27 @@ function Header() {
           <Image src="/icons/en-logo.svg" width={195} height={30} alt="logo" />
           <div className="relative flex items-center">
             <CiSearch className="absolute left-3 text-neutral-500 w-5 h-5" />
-            <SearchBar/>
+            <SearchBar />
           </div>
         </div>
 
-        <div className="flex items-center gap-7 pr-[20px]">
+        <div className="relative flex items-center gap-7 pr-[20px]">
           <AuthForm />
           <Link href="/checkout">
             <div className="p-2 hover:bg-neutral-100 rounded-full transition-colors">
               <MdShoppingCartCheckout className="w-[24px] h-[24px] text-neutral-700" />
             </div>
+            <span className="absolute -top-1 -right-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[11px] font-bold text-white shadow-sm animate-in zoom-in duration-200">
+          {totalCount > 99 ? "+99" : totalCount}
+        </span>
           </Link>
         </div>
       </div>
 
-      <div className="relative inline-block mt-4 px-[16px]" onMouseLeave={scheduleClose}>
+      <div
+        className="relative inline-block mt-4 px-[16px]"
+        onMouseLeave={scheduleClose}
+      >
         <button
           type="button"
           className="flex items-center gap-2 cursor-pointer py-2 text-neutral-800 hover:text-red-600 transition-colors"
@@ -185,10 +205,13 @@ function Header() {
                     All {activeCategory?.name} Products
                     <TbChevronRight className="w-3.5 h-3.5" />
                   </Link>
-          
+
                   <div className="grid grid-cols-3 gap-6">
                     {finalSubList?.map((col, idx) => (
-                      <div key={col.id || idx} className="flex flex-col whitespace-nowrap">
+                      <div
+                        key={col.id || idx}
+                        className="flex flex-col whitespace-nowrap"
+                      >
                         <Link
                           href={`/search/${col.slug || "category"}?category_id=${col.id}`}
                           className="flex items-center justify-between mb-2 py-1 text-sm font-bold text-neutral-900 border-b border-neutral-100 group"
@@ -198,16 +221,18 @@ function Header() {
                           </span>
                           <TbChevronRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-red-600 transition-colors" />
                         </Link>
-            
-                        {(col.children || col.subs || col.leaves)?.map((leaf, lIdx) => (
-                          <Link
-                            key={leaf.id || lIdx}
-                            href={`/search/${leaf.slug || "child"}?category_id=${leaf.id}`}
-                            className="py-1 text-[13px] text-neutral-500 hover:text-red-600 transition-colors"
-                          >
-                            {leaf.name}
-                          </Link>
-                        ))}
+
+                        {(col.children || col.subs || col.leaves)?.map(
+                          (leaf, lIdx) => (
+                            <Link
+                              key={leaf.id || lIdx}
+                              href={`/search/${leaf.slug || "child"}?category_id=${leaf.id}`}
+                              className="py-1 text-[13px] text-neutral-500 hover:text-red-600 transition-colors"
+                            >
+                              {leaf.name}
+                            </Link>
+                          ),
+                        )}
                       </div>
                     ))}
                   </div>

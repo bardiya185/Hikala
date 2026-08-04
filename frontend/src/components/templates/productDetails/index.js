@@ -26,6 +26,9 @@ import {
 } from "@/core/services/mutations";
 import toast from "react-hot-toast";
 import { useCart } from "@/core/services/queries";
+import { Minus } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 
 gsap.registerPlugin(SplitText);
 
@@ -39,16 +42,23 @@ function ProductsDe({ data }) {
   console.log(data);
   const { data: p, isPending, mutate } = useAddProductsBasket();
 
+  console.log("selectv", selectedVariant);
+
   const { data: cart } = useCart();
+  console.log("cart", cart);
+
   const { mutate: updateCartItem } = useUpdateCartItem();
   const { mutate: removeCartItem } = useRemoveCartItem();
 
-  const cartItem = cart?.items?.find(
-    (item) => item.product_variant_id === selectedVariant?.id,
+  const cartItem = cart?.data?.items?.find(
+    (item) => item?.variant?.id === selectedVariant?.id,
   );
 
+  console.log("item", cartItem);
+
   const handleIncrease = () => {
-    if (quantity >= (selectedVariant?.stock ?? 1)) return;
+    if (!cartItem) return;
+    if (cartItem.quantity >= (selectedVariant?.stock ?? 1)) return;
     updateCartItem({
       cartItemId: cartItem.id,
       quantity: cartItem.quantity + 1,
@@ -57,11 +67,10 @@ function ProductsDe({ data }) {
 
   const handleDeacrease = () => {
     if (cartItem.quantity === 1) {
-      removeCartItem(cartItem.id, {
-        onSuccess: () => toast.success("Removed from cart"),
-      });
+      removeCartItem(cartItem.id);
       return;
     }
+
     updateCartItem({
       cartItemId: cartItem.id,
       quantity: cartItem.quantity - 1,
@@ -298,13 +307,46 @@ function ProductsDe({ data }) {
                 Only 1 item left in stock.
               </span>
             </div>
+            {cartItem ? (
+              <div className="px-5">
+                <div className="flex items-center justify-between w-[310px] h-[40px] px-3 mt-5 bg-red-500 border border-neutral-300 rounded-lg ">
+                  <button onClick={handleDeacrease} className="text-white">
+                    {cartItem.quantity === 1 ? (
+                      <Trash2 size={18} className="text-white" />
+                    ) : (
+                      <Minus className="text-white" size={18} />
+                    )}
+                  </button>
+
+                  <span className="text-sm font-medium text-white">
+                    {cartItem.quantity}
+                  </span>
+
+                  <button
+                    onClick={handleIncrease}
+                    disabled={cartItem.quantity >= selectedVariant?.stock}
+                    className="text-neutral-600 disabled:opacity-30"
+                  >
+                    <Plus size={18} className="text-white" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              
+              <div className="px-5 mt-5">
+                <button
+                  onClick={handleAddToCarts}
+                  disabled={
+                    isPending || !selectedVariant || selectedVariant.stock === 0
+                  }
+                  className="w-[310px] h-[40px] bg-red-500 disabled:opacity-50 rounded-lg px-5 pl-5 text-white"
+                >
+                  {isPending ? "در حال افزودن..." : "Add to Basket"}
+                </button>
+              </div>
+            )}
+
             <div className="px-5 mt-4">
-              <button
-                onClick={handleAddToCarts}
-                className="w-[310px] h-[40px]  bg-red-500 rounded-lg px-5 pl-5 text-white"
-              >
-                Add to Basket
-              </button>
               <div className="flex items-center text-neutral-400 mt-4 gap-3">
                 <VscCopilotSuccess className="w-[22px] h-[22px] text-neutral-400 gap-2 " />
                 <span>Sadrtel 18-month warranty</span>
