@@ -60,7 +60,7 @@ function ProductsDe({ data }) {
     if (!cartItem) return;
     if (cartItem.quantity >= (selectedVariant?.stock ?? 1)) return;
     updateCartItem({
-      cartItemId: cartItem.id,
+      itemId: cartItem.id,
       quantity: cartItem.quantity + 1,
     });
   };
@@ -72,7 +72,7 @@ function ProductsDe({ data }) {
     }
 
     updateCartItem({
-      cartItemId: cartItem.id,
+      itemId: cartItem.id,
       quantity: cartItem.quantity - 1,
     });
   };

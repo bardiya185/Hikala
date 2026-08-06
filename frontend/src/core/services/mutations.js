@@ -60,8 +60,8 @@ export const useAddProductsBasket = () => {
 export const useUpdateCartItem = () => {
   const queryClient = useQueryClient();
 
-  const mutationFn = ({ cartItemId, quantity }) =>
-    api.put(`/api/cart/items/${cartItemId}`, { quantity });
+  const mutationFn = ({ itemId, quantity }) =>
+    api.put(`/api/cart/items/${itemId}`, { quantity });
 
   const onSuccess = () => {
     queryClient.invalidateQueries({ queryKey: ["cart"],refetchType:"active" });
