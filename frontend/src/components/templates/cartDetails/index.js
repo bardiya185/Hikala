@@ -31,7 +31,7 @@ export default function CartDetails() {
       });
       return;
     }
-    updateCartItem({ itemId: item.id,  quantity: item.quantity + 1 });
+    updateCartItem({ itemId: item.id,  quantity: item.quantity - 1 });
   };
 
   const handleRemove = (item) => {
