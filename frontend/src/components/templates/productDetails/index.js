@@ -19,6 +19,16 @@ import { FaRegStar } from "react-icons/fa";
 import { BsDot } from "react-icons/bs";
 import ViewDetailsButton from "@/components/atom/ViewDetailsButton";
 import ProductMoreDetials from "@/components/organisms/ProductMoreDetials";
+import {
+  useAddProductsBasket,
+  useRemoveCartItem,
+  useUpdateCartItem,
+} from "@/core/services/mutations";
+import toast from "react-hot-toast";
+import { useCart } from "@/core/services/queries";
+import { Minus } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { Plus } from "lucide-react";
 
 gsap.registerPlugin(SplitText);
 
@@ -26,7 +36,66 @@ function ProductsDe({ data }) {
   const [selectedVariant, setSelectedVariant] = useState(
     data?.variants?.[0] || null,
   );
+
+  const [quantity, setQuantity] = useState(1);
+
   console.log(data);
+  const { data: p, isPending, mutate } = useAddProductsBasket();
+
+  console.log("selectv", selectedVariant);
+
+  const { data: cart } = useCart();
+  console.log("cart", cart);
+
+  const { mutate: updateCartItem } = useUpdateCartItem();
+  const { mutate: removeCartItem } = useRemoveCartItem();
+
+  const cartItem = cart?.data?.items?.find(
+    (item) => item?.variant?.id === selectedVariant?.id,
+  );
+
+  console.log("item", cartItem);
+
+  const handleIncrease = () => {
+    if (!cartItem) return;
+    if (cartItem.quantity >= (selectedVariant?.stock ?? 1)) return;
+    updateCartItem({
+      cartItemId: cartItem.id,
+      quantity: cartItem.quantity + 1,
+    });
+  };
+
+  const handleDeacrease = () => {
+    if (cartItem.quantity === 1) {
+      removeCartItem(cartItem.id);
+      return;
+    }
+
+    updateCartItem({
+      cartItemId: cartItem.id,
+      quantity: cartItem.quantity - 1,
+    });
+  };
+
+  useEffect(() => {
+    if (selectedVariant && quantity > selectedVariant.stock) {
+      setQuantity(selectedVariant.stock > 0 ? selectedVariant.stock : 1);
+    }
+  }, [selectedVariant]);
+
+  const handleAddToCarts = async () => {
+    if (!data) return;
+    mutate(
+      { product_variant_id: selectedVariant?.id, quantity: quantity },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+          toast.success("add succesfully");
+        },
+      },
+    );
+  };
+
   const colors = [
     { id: 1, name: "White", hex: "#ffffff", borderClass: "border-neutral-300" },
     { id: 2, name: "Black", hex: "#000000", borderClass: "border-black" },
@@ -145,7 +214,7 @@ function ProductsDe({ data }) {
                   </div>
                 </div>
               </div>
-              <ViewDetailsButton/>
+              <ViewDetailsButton />
               <div className="  flex mt-5">
                 <IoWarningOutline className=" text-neutral-400" />
 
@@ -238,10 +307,46 @@ function ProductsDe({ data }) {
                 Only 1 item left in stock.
               </span>
             </div>
+            {cartItem ? (
+              <div className="px-5">
+                <div className="flex items-center justify-between w-[310px] h-[40px] px-3 mt-5 bg-red-500 border border-neutral-300 rounded-lg ">
+                  <button onClick={handleDeacrease} className="text-white">
+                    {cartItem.quantity === 1 ? (
+                      <Trash2 size={18} className="text-white" />
+                    ) : (
+                      <Minus className="text-white" size={18} />
+                    )}
+                  </button>
+
+                  <span className="text-sm font-medium text-white">
+                    {cartItem.quantity}
+                  </span>
+
+                  <button
+                    onClick={handleIncrease}
+                    disabled={cartItem.quantity >= selectedVariant?.stock}
+                    className="text-neutral-600 disabled:opacity-30"
+                  >
+                    <Plus size={18} className="text-white" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              
+              <div className="px-5 mt-5">
+                <button
+                  onClick={handleAddToCarts}
+                  disabled={
+                    isPending || !selectedVariant || selectedVariant.stock === 0
+                  }
+                  className="w-[310px] h-[40px] bg-red-500 disabled:opacity-50 rounded-lg px-5 pl-5 text-white"
+                >
+                  {isPending ? "در حال افزودن..." : "Add to Basket"}
+                </button>
+              </div>
+            )}
+
             <div className="px-5 mt-4">
-              <button className="w-[310px] h-[40px]  bg-red-500 rounded-lg px-5 pl-5 text-white">
-                Add to Basket
-              </button>
               <div className="flex items-center text-neutral-400 mt-4 gap-3">
                 <VscCopilotSuccess className="w-[22px] h-[22px] text-neutral-400 gap-2 " />
                 <span>Sadrtel 18-month warranty</span>
@@ -263,12 +368,22 @@ function ProductsDe({ data }) {
           <Image src="/icons/support.svg" width={70} height={70} alt="+" />
           <p>24 hours a day ,7 days a week</p>
 
-          <Image src="/icons/cash-on-delivery.svg" width={70} height={70} alt="+" />
+          <Image
+            src="/icons/cash-on-delivery.svg"
+            width={70}
+            height={70}
+            alt="+"
+          />
           <p>Possibility of payment on site</p>
           <Image src="/icons/days-return.svg" width={70} height={70} alt="+" />
           <p>Seven-day return guaratee</p>
 
-          <Image src="/icons/original-products.svg" width={70} height={70} alt="+" />
+          <Image
+            src="/icons/original-products.svg"
+            width={70}
+            height={70}
+            alt="+"
+          />
           <p>Guarantee of authenticity of the product</p>
         </div>
       </div>
