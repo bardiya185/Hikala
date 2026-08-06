@@ -129,7 +129,7 @@ function Header() {
 
         <div className="relative flex items-center gap-7 pr-[20px]">
           <AuthForm />
-          <Link href="/checkout">
+          <Link href="/checkout/cart">
             <div className="p-2 hover:bg-neutral-100 rounded-full transition-colors">
               <MdShoppingCartCheckout className="w-[24px] h-[24px] text-neutral-700" />
             </div>
