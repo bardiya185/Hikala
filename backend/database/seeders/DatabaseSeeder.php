@@ -13,11 +13,13 @@ class DatabaseSeeder extends Seeder
             CitySeeder::class,     
             ProductDatabaseSeeder::class,  
             ShippingFeatureSeeder::class,  
+            DiscountCampaignSeeder::class,
             DiscountSeeder::class,
             CouponSeeder::class,
             RolePermissionSeeder::class,
             BannerPositionSeeder::class,
-            BannerSeeder::class
+            BannerSeeder::class,
+            ReviewSeeder::class,
 
         ]);
     }

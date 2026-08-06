@@ -145,6 +145,8 @@ function Products({ data, current_sort, current_sortorder }) {
                         </h3>
                         <div className="flex items-center shrink-0 gap-1">
                           <ReactStars
+
+
                             count={1}
                             value={product?.rating || 0}
                             size={18}

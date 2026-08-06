@@ -44,6 +44,11 @@ class ProductResource extends JsonResource
 
             'discounts' => $this->whenLoaded('discounts'),
            
+           'reviews_count' => $this->whenCounted('approvedReviews'),
+            'reviews' => ReviewResource::collection(
+                $this->whenLoaded('approvedReviews')
+            ),
+           
         ];
     }
 }

@@ -2,64 +2,56 @@
 
 namespace App\Enums;
 
-/**
- * 🚀 Shipping Feature Types
- * 
- * Features that a product variant supports
- * (Display only - no cost calculation)
- */
 enum ShippingFeatureType: string
 {
-    case FAST     = 'fast';      // Fast delivery available
-    case SAME_DAY = 'same_day';  // Same day delivery
-    case FREE     = 'free';      // Free shipping option
-    case STANDARD = 'standard';  // Standard shipping
-    
+    case FAST     = 'fast';        // 1 روز آماده‌سازی
+    case SAME_DAY = 'same_day';    // 0 روز (همان روز)
+    case FREE     = 'free';        // 3 روز
+    case STANDARD = 'standard';    // 5 روز
 
-    /**
-     * 🏷️ Display label
-     */
     public function label(): string
     {
         return match($this) {
-            self::FAST     => 'Fast Delivery',
+            self::FAST     => 'Fast Delivery (1 day)',
             self::SAME_DAY => 'Same Day Delivery',
-            self::FREE     => 'Free Shipping',
-            self::STANDARD => 'Standard Shipping',
+            self::FREE     => 'Free Shipping (3-5 days)',
+            self::STANDARD => 'Standard (5-7 days)',
         };
     }
 
     /**
-     * 🎨 UI icon
+     * 📅 حداقل روز آماده‌سازی
      */
+    public function minPreparationDays(): int
+    {
+        return match($this) {
+            self::SAME_DAY => 0,   // امروز
+            self::FAST     => 1,   // فردا
+            self::FREE     => 3,   // 3 روز
+            self::STANDARD => 5,   // 5 روز
+        };
+    }
+
+    /**
+     * 📅 حداکثر روز آماده‌سازی
+     */
+    public function maxPreparationDays(): int
+    {
+        return match($this) {
+            self::SAME_DAY => 0,   
+            self::FAST     => 1,   
+            self::FREE     => 5,   
+            self::STANDARD => 7,   
+        };
+    }
+
     public function icon(): string
     {
         return match($this) {
-            self::FAST     => '⚡',
-            self::SAME_DAY => '🚀',
+            self::SAME_DAY => '⚡',
+            self::FAST     => '🚀',
             self::FREE     => '🎁',
             self::STANDARD => '📦',
         };
-    }
-
-    /**
-     * 🎨 UI color
-     */
-    public function color(): string
-    {
-        return match($this) {
-            self::FAST     => 'orange',
-            self::SAME_DAY => 'red',
-            self::FREE     => 'green',
-            self::STANDARD => 'blue',
-        };
-    }
-
-    /**
-     * 📋 All values
-     */
-    public static function values(): array
-    {
-        return array_column(self::cases(), 'value');
     }
 }

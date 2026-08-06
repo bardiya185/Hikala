@@ -52,8 +52,8 @@ class AddressController extends Controller
                                     new OA\Property(property: "id", type: "integer", example: 1),
                                     new OA\Property(property: "user_id", type: "integer", example: 5),
                                     new OA\Property(property: "title", type: "string", example: "Home"),
-                                    new OA\Property(property: "recipient_name", type: "string", example: "John Doe"),
-                                    new OA\Property(property: "recipient_phone", type: "string", example: "09123456789"),
+                                    new OA\Property(property: "receiver_name", type: "string", example: "John Doe"),
+                                    new OA\Property(property: "receiver_mobile", type: "string", example: "09123456789"),
                                     new OA\Property(property: "province_id", type: "integer", example: 8),
                                     new OA\Property(property: "city_id", type: "integer", example: 120),
                                     new OA\Property(property: "address", type: "string", example: "Valiasr St, No. 123"),
@@ -154,13 +154,13 @@ class AddressController extends Controller
                         description: "Address title (e.g., Home, Work)"
                     ),
                     new OA\Property(
-                        property: "recipient_name",
+                        property: "receiver_name",
                         type: "string",
                         example: "John Doe",
                         description: "Full name of the recipient"
                     ),
                     new OA\Property(
-                        property: "recipient_phone",
+                        property: "receiver_mobile",
                         type: "string",
                         example: "09123456789",
                         description: "Phone number of the recipient"
@@ -246,8 +246,8 @@ class AddressController extends Controller
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
                                 new OA\Property(property: "title", type: "string", example: "Home"),
-                                new OA\Property(property: "recipient_name", type: "string", example: "John Doe"),
-                                new OA\Property(property: "recipient_phone", type: "string", example: "09123456789"),
+                                new OA\Property(property: "receiver_name", type: "string", example: "John Doe"),
+                                new OA\Property(property: "receiver_mobile", type: "string", example: "09123456789"),
                                 new OA\Property(property: "address", type: "string", example: "Valiasr St, No. 123"),
                                 new OA\Property(property: "is_default", type: "boolean", example: true),
                             ]
@@ -310,8 +310,8 @@ class AddressController extends Controller
                             properties: [
                                 new OA\Property(property: "id", type: "integer", example: 1),
                                 new OA\Property(property: "title", type: "string", example: "Home"),
-                                new OA\Property(property: "recipient_name", type: "string", example: "John Doe"),
-                                new OA\Property(property: "recipient_phone", type: "string", example: "09123456789"),
+                                new OA\Property(property: "receiver_name", type: "string", example: "John Doe"),
+                                new OA\Property(property: "receiver_mobile", type: "string", example: "09123456789"),
                                 new OA\Property(property: "province_id", type: "integer", example: 8),
                                 new OA\Property(property: "city_id", type: "integer", example: 120),
                                 new OA\Property(property: "address", type: "string", example: "Valiasr St, No. 123"),
@@ -400,13 +400,13 @@ class AddressController extends Controller
                         description: "Address title"
                     ),
                     new OA\Property(
-                        property: "recipient_name",
+                        property: "receiver_name",
                         type: "string",
                         example: "Jane Doe",
                         description: "Recipient full name"
                     ),
                     new OA\Property(
-                        property: "recipient_phone",
+                        property: "receiver_mobile",
                         type: "string",
                         example: "09129876543",
                         description: "Recipient phone number"

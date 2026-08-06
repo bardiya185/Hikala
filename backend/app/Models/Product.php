@@ -20,6 +20,10 @@ class Product extends Model
         'sort_order',
         'is_active',
     ];
+    protected $casts = [
+        'rating' => 'float',
+    ];
+
 
     public function brand()
     {
@@ -42,13 +46,23 @@ class Product extends Model
         return $this->belongsToMany(Category::class);
     }
 
-    public function discounts()
-{
-    return $this->morphToMany(
-        Discount::class,
-        'discountable'
-    );
-}
+            public function discounts()
+        {
+            return $this->morphToMany(
+                Discount::class,
+                'discountable'
+            );
+        }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->hasMany(Review::class)->where('status', 'approved');
+    }
+
 
     use HasFactory;
 }

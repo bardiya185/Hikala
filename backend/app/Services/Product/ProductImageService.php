@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\ProductImage;
+namespace App\Services\Product;
 
 use App\Models\Product;
 use App\Models\ProductImage;

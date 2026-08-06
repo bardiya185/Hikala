@@ -61,11 +61,11 @@
                                                         "type": "string",
                                                         "example": "Home"
                                                     },
-                                                    "recipient_name": {
+                                                    "receiver_name": {
                                                         "type": "string",
                                                         "example": "John Doe"
                                                     },
-                                                    "recipient_phone": {
+                                                    "receiver_mobile": {
                                                         "type": "string",
                                                         "example": "09123456789"
                                                     },
@@ -248,12 +248,12 @@
                                         "example": "Home",
                                         "nullable": true
                                     },
-                                    "recipient_name": {
+                                    "receiver_name": {
                                         "description": "Full name of the recipient",
                                         "type": "string",
                                         "example": "John Doe"
                                     },
-                                    "recipient_phone": {
+                                    "receiver_mobile": {
                                         "description": "Phone number of the recipient",
                                         "type": "string",
                                         "example": "09123456789"
@@ -337,11 +337,11 @@
                                                     "type": "string",
                                                     "example": "Home"
                                                 },
-                                                "recipient_name": {
+                                                "receiver_name": {
                                                     "type": "string",
                                                     "example": "John Doe"
                                                 },
-                                                "recipient_phone": {
+                                                "receiver_mobile": {
                                                     "type": "string",
                                                     "example": "09123456789"
                                                 },
@@ -428,11 +428,11 @@
                                                     "type": "string",
                                                     "example": "Home"
                                                 },
-                                                "recipient_name": {
+                                                "receiver_name": {
                                                     "type": "string",
                                                     "example": "John Doe"
                                                 },
-                                                "recipient_phone": {
+                                                "receiver_mobile": {
                                                     "type": "string",
                                                     "example": "09123456789"
                                                 },
@@ -569,12 +569,12 @@
                                         "example": "Work",
                                         "nullable": true
                                     },
-                                    "recipient_name": {
+                                    "receiver_name": {
                                         "description": "Recipient full name",
                                         "type": "string",
                                         "example": "Jane Doe"
                                     },
-                                    "recipient_phone": {
+                                    "receiver_mobile": {
                                         "description": "Recipient phone number",
                                         "type": "string",
                                         "example": "09129876543"
@@ -975,7 +975,7 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "ارسال کد OTP",
+                "summary": "Send OTP code",
                 "operationId": "f23a700e9df831a8a1af7bd4c092fcf7",
                 "requestBody": {
                     "required": true,
@@ -1075,11 +1075,11 @@
                     "Auth"
                 ],
                 "summary": "Who Am I",
-                "description": "Get authenticated user information",
+                "description": "Get authenticated user information or auth status",
                 "operationId": "df5ae5103354bd83da5161c94dcd772b",
                 "responses": {
                     "200": {
-                        "description": "User information retrieved successfully"
+                        "description": "Auth status retrieved successfully"
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -3598,6 +3598,193 @@
                 ]
             }
         },
+        "/api/campaigns": {
+            "get": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Get all active campaigns",
+                "operationId": "d0f47c77b3682ddf2c7429c63a0ae952",
+                "responses": {
+                    "200": {
+                        "description": "Campaigns list"
+                    }
+                }
+            }
+        },
+        "/api/campaigns/{slug}": {
+            "get": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Get campaign details by slug",
+                "operationId": "e7f4d4a0b48a951d05a9d14ee267b130",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "flash-sale"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Campaign details"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/api/admin/campaigns": {
+            "get": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "List all campaigns (admin)",
+                "operationId": "e8970aa1c891a27904ba8f0b6e9197aa",
+                "responses": {
+                    "200": {
+                        "description": "All campaigns"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Create new campaign",
+                "operationId": "1faa4df572ad1877c66a25f04e54a4ea",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "slug"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Flash Sale"
+                                    },
+                                    "slug": {
+                                        "type": "string",
+                                        "example": "flash-sale"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "icon": {
+                                        "type": "string",
+                                        "example": "⚡",
+                                        "nullable": true
+                                    },
+                                    "color": {
+                                        "type": "string",
+                                        "example": "#DC2626",
+                                        "nullable": true
+                                    },
+                                    "priority": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "starts_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "ends_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Campaign created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/campaigns/{campaign}": {
+            "get": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Show campaign details",
+                "operationId": "77ac27785b23a795a27a1f2f7194510c",
+                "responses": {
+                    "200": {
+                        "description": "Campaign details"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Update campaign",
+                "operationId": "9e8e1da3590f9bc3e72e187a183673c9",
+                "responses": {
+                    "200": {
+                        "description": "Updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Delete campaign",
+                "operationId": "8924a9017de8b77132cdd0e07ffff86a",
+                "responses": {
+                    "200": {
+                        "description": "Deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/discounts": {
             "get": {
                 "tags": [
@@ -4047,6 +4234,26 @@
                     },
                     "422": {
                         "description": "Order cannot be canceled at this stage"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/orders/delivery/options": {
+            "get": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Get available delivery dates based on cart items",
+                "description": "Returns available delivery dates calculated from cart items shipping features",
+                "operationId": "1a40a927d8364e6f02c08841a4f28a59",
+                "responses": {
+                    "200": {
+                        "description": "Delivery options"
                     }
                 },
                 "security": [
@@ -4584,6 +4791,79 @@
                 ]
             }
         },
+        "/api/products/{product}/related": {
+            "get": {
+                "tags": [
+                    "Products"
+                ],
+                "summary": "Get related products",
+                "description": "Returns similar products based on category, brand and popularity",
+                "operationId": "b7f5d639efe4dbf4ce0cc7df3819e528",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Maximum number of related products",
+                        "schema": {
+                            "type": "integer",
+                            "default": 8,
+                            "maximum": 20,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Related products retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Product"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "source_product_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            }
+        },
         "/api/products/{product}/images": {
             "get": {
                 "tags": [
@@ -5047,6 +5327,734 @@
                         }
                     }
                 }
+            }
+        },
+        "/api/products/{product}/reviews": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Get approved reviews for a product",
+                "description": "Returns paginated list of approved reviews with rating summary and breakdown.",
+                "operationId": "d1acae29ec1886ab7e982aa7021ba3d5",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "rating",
+                        "in": "query",
+                        "description": "Filter by specific rating (1-5)",
+                        "schema": {
+                            "type": "integer",
+                            "example": 5,
+                            "maximum": 5,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Sort field",
+                        "schema": {
+                            "type": "string",
+                            "default": "created_at",
+                            "enum": [
+                                "created_at",
+                                "rating"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "Sort direction",
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Reviews per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "maximum": 50,
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reviews retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Review"
+                                            }
+                                        },
+                                        "rating_summary": {
+                                            "$ref": "#/components/schemas/RatingSummary"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 15
+                                                },
+                                                "has_more": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            }
+        },
+        "/api/reviews": {
+            "post": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Submit a review for a product",
+                "description": "Authenticated user can submit one review per product. The review will be pending until admin approves it. Buyer status is automatically detected.",
+                "operationId": "f9bf17f06508aa2dd6aecbb9771092da",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "product_id",
+                                    "body",
+                                    "rating"
+                                ],
+                                "properties": {
+                                    "product_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "body": {
+                                        "type": "string",
+                                        "example": "This product is excellent quality and works perfectly.",
+                                        "maxLength": 2000,
+                                        "minLength": 10
+                                    },
+                                    "rating": {
+                                        "type": "integer",
+                                        "example": 5,
+                                        "maximum": 5,
+                                        "minimum": 1
+                                    },
+                                    "advantages": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "maxLength": 255
+                                        },
+                                        "example": [
+                                            "High quality",
+                                            "Nice design"
+                                        ],
+                                        "nullable": true
+                                    },
+                                    "disadvantages": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "maxLength": 255
+                                        },
+                                        "example": [
+                                            "Price is a little high"
+                                        ],
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Review submitted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Your review has been submitted and is awaiting approval."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Review"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or duplicate review",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You have already submitted a review for this product."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/reviews/{review}": {
+            "put": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Update your review",
+                "description": "Only the review owner can update it. After update, the review status resets to pending for admin approval.",
+                "operationId": "4fc783c9667c54da3fbb49dd0e41493b",
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "description": "Review ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "body": {
+                                        "type": "string",
+                                        "example": "Updated review text with more details about the product.",
+                                        "maxLength": 2000,
+                                        "minLength": 10
+                                    },
+                                    "rating": {
+                                        "type": "integer",
+                                        "example": 4,
+                                        "maximum": 5,
+                                        "minimum": 1
+                                    },
+                                    "advantages": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "Updated advantage"
+                                        ],
+                                        "nullable": true
+                                    },
+                                    "disadvantages": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "Updated disadvantage"
+                                        ],
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Review updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Your review has been updated and is awaiting approval again."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Review"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Not the review owner",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are not allowed to update this review."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Review not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Delete your review",
+                "description": "Only the review owner can delete it.",
+                "operationId": "ffc33e039e253ec8fc54cf304e8d7e10",
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "description": "Review ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Your review has been deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - Not the review owner",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are not allowed to delete this review."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Review not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/products/{product}/my-review": {
+            "get": {
+                "tags": [
+                    "Reviews"
+                ],
+                "summary": "Get your review for a product",
+                "description": "Returns the authenticated user's review for a specific product. If no review exists, returns null with can_review: true.",
+                "operationId": "d9819f47bfd2024febaf456356678d18",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "description": "Product ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User review retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "oneOf": [
+                                                {
+                                                    "$ref": "#/components/schemas/Review"
+                                                }
+                                            ],
+                                            "nullable": true
+                                        },
+                                        "can_review": {
+                                            "type": "boolean",
+                                            "example": false
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/reviews": {
+            "get": {
+                "tags": [
+                    "Admin Reviews"
+                ],
+                "summary": "List all reviews (Admin)",
+                "description": "Returns all reviews with filtering by status and product. Ordered by latest first.",
+                "operationId": "9d702ae063d88bc9356b21cff5954d31",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by review status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "approved",
+                                "rejected"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "product_id",
+                        "in": "query",
+                        "description": "Filter by product ID",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Reviews per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20,
+                            "maximum": 100,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reviews list retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Review"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "has_more": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/reviews/{review}/approve": {
+            "post": {
+                "tags": [
+                    "Admin Reviews"
+                ],
+                "summary": "Approve a review (Admin)",
+                "description": "Approves a pending or rejected review. Product rating is recalculated automatically.",
+                "operationId": "a83e32a288333d79b47e3d89410025cf",
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "description": "Review ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review approved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Review approved successfully."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Review"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Review not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/reviews/{review}/reject": {
+            "post": {
+                "tags": [
+                    "Admin Reviews"
+                ],
+                "summary": "Reject a review (Admin)",
+                "description": "Rejects a pending or approved review. Product rating is recalculated automatically.",
+                "operationId": "761960e41e174dc4144351348f67e30d",
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "description": "Review ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review rejected successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Review rejected successfully."
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Review"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "404": {
+                        "description": "Review not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/api/roles": {
@@ -5834,6 +6842,123 @@
                 },
                 "type": "object"
             },
+            "Review": {
+                "title": "Review",
+                "description": "Product review model",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "body": {
+                        "type": "string",
+                        "example": "This product is excellent quality and works perfectly."
+                    },
+                    "rating": {
+                        "type": "integer",
+                        "example": 5,
+                        "maximum": 5,
+                        "minimum": 1
+                    },
+                    "advantages": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "High quality",
+                            "Nice design"
+                        ],
+                        "nullable": true
+                    },
+                    "disadvantages": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "Price is a little high"
+                        ],
+                        "nullable": true
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "approved",
+                        "enum": [
+                            "pending",
+                            "approved",
+                            "rejected"
+                        ]
+                    },
+                    "is_buyer": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "user": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 3
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "John Doe"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "RatingSummary": {
+                "title": "Rating Summary",
+                "description": "Product rating statistics",
+                "properties": {
+                    "average": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 4.2
+                    },
+                    "total": {
+                        "type": "integer",
+                        "example": 15
+                    },
+                    "breakdown": {
+                        "properties": {
+                            "5": {
+                                "type": "integer",
+                                "example": 7
+                            },
+                            "4": {
+                                "type": "integer",
+                                "example": 4
+                            },
+                            "3": {
+                                "type": "integer",
+                                "example": 2
+                            },
+                            "2": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "1": {
+                                "type": "integer",
+                                "example": 1
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
             "Role": {
                 "required": [
                     "id",
@@ -5889,6 +7014,10 @@
             "description": "Coupon code management"
         },
         {
+            "name": "Discount Campaigns",
+            "description": "Manage discount campaigns"
+        },
+        {
             "name": "Orders",
             "description": "Order management for customers"
         },
@@ -5899,6 +7028,14 @@
         {
             "name": "Product Images",
             "description": "Manage product images"
+        },
+        {
+            "name": "Reviews",
+            "description": "Product review management"
+        },
+        {
+            "name": "Admin Reviews",
+            "description": "Admin review moderation"
         },
         {
             "name": "Addresses",

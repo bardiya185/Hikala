@@ -16,6 +16,7 @@ use App\Services\Coupon\CouponUsageService;
 use Illuminate\Support\Facades\DB;
 use App\Enums\ShippingMethod;
 use App\Services\Shipping\ShippingCalculator;
+use App\Enums\DeliveryTimeSlot;
 
 /**
  * 🛒 Converts Cart → Order
@@ -31,7 +32,7 @@ class OrderCreationService
         private CartService $cartService,
         private DiscountUsageService $discountUsageService,
         private CouponUsageService $couponUsageService,
-        private ShippingCalculator $shippingCalculator,  // ⬅️ اضافه
+        private ShippingCalculator $shippingCalculator, 
     ) {}
 
     /**
@@ -43,7 +44,9 @@ class OrderCreationService
         Address $address,
         PaymentMethod $paymentMethod,
         ?string $customerNote = null,
-        ShippingMethod $shippingMethod = ShippingMethod::STANDARD  // ⬅️ اضافه
+        ShippingMethod $shippingMethod = ShippingMethod::STANDARD , 
+        ?string $preferredDeliveryDate = null,     
+        ?DeliveryTimeSlot $preferredTimeSlot = null 
     ): Order {
         
         $this->validateCart($cart);
@@ -51,12 +54,12 @@ class OrderCreationService
         $this->validateStock($cart);
         
         return DB::transaction(function () use (
-            $cart, $user, $address, $paymentMethod, $customerNote, $shippingMethod
+            $cart, $user, $address, $paymentMethod, $customerNote, $shippingMethod, $preferredDeliveryDate, $preferredTimeSlot
         ) {
             
             // 1️⃣ ساخت سفارش (با shipping method)
             $order = $this->createOrder(
-                $cart, $user, $address, $paymentMethod, $customerNote, $shippingMethod
+                $cart, $user, $address, $paymentMethod, $customerNote, $shippingMethod,$preferredDeliveryDate, $preferredTimeSlot 
             );
             
             // 2️⃣ کپی آیتم‌ها
@@ -114,7 +117,9 @@ class OrderCreationService
         Address $address,
         PaymentMethod $paymentMethod,
         ?string $customerNote,
-        ShippingMethod $shippingMethod = ShippingMethod::STANDARD
+        ShippingMethod $shippingMethod = ShippingMethod::STANDARD,
+        ?string $preferredDeliveryDate = null,
+        ?DeliveryTimeSlot $preferredTimeSlot = null
     ): Order {
         
         $subtotal = $cart->subtotal;
@@ -144,6 +149,8 @@ class OrderCreationService
             'total_amount' => max(0, $totalAmount),
             'coupon_id' => $cart->coupon_id,
             'customer_note' => $customerNote,
+            'preferred_delivery_date' => $preferredDeliveryDate,
+            'preferred_delivery_time_slot' => $preferredTimeSlot,
         ]);
     }
 

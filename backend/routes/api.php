@@ -1,88 +1,94 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\BrandController;
-use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\RoleController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\AttributeController;
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\ProductImageController;
 use App\Http\Controllers\Api\AddressController;
-use App\Http\Controllers\Api\ProvinceController;
-use App\Http\Controllers\Api\CityController;
-use App\Http\Controllers\Api\DiscountController;
-use App\Http\Controllers\Api\ProductVariantShippingFeatureController;
+use App\Http\Controllers\Api\AttributeController;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BannerController;
 use App\Http\Controllers\Api\BannerPositionController;
+use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\CouponController;
+use App\Http\Controllers\Api\DiscountController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProductImageController;
+use App\Http\Controllers\Api\ProductVariantShippingFeatureController;
+use App\Http\Controllers\Api\ProvinceController;
+use App\Http\Controllers\Api\RoleController;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Api\ReviewController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\DiscountCampaignController;
 
 /*
-|--------------------------------------------------------------------------
-| 🌐 PUBLIC ROUTES (بدون احراز هویت)
-|--------------------------------------------------------------------------
+|==================================================================================
+| 🌐 PUBLIC ROUTES (No Authentication)
+|==================================================================================
 */
 
-// ===== Authentication =====
+// ===== 🔐 Authentication =====
 Route::post('/send-otp', [AuthController::class, 'sendOtp']);
 Route::post('/check-otp', [AuthController::class, 'checkOtp']);
 Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
 
-// ===== Products =====
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/products/{product}', [ProductController::class, 'show']);
-Route::get('/products/{product}/images', [ProductImageController::class, 'index']);
+// ===== 📦 Products (Read) =====
+Route::prefix('products')->group(function () {
+    Route::get('/', [ProductController::class, 'index']);
+    Route::get('/{product}', [ProductController::class, 'show']);
+    Route::get('/{product}/images', [ProductImageController::class, 'index']);
+    Route::get('/{product}/related', [ProductController::class, 'related']); 
+});
 
-// ===== Categories =====
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/categories/all', [CategoryController::class, 'all']);
-Route::get('/categories/menu', [CategoryController::class, 'menu']);
-Route::get('/categories/{category}', [CategoryController::class, 'show']);
+// ===== 🗂️ Categories (Read) =====
+Route::prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'index']);
+    Route::get('/menu', [CategoryController::class, 'menu']);
+    Route::get('/{category}', [CategoryController::class, 'show']);
+});
 
-// ===== Brands =====
-Route::get('/brands', [BrandController::class, 'index']);
-Route::get('/brands/{brand}', [BrandController::class, 'show']);
+// ===== 🏷️ Brands (Read) =====
+Route::prefix('brands')->group(function () {
+    Route::get('/', [BrandController::class, 'index']);
+    Route::get('/{brand}', [BrandController::class, 'show']);
+});
 
-// ===== Attributes =====
-Route::get('/attributes', [AttributeController::class, 'index']);
-Route::get('/attributes/{attribute}', [AttributeController::class, 'show']);
+// ===== 🎨 Attributes (Read) =====
+Route::prefix('attributes')->group(function () {
+    Route::get('/', [AttributeController::class, 'index']);
+    Route::get('/{attribute}', [AttributeController::class, 'show']);
+});
 
-// ===== Locations =====
+// ===== 🌍 Locations =====
 Route::get('/provinces', [ProvinceController::class, 'index']);
 Route::get('/cities', [CityController::class, 'index']);
 
-// ===== Shipping Features (public read) =====
+// ===== 🚚 Shipping Features (Read) =====
 Route::get('variants/{variant}/shipping-features', [ProductVariantShippingFeatureController::class, 'index']);
 Route::get('shipping-features/{feature}', [ProductVariantShippingFeatureController::class, 'show']);
 
-// ===== Discounts (public read) =====
+// ===== 🎁 Discounts (Read) =====
 Route::get('/discounts', [DiscountController::class, 'index']);
 Route::get('/discounts/{discount}', [DiscountController::class, 'show']);
 
-// ===== Banners =====
+// ===== 🖼️ Banners (Read) =====
 Route::prefix('banners')->group(function () {
     Route::get('/', [BannerController::class, 'all']);
     Route::get('/position/{key}', [BannerController::class, 'byPosition']);
     Route::post('/{banner}/click', [BannerController::class, 'trackClick']);
 });
 
-// ===== Coupon Validation =====
+// ===== 🎫 Coupon Validation =====
 Route::post('/coupons/validate', [CouponController::class, 'validate']);
 
-
 /*
-|--------------------------------------------------------------------------
-| 🛒 CART ROUTES (Optional Auth - مهمان + کاربر)
-|--------------------------------------------------------------------------
-| با token: به عنوان کاربر
-| با X-Session-Id header: به عنوان مهمان
+|==================================================================================
+| 🛒 CART ROUTES (Optional Auth - Guest + User)
+|==================================================================================
 */
 
 Route::prefix('cart')->middleware('optional.auth')->group(function () {
-    
     Route::get('/', [CartController::class, 'index']);
     Route::delete('/', [CartController::class, 'clear']);
 
@@ -94,112 +100,130 @@ Route::prefix('cart')->middleware('optional.auth')->group(function () {
     Route::delete('/coupon', [CartController::class, 'removeCoupon']);
 });
 
+// ===== 🎯 Discount Campaigns (Public) =====
+Route::prefix('campaigns')->group(function () {
+    Route::get('/', [DiscountCampaignController::class, 'index']);
+    Route::get('/{slug}', [DiscountCampaignController::class, 'showBySlug']);
+});
+
+// ===== ⭐ Product Reviews (Public) =====
+Route::prefix('products/{product}/reviews')->group(function () {
+    Route::get('/', [ReviewController::class, 'index']);
+});
 
 /*
-|--------------------------------------------------------------------------
-| 🔒 PROTECTED ROUTES (فقط کاربران لاگین‌کرده)
-|--------------------------------------------------------------------------
+|==================================================================================
+| 🔒 PROTECTED ROUTES (Authenticated Users)
+|==================================================================================
 */
 
 Route::middleware('auth:sanctum')->group(function () {
     
-    // ===== User =====
+    // ===== 👤 User =====
     Route::get('/user', fn(Request $request) => $request->user());
     Route::get('/who-am-i', [AuthController::class, 'whoAmI']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    // ===== Products Management =====
+    // ===== 🛒 Cart Merge =====
+    Route::post('/cart/merge', [CartController::class, 'mergeCart']);
+
+    // ===== 📦 Products Management =====
     Route::apiResource('products', ProductController::class)
         ->except(['index', 'show']);
 
-    // ===== Product Images =====
-    Route::post('/products/{product}/images', [ProductImageController::class, 'store']);
-    Route::delete('/products/{product}/images/{image}', [ProductImageController::class, 'destroy'])->scopeBindings();
-    Route::put('/products/{product}/images/{image}/main', [ProductImageController::class, 'setMain'])->scopeBindings();
-    Route::put('/products/{product}/images/reorder', [ProductImageController::class, 'reorder'])->scopeBindings();
+    // ===== 🖼️ Product Images =====
+    Route::prefix('products/{product}/images')->scopeBindings()->group(function () {
+        Route::post('/', [ProductImageController::class, 'store']);
+        Route::delete('/{image}', [ProductImageController::class, 'destroy']);
+        Route::put('/{image}/main', [ProductImageController::class, 'setMain']);
+        Route::put('/reorder', [ProductImageController::class, 'reorder']);
+    });
 
-    // ===== Categories Management =====
+    // ===== 🗂️ Categories Management =====
     Route::apiResource('categories', CategoryController::class)
         ->except(['index', 'show']);
 
-    // ===== Brands Management =====
+    // ===== 🏷️ Brands Management =====
     Route::apiResource('brands', BrandController::class)
         ->except(['index', 'show']);
 
-    // ===== Attributes Management =====
+    // ===== 🎨 Attributes Management =====
     Route::apiResource('attributes', AttributeController::class)
         ->except(['index', 'show']);
 
-    // ===== Addresses =====
+    // ===== 📍 Addresses =====
     Route::apiResource('addresses', AddressController::class);
 
-    // ===== Roles =====
+    // ===== 👥 Roles =====
     Route::apiResource('roles', RoleController::class);
 
-    // ===== Discounts Management =====
-    Route::post('/discounts', [DiscountController::class, 'store']);
-    Route::put('/discounts/{discount}', [DiscountController::class, 'update']);
-    Route::delete('/discounts/{discount}', [DiscountController::class, 'destroy']);
+    // ===== 🎁 Discounts Management =====
+    Route::prefix('discounts')->group(function () {
+        Route::post('/', [DiscountController::class, 'store']);
+        Route::put('/{discount}', [DiscountController::class, 'update']);
+        Route::delete('/{discount}', [DiscountController::class, 'destroy']);
+    });
 
-    // ===== Shipping Features Management =====
+    // ===== 🚚 Shipping Features Management =====
     Route::post('variants/{variant}/shipping-features', [ProductVariantShippingFeatureController::class, 'store']);
     Route::put('shipping-features/{feature}', [ProductVariantShippingFeatureController::class, 'update']);
     Route::delete('shipping-features/{feature}', [ProductVariantShippingFeatureController::class, 'destroy']);
 
-    // ===== Cart Merge (فقط برای کاربران لاگین‌کرده) =====
-    Route::post('cart/merge', [CartController::class, 'mergeCart']);
+    // ===== ⭐ Reviews (User) =====
+    Route::post('/reviews', [ReviewController::class, 'store']);
+    Route::put('/reviews/{review}', [ReviewController::class, 'update']);
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
+    Route::get('/products/{product}/my-review', [ReviewController::class, 'myReview']);
+
+    // ===== 📦 Order Routes =====
+    Route::prefix('orders')->group(function () {
+        Route::post('/checkout', [OrderController::class, 'checkout']);
+        Route::get('/', [OrderController::class, 'index']);
+        Route::get('/{order}', [OrderController::class, 'show']);
+        Route::post('/{order}/cancel', [OrderController::class, 'cancel']);
+        Route::post('/{order}/refund', [OrderController::class, 'refund']);
+        Route::post('/{order}/pay', [OrderController::class, 'pay']);
+    });
+    
+    Route::get('/delivery/options', [OrderController::class, 'deliveryOptions']);
 
     /*
-    |--------------------------------------------------------------------------
+    |------------------------------------------------------------------
     | 🛡️ ADMIN ROUTES
-    |--------------------------------------------------------------------------
+    |------------------------------------------------------------------
     */
     
     Route::prefix('admin')->group(function () {
         
-        // ===== Banners =====
-        Route::get('banners', [BannerController::class, 'adminIndex']);
-        Route::post('banners', [BannerController::class, 'store']);
-        Route::get('banners/{banner}', [BannerController::class, 'show']);
-        Route::post('banners/{banner}', [BannerController::class, 'update']);
-        Route::delete('banners/{banner}', [BannerController::class, 'destroy']);
+        // ===== 🖼️ Banners =====
+        Route::prefix('banners')->group(function () {
+            Route::get('/', [BannerController::class, 'adminIndex']);
+            Route::post('/', [BannerController::class, 'store']);
+            Route::get('/{banner}', [BannerController::class, 'show']);
+            Route::post('/{banner}', [BannerController::class, 'update']);
+            Route::delete('/{banner}', [BannerController::class, 'destroy']);
+        });
         
-        // ===== Banner Positions =====
+        // ===== 📍 Banner Positions =====
         Route::apiResource('banner-positions', BannerPositionController::class);
         
-        // ===== Coupons =====
-        Route::prefix('coupons')->group(function () {
-            Route::get('/', [CouponController::class, 'index']);
-            Route::post('/', [CouponController::class, 'store']);
-            Route::get('/{coupon}', [CouponController::class, 'show']);
-            Route::put('/{coupon}', [CouponController::class, 'update']);
-            Route::delete('/{coupon}', [CouponController::class, 'destroy']);
-        });
-    });
+        // ===== 🎫 Coupons =====
+        Route::apiResource('coupons', CouponController::class);
 
-    /*
-    |--------------------------------------------------------------------------
-    | 📦 ORDER ROUTES
-    |--------------------------------------------------------------------------
-    */
-    
-    Route::prefix('orders')->group(function () {
-        // 🛒 Checkout (تبدیل سبد به سفارش)
-        Route::post('/checkout', [OrderController::class, 'checkout']);
-        
-        // 📋 لیست سفارش‌های کاربر
-        Route::get('/', [OrderController::class, 'index']);
-        
-        // 🔍 جزئیات یه سفارش
-        Route::get('/{order}', [OrderController::class, 'show']);
-        
-        // ❌ لغو سفارش
-        Route::post('/{order}/cancel', [OrderController::class, 'cancel']);
-        
-        // 🔄 درخواست مرجوع
-        Route::post('/{order}/refund', [OrderController::class, 'refund']);
-        
-        // 💳 پرداخت (Fake)
-        Route::post('/{order}/pay', [OrderController::class, 'pay']);
+        // ===== 🎯 Discount Campaigns =====
+        Route::prefix('campaigns')->group(function () {
+            Route::get('/', [DiscountCampaignController::class, 'adminIndex']);
+            Route::post('/', [DiscountCampaignController::class, 'store']);
+            Route::get('/{campaign}', [DiscountCampaignController::class, 'show']);
+            Route::put('/{campaign}', [DiscountCampaignController::class, 'update']);
+            Route::delete('/{campaign}', [DiscountCampaignController::class, 'destroy']);
+        });
+
+        // ===== ⭐ Reviews Management =====
+        Route::prefix('reviews')->group(function () {
+            Route::get('/', [ReviewController::class, 'adminIndex']);
+            Route::post('/{review}/approve', [ReviewController::class, 'approve']);
+            Route::post('/{review}/reject', [ReviewController::class, 'reject']);
+        });
     });
 });
