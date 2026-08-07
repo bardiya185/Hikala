@@ -21,6 +21,7 @@ import {
   useGetSubCategory,
 } from "@/core/services/queries";
 import SearchBar from "@/components/atom/SearchBar";
+import MiniCart from "../miniCart";
 
 const iconMap = {
   mobile: CiMobile1,
@@ -42,6 +43,7 @@ function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeId, setActiveId] = useState(null);
   const closeTimer = useRef(null);
+  const [isOpenMiniCart,setIsOpenMiniCart] = useState(false)
 
   const { data: cart, isLoading } = useCart()
 
@@ -127,7 +129,7 @@ function Header() {
           </div>
         </div>
 
-        <div className="relative flex items-center gap-7 pr-[20px]">
+        <div onMouseEnter={()=>setIsOpen(true)} onMouseLeave={()=>setIsOpen(false)} className="relative flex items-center gap-7 pr-[20px]">
           <AuthForm />
           <Link href="/checkout/cart">
             <div className="p-2 hover:bg-neutral-100 rounded-full transition-colors">
@@ -137,6 +139,7 @@ function Header() {
           {totalCount > 99 ? "+99" : totalCount}
         </span>
           </Link>
+          {isOpen && <MiniCart/>}
         </div>
       </div>
 
