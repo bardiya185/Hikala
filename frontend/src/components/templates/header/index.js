@@ -43,7 +43,7 @@ function Header() {
   const [activeId, setActiveId] = useState(null);
   const closeTimer = useRef(null);
 
-  const { data: cart, isLoading } = useCart;
+  const { data: cart, isLoading } = useCart()
 
   const totalCount =
     cart?.data?.items?.reduce((sum, item) => sum + (item?.quantity || 0), 0) ||
