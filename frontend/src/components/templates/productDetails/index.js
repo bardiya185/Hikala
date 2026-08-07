@@ -29,6 +29,7 @@ import { useCart } from "@/core/services/queries";
 import { Minus } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { Plus } from "lucide-react";
+import { CircularProgress, RotatingLines } from "react-loader-spinner";
 
 gsap.registerPlugin(SplitText);
 
@@ -42,12 +43,13 @@ function ProductsDe({ data }) {
   console.log(data);
   const { data: p, isPending, mutate } = useAddProductsBasket();
 
+
   console.log("selectv", selectedVariant);
 
   const { data: cart } = useCart();
   console.log("cart", cart);
 
-  const { mutate: updateCartItem } = useUpdateCartItem();
+  const { mutate: updateCartItem, isPending: up } = useUpdateCartItem();
   const { mutate: removeCartItem } = useRemoveCartItem();
 
   const cartItem = cart?.data?.items?.find(
@@ -58,11 +60,15 @@ function ProductsDe({ data }) {
 
   const handleIncrease = () => {
     if (!cartItem) return;
+    if(cartItem) {
+      updateCartItem({itemId:cartItem.id ,quantity:cartItem.quantity + 1})
+    }else{
+      useAddProductsBasket({product_variant_id:selectedVariant?.id, quantity:1})
+    }
     if (cartItem.quantity >= (selectedVariant?.stock ?? 1)) return;
-    updateCartItem({
-      itemId: cartItem.id,
-      quantity: cartItem.quantity + 1,
-    });
+
+
+    
   };
 
   const handleDeacrease = () => {
@@ -317,10 +323,23 @@ function ProductsDe({ data }) {
                       <Minus className="text-white" size={18} />
                     )}
                   </button>
-
-                  <span className="text-sm font-medium text-white">
-                    {cartItem.quantity}
-                  </span>
+                  {!up ? (
+                    <span className="text-sm font-medium text-white">
+                      {cartItem.quantity}
+                    </span>
+                  ) : (
+                    <RotatingLines
+                      visible={true}
+                      height="30"
+                      width="30"
+                      color="white"
+                      strokeWidth="5"
+                      animationDuration="0.75"
+                      ariaLabel="rotating-lines-loading"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                    />
+                  )}
 
                   <button
                     onClick={handleIncrease}
@@ -332,7 +351,6 @@ function ProductsDe({ data }) {
                 </div>
               </div>
             ) : (
-              
               <div className="px-5 mt-5">
                 <button
                   onClick={handleAddToCarts}

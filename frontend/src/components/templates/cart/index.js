@@ -1,8 +1,9 @@
 "use client";
 import { useCart } from "@/core/services/queries";
 import { Trash2, Minus, Plus } from "lucide-react";
+import { RotatingLines } from "react-loader-spinner";
 
-export default function CartItem({ item, onIncrease, onDecrease, onRemove }) {
+export default function CartItem({isPending, item, onIncrease, onDecrease, onRemove }) {
   const{data:ll} = useCart()
   console.log(ll?.data)
   console.log(item)
@@ -68,10 +69,20 @@ export default function CartItem({ item, onIncrease, onDecrease, onRemove }) {
                 <Minus size={16} />
               )}
             </button>
-
-            <span className="text-sm font-bold text-gray-900 w-5 text-center">
+              {!isPending ?(<span className="text-sm font-bold text-gray-900 w-5 text-center">
               {items?.quantity}
-            </span>
+            </span>):(<RotatingLines
+                      visible={true}
+                      height="30"
+                      width="30"
+                      color="red"
+                      strokeWidth="5"
+                      animationDuration="0.75"
+                      ariaLabel="rotating-lines-loading"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                    />)}
+            
 
             <button
               onClick={onIncrease}
