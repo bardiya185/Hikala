@@ -104,6 +104,7 @@ Route::prefix('cart')->middleware('optional.auth')->group(function () {
 Route::prefix('campaigns')->group(function () {
     Route::get('/', [DiscountCampaignController::class, 'index']);
     Route::get('/{slug}', [DiscountCampaignController::class, 'showBySlug']);
+    Route::get('/{slug}/products', [DiscountCampaignController::class, 'products']);
 });
 
 // ===== ⭐ Product Reviews (Public) =====

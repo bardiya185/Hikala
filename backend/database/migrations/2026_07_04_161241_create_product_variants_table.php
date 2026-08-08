@@ -27,6 +27,9 @@ return new class extends Migration
             
                 $table->unsignedInteger('stock')
                     ->default(0);
+
+                $table->unsignedInteger('max_order_quantity')
+                ->default(5);
             
             
                 $table->unsignedInteger('weight')

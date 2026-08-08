@@ -67,21 +67,31 @@ class Banner extends Model
     // ✅ ساخت لینک نهایی
     public function getUrlAttribute(): ?string
     {
-        // لینک سفارشی
+        // اولویت ۱: custom_url
         if ($this->custom_url) {
             return $this->custom_url;
         }
-
-        // لینک به موجودیت
-        if ($this->linkable_type && $this->linkable_id) {
+    
+        // اولویت ۲: linkable با eager load
+        if ($this->linkable) {
             return match ($this->linkable_type) {
-                'App\Models\Product' => "/products/{$this->linkable_id}",
-                'App\Models\Category' => "/category/{$this->linkable_id}",
-                'App\Models\Brand' => "/brand/{$this->linkable_id}",
+                \App\Models\Product::class => "/products/{$this->linkable->slug}",
+                \App\Models\Category::class => "/category/{$this->linkable->slug}",
+                \App\Models\Brand::class => "/brand/{$this->linkable->slug}",
                 default => null,
             };
         }
-
+    
+        // اولویت ۳: فقط ID (اگه linkable load نشده)
+        if ($this->linkable_type && $this->linkable_id) {
+            return match ($this->linkable_type) {
+                \App\Models\Product::class => "/products/{$this->linkable_id}",
+                \App\Models\Category::class => "/category/{$this->linkable_id}",
+                \App\Models\Brand::class => "/brand/{$this->linkable_id}",
+                default => null,
+            };
+        }
+    
         return null;
     }
 

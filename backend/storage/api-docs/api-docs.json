@@ -1397,12 +1397,12 @@
                     }
                 ]
             },
-            "post": {
+            "put": {
                 "tags": [
                     "Banners"
                 ],
-                "summary": "Update banner (use POST with _method=PUT for file upload)",
-                "operationId": "8e1f2f0f0d20500743360b5825797e9f",
+                "summary": "Update banner",
+                "operationId": "e42fe94a5ef3f43d268ab7b3a6aecaaf",
                 "parameters": [
                     {
                         "name": "banner",
@@ -1418,10 +1418,6 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
-                                    "_method": {
-                                        "type": "string",
-                                        "example": "PUT"
-                                    },
                                     "banner_position_id": {
                                         "type": "integer"
                                     },
@@ -1429,10 +1425,46 @@
                                         "type": "string",
                                         "nullable": true
                                     },
+                                    "subtitle": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
                                     "image": {
                                         "type": "string",
                                         "format": "binary",
                                         "nullable": true
+                                    },
+                                    "mobile_image": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "nullable": true
+                                    },
+                                    "alt_text": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "linkable_type": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "linkable_id": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "custom_url": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "background_color": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "text_color": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "sort_order": {
+                                        "type": "integer"
                                     },
                                     "is_active": {
                                         "type": "boolean"
@@ -1449,6 +1481,9 @@
                     },
                     "404": {
                         "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 },
                 "security": [
@@ -3604,7 +3639,8 @@
                     "Discount Campaigns"
                 ],
                 "summary": "Get all active campaigns",
-                "operationId": "d0f47c77b3682ddf2c7429c63a0ae952",
+                "description": "Returns all active campaigns sorted by priority",
+                "operationId": "campaigns.public.index",
                 "responses": {
                     "200": {
                         "description": "Campaigns list"
@@ -3618,7 +3654,7 @@
                     "Discount Campaigns"
                 ],
                 "summary": "Get campaign details by slug",
-                "operationId": "e7f4d4a0b48a951d05a9d14ee267b130",
+                "operationId": "campaigns.public.showBySlug",
                 "parameters": [
                     {
                         "name": "slug",
@@ -3640,16 +3676,202 @@
                 }
             }
         },
+        "/api/campaigns/{slug}/products": {
+            "get": {
+                "tags": [
+                    "Discount Campaigns"
+                ],
+                "summary": "Get products of a specific campaign",
+                "description": "Returns campaign details + its products with filters. Perfect for campaign landing pages.",
+                "operationId": "campaigns.public.products",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Campaign slug (flash-sale, special, weekly, clearance, ...)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "flash-sale"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Filter products by category",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "brand_id",
+                        "in": "query",
+                        "description": "Filter products by brand",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "min_price",
+                        "in": "query",
+                        "description": "Minimum price",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "max_price",
+                        "in": "query",
+                        "description": "Maximum price",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Sort field",
+                        "schema": {
+                            "type": "string",
+                            "default": "created_at",
+                            "enum": [
+                                "base_price",
+                                "view_count",
+                                "created_at",
+                                "title"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": "desc",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20,
+                            "maximum": 100
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Campaign and products retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "campaign": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Flash Sale"
+                                                },
+                                                "slug": {
+                                                    "type": "string",
+                                                    "example": "flash-sale"
+                                                },
+                                                "icon": {
+                                                    "type": "string",
+                                                    "example": "⚡"
+                                                },
+                                                "color": {
+                                                    "type": "string",
+                                                    "example": "#DC2626"
+                                                },
+                                                "banner_image": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "ends_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "time_remaining_seconds": {
+                                                    "type": "integer",
+                                                    "example": 3600
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Campaign not found or inactive"
+                    }
+                }
+            }
+        },
         "/api/admin/campaigns": {
             "get": {
                 "tags": [
                     "Discount Campaigns"
                 ],
                 "summary": "List all campaigns (admin)",
-                "operationId": "e8970aa1c891a27904ba8f0b6e9197aa",
+                "operationId": "campaigns.admin.index",
+                "parameters": [
+                    {
+                        "name": "is_active",
+                        "in": "query",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 20
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "All campaigns"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -3663,7 +3885,7 @@
                     "Discount Campaigns"
                 ],
                 "summary": "Create new campaign",
-                "operationId": "1faa4df572ad1877c66a25f04e54a4ea",
+                "operationId": "campaigns.admin.store",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -3696,6 +3918,10 @@
                                         "example": "#DC2626",
                                         "nullable": true
                                     },
+                                    "banner_image": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
                                     "priority": {
                                         "type": "integer",
                                         "example": 10
@@ -3723,6 +3949,9 @@
                 "responses": {
                     "201": {
                         "description": "Campaign created"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 },
                 "security": [
@@ -3738,10 +3967,23 @@
                     "Discount Campaigns"
                 ],
                 "summary": "Show campaign details",
-                "operationId": "77ac27785b23a795a27a1f2f7194510c",
+                "operationId": "campaigns.admin.show",
+                "parameters": [
+                    {
+                        "name": "campaign",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Campaign details"
+                    },
+                    "404": {
+                        "description": "Not found"
                     }
                 },
                 "security": [
@@ -3755,10 +3997,69 @@
                     "Discount Campaigns"
                 ],
                 "summary": "Update campaign",
-                "operationId": "9e8e1da3590f9bc3e72e187a183673c9",
+                "operationId": "campaigns.admin.update",
+                "parameters": [
+                    {
+                        "name": "campaign",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "icon": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "color": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "priority": {
+                                        "type": "integer"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean"
+                                    },
+                                    "starts_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    },
+                                    "ends_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "Updated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 },
                 "security": [
@@ -3772,10 +4073,23 @@
                     "Discount Campaigns"
                 ],
                 "summary": "Delete campaign",
-                "operationId": "8924a9017de8b77132cdd0e07ffff86a",
+                "operationId": "campaigns.admin.destroy",
+                "parameters": [
+                    {
+                        "name": "campaign",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Deleted"
+                    },
+                    "404": {
+                        "description": "Not found"
                     }
                 },
                 "security": [
@@ -4355,8 +4669,8 @@
                     "Products"
                 ],
                 "summary": "List products with filters",
-                "description": "Get products with filtering, search, sorting and pagination. Supports discount filtering for deal pages.",
-                "operationId": "d97d1c3727cbac49708b85f7d11f7d58",
+                "description": "Get products with filtering, search, sorting and pagination. Supports campaign filtering.",
+                "operationId": "products.index",
                 "parameters": [
                     {
                         "name": "category_id",
@@ -4379,7 +4693,7 @@
                     {
                         "name": "min_price",
                         "in": "query",
-                        "description": "Minimum price (based on base_price)",
+                        "description": "Minimum price",
                         "schema": {
                             "type": "integer",
                             "example": 100000
@@ -4388,7 +4702,7 @@
                     {
                         "name": "max_price",
                         "in": "query",
-                        "description": "Maximum price (based on base_price)",
+                        "description": "Maximum price",
                         "schema": {
                             "type": "integer",
                             "example": 500000
@@ -4413,9 +4727,18 @@
                         }
                     },
                     {
+                        "name": "campaign",
+                        "in": "query",
+                        "description": "Filter by campaign slug (flash-sale, special, weekly, clearance, ...)",
+                        "schema": {
+                            "type": "string",
+                            "example": "flash-sale"
+                        }
+                    },
+                    {
                         "name": "min_discount",
                         "in": "query",
-                        "description": "Minimum discount percentage. Only returns products with discount >= this value",
+                        "description": "Minimum discount percentage",
                         "schema": {
                             "type": "integer",
                             "example": 20,
@@ -4437,7 +4760,7 @@
                     {
                         "name": "has_discount",
                         "in": "query",
-                        "description": "Show only products with any discount",
+                        "description": "Only products with any discount",
                         "schema": {
                             "type": "boolean",
                             "example": true
@@ -4454,14 +4777,15 @@
                                 "base_price",
                                 "view_count",
                                 "created_at",
-                                "title"
+                                "title",
+                                "sort_order"
                             ]
                         }
                     },
                     {
                         "name": "sort_order",
                         "in": "query",
-                        "description": "Sort order",
+                        "description": "Sort direction",
                         "schema": {
                             "type": "string",
                             "default": "desc",
@@ -4474,7 +4798,7 @@
                     {
                         "name": "per_page",
                         "in": "query",
-                        "description": "Items per page",
+                        "description": "Items per page (max 100)",
                         "schema": {
                             "type": "integer",
                             "default": 20,
@@ -4495,7 +4819,7 @@
                     {
                         "name": "cursor",
                         "in": "query",
-                        "description": "Cursor for infinite scroll (get from meta.next_cursor)",
+                        "description": "Cursor for infinite scroll",
                         "schema": {
                             "type": "string"
                         }
@@ -4503,50 +4827,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Products retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Product"
-                                            }
-                                        },
-                                        "meta": {
-                                            "properties": {
-                                                "current_page": {
-                                                    "type": "integer"
-                                                },
-                                                "last_page": {
-                                                    "type": "integer"
-                                                },
-                                                "per_page": {
-                                                    "type": "integer"
-                                                },
-                                                "total": {
-                                                    "type": "integer"
-                                                },
-                                                "has_more": {
-                                                    "type": "boolean"
-                                                },
-                                                "next_cursor": {
-                                                    "type": "string",
-                                                    "nullable": true
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Products retrieved successfully"
                     }
                 }
             },
@@ -4555,7 +4836,7 @@
                     "Products"
                 ],
                 "summary": "Create new product",
-                "operationId": "785644b7d7dd38af4b51dafd0fbc1b6d",
+                "operationId": "products.store",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4589,32 +4870,44 @@
                                     },
                                     "status": {
                                         "type": "string",
-                                        "example": "active",
                                         "enum": [
                                             "draft",
                                             "active",
                                             "inactive"
                                         ]
                                     },
-                                    "meta_title": {
-                                        "type": "string",
-                                        "nullable": true
-                                    },
-                                    "meta_keywords": {
-                                        "type": "string",
-                                        "nullable": true
-                                    },
-                                    "meta_description": {
-                                        "type": "string",
-                                        "nullable": true
-                                    },
-                                    "sort_order": {
-                                        "type": "integer",
-                                        "example": 0
-                                    },
                                     "is_active": {
                                         "type": "boolean",
                                         "example": true
+                                    },
+                                    "categories": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "variants": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "sku": {
+                                                    "type": "string"
+                                                },
+                                                "base_price": {
+                                                    "type": "integer"
+                                                },
+                                                "stock": {
+                                                    "type": "integer"
+                                                },
+                                                "attributes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -4646,13 +4939,11 @@
                     "Products"
                 ],
                 "summary": "Show product details",
-                "description": "Get complete product information with all relationships",
-                "operationId": "db00b523e69d5dbc09c6edad76374bdc",
+                "operationId": "products.show",
                 "parameters": [
                     {
                         "name": "product",
                         "in": "path",
-                        "description": "Product ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -4662,23 +4953,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Product retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/Product"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Product retrieved successfully"
                     },
                     "404": {
                         "description": "Product not found"
@@ -4690,7 +4965,7 @@
                     "Products"
                 ],
                 "summary": "Update product",
-                "operationId": "f47cf55f4f3e0b134b5e7d9a8373725d",
+                "operationId": "products.update",
                 "parameters": [
                     {
                         "name": "product",
@@ -4708,22 +4983,11 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "brand_id": {
-                                        "type": "integer"
-                                    },
                                     "title": {
                                         "type": "string"
                                     },
                                     "slug": {
                                         "type": "string"
-                                    },
-                                    "short_description": {
-                                        "type": "string",
-                                        "nullable": true
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "nullable": true
                                     },
                                     "status": {
                                         "type": "string",
@@ -4764,7 +5028,7 @@
                     "Products"
                 ],
                 "summary": "Delete product",
-                "operationId": "ac878db81fdb1333b21fc79e574a5a17",
+                "operationId": "products.destroy",
                 "parameters": [
                     {
                         "name": "product",
@@ -4798,12 +5062,11 @@
                 ],
                 "summary": "Get related products",
                 "description": "Returns similar products based on category, brand and popularity",
-                "operationId": "b7f5d639efe4dbf4ce0cc7df3819e528",
+                "operationId": "products.related",
                 "parameters": [
                     {
                         "name": "product",
                         "in": "path",
-                        "description": "Product ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -4824,39 +5087,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Related products retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Product"
-                                            }
-                                        },
-                                        "meta": {
-                                            "properties": {
-                                                "total": {
-                                                    "type": "integer",
-                                                    "example": 8
-                                                },
-                                                "source_product_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Related products"
                     },
                     "404": {
                         "description": "Product not found"
@@ -6283,12 +6514,12 @@
                     },
                     "title": {
                         "type": "string",
-                        "example": "همه چیز برای کودک",
+                        "example": "Mobile Mania",
                         "nullable": true
                     },
                     "subtitle": {
                         "type": "string",
-                        "example": "تا ۵۰٪ تخفیف",
+                        "example": "Up to 25% off",
                         "nullable": true
                     },
                     "image": {
@@ -6329,13 +6560,29 @@
                 "title": "BannerPosition",
                 "description": "Banner Position model",
                 "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
                     "key": {
                         "type": "string",
                         "example": "home_middle_4"
                     },
                     "name": {
                         "type": "string",
-                        "example": "۴ بنر وسط صفحه اصلی"
+                        "example": "4 Middle Banners"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "max_banners": {
+                        "type": "integer",
+                        "example": 4
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
                     },
                     "banners": {
                         "type": "array",
@@ -6674,166 +6921,6 @@
                                 "created_at": {
                                     "type": "string",
                                     "format": "date-time"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                },
-                "type": "object"
-            },
-            "Product": {
-                "title": "Product",
-                "description": "Product model",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "title": {
-                        "type": "string",
-                        "example": "iPhone 15 Pro"
-                    },
-                    "slug": {
-                        "type": "string",
-                        "example": "iphone-15-pro"
-                    },
-                    "short_description": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "description": {
-                        "type": "string",
-                        "nullable": true
-                    },
-                    "status": {
-                        "type": "string",
-                        "example": "active",
-                        "enum": [
-                            "draft",
-                            "active",
-                            "inactive"
-                        ]
-                    },
-                    "view_count": {
-                        "type": "integer",
-                        "example": 100
-                    },
-                    "is_active": {
-                        "type": "boolean",
-                        "example": true
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "brand": {
-                        "properties": {
-                            "id": {
-                                "type": "integer"
-                            },
-                            "name": {
-                                "type": "string"
-                            },
-                            "slug": {
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    "categories": {
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "id": {
-                                    "type": "integer"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "slug": {
-                                    "type": "string"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    },
-                    "images": {
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "id": {
-                                    "type": "integer"
-                                },
-                                "image_path": {
-                                    "type": "string"
-                                },
-                                "url": {
-                                    "type": "string"
-                                },
-                                "is_main": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    },
-                    "variants": {
-                        "type": "array",
-                        "items": {
-                            "properties": {
-                                "id": {
-                                    "type": "integer"
-                                },
-                                "sku": {
-                                    "type": "string"
-                                },
-                                "base_price": {
-                                    "type": "integer"
-                                },
-                                "final_price": {
-                                    "description": "Final price after discount calculation",
-                                    "type": "integer",
-                                    "example": 800
-                                },
-                                "discount_amount": {
-                                    "type": "integer",
-                                    "example": 200
-                                },
-                                "discount_percent": {
-                                    "type": "integer",
-                                    "example": 20
-                                },
-                                "stock": {
-                                    "type": "integer"
-                                },
-                                "is_default": {
-                                    "type": "boolean"
-                                },
-                                "attributes": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer"
-                                            },
-                                            "attribute_name": {
-                                                "type": "string"
-                                            },
-                                            "value": {
-                                                "type": "string"
-                                            },
-                                            "color_code": {
-                                                "type": "string",
-                                                "nullable": true
-                                            }
-                                        },
-                                        "type": "object"
-                                    }
                                 }
                             },
                             "type": "object"
