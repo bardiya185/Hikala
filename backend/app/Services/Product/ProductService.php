@@ -109,10 +109,35 @@ class ProductService
         return $query;
     }
 
-    private function applyCategoryFilter(Builder $query, Request $request): void
-    {
-        if (!$request->has('category_id')) return;
+   /**
+ * فیلتر دسته‌بندی (شامل زیردسته‌ها)
+ * پشتیبانی از یک یا چند دسته
+ */
+private function applyCategoryFilter(Builder $query, Request $request): void
+{
+    // 🎯 حالت ۱: چند دسته (category_ids=49,62)
+    if ($request->has('category_ids')) {
+        $ids = array_filter(explode(',', $request->category_ids));
+        
+        if (empty($ids)) return;
 
+        // شامل زیردسته‌های هر کدوم هم بشه
+        $allCategoryIds = [];
+        foreach ($ids as $id) {
+            $subCategoryIds = Category::where('parent_id', $id)
+                ->pluck('id')
+                ->toArray();
+            $allCategoryIds = array_merge($allCategoryIds, [$id], $subCategoryIds);
+        }
+
+        $query->whereHas('categories', fn($q) =>
+            $q->whereIn('category_id', array_unique($allCategoryIds))
+        );
+        return;
+    }
+
+    // 🎯 حالت ۲: یک دسته (category_id=49)
+    if ($request->has('category_id')) {
         $categoryId = $request->category_id;
         $subCategoryIds = Category::where('parent_id', $categoryId)
             ->pluck('id')
@@ -123,7 +148,7 @@ class ProductService
             $q->whereIn('category_id', $allCategoryIds)
         );
     }
-
+}
     private function applyBrandFilter(Builder $query, Request $request): void
     {
         if ($request->has('brand_id')) {
