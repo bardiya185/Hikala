@@ -141,7 +141,7 @@ function Header() {
               {totalCount > 99 ? "+99" : totalCount}
             </span>
           </Link>
-          {setIsOpenMiniCart && <MiniCart />}
+          {isOpenMiniCart && <MiniCart />}
         </div>
       </div>
 
