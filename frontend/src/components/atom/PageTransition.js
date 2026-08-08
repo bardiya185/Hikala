@@ -6,10 +6,8 @@ export default function PageTransition({ children }) {
   const pathname = usePathname();
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence>
       <motion.div
-        key={pathname}
- 
       >
         {children}
       </motion.div>
