@@ -1,41 +1,80 @@
-import Image from "next/image";
-import styles from "./page.module.css";
 import Stories from "@/components/templates/digikalstories";
 import TopBanner from "@/components/banner/Banner";
-import AmazingProducts from "@/components/templates/amazingProducts";
 import AmazingSliders from "@/components/organisms/AmazingSliders";
 import CardShop from "@/components/templates/cardStore";
 
+// ================================================================
+// 🎯 Fetch Flash Sale Campaign + Products
+// ================================================================
+async function getFlashSaleCampaign() {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/campaigns/flash-sale/products`,
+      { 
+        next: { revalidate: 60 } // ⚡ Cache 60 ثانیه (برای Flash Sale مهمه که تازه باشه)
+      }
+    );
 
-async function getAmazingProducts(){
-  const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL + "/api/products?is_flash_sale=1")
-
-  return res.json()
-
-
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching flash sale:", error);
+    return null;
+  }
 }
 
-async function getIamgeBanner(){
-const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL+ "/api/banners")
+// ================================================================
+// 🖼️ Fetch Banners
+// ================================================================
+async function getBanners() {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/banners`,
+      { 
+        next: { revalidate: 300 } // 🖼️ Cache 5 دقیقه
+      }
+    );
 
-return res.json()
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error) {
+    console.error("Error fetching banners:", error);
+    return null;
+  }
 }
 
+// ================================================================
+// 🏠 Home Page
+// ================================================================
 export default async function Home() {
-  const productDiscounts = await getAmazingProducts()
-  const banner = await getIamgeBanner()
-  const middleSection = banner?.data?.find((item) => item.key === "home_middle_4");
-  return (
-   <div>
-    <Stories/>
-    <TopBanner data={banner} />
-    {/* <AmazingProducts/> */}
-    <div className=" container  mx-auto px-28">
-    <AmazingSliders data={productDiscounts?.data}  />
-    <CardShop data={middleSection} />
+  // 🚀 موازی fetch میشن (سریع‌تر)
+  const [flashSaleData, bannerData] = await Promise.all([
+    getFlashSaleCampaign(),
+    getBanners(),
+  ]);
 
+  // 🔍 پیدا کردن بنر وسط
+  const middleSection = bannerData?.data?.find(
+    (item) => item.key === "home_middle_4"
+  );
+
+  return (
+    <div>
+      <Stories />
+      <TopBanner data={bannerData} />
+
+      <div className="container mx-auto px-28">
+        {/* ⚡ Flash Sale Section */}
+        {flashSaleData && (
+          <AmazingSliders 
+            campaign={flashSaleData.campaign}
+            products={flashSaleData.data}
+          />
+        )}
+
+        {/* 🖼️ Middle Banners */}
+        <CardShop data={middleSection} />
+      </div>
     </div>
-    
-   </div>
   );
 }
