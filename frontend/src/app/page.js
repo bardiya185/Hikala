@@ -24,6 +24,7 @@ return res.json()
 export default async function Home() {
   const productDiscounts = await getAmazingProducts()
   const banner = await getIamgeBanner()
+  const middleSection = banner?.data?.find((item) => item.key === "home_middle_4");
   return (
    <div>
     <Stories/>
@@ -31,7 +32,7 @@ export default async function Home() {
     {/* <AmazingProducts/> */}
     <div className=" container  mx-auto px-28">
     <AmazingSliders data={productDiscounts?.data}  />
-    <CardShop/>
+    <CardShop data={middleSection} />
 
     </div>
     
