@@ -49,7 +49,7 @@ function ProductsDe({ data }) {
   const { data: cart } = useCart();
   console.log("cart", cart);
 
-  const { mutate: updateCartItem, isPending: up } = useUpdateCartItem();
+  const { mutate: updateCartItem, isLoading: up } = useUpdateCartItem();
   const { mutate: removeCartItem } = useRemoveCartItem();
 
   const cartItem = cart?.data?.items?.find(
@@ -316,7 +316,7 @@ function ProductsDe({ data }) {
             {cartItem ? (
               <div className="px-5">
                 <div className="flex items-center justify-between w-[310px] h-[40px] px-3 mt-5 bg-red-500 border border-neutral-300 rounded-lg ">
-                  <button onClick={handleDeacrease} className="text-white">
+                  <button onClick={handleDeacrease}  className="text-white">
                     {cartItem.quantity === 1 ? (
                       <Trash2 size={18} className="text-white" />
                     ) : (
@@ -343,7 +343,7 @@ function ProductsDe({ data }) {
 
                   <button
                     onClick={handleIncrease}
-                    disabled={cartItem.quantity >= selectedVariant?.stock}
+                    disabled={cartItem.quantity === 1}
                     className="text-neutral-600 disabled:opacity-30"
                   >
                     <Plus size={18} className="text-white" />
