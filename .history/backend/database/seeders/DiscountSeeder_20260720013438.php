@@ -1,0 +1,40 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Discount;
+use App\Models\ProductVariant;
+use Illuminate\Database\Seeder;
+use App\Models\Product;
+
+
+public function run()
+{
+
+    $discount = Discount::create([
+        'name'=>'Summer Sale',
+        'type'=>'percent',
+        'value'=>20,
+        'starts_at'=>now(),
+        'ends_at'=>now()->addDays(7),
+        'is_active'=>true
+    ]);
+
+
+    $products = Product::whereIn('id',[
+        1,
+        5,
+        10,
+        20
+    ])->get();
+
+
+    foreach($products as $product){
+
+        $product->discounts()->attach(
+            $discount->id
+        );
+
+    }
+
+}

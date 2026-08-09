@@ -1,0 +1,166 @@
+"use client";
+
+import React, { useRef } from "react";
+import Image from "next/image";
+import CountdownTimer from "../atom/CountDownTimer";
+
+function AmazingSliders({ campaign, products }) {
+  const sliderRef = useRef(null);
+
+  const handleScroll = (direction) => {
+    if (sliderRef.current) {
+      const scrollAmount = direction === "next" ? 200 : -200;
+      sliderRef.current.scrollBy({
+        left: scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  if (!products || products.length === 0) return null;
+
+  const bgColor = campaign?.color || "#DC2626";
+
+  return (
+    <div
+      className="relative rounded-lg sm:rounded-xl lg:rounded-2xl p-2 sm:p-3 lg:p-4 my-3 sm:my-6 lg:my-8 select-none ltr overflow-hidden"
+      style={{ backgroundColor: bgColor }}
+    >
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 sm:gap-3 lg:gap-4">
+        
+        {/* ================================================== */}
+        {/* 🎯 Campaign Header */}
+        {/* ================================================== */}
+        <div className="flex flex-row lg:flex-col items-center justify-between lg:justify-center w-full lg:w-auto text-white px-2 py-2 lg:p-4 lg:min-w-[180px] shrink-0">
+          
+          {/* Icon + Title */}
+          <div className="flex items-center gap-1.5 sm:gap-2 lg:mb-3">
+            {campaign?.icon && (
+              <span className="text-xl sm:text-2xl lg:text-3xl">{campaign.icon}</span>
+            )}
+            <h2 className="text-xs sm:text-sm md:text-base lg:text-xl font-extrabold uppercase tracking-wide leading-tight">
+              {campaign?.name || "Amazing"}
+            </h2>
+          </div>
+
+          {/* ⏰ Countdown Timer */}
+          {campaign?.ends_at && (
+            <div className="scale-75 sm:scale-90 lg:scale-100 origin-center">
+              <CountdownTimer targetDate={campaign.ends_at} />
+            </div>
+          )}
+
+          {/* 📝 Description (فقط دسکتاپ) */}
+          {campaign?.description && (
+            <p className="hidden lg:block text-white/80 text-xs text-center mt-3 line-clamp-2">
+              {campaign.description}
+            </p>
+          )}
+        </div>
+
+        {/* ================================================== */}
+        {/* 📦 Products Slider */}
+        {/* ================================================== */}
+        <div className="relative w-full overflow-hidden min-w-0">
+          
+          {/* ⬅️ Previous Button (فقط تبلت+) */}
+          <button
+            onClick={() => handleScroll("prev")}
+            className="hidden md:flex absolute left-1 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 w-8 h-8 lg:w-10 lg:h-10 rounded-full shadow-md items-center justify-center transition-all"
+            aria-label="Previous"
+          >
+            ❮
+          </button>
+
+          {/* 📜 Scrollable Products */}
+          <div
+            ref={sliderRef}
+            className="flex items-stretch gap-2 sm:gap-3 lg:gap-4 overflow-x-auto scrollbar-hide scroll-smooth py-1 px-1"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+
+          {/* ➡️ Next Button (فقط تبلت+) */}
+          <button
+            onClick={() => handleScroll("next")}
+            className="hidden md:flex absolute right-1 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 w-8 h-8 lg:w-10 lg:h-10 rounded-full shadow-md items-center justify-center transition-all"
+            aria-label="Next"
+          >
+            ❯
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ================================================================
+// 🎴 Product Card (کاملاً رسپانسیو - از 320px به بالا)
+// ================================================================
+function ProductCard({ product }) {
+  const productImage =
+    product.images?.[0]?.url ||
+    product.images?.[0]?.image_path ||
+    "/icons/product1.webp";
+
+  const pricing = product.pricing || {};
+  const basePrice = pricing.base_price || 0;
+  const finalPrice = pricing.final_price || 0;
+  const discountPercent = pricing.discount_percent || 0;
+  const hasDiscount = pricing.has_discount || false;
+
+  return (
+    <div className="w-[130px] xs:w-[140px] sm:w-[170px] md:w-[200px] lg:w-[260px] bg-white rounded-lg sm:rounded-xl lg:rounded-2xl p-1.5 sm:p-2 lg:p-4 border border-neutral-300 shadow-sm shrink-0 flex flex-col hover:shadow-md transition-shadow">
+      
+      {/* 🖼️ Product Image */}
+      <div className="w-full h-[90px] xs:h-[100px] sm:h-[130px] md:h-[150px] lg:h-[180px] relative flex items-center justify-center bg-gray-50 rounded-md sm:rounded-lg lg:rounded-xl overflow-hidden mb-2">
+        <Image
+          src={productImage}
+          alt={product.title || "product"}
+          width={180}
+          height={180}
+          className="object-contain max-h-full p-1"
+          unoptimized={productImage.startsWith("http")}
+        />
+      </div>
+
+      {/* 📝 Product Info */}
+      <div className="flex flex-col gap-0.5 sm:gap-1 flex-1 min-h-0">
+        <h3 className="font-semibold text-gray-800 text-[11px] xs:text-xs sm:text-sm line-clamp-2 leading-tight">
+          {product.title}
+        </h3>
+        <p className="hidden md:block text-xs text-gray-400 line-clamp-1 mt-1">
+          {product.short_description}
+        </p>
+      </div>
+
+      {/* 💰 Pricing */}
+      <div className="mt-1.5 sm:mt-2">
+        {hasDiscount ? (
+          <>
+            <div className="flex items-center gap-1 flex-wrap">
+              <del className="text-neutral-400 text-[10px] xs:text-xs sm:text-sm">
+                ${basePrice.toLocaleString()}
+              </del>
+              <span className="text-center text-white text-[9px] xs:text-[10px] sm:text-xs bg-red-600 rounded px-1 sm:px-1.5 py-0.5">
+                {discountPercent}%
+              </span>
+            </div>
+            <p className="text-green-600 text-xs xs:text-sm sm:text-base lg:text-lg font-bold">
+              ${finalPrice.toLocaleString()}
+            </p>
+          </>
+        ) : (
+          <p className="text-gray-800 text-xs xs:text-sm sm:text-base lg:text-lg font-bold">
+            ${basePrice.toLocaleString()}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default AmazingSliders;

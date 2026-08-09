@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: IRANYEKANWEBMEDIUM;
+  src: url("/fonts/iranyekanwebmedium.2d4f96e5.2d4f96e5.woff") format("woff");
+  font-style: normal;
+  font-weight: 400;
+  
+}
+
+* {
+ 
+
+@layer base {
+  html, body {
+    padding: 0;
+    margin: 0;
+    font-family: IRANYEKANWEBMEDIUM, sans-serif;
+  }
+  
+  
+}

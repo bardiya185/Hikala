@@ -1,0 +1,280 @@
+"use client";
+import Image from "next/image";
+import React from "react";
+import { TfiAlignLeft } from "react-icons/tfi";
+import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { formatPrice } from "@/core/utils/formatPrice";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { SplitText } from "gsap/SplitText";
+
+gsap.registerPlugin(SplitText);
+
+function ProductSkeleton() {
+  return (
+    <div className="w-full h-auto rounded-[20px] border border-neutral-100 bg-white p-3 animate-pulse">
+      <div className="rounded-[10px] w-full h-full border border-solid border-neutral-100 p-4">
+        <div className="w-full aspect-[4/5] bg-neutral-200 rounded-[20px]" />
+        <div className="flex justify-between items-center mt-5">
+          <div className="h-4 bg-neutral-200 rounded w-1/2" />
+          <div className="h-5 bg-neutral-200 rounded w-1/4" />
+        </div>
+        <div className="flex justify-between items-center mt-4">
+          <div className="h-4 bg-neutral-200 rounded w-1/3" />
+          <div className="h-5 bg-neutral-200 rounded-md w-1/5" />
+        </div>
+        <div className="space-y-2 mt-4">
+          <div className="h-3 bg-neutral-200 rounded w-full" />
+          <div className="h-3 bg-neutral-200 rounded w-5/6" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Products({ data, current_sort, current_sortorder }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const containerRef = useRef(null);
+  const splitInstances = useRef([]);
+
+  const handleSortChange = (sort_by, sort_order) => {
+    const params = new URLSearchParams(window.location.search);
+    if (sort_by && sort_order) {
+      params.set("sort_by", sort_by);
+      params.set("sort_order", sort_order);
+    } else {
+      params.delete("sort_by");
+      params.delete("sort_order");
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const isLoading = !data || data.length === 0;
+
+  // ✅ انیمیشن با GSAP + SplitText
+  useEffect(() => {
+    if (isLoading || !containerRef.current) return;
+
+    // پاک کردن نمونه‌های قبلی
+    splitInstances.current.forEach(split => {
+      try { split.revert(); } catch (e) {}
+    });
+    splitInstances.current = [];
+
+    const cards = containerRef.current.querySelectorAll(".product-card");
+    const textTargets = containerRef.current.querySelectorAll(".animate-text-split");
+
+    if (cards.length === 0) return;
+
+    // مخفی کردن اولیه کارت‌ها
+    gsap.set(cards, {
+      opacity: 0,
+      y: 30,
+      scale: 0.95,
+    });
+
+    // مخفی کردن متن‌ها
+    gsap.set(textTargets, {
+      opacity: 0,
+      y: 15,
+    });
+
+    // SplitText برای هر المان
+    const allWordElements = [];
+    
+    textTargets.forEach((target) => {
+      try {
+        const split = new SplitText(target, {
+          type: "words",
+          wordsClass: "split-word inline-block overflow-hidden",
+        });
+        
+        splitInstances.current.push(split);
+        
+        gsap.set(split.words, {
+          opacity: 0,
+          y: 20,
+        });
+        
+        allWordElements.push({
+          words: split.words,
+          parent: target,
+        });
+      } catch (e) {
+        console.warn("SplitText error:", e);
+      }
+    });
+
+    // تایم‌لاین اصلی
+    const tl = gsap.timeline({
+      defaults: { ease: "power3.out" },
+    });
+
+    // انیمیشن کارت‌ها
+    tl.to(cards, {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      duration: 0.8,
+      stagger: 0.06,
+      ease: "back.out(1.4)",
+    });
+
+    // انیمیشن کلمات
+    allWordElements.forEach((item, index) => {
+      const delay = 0.4 + (index * 0.05);
+      tl.to(item.words, {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        stagger: 0.02,
+        ease: "power2.out",
+      }, `-=${delay}`);
+    });
+
+    return () => {
+      tl.kill();
+      splitInstances.current.forEach(split => {
+        try { split.revert(); } catch (e) {}
+      });
+      splitInstances.current = [];
+    };
+  }, [data, isLoading]);
+
+  return (
+    <>
+      {/* بخش مرتب سازی */}
+      <div className="flex gap-4 pl-4 mb-4 items-center" dir="ltr">
+        <div className="flex items-center gap-2 text-neutral-700">
+          <TfiAlignLeft size={18} />
+          <span className="text-sm font-semibold">Sort:</span>
+        </div>
+        <button
+          className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
+            current_sort === "price" && current_sortorder === "asc"
+              ? "text-red-500 bg-red-50"
+              : "text-neutral-400 hover:text-neutral-600"
+          }`}
+          onClick={() => handleSortChange("price", "asc")}
+        >
+          The cheapest
+        </button>
+        <button
+          className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
+            current_sort === "price" && current_sortorder === "desc"
+              ? "text-red-500 bg-red-50"
+              : "text-neutral-400 hover:text-neutral-600"
+          }`}
+          onClick={() => handleSortChange("price", "desc")}
+        >
+          The most expensive
+        </button>
+      </div>
+
+      {/* گرید اصلی کارت‌ها */}
+      <motion.div
+        ref={containerRef}
+        className="max-w-[1270px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+        dir="rtl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        {isLoading
+          ? Array.from({ length: 8 }).map((_, index) => (
+              <ProductSkeleton key={index} />
+            ))
+          : data.map((ddd) => {
+              const mainVariant = ddd?.variants?.[0];
+              const price = mainVariant ? Number(mainVariant.price) : 0;
+              const salePrice = mainVariant
+                ? Number(mainVariant.sale_price)
+                : 0;
+
+              const discountPercent =
+                price > 0 && salePrice < price
+                  ? Math.round(((price - salePrice) / price) * 100)
+                  : 0;
+
+              return (
+                <motion.div
+                  className="product-card group rounded-[20px] bg-white border border-neutral-100 p-3"
+                  key={ddd.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div className="rounded-[10px] w-full h-full border border-solid border-neutral-100 p-4 flex flex-col justify-between">
+                    <div>
+                      {/* تصویر محصول */}
+                      <div className="w-full overflow-hidden rounded-[20px] aspect-[4/5] relative flex items-center justify-center">
+                        <Image
+                          src="/icons/images.jfif"
+                          className="object-contain transform transition-transform duration-500 group-hover:scale-105"
+                          width={200}
+                          height={250}
+                          alt={ddd?.title || "product"}
+                          priority
+                        />
+                      </div>
+
+                      {/* عنوان محصول */}
+                      <div className="flex justify-between items-start mt-5 gap-2">
+                        <h3 className="font-bold text-sm text-neutral-800 line-clamp-2 leading-6 h-12 animate-text-split">
+                          {ddd?.title}
+                        </h3>
+                        <div className="flex items-center shrink-0">
+                          {/* Stars - می‌توانید کامپوننت دلخواه خود را اضافه کنید */}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      {/* قیمت‌ها */}
+                      <div
+                        className="flex justify-between items-center mt-4"
+                        dir="ltr"
+                      >
+                        <div className="flex items-center gap-2">
+                          <p className="text-green-600 font-bold text-base animate-text-split">
+                            ${formatPrice(salePrice || price)}
+                          </p>
+                          {discountPercent > 0 && (
+                            <span className="text-neutral-400 line-through text-xs animate-text-split">
+                              ${formatPrice(price)}
+                            </span>
+                          )}
+                        </div>
+
+                        {discountPercent > 0 && (
+                          <div className="flex items-center text-[10px] font-bold text-red-600 bg-red-50 px-2 py-1 rounded-md">
+                            <svg
+                              className="w-3 h-3 fill-current mr-1"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
+                            </svg>
+                            <span className="animate-text-split">
+                              {discountPercent}% Off
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* توضیحات کوتاه */}
+                      <p className="w-full mt-3 line-clamp-2 text-xs text-neutral-500 leading-5 animate-text-split">
+                        {ddd?.short_description}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+      </motion.div>
+    </>
+  );
+}
+
+export default Products;

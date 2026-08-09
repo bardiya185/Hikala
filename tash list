@@ -1,0 +1,175 @@
+[33mf12d2b2e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mbackend[m[33m, [m[1;31morigin/backend[m[33m)[m ...
+[33ma296831b[m Merge branch 'frontend' into backend
+[33m06740091[m[33m ([m[1;31morigin/frontend[m[33m, [m[1;32mfrontend[m[33m)[m implement product details page
+[33mf99a65a2[m implement product details page
+[33m217bee9b[m fixed banner in home page
+[33mde668d64[m change
+[33me402b3df[m .
+[33mf36d8cb8[m change branch
+[33m38dab9a0[m fetch and implement banner in home page
+[33mdc23a8a9[m implement amazing products in home page
+[33m4bbc7648[m fixed bug product list page
+[33mf237168e[m implement amazing products
+[33mb62adb6d[m fix conflicts
+[33md3e7e68b[m fixed confilict product list page
+[33mcdc30d36[m implement serchbar in project
+[33m0807d1a0[m feat: add order system with cart merge, shipping calculator, and payment gateway
+[33maf43d188[m add transitaion all page project
+[33m28aff98e[m feat: implement banner system, image upload service, and discount filtering
+[33m1d052504[m feat: implement banner system, image upload service, and discount filtering
+[33mebaaa663[m Amazing products and a timer were developed.
+[33m68ae3b2e[m A sidebar has been added for navigation between routes.
+[33m03b6197d[m add spinner to login button and check code button
+[33m5f2003c7[m add spinner loading in home page
+[33mcc344e4b[m fixed bug check-otp page
+[33mbbed0617[m Merge front
+[33m7fd8ecf0[m fix: resolve laravel log conflict and merge backend
+[33m7ca73f5f[m implement product offer
+[33ma3c685e2[m Merge branch 'backend' of https://github.com/bardiya185/Hikala into frontend
+[33m9f98749f[m Remove laravel.log from merge conflict
+[33m7e7fe1d1[m feat: implement discount system updates
+[33m9b4d45ee[m feat: implement discount system updates and shipping feature management with swagger docs
+[33m76657ae3[m Merge branch 'backend' of https://github.com/bardiya185/Hikala into backend
+[33m470e4239[m feat: add discount controller and complete swagger docs for discount API
+[33m8cd90c19[m Merge branch 'main' into backend
+[33ma8c4b303[m Delete frontend/tsconfig.json
+[33m1d5354e7[m Merge branch 'backend' of https://github.com/bardiya185/Hikala into backend
+[33m026bf5d6[m Delete .hintrc
+[33m330a19d0[m Delete .vscode directory
+[33meb70ff54[m Delete .history directory
+[33macc2a3b4[m  Adding Discount System & Fixing Sort Errors
+[33md504a3c3[m  Adding Discount System & Fixing Sort Errors
+[33mbf56c248[m responsive login page and check otp page
+[33mba15c668[m Merge pull request #34 from bardiya185/frontend
+[33m5e230fad[m Update animation
+[33mf23db535[m Merge pull request #33 from bardiya185/frontend
+[33m88cdf7ed[m Merge branch 'frontend' into backend
+[33m26da54c4[m add animations in product list page
+[33mcf0df219[m add banner in home page
+[33m3c870b0a[m implement product details page
+[33m436398d3[m Merge branch 'frontend' into backend
+[33m7e4ef65f[m Delete .hintrc
+[33mb18bb089[m Delete .vscode directory
+[33m3c7fbf43[m Merge pull request #32 from bardiya185/frontend
+[33ma8de51b7[m feat: add frontend folder from other-branch
+[33m635738cc[m refactor(sidebar): extract brand filter logic into custom hook and fix display bug
+[33m0aba2049[m Merge branch 'frontend' of https://github.com/bardiya185/Hikala into frontend
+[33m7dc29c6c[m implement sidebar in products list page and filters brands
+[33mc6286e48[m feat: add provinces, cities, and user addresses with full CRUD and Swagger documentation
+[33mb7d14aec[m Merge branch 'frontend' of https://github.com/bardiya185/Hikala into frontend
+[33me2561cc6[m add Skeleton screen in product list page
+[33m7d963ef9[m update
+[33m0dae685d[m Delete .gitignore
+[33m43fa23f3[m Delete et --hard HEAD@{1}
+[33mba94aa20[m Merge pull request #31 from bardiya185/frontend
+[33m3330c5fb[m Add : find brands with search and category_id
+[33m1a6a4416[m Continued development of the product list page
+[33m36b6f841[m add style product list page
+[33m2b98560e[m change product cart designe
+[33me06cc0dd[m Merge branch 'frontend' of https://github.com/bardiya185/Hikala into frontend
+[33m61954208[m updating product list page
+[33m9ba6667e[m Merge pull request #30 from bardiya185/frontend
+[33m2543a537[m Save backend changes before merging to frontend
+[33m0a79178a[m Save all frontend changes before merging to backend
+[33me7964631[m Merge frontend changes into backend
+[33m589c1464[m Merge pull request #29 from bardiya185/frontend
+[33mbf331857[m feat: implement product filtering with infinite scroll and optimize Swagger documentation
+[33m2630fa06[m implement product list and sorting product by themostexpensive and thecheapset .
+[33m4f9143bc[m fix link navigation all products mobile
+[33mef714f39[m Merge pull request #28 from bardiya185/frontend
+[33m1fbe8b1f[m Fixed bug
+[33m525e31c8[m implement product list
+[33md4b10837[m Merge pull request #27 from bardiya185/backend
+[33m526c663d[m Delete frontend/tsconfig.json
+[33m06a60746[m Merge pull request #26 from bardiya185/frontend
+[33m669c3338[m Delete frontend/tsconfig.json
+[33m5053697b[m Delete frontend/tsconfig.json
+[33m384255d1[m Merge pull request #25 from bardiya185/backend
+[33m7fc41b59[m Delete .history directory
+[33mff17cb10[m Merge pull request #24 from bardiya185/frontend
+[33m1a2ef616[m Merge branch 'main' into frontend
+[33ma50588f8[m Ignore .history and .hintrc files
+[33m044e8f37[m change
+[33m9b17b9f6[m main
+[33m3edbd746[m Merge pull request #23 from bardiya185/frontend
+[33mc971d485[m implement product list
+[33m5e912121[m Merge pull request #22 from bardiya185/backend
+[33mb2d30ba0[m Fix image uploader
+[33mb734224b[m chore: update frontend files and cleanup history
+[33m894fc8ad[m Delete .history directory
+[33m4ecbeb01[m Merge pull request #21 from bardiya185/backend
+[33mc81df97f[m ✨ feat: Complete e-commerce API with infinite scroll, sorting, filtering, product images, and full Swagger documentation
+[33m4b5a30b6[m Merge pull request #20 from bardiya185/frontend
+[33me78ab2c3[m deleted file
+[33m903a0b29[m Merge branch 'frontend' of https://github.com/bardiya185/Hikala into frontend
+[33m447fe8b5[m .
+[33md387bc5d[m add stale time in project
+[33m38864cdf[m Merge pull request #19 from bardiya185/frontend
+[33m0f1a8536[m Delete frontend/.next directory
+[33mb38a70f7[m Delete frontend/.next directory
+[33m3be574ac[m Merge remote-tracking branch 'origin/frontend' into backend
+[33m553962fb[m Remove .next folder from tracking
+[33ma3b404f8[m implement home page and login page & check otp
+[33meb1c1212[m Merge pull request #18 from bardiya185/backend
+[33m483c426e[m ✨ feat: Full e-commerce backend API - Products CRUD, categories menu tree, brands, attributes with color codes, advanced filtering, infinite scroll, image upload, cart system, and Swagger/OpenAPI documentation
+[33mb51767ae[m Delete .history/backend directory
+[33m7ad424e8[m Merge pull request #17 from bardiya185/backend
+[33m67d802e2[m ✨ feat: Add category menu tree endpoint for header navigation
+[33me7c424c1[m Delete .vscode directory
+[33ma489f117[m Delete .history/backend directory
+[33m2eedb9ca[m Merge pull request #16 from bardiya185/backend
+[33mbb2e84db[m ✨ feat: Add category menu tree endpoint for header navigation
+[33m2a45c4a2[m change docker file
+[33m9b0eb0fe[m Merge pull request #15 from bardiya185/backend
+[33ma0930a72[m chore: add phpmyadmin service and fix environment syntax in docker-compose
+[33m4fff2deb[m تغییرات محلی قبل از آپدیت
+[33m736f8aba[m Merge pull request #14 from bardiya185/backend
+[33m0511889c[m feat: setup docker environment and fix database connection
+[33mff72227f[m Merge branch 'main' of https://github.com/bardiya185/Hikala into backend
+[33m3c0794d4[m Update api.php
+[33m093530e4[m Delete backend/.history directory
+[33m07c5fcf0[m ✨ feat: Complete database seeding with products, categories, brands, and attributes
+[33mab891531[m Merge pull request #13 from bardiya185/frontend
+[33m0426cf97[m implement digikala project
+[33m5c6052c4[m Merge pull request #12 from bardiya185/frontend
+[33m81a51c33[m implement my orders status page
+[33m8292ef09[m Merge pull request #11 from bardiya185/frontend
+[33m3e2ca87b[m add style profile page sidebar menu
+[33m630a455b[m add style profile page sidebar
+[33m9a3ae535[m implement profile page personal information
+[33m7ab8aaa8[m implement authentication
+[33me37e264e[m implement profile page
+[33mf95ce504[m Merge pull request #10 from bardiya185/frontend
+[33mc14a576b[m Merge branch 'main' into frontend
+[33m77cb2eac[m implement profile page...
+[33m9206eb55[m Merge branch 'backend' of https://github.com/bardiya185/Hikala into backend
+[33m96498b52[m Merge branch 'frontend' of https://github.com/bardiya185/Hikala into backend
+[33mb66988d5[m Delete backend/.env
+[33m7056171c[m Delete backend/vendor directory
+[33meb79c5b4[m Delete backend/New سند متنی.txt
+[33m0eb5ba50[m Merge pull request #9 from bardiya185/backend
+[33m28e8a25f[m Merge branch 'main' into backend
+[33m7748abfa[m update backend:add WHO AM I Route
+[33m98f5b104[m change backend adn frontend
+[33m7b58ec27[m Merge branch 'backend' of https://github.com/bardiya185/Hikala into frontend
+[33me63cd214[m Delete frontend/New سند متنی.txt
+[33mdcd04272[m Merge pull request #8 from bardiya185/frontend
+[33m04294e68[m Fix frontend folder structure and upload all next.js files
+[33m57401dee[m ...
+[33m8acb7cf4[m development project
+[33m8521ba2c[m Merge pull request #7 from bardiya185/backend
+[33m02491a74[m Merge pull request #6 from bardiya185/frontend
+[33mbe5b914d[m development backend
+[33mac13eb0b[m development project
+[33mdaa63690[m Merge pull request #5 from bardiya185/backend
+[33m14b7d0f8[m add backend project
+[33mc31ef75f[m Merge pull request #4 from bardiya185/backend
+[33m62411135[m add backend project
+[33m3ef1ca70[m Merge pull request #3 from bardiya185/backend
+[33mf68c8798[m add backend project
+[33m27c687d1[m Merge pull request #1 from bardiya185/backend
+[33m011b2f43[m Initial commit
+[33ma48cc0ed[m create folders
+[33mb5719639[m create folders
+[33m258d8e6f[m create folders
+[33m87b9b700[m create project
