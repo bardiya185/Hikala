@@ -16,6 +16,8 @@ class Review extends Model
         'rating',
         'advantages',
         'disadvantages',
+        'likes_count',
+        'dislikes_count',
         'status',
         'is_buyer',
     ];
