@@ -43,9 +43,9 @@ function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeId, setActiveId] = useState(null);
   const closeTimer = useRef(null);
-  const [isOpenMiniCart,setIsOpenMiniCart] = useState(false)
+  const [isOpenMiniCart, setIsOpenMiniCart] = useState(false);
 
-  const { data: cart, isLoading } = useCart()
+  const { data: cart, isLoading } = useCart();
 
   const totalCount =
     cart?.data?.items?.reduce((sum, item) => sum + (item?.quantity || 0), 0) ||
@@ -62,7 +62,6 @@ function Header() {
   console.log(categoryMenu);
   const subDataArray = categoryMenu?.data?.data || [];
 
-  
   useEffect(() => {
     if (mainDataArray.length > 0 && !activeId) {
       const targetCategory = mainDataArray.find((c) => c.slug === "mobile");
@@ -90,7 +89,6 @@ function Header() {
   const activeCategory =
     mainDataArray?.find((c) => c.id === activeId) || mainDataArray[0];
 
- 
   const getTargetCategory = (category) => {
     if (!category) return null;
     if (category.children && category.children.length > 0) {
@@ -129,17 +127,21 @@ function Header() {
           </div>
         </div>
 
-        <div onMouseEnter={()=>setIsOpen(true)} onMouseLeave={()=>setIsOpen(false)} className="relative flex items-center gap-7 pr-[20px]">
+        <div
+          onMouseEnter={() => setIsOpenMiniCart(true)}
+          onMouseLeave={() => setIsOpenMiniCart(false)}
+          className="relative flex items-center gap-7 pr-[20px]"
+        >
           <AuthForm />
           <Link href="/checkout/cart">
             <div className="p-2 hover:bg-neutral-100 rounded-full transition-colors">
               <MdShoppingCartCheckout className="w-[24px] h-[24px] text-neutral-700" />
             </div>
             <span className="absolute -top-1 -right-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[11px] font-bold text-white shadow-sm animate-in zoom-in duration-200">
-          {totalCount > 99 ? "+99" : totalCount}
-        </span>
+              {totalCount > 99 ? "+99" : totalCount}
+            </span>
           </Link>
-          {isOpen && <MiniCart/>}
+          {isOpenMiniCart && <MiniCart />}
         </div>
       </div>
 
