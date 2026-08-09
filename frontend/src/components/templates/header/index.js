@@ -126,13 +126,17 @@ function Header() {
             <SearchBar />
           </div>
         </div>
+    <div className="flex items-center">
 
+        <AuthForm />
         <div
           onMouseEnter={() => setIsOpenMiniCart(true)}
           onMouseLeave={() => setIsOpenMiniCart(false)}
           className="relative flex items-center gap-7 pr-[20px]"
-        >
-          <AuthForm />
+          >
+          <div>
+
+          </div>
           <Link href="/checkout/cart">
             <div className="p-2 hover:bg-neutral-100 rounded-full transition-colors">
               <MdShoppingCartCheckout className="w-[24px] h-[24px] text-neutral-700" />
@@ -140,10 +144,11 @@ function Header() {
             <span className="absolute -top-1 -right-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[11px] font-bold text-white shadow-sm animate-in zoom-in duration-200">
               {totalCount > 99 ? "+99" : totalCount}
             </span>
-          </Link>
           {isOpenMiniCart && <MiniCart />}
+          </Link>
         </div>
       </div>
+          </div>
 
       <div
         className="relative inline-block mt-4 px-[16px]"
