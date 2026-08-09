@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class ReviewSeeder extends Seeder
 {
@@ -14,7 +15,14 @@ class ReviewSeeder extends Seeder
         // ================================================================
         // 🧹 Clean previous data
         // ================================================================
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        if (Schema::hasTable('review_reactions')) {
+            DB::table('review_reactions')->truncate();
+        }
+
         DB::table('reviews')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // ================================================================
         // 📥 Get required data
@@ -32,11 +40,15 @@ class ReviewSeeder extends Seeder
             return;
         }
 
-        // Check if orders exist (for is_buyer detection)
-        $deliveredOrders = DB::table('orders')
-            ->where('status', 'delivered')
-            ->pluck('id', 'user_id')
-            ->toArray();
+        // Check if orders table exists and has delivered orders
+        $deliveredOrders = [];
+
+        if (Schema::hasTable('orders')) {
+            $deliveredOrders = DB::table('orders')
+                ->where('status', 'delivered')
+                ->pluck('id', 'user_id')
+                ->toArray();
+        }
 
         // ================================================================
         // 📝 Sample review data
@@ -87,30 +99,34 @@ class ReviewSeeder extends Seeder
 
         $statuses = ['pending', 'approved', 'approved', 'approved', 'rejected'];
 
+        // Check if likes_count column exists
+        $hasLikesColumn = Schema::hasColumn('reviews', 'likes_count');
+
         // ================================================================
         // 🔄 Create reviews
         // ================================================================
         $reviewCount = 0;
         $usedPairs = [];
 
-        // Each product gets 1-5 reviews
         foreach ($products as $productId) {
             $numberOfReviews = rand(1, min(5, count($users)));
-            
+
             shuffle($users);
             $selectedUsers = array_slice($users, 0, $numberOfReviews);
 
             foreach ($selectedUsers as $userId) {
-                // Unique check: user_id + product_id
                 $pairKey = $userId . '-' . $productId;
+
                 if (in_array($pairKey, $usedPairs)) {
                     continue;
                 }
+
                 $usedPairs[] = $pairKey;
 
                 // Check if user is a buyer
                 $isBuyer = false;
-                if (isset($deliveredOrders[$userId])) {
+
+                if (isset($deliveredOrders[$userId]) && Schema::hasTable('order_items')) {
                     $isBuyer = DB::table('order_items')
                         ->join('product_variants', 'order_items.product_variant_id', '=', 'product_variants.id')
                         ->where('order_items.order_id', $deliveredOrders[$userId])
@@ -121,7 +137,7 @@ class ReviewSeeder extends Seeder
                 $rating = $this->weightedRating();
                 $status = $statuses[array_rand($statuses)];
 
-                DB::table('reviews')->insert([
+                $reviewData = [
                     'user_id' => $userId,
                     'product_id' => $productId,
                     'body' => $reviewBodies[array_rand($reviewBodies)],
@@ -132,8 +148,15 @@ class ReviewSeeder extends Seeder
                     'is_buyer' => $isBuyer,
                     'created_at' => now()->subDays(rand(1, 60)),
                     'updated_at' => now()->subDays(rand(0, 10)),
-                ]);
+                ];
 
+                // Add likes/dislikes columns if they exist
+                if ($hasLikesColumn) {
+                    $reviewData['likes_count'] = 0;
+                    $reviewData['dislikes_count'] = 0;
+                }
+
+                DB::table('reviews')->insert($reviewData);
                 $reviewCount++;
             }
         }
@@ -143,32 +166,34 @@ class ReviewSeeder extends Seeder
         // ================================================================
         // 🔄 Update product ratings
         // ================================================================
-        $this->command->info('📊 Updating product ratings...');
+        if (Schema::hasColumn('products', 'rating')) {
+            $this->command->info('📊 Updating product ratings...');
 
-        $productsWithReviews = DB::table('reviews')
-        ->where('status', 'approved')
-        ->select('product_id')
-        ->selectRaw('ROUND(AVG(rating), 2) as avg_rating')
-        ->groupBy('product_id')
-        ->get();
-    
-    foreach ($productsWithReviews as $item) {
-        DB::table('products')
-            ->where('id', $item->product_id)
-            ->update(['rating' => $item->avg_rating]);
-    }
+            $productsWithReviews = DB::table('reviews')
+                ->where('status', 'approved')
+                ->select('product_id')
+                ->selectRaw('ROUND(AVG(rating), 2) as avg_rating')
+                ->groupBy('product_id')
+                ->get();
 
-        // Reset rating for products without approved reviews
-        $productIdsWithReviews = $productsWithReviews->pluck('product_id')->toArray();
-        $productsWithoutReviews = array_diff($products, $productIdsWithReviews);
+            foreach ($productsWithReviews as $item) {
+                DB::table('products')
+                    ->where('id', $item->product_id)
+                    ->update(['rating' => $item->avg_rating]);
+            }
 
-        if (!empty($productsWithoutReviews)) {
-            DB::table('products')
-                ->whereIn('id', $productsWithoutReviews)
-                ->update(['rating' => 0]);
+            // Reset rating for products without approved reviews
+            $productIdsWithReviews = $productsWithReviews->pluck('product_id')->toArray();
+            $productsWithoutReviews = array_diff($products, $productIdsWithReviews);
+
+            if (!empty($productsWithoutReviews)) {
+                DB::table('products')
+                    ->whereIn('id', $productsWithoutReviews)
+                    ->update(['rating' => 0]);
+            }
+
+            $this->command->info('✅ Product ratings updated!');
         }
-
-        $this->command->info("✅ Product ratings updated!");
 
         // ================================================================
         // 📊 Final report
@@ -197,14 +222,12 @@ class ReviewSeeder extends Seeder
                 ->where('status', 'approved')
                 ->where('rating', $i)
                 ->count();
+
             $bar = str_repeat('█', $count);
             $this->command->line("   ⭐ {$i}: {$bar} ({$count})");
         }
     }
 
-    /**
-     * Generate weighted rating (more 4-5 stars, fewer 1-2 stars)
-     */
     private function weightedRating(): int
     {
         $weights = [
@@ -220,6 +243,7 @@ class ReviewSeeder extends Seeder
 
         foreach ($weights as $rating => $weight) {
             $cumulative += $weight;
+
             if ($rand <= $cumulative) {
                 return $rating;
             }

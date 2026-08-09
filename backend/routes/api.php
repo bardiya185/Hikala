@@ -225,6 +225,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/', [ReviewController::class, 'adminIndex']);
             Route::post('/{review}/approve', [ReviewController::class, 'approve']);
             Route::post('/{review}/reject', [ReviewController::class, 'reject']);
+            Route::post('/{review}/react', [ReviewController::class, 'react']);
         });
     });
 });
