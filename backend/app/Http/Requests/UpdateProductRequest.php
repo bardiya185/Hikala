@@ -127,6 +127,12 @@ class UpdateProductRequest extends FormRequest
                 'integer',
                 'min:0',
             ],
+            'variants.*.max_order_quantity' => [
+                'nullable',
+                'integer',
+                'min:1',
+                'max:100',
+            ],
 
             'variants.*.weight' => [
                 'nullable',

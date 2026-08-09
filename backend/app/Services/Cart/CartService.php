@@ -11,12 +11,13 @@ use App\Services\Discount\DiscountService;
 use Illuminate\Support\Facades\DB;
 use App\Services\Coupon\CouponService;
 use App\Services\Coupon\CouponValidator;
+
 class CartService
 {
     public function __construct(
         private DiscountService $discountService,
-        private CouponService $couponService,           // ⬅️ اضافه شد
-        private CouponValidator $couponValidator   
+        private CouponService $couponService,
+        private CouponValidator $couponValidator
     ) {}
 
     // ================================================================
@@ -24,16 +25,12 @@ class CartService
     // ================================================================
     public function getOrCreate(?User $user, ?string $sessionId): Cart
     {
-        // 🎯 اگه کاربر لاگین‌کرده هست
         if ($user) {
-            
-            // ابتدا سبد کاربر رو بگیر یا بساز
             $userCart = Cart::firstOrCreate(
                 ['user_id' => $user->id],
                 []
             );
             
-            // 🔀 اگه session_id هم داشت، سبد مهمان رو merge کن
             if ($sessionId) {
                 $this->mergeGuestCartIntoUserCart($userCart, $sessionId);
                 $userCart->refresh();
@@ -42,7 +39,6 @@ class CartService
             return $userCart;
         }
     
-        // 👤 اگه مهمان هست
         if ($sessionId) {
             return Cart::firstOrCreate(
                 ['session_id' => $sessionId, 'user_id' => null],
@@ -50,8 +46,6 @@ class CartService
             );
         }
     
-        // ⚠️ نه کاربر داریم، نه session_id
-        // یه session_id موقت خودمون بسازیم
         $tempSessionId = 'temp-' . uniqid();
         return Cart::create([
             'session_id' => $tempSessionId,
@@ -59,9 +53,6 @@ class CartService
         ]);
     }
     
-    /**
-     * 🔀 Merge guest cart items into user cart
-     */
     private function mergeGuestCartIntoUserCart(Cart $userCart, string $sessionId): void
     {
         $guestCart = Cart::where('session_id', $sessionId)
@@ -79,11 +70,22 @@ class CartService
                 ->first();
     
             if ($existingItem) {
+                // 🔥 چک محدودیت هنگام merge
+                $newQuantity = $existingItem->quantity + $guestItem->quantity;
+                $allowedQuantity = $this->getAllowedQuantity($existingItem->variant, $newQuantity);
+                
                 $existingItem->update([
-                    'quantity' => $existingItem->quantity + $guestItem->quantity
+                    'quantity' => $allowedQuantity
                 ]);
             } else {
-                $guestItem->update(['cart_id' => $userCart->id]);
+                // 🔥 چک محدودیت برای آیتم جدید
+                $variant = $guestItem->variant;
+                $allowedQuantity = $this->getAllowedQuantity($variant, $guestItem->quantity);
+                
+                $guestItem->update([
+                    'cart_id' => $userCart->id,
+                    'quantity' => $allowedQuantity,
+                ]);
             }
         }
         
@@ -101,9 +103,10 @@ class CartService
         return DB::transaction(function () use ($cart, $variant, $quantity) {
 
             // ✅ چک موجودی
-            if ($variant->stock < $quantity) {
-                throw new \Exception("Insufficient stock. Available: {$variant->stock}");
-            }
+            $this->validateStock($variant, $quantity);
+
+            // 🔥 چک محدودیت هر سفارش
+            $this->validateMaxOrderQuantity($variant, $quantity);
 
             // ✅ چک کن آیا این محصول قبلاً توی سبد هست؟
             $existingItem = $cart->items()
@@ -111,12 +114,13 @@ class CartService
                 ->first();
 
             if ($existingItem) {
-                // تعداد رو اضافه کن
                 $newQuantity = $existingItem->quantity + $quantity;
                 
-                if ($variant->stock < $newQuantity) {
-                    throw new \Exception("Insufficient stock. Available: {$variant->stock}");
-                }
+                // ✅ چک موجودی برای مجموع
+                $this->validateStock($variant, $newQuantity);
+                
+                // 🔥 چک محدودیت برای مجموع
+                $this->validateMaxOrderQuantity($variant, $newQuantity);
                 
                 $existingItem->update(['quantity' => $newQuantity]);
                 return $existingItem->fresh();
@@ -148,9 +152,10 @@ class CartService
         }
 
         // ✅ چک موجودی
-        if ($item->variant->stock < $quantity) {
-            throw new \Exception("Insufficient stock. Available: {$item->variant->stock}");
-        }
+        $this->validateStock($item->variant, $quantity);
+
+        // 🔥 چک محدودیت هر سفارش
+        $this->validateMaxOrderQuantity($item->variant, $quantity);
 
         $item->update(['quantity' => $quantity]);
         return $item->fresh();
@@ -175,43 +180,37 @@ class CartService
         });
     }
 
-   // ================================================================
-// 🎟️ Apply Coupon
-// ================================================================
-public function applyCoupon(Cart $cart, string $code): Cart
-{
-    // پیدا کردن کوپن
-    $coupon = $this->couponService->find($code);
+    // ================================================================
+    // 🎟️ Apply Coupon
+    // ================================================================
+    public function applyCoupon(Cart $cart, string $code): Cart
+    {
+        $coupon = $this->couponService->find($code);
 
-    if (!$coupon) {
-        throw new \Exception('Invalid coupon code');
+        if (!$coupon) {
+            throw new \Exception('Invalid coupon code');
+        }
+
+        $coupon->load('discount');
+        $this->couponValidator->validate($coupon);
+
+        if ($cart->user_id) {
+            $this->couponValidator->validateForUser($coupon, $cart->user);
+        }
+
+        $cart->update(['coupon_id' => $coupon->id]);
+        return $cart->fresh();
     }
 
-    // بارگذاری discount
-    $coupon->load('discount');
-
-    // ولیدیت
-    $this->couponValidator->validate($coupon);
-
-    // ولیدیت برای کاربر
-    if ($cart->user_id) {
-        $this->couponValidator->validateForUser($coupon, $cart->user);
+    // ================================================================
+    // ❌ Remove Coupon
+    // ================================================================
+    public function removeCoupon(Cart $cart): Cart
+    {
+        $cart->update(['coupon_id' => null]);
+        return $cart->fresh();
     }
 
-    // ذخیره کوپن روی سبد
-    $cart->update(['coupon_id' => $coupon->id]);
-
-    return $cart->fresh();
-}
-
-// ================================================================
-// ❌ Remove Coupon
-// ================================================================
-public function removeCoupon(Cart $cart): Cart
-{
-    $cart->update(['coupon_id' => null]);
-    return $cart->fresh();
-}
     // ================================================================
     // 🔀 Merge Guest Cart with User Cart
     // ================================================================
@@ -228,30 +227,83 @@ public function removeCoupon(Cart $cart): Cart
                 return $this->getOrCreate($user, null);
             }
 
-            // سبد کاربر رو بگیر یا بساز
             $userCart = $this->getOrCreate($user, null);
 
-            // آیتم‌های مهمان رو منتقل کن
             foreach ($guestCart->items as $guestItem) {
                 $existingItem = $userCart->items()
                     ->where('product_variant_id', $guestItem->product_variant_id)
                     ->first();
 
                 if ($existingItem) {
-                    // اگه بود، تعداد رو اضافه کن
+                    // 🔥 چک محدودیت
+                    $newQuantity = $existingItem->quantity + $guestItem->quantity;
+                    $allowedQuantity = $this->getAllowedQuantity($existingItem->variant, $newQuantity);
+                    
                     $existingItem->update([
-                        'quantity' => $existingItem->quantity + $guestItem->quantity
+                        'quantity' => $allowedQuantity
                     ]);
                 } else {
-                    // اگه نبود، منتقل کن
-                    $guestItem->update(['cart_id' => $userCart->id]);
+                    // 🔥 چک محدودیت
+                    $variant = $guestItem->variant;
+                    $allowedQuantity = $this->getAllowedQuantity($variant, $guestItem->quantity);
+                    
+                    $guestItem->update([
+                        'cart_id' => $userCart->id,
+                        'quantity' => $allowedQuantity,
+                    ]);
                 }
             }
 
-            // سبد مهمان رو پاک کن
             $guestCart->delete();
-
             return $userCart->fresh();
         });
+    }
+
+    // ================================================================
+    // 🛡️ VALIDATION HELPERS
+    // ================================================================
+
+    /**
+     * ✅ چک موجودی
+     */
+    private function validateStock(ProductVariant $variant, int $quantity): void
+    {
+        if ($variant->stock < $quantity) {
+            throw new \Exception(
+                "Insufficient stock. Available: {$variant->stock}"
+            );
+        }
+    }
+
+    /**
+     * 🔥 چک محدودیت هر سفارش
+     */
+    private function validateMaxOrderQuantity(ProductVariant $variant, int $quantity): void
+    {
+        if (!$variant->max_order_quantity) {
+            return; // 🎯 اگه محدودیت نداشت، مشکلی نیست
+        }
+
+        if ($quantity > $variant->max_order_quantity) {
+            throw new \Exception(
+                "Maximum {$variant->max_order_quantity} of this product allowed per order"
+            );
+        }
+    }
+
+    /**
+     * 🎯 محاسبه بیشترین تعداد مجاز (کمترین بین stock و max_order_quantity)
+     */
+    private function getAllowedQuantity(ProductVariant $variant, int $requestedQuantity): int
+    {
+        // اول با stock مقایسه
+        $maxByStock = min($requestedQuantity, $variant->stock);
+
+        // بعد با max_order_quantity
+        if ($variant->max_order_quantity) {
+            return min($maxByStock, $variant->max_order_quantity);
+        }
+
+        return $maxByStock;
     }
 }

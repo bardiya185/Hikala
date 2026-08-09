@@ -109,46 +109,98 @@ class ProductService
         return $query;
     }
 
-   /**
- * فیلتر دسته‌بندی (شامل زیردسته‌ها)
- * پشتیبانی از یک یا چند دسته
- */
-private function applyCategoryFilter(Builder $query, Request $request): void
-{
-    // 🎯 حالت ۱: چند دسته (category_ids=49,62)
-    if ($request->has('category_ids')) {
-        $ids = array_filter(explode(',', $request->category_ids));
-        
-        if (empty($ids)) return;
-
-        // شامل زیردسته‌های هر کدوم هم بشه
-        $allCategoryIds = [];
-        foreach ($ids as $id) {
-            $subCategoryIds = Category::where('parent_id', $id)
+    private function applyCategoryFilter(Builder $query, Request $request): void
+    {
+        // 🎯 حالت ۱: چند دسته
+        if ($request->has('category_ids')) {
+            $ids = array_filter(explode(',', $request->category_ids));
+            if (empty($ids)) return;
+    
+            $allCategoryIds = $this->getCategoryWithSubcategories($ids);
+            if (empty($allCategoryIds)) {
+                // 🚫 هیچ نتیجه‌ای برنگردون
+                $query->whereRaw('1 = 0');
+                return;
+            }
+            
+            $query->whereHas('categories', fn($q) =>
+                $q->whereIn('category_id', $allCategoryIds)
+            );
+            return;
+        }
+    
+        // 🎯 حالت ۲: یک دسته
+        if ($request->has('category_id')) {
+            $allCategoryIds = $this->getCategoryWithSubcategories([$request->category_id]);
+    
+            if (empty($allCategoryIds)) {
+                // 🚫 هیچ نتیجه‌ای برنگردون
+                $query->whereRaw('1 = 0');
+                return;
+            }
+    
+            $query->whereHas('categories', fn($q) =>
+                $q->whereIn('category_id', $allCategoryIds)
+            );
+        }
+    }
+    
+    /**
+     * گرفتن دسته + زیردسته‌های فعال
+     */
+    private function getCategoryWithSubcategories(array $categoryIds): array
+    {
+        $validIds = [];
+    
+        foreach ($categoryIds as $id) {
+            if ($this->isChainActive((int) $id)) {
+                $validIds[] = (int) $id;
+            }
+        }
+    
+        if (empty($validIds)) return [];
+    
+        // Recursive برای زیردسته‌ها
+        $allIds = $validIds;
+        $currentIds = $validIds;
+    
+        while (!empty($currentIds)) {
+            $subIds = Category::whereIn('parent_id', $currentIds)
+                ->where('is_active', 1)
                 ->pluck('id')
                 ->toArray();
-            $allCategoryIds = array_merge($allCategoryIds, [$id], $subCategoryIds);
+    
+            if (empty($subIds)) break;
+    
+            $allIds = array_merge($allIds, $subIds);
+            $currentIds = $subIds;
         }
-
-        $query->whereHas('categories', fn($q) =>
-            $q->whereIn('category_id', array_unique($allCategoryIds))
-        );
-        return;
+    
+        return array_unique($allIds);
     }
-
-    // 🎯 حالت ۲: یک دسته (category_id=49)
-    if ($request->has('category_id')) {
-        $categoryId = $request->category_id;
-        $subCategoryIds = Category::where('parent_id', $categoryId)
-            ->pluck('id')
-            ->toArray();
-        $allCategoryIds = array_merge([$categoryId], $subCategoryIds);
-
-        $query->whereHas('categories', fn($q) =>
-            $q->whereIn('category_id', $allCategoryIds)
-        );
+    
+    /**
+     * چک زنجیره پدرها
+     */
+    private function isChainActive(int $categoryId): bool
+    {
+        $current = Category::find($categoryId);
+    
+        if (!$current || !$current->is_active) {
+            return false;
+        }
+    
+        while ($current->parent_id) {
+            $parent = Category::find($current->parent_id);
+            
+            if (!$parent) break;
+            if (!$parent->is_active) return false;
+            
+            $current = $parent;
+        }
+    
+        return true;
     }
-}
     private function applyBrandFilter(Builder $query, Request $request): void
     {
         if ($request->has('brand_id')) {
@@ -583,6 +635,7 @@ private function applyCategoryFilter(Builder $query, Request $request): void
             'barcode' => $variantData['barcode'] ?? null,
             'base_price' => $variantData['base_price'] ?? null,
             'stock' => $variantData['stock'] ?? 0,
+            'max_order_quantity' => $variantData['max_order_quantity'] ?? 5, 
             'weight' => $variantData['weight'] ?? 0,
             'is_active' => $variantData['is_active'] ?? 1,
         ]);
@@ -602,6 +655,7 @@ private function applyCategoryFilter(Builder $query, Request $request): void
             'barcode' => $variantData['barcode'] ?? $variant->barcode,
             'base_price' => $variantData['base_price'] ?? $variant->base_price,
             'stock' => $variantData['stock'] ?? $variant->stock,
+            'max_order_quantity' => $variantData['max_order_quantity'] ?? $variant->max_order_quantity,
             'weight' => $variantData['weight'] ?? $variant->weight,
             'is_active' => $variantData['is_active'] ?? $variant->is_active,
         ]);

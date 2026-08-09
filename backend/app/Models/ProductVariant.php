@@ -16,9 +16,14 @@ class ProductVariant extends Model
         'barcode',
         'base_price',
         'stock',
+        'max_order_quantity',
         'weight',
         'is_active',
         'is_default',
+    ];
+
+    protected $casts = [
+        'max_order_quantity' => 'integer',
     ];
 
 
