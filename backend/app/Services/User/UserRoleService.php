@@ -36,6 +36,7 @@ class UserRoleService
             $targetUser->assignRole($role->name);
         }
 
+
         return $targetUser->fresh();
     }
 

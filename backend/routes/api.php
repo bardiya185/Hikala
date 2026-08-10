@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\ProvinceController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserRoleController;
+use App\Http\Controllers\Api\WishlistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -282,5 +283,14 @@ Route::prefix('admin')
         Route::put('/{user}/role', [UserRoleController::class, 'sync']);
         Route::post('/{user}/roles', [UserRoleController::class, 'attach']);
         Route::delete('/{user}/roles/{role}', [UserRoleController::class, 'destroy']);
+    });
+
+    Route::prefix('wishlist')->group(function () {
+        Route::get('/', [WishlistController::class, 'index']);
+        Route::delete('/', [WishlistController::class, 'clear']);
+        Route::post('/{product}', [WishlistController::class, 'store']);
+        Route::delete('/{product}', [WishlistController::class, 'destroy']);
+        Route::post('/{product}/toggle', [WishlistController::class, 'toggle']);
+        Route::get('/{product}/check', [WishlistController::class, 'check']);
     });
 });
