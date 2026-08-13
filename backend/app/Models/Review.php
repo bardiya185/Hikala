@@ -16,6 +16,8 @@ class Review extends Model
         'rating',
         'advantages',
         'disadvantages',
+        'likes_count',
+        'dislikes_count',
         'status',
         'is_buyer',
     ];
@@ -65,5 +67,19 @@ class Review extends Model
     public function isRejected(): bool
     {
         return $this->status === 'rejected';
+    }
+    public function reactions()
+    {
+        return $this->hasMany(ReviewReaction::class);
+    }
+
+    public function likes()
+    {
+        return $this->hasMany(ReviewReaction::class)->where('type', 'like');
+    }
+
+    public function dislikes()
+    {
+        return $this->hasMany(ReviewReaction::class)->where('type', 'dislike');
     }
 }

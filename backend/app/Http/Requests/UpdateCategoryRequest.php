@@ -31,7 +31,7 @@ class UpdateCategoryRequest extends FormRequest
                 Rule::unique('categories', 'slug')->ignore($categoryId),
             ],
             'icon_key' => 'nullable|string|max:255',
-            'image' => 'nullable|string|max:255',
+            'banner' => 'nullable|string|max:255',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
         ];

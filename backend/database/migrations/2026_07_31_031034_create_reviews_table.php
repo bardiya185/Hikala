@@ -30,6 +30,10 @@ return new class extends Migration
 
             $table->boolean('is_buyer')->default(false);
 
+
+            $table->unsignedInteger('likes_count')->default(0);
+            $table->unsignedInteger('dislikes_count')->default(0);
+
             $table->timestamps();
 
             $table->unique(['user_id', 'product_id']);

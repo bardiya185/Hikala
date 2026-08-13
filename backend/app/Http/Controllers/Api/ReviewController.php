@@ -3,81 +3,26 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ReviewReactionRequest;
 use App\Http\Requests\StoreReviewRequest;
 use App\Http\Requests\UpdateReviewRequest;
 use App\Http\Resources\ReviewResource;
-use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Review;
+use App\Services\Review\ReviewReactionService;
+use App\Services\Review\ReviewService;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
-#[OA\Tag(
-    name: "Reviews",
-    description: "Product review management"
-)]
-#[OA\Tag(
-    name: "Admin Reviews",
-    description: "Admin review moderation"
-)]
-#[OA\Schema(
-    schema: "Review",
-    title: "Review",
-    description: "Product review model",
-    properties: [
-        new OA\Property(property: "id", type: "integer", example: 1),
-        new OA\Property(property: "body", type: "string", example: "This product is excellent quality and works perfectly."),
-        new OA\Property(property: "rating", type: "integer", minimum: 1, maximum: 5, example: 5),
-        new OA\Property(
-            property: "advantages",
-            type: "array",
-            items: new OA\Items(type: "string"),
-            example: ["High quality", "Nice design"],
-            nullable: true
-        ),
-        new OA\Property(
-            property: "disadvantages",
-            type: "array",
-            items: new OA\Items(type: "string"),
-            example: ["Price is a little high"],
-            nullable: true
-        ),
-        new OA\Property(property: "status", type: "string", enum: ["pending", "approved", "rejected"], example: "approved"),
-        new OA\Property(property: "is_buyer", type: "boolean", example: true),
-        new OA\Property(property: "created_at", type: "string", format: "date-time"),
-        new OA\Property(property: "updated_at", type: "string", format: "date-time"),
-        new OA\Property(
-            property: "user",
-            type: "object",
-            properties: [
-                new OA\Property(property: "id", type: "integer", example: 3),
-                new OA\Property(property: "name", type: "string", example: "John Doe"),
-            ]
-        ),
-    ]
-)]
-#[OA\Schema(
-    schema: "RatingSummary",
-    title: "Rating Summary",
-    description: "Product rating statistics",
-    properties: [
-        new OA\Property(property: "average", type: "number", format: "float", example: 4.2),
-        new OA\Property(property: "total", type: "integer", example: 15),
-        new OA\Property(
-            property: "breakdown",
-            type: "object",
-            properties: [
-                new OA\Property(property: "5", type: "integer", example: 7),
-                new OA\Property(property: "4", type: "integer", example: 4),
-                new OA\Property(property: "3", type: "integer", example: 2),
-                new OA\Property(property: "2", type: "integer", example: 1),
-                new OA\Property(property: "1", type: "integer", example: 1),
-            ]
-        ),
-    ]
-)]
+#[OA\Tag(name: "Reviews", description: "Product review management")]
+#[OA\Tag(name: "Admin Reviews", description: "Admin review moderation")]
 class ReviewController extends Controller
 {
+    public function __construct(
+        private ReviewService $reviewService,
+        private ReviewReactionService $reactionService,
+    ) {}
+
     // ================================================================
     // Get Product Reviews (Public)
     // ================================================================
@@ -85,158 +30,44 @@ class ReviewController extends Controller
         path: '/api/products/{product}/reviews',
         tags: ['Reviews'],
         summary: 'Get approved reviews for a product',
-        description: 'Returns paginated list of approved reviews with rating summary and breakdown.',
+        description: 'Returns paginated approved reviews with rating summary.',
         parameters: [
-            new OA\Parameter(
-                name: 'product',
-                in: 'path',
-                required: true,
-                description: 'Product ID',
-                schema: new OA\Schema(type: 'integer', example: 1)
-            ),
-            new OA\Parameter(
-                name: 'rating',
-                in: 'query',
-                description: 'Filter by specific rating (1-5)',
-                schema: new OA\Schema(type: 'integer', minimum: 1, maximum: 5, example: 5)
-            ),
-            new OA\Parameter(
-                name: 'sort_by',
-                in: 'query',
-                description: 'Sort field',
-                schema: new OA\Schema(
-                    type: 'string',
-                    default: 'created_at',
-                    enum: ['created_at', 'rating']
-                )
-            ),
-            new OA\Parameter(
-                name: 'sort_order',
-                in: 'query',
-                description: 'Sort direction',
-                schema: new OA\Schema(
-                    type: 'string',
-                    default: 'desc',
-                    enum: ['asc', 'desc']
-                )
-            ),
-            new OA\Parameter(
-                name: 'per_page',
-                in: 'query',
-                description: 'Reviews per page',
-                schema: new OA\Schema(type: 'integer', default: 10, minimum: 1, maximum: 50)
-            ),
-            new OA\Parameter(
-                name: 'page',
-                in: 'query',
-                description: 'Page number',
-                schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
-            ),
+            new OA\Parameter(name: 'product', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'rating', in: 'query', schema: new OA\Schema(type: 'integer', minimum: 1, maximum: 5)),
+            new OA\Parameter(name: 'sort_by', in: 'query', schema: new OA\Schema(type: 'string', enum: ['created_at', 'rating', 'likes_count'])),
+            new OA\Parameter(name: 'sort_order', in: 'query', schema: new OA\Schema(type: 'string', enum: ['asc', 'desc'])),
+            new OA\Parameter(name: 'per_page', in: 'query', schema: new OA\Schema(type: 'integer', default: 10, maximum: 50)),
         ],
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Reviews retrieved successfully',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(
-                            property: 'data',
-                            type: 'array',
-                            items: new OA\Items(ref: '#/components/schemas/Review')
-                        ),
-                        new OA\Property(
-                            property: 'rating_summary',
-                            ref: '#/components/schemas/RatingSummary'
-                        ),
-                        new OA\Property(
-                            property: 'meta',
-                            type: 'object',
-                            properties: [
-                                new OA\Property(property: 'current_page', type: 'integer', example: 1),
-                                new OA\Property(property: 'last_page', type: 'integer', example: 2),
-                                new OA\Property(property: 'per_page', type: 'integer', example: 10),
-                                new OA\Property(property: 'total', type: 'integer', example: 15),
-                                new OA\Property(property: 'has_more', type: 'boolean', example: true),
-                            ]
-                        ),
-                    ]
-                )
-            ),
+            new OA\Response(response: 200, description: 'Reviews retrieved successfully'),
             new OA\Response(response: 404, description: 'Product not found'),
         ]
     )]
     public function index(Request $request, Product $product)
     {
-        $query = $product->reviews()
-            ->approved()
-            ->with('user')
-            ->latest();
-
-        if ($request->has('rating')) {
-            $query->where('rating', $request->rating);
-        }
-
-        $sortBy = $request->get('sort_by', 'created_at');
-        $sortOrder = $request->get('sort_order', 'desc');
-
-        $allowedSorts = ['created_at', 'rating'];
-
-        if (in_array($sortBy, $allowedSorts)) {
-            $query->orderBy($sortBy, $sortOrder);
-        }
-
-        $perPage = min((int) $request->get('per_page', 10), 50);
-        $reviews = $query->paginate($perPage);
-
-        $ratingStats = $product->reviews()
-            ->approved()
-            ->selectRaw('rating, COUNT(*) as count')
-            ->groupBy('rating')
-            ->pluck('count', 'rating')
-            ->toArray();
-
-        $totalReviews = array_sum($ratingStats);
-
-        $averageRating = $totalReviews > 0
-            ? round(
-                collect($ratingStats)->map(fn($count, $rating) => $rating * $count)->sum() / $totalReviews,
-                1
-            )
-            : 0;
+        $result = $this->reviewService->getProductReviews($product, $request);
 
         return response()->json([
             'success' => true,
-            'data' => ReviewResource::collection($reviews),
-            'rating_summary' => [
-                'average' => $averageRating,
-                'total' => $totalReviews,
-                'breakdown' => [
-                    5 => $ratingStats[5] ?? 0,
-                    4 => $ratingStats[4] ?? 0,
-                    3 => $ratingStats[3] ?? 0,
-                    2 => $ratingStats[2] ?? 0,
-                    1 => $ratingStats[1] ?? 0,
-                ],
-            ],
+            'data' => ReviewResource::collection($result['reviews']),
+            'rating_summary' => $result['rating_summary'],
             'meta' => [
-                'current_page' => $reviews->currentPage(),
-                'last_page' => $reviews->lastPage(),
-                'per_page' => $reviews->perPage(),
-                'total' => $reviews->total(),
-                'has_more' => $reviews->hasMorePages(),
+                'current_page' => $result['reviews']->currentPage(),
+                'last_page' => $result['reviews']->lastPage(),
+                'per_page' => $result['reviews']->perPage(),
+                'total' => $result['reviews']->total(),
+                'has_more' => $result['reviews']->hasMorePages(),
             ],
         ]);
     }
 
     // ================================================================
-    // Submit Review (Authenticated)
+    // Submit Review (Auth)
     // ================================================================
     #[OA\Post(
         path: '/api/reviews',
         tags: ['Reviews'],
-        summary: 'Submit a review for a product',
-        description: 'Authenticated user can submit one review per product. The review will be pending until admin approves it. Buyer status is automatically detected.',
+        summary: 'Submit a review',
         security: [['bearerAuth' => []]],
         requestBody: new OA\RequestBody(
             required: true,
@@ -244,107 +75,31 @@ class ReviewController extends Controller
                 required: ['product_id', 'body', 'rating'],
                 properties: [
                     new OA\Property(property: 'product_id', type: 'integer', example: 1),
-                    new OA\Property(
-                        property: 'body',
-                        type: 'string',
-                        minLength: 10,
-                        maxLength: 2000,
-                        example: 'This product is excellent quality and works perfectly.'
-                    ),
-                    new OA\Property(
-                        property: 'rating',
-                        type: 'integer',
-                        minimum: 1,
-                        maximum: 5,
-                        example: 5
-                    ),
-                    new OA\Property(
-                        property: 'advantages',
-                        type: 'array',
-                        items: new OA\Items(type: 'string', maxLength: 255),
-                        example: ['High quality', 'Nice design'],
-                        nullable: true
-                    ),
-                    new OA\Property(
-                        property: 'disadvantages',
-                        type: 'array',
-                        items: new OA\Items(type: 'string', maxLength: 255),
-                        example: ['Price is a little high'],
-                        nullable: true
-                    ),
+                    new OA\Property(property: 'body', type: 'string', example: 'Excellent product!'),
+                    new OA\Property(property: 'rating', type: 'integer', minimum: 1, maximum: 5, example: 5),
+                    new OA\Property(property: 'advantages', type: 'array', items: new OA\Items(type: 'string'), nullable: true),
+                    new OA\Property(property: 'disadvantages', type: 'array', items: new OA\Items(type: 'string'), nullable: true),
                 ]
             )
         ),
         responses: [
-            new OA\Response(
-                response: 201,
-                description: 'Review submitted successfully',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(
-                            property: 'message',
-                            type: 'string',
-                            example: 'Your review has been submitted and is awaiting approval.'
-                        ),
-                        new OA\Property(property: 'data', ref: '#/components/schemas/Review'),
-                    ]
-                )
-            ),
-            new OA\Response(
-                response: 422,
-                description: 'Validation error or duplicate review',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: false),
-                        new OA\Property(
-                            property: 'message',
-                            type: 'string',
-                            example: 'You have already submitted a review for this product.'
-                        ),
-                    ]
-                )
-            ),
+            new OA\Response(response: 201, description: 'Review submitted'),
             new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 422, description: 'Validation error or duplicate'),
         ]
     )]
     public function store(StoreReviewRequest $request)
     {
         $user = $request->user();
-        $productId = $request->product_id;
 
-        $exists = Review::where('user_id', $user->id)
-            ->where('product_id', $productId)
-            ->exists();
-
-        if ($exists) {
+        if (!$user) {
             return response()->json([
                 'success' => false,
-                'message' => 'You have already submitted a review for this product.',
-            ], 422);
+                'message' => 'Unauthenticated.',
+            ], 401);
         }
 
-        $isBuyer = OrderItem::whereHas('order', function ($q) use ($user) {
-                $q->where('user_id', $user->id)
-                  ->where('status', 'delivered');
-            })
-            ->whereHas('variant', function ($q) use ($productId) {
-                $q->where('product_id', $productId);
-            })
-            ->exists();
-
-        $review = Review::create([
-            'user_id' => $user->id,
-            'product_id' => $productId,
-            'body' => $request->body,
-            'rating' => $request->rating,
-            'advantages' => $request->advantages,
-            'disadvantages' => $request->disadvantages,
-            'status' => 'pending',
-            'is_buyer' => $isBuyer,
-        ]);
-
-        $review->load('user');
+        $review = $this->reviewService->store($user, $request->validated());
 
         return response()->json([
             'success' => true,
@@ -354,340 +109,173 @@ class ReviewController extends Controller
     }
 
     // ================================================================
-    // Update Review (Owner Only)
+    // Update Review (Owner)
     // ================================================================
     #[OA\Put(
         path: '/api/reviews/{review}',
         tags: ['Reviews'],
         summary: 'Update your review',
-        description: 'Only the review owner can update it. After update, the review status resets to pending for admin approval.',
         security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(
-                name: 'review',
-                in: 'path',
-                required: true,
-                description: 'Review ID',
-                schema: new OA\Schema(type: 'integer', example: 1)
-            ),
+            new OA\Parameter(name: 'review', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
         ],
         requestBody: new OA\RequestBody(
-            required: true,
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property(
-                        property: 'body',
-                        type: 'string',
-                        minLength: 10,
-                        maxLength: 2000,
-                        example: 'Updated review text with more details about the product.'
-                    ),
-                    new OA\Property(
-                        property: 'rating',
-                        type: 'integer',
-                        minimum: 1,
-                        maximum: 5,
-                        example: 4
-                    ),
-                    new OA\Property(
-                        property: 'advantages',
-                        type: 'array',
-                        items: new OA\Items(type: 'string'),
-                        example: ['Updated advantage'],
-                        nullable: true
-                    ),
-                    new OA\Property(
-                        property: 'disadvantages',
-                        type: 'array',
-                        items: new OA\Items(type: 'string'),
-                        example: ['Updated disadvantage'],
-                        nullable: true
-                    ),
+                    new OA\Property(property: 'body', type: 'string'),
+                    new OA\Property(property: 'rating', type: 'integer', minimum: 1, maximum: 5),
+                    new OA\Property(property: 'advantages', type: 'array', items: new OA\Items(type: 'string'), nullable: true),
+                    new OA\Property(property: 'disadvantages', type: 'array', items: new OA\Items(type: 'string'), nullable: true),
                 ]
             )
         ),
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Review updated successfully',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(
-                            property: 'message',
-                            type: 'string',
-                            example: 'Your review has been updated and is awaiting approval again.'
-                        ),
-                        new OA\Property(property: 'data', ref: '#/components/schemas/Review'),
-                    ]
-                )
-            ),
-            new OA\Response(
-                response: 403,
-                description: 'Forbidden - Not the review owner',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: false),
-                        new OA\Property(
-                            property: 'message',
-                            type: 'string',
-                            example: 'You are not allowed to update this review.'
-                        ),
-                    ]
-                )
-            ),
+            new OA\Response(response: 200, description: 'Review updated'),
+            new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 401, description: 'Unauthenticated'),
-            new OA\Response(response: 404, description: 'Review not found'),
-            new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
     public function update(UpdateReviewRequest $request, Review $review)
-{
-    $user = $request->user();
+    {
+        $review = $this->reviewService->update($review, $request->user(), $request->validated());
 
-    if ($review->user_id !== $user->id) {
         return response()->json([
-            'success' => false,
-            'message' => 'You are not allowed to update this review.',
-        ], 403);
+            'success' => true,
+            'message' => 'Your review has been updated and is awaiting approval again.',
+            'data' => new ReviewResource($review),
+        ]);
     }
-
-    $wasApproved = $review->status === 'approved';
-
-    $review->update([
-        'body' => $request->input('body', $review->body),
-        'rating' => $request->input('rating', $review->rating),
-        'advantages' => $request->input('advantages', $review->advantages),
-        'disadvantages' => $request->input('disadvantages', $review->disadvantages),
-        'status' => 'pending',
-    ]);
-
-    if ($wasApproved) {
-        $this->updateProductRating($review->product_id);
-    }
-
-    $review->load('user');
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Your review has been updated and is awaiting approval again.',
-        'data' => new ReviewResource($review),
-    ]);
-}
 
     // ================================================================
-    // Delete Review (Owner Only)
+    // Delete Review (Owner)
     // ================================================================
     #[OA\Delete(
         path: '/api/reviews/{review}',
         tags: ['Reviews'],
         summary: 'Delete your review',
-        description: 'Only the review owner can delete it.',
         security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(
-                name: 'review',
-                in: 'path',
-                required: true,
-                description: 'Review ID',
-                schema: new OA\Schema(type: 'integer', example: 1)
-            ),
+            new OA\Parameter(name: 'review', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
         ],
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Review deleted successfully',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(
-                            property: 'message',
-                            type: 'string',
-                            example: 'Your review has been deleted successfully.'
-                        ),
-                    ]
-                )
-            ),
-            new OA\Response(
-                response: 403,
-                description: 'Forbidden - Not the review owner',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: false),
-                        new OA\Property(
-                            property: 'message',
-                            type: 'string',
-                            example: 'You are not allowed to delete this review.'
-                        ),
-                    ]
-                )
-            ),
+            new OA\Response(response: 200, description: 'Review deleted'),
+            new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 401, description: 'Unauthenticated'),
-            new OA\Response(response: 404, description: 'Review not found'),
         ]
     )]
     public function destroy(Request $request, Review $review)
-{
-    $user = $request->user();
+    {
+        $this->reviewService->delete($review, $request->user());
 
-    if ($review->user_id !== $user->id) {
         return response()->json([
-            'success' => false,
-            'message' => 'You are not allowed to delete this review.',
-        ], 403);
+            'success' => true,
+            'message' => 'Your review has been deleted successfully.',
+        ]);
     }
-
-    $productId = $review->product_id;
-    $wasApproved = $review->status === 'approved';
-
-    $review->delete();
-
-    if ($wasApproved) {
-        $this->updateProductRating($productId);
-    }
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Your review has been deleted successfully.',
-    ]);
-}
 
     // ================================================================
-    // My Review for a Product (Authenticated)
+    // My Review (Auth)
     // ================================================================
     #[OA\Get(
         path: '/api/products/{product}/my-review',
         tags: ['Reviews'],
         summary: 'Get your review for a product',
-        description: 'Returns the authenticated user\'s review for a specific product. If no review exists, returns null with can_review: true.',
         security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(
-                name: 'product',
-                in: 'path',
-                required: true,
-                description: 'Product ID',
-                schema: new OA\Schema(type: 'integer', example: 1)
-            ),
+            new OA\Parameter(name: 'product', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
         ],
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'User review retrieved',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(
-                            property: 'data',
-                            ref: '#/components/schemas/Review',
-                            nullable: true
-                        ),
-                        new OA\Property(property: 'can_review', type: 'boolean', example: false),
-                    ]
-                )
-            ),
+            new OA\Response(response: 200, description: 'Review retrieved'),
             new OA\Response(response: 401, description: 'Unauthenticated'),
-            new OA\Response(response: 404, description: 'Product not found'),
         ]
     )]
     public function myReview(Request $request, Product $product)
     {
         $user = $request->user();
 
-        $review = Review::where('user_id', $user->id)
-            ->where('product_id', $product->id)
-            ->first();
-
-        if (!$review) {
+        if (!$user) {
             return response()->json([
-                'success' => true,
-                'data' => null,
-                'can_review' => true,
-            ]);
+                'success' => false,
+                'message' => 'Unauthenticated.',
+            ], 401);
         }
+
+        $review = $this->reviewService->getUserReview($user, $product);
 
         return response()->json([
             'success' => true,
-            'data' => new ReviewResource($review),
-            'can_review' => false,
+            'data' => $review ? new ReviewResource($review) : null,
+            'can_review' => is_null($review),
         ]);
     }
 
     // ================================================================
-    // Admin: List All Reviews
+    // React to Review (Auth)
+    // ================================================================
+    #[OA\Post(
+        path: '/api/reviews/{review}/react',
+        tags: ['Reviews'],
+        summary: 'Like or dislike a review',
+        description: 'Toggle like/dislike. Same type = remove. Different type = change.',
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'review', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['type'],
+                properties: [
+                    new OA\Property(property: 'type', type: 'string', enum: ['like', 'dislike'], example: 'like'),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Reaction updated'),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ]
+    )]
+    public function react(ReviewReactionRequest $request, Review $review)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthenticated.',
+            ], 401);
+        }
+
+        $result = $this->reactionService->toggle($review, $user, $request->type);
+
+        return response()->json([
+            'success' => true,
+            ...$result,
+        ]);
+    }
+
+    // ================================================================
+    // Admin: List Reviews
     // ================================================================
     #[OA\Get(
         path: '/api/admin/reviews',
         tags: ['Admin Reviews'],
         summary: 'List all reviews (Admin)',
-        description: 'Returns all reviews with filtering by status and product. Ordered by latest first.',
         security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(
-                name: 'status',
-                in: 'query',
-                description: 'Filter by review status',
-                schema: new OA\Schema(
-                    type: 'string',
-                    enum: ['pending', 'approved', 'rejected']
-                )
-            ),
-            new OA\Parameter(
-                name: 'product_id',
-                in: 'query',
-                description: 'Filter by product ID',
-                schema: new OA\Schema(type: 'integer', example: 1)
-            ),
-            new OA\Parameter(
-                name: 'per_page',
-                in: 'query',
-                description: 'Reviews per page',
-                schema: new OA\Schema(type: 'integer', default: 20, minimum: 1, maximum: 100)
-            ),
+            new OA\Parameter(name: 'status', in: 'query', schema: new OA\Schema(type: 'string', enum: ['pending', 'approved', 'rejected'])),
+            new OA\Parameter(name: 'product_id', in: 'query', schema: new OA\Schema(type: 'integer')),
+            new OA\Parameter(name: 'per_page', in: 'query', schema: new OA\Schema(type: 'integer', default: 20)),
         ],
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Reviews list retrieved',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(
-                            property: 'data',
-                            type: 'array',
-                            items: new OA\Items(ref: '#/components/schemas/Review')
-                        ),
-                        new OA\Property(
-                            property: 'meta',
-                            type: 'object',
-                            properties: [
-                                new OA\Property(property: 'current_page', type: 'integer'),
-                                new OA\Property(property: 'last_page', type: 'integer'),
-                                new OA\Property(property: 'per_page', type: 'integer'),
-                                new OA\Property(property: 'total', type: 'integer'),
-                                new OA\Property(property: 'has_more', type: 'boolean'),
-                            ]
-                        ),
-                    ]
-                )
-            ),
+            new OA\Response(response: 200, description: 'Reviews list'),
             new OA\Response(response: 401, description: 'Unauthenticated'),
         ]
     )]
     public function adminIndex(Request $request)
     {
-        $query = Review::with(['user', 'product'])->latest();
-
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->has('product_id')) {
-            $query->where('product_id', $request->product_id);
-        }
-
-        $perPage = min((int) $request->get('per_page', 20), 100);
-        $reviews = $query->paginate($perPage);
+        $reviews = $this->reviewService->getAdminReviews($request);
 
         return response()->json([
             'success' => true,
@@ -703,110 +291,54 @@ class ReviewController extends Controller
     }
 
     // ================================================================
-    // Admin: Approve Review
+    // Admin: Approve
     // ================================================================
     #[OA\Post(
         path: '/api/admin/reviews/{review}/approve',
         tags: ['Admin Reviews'],
-        summary: 'Approve a review (Admin)',
-        description: 'Approves a pending or rejected review. Product rating is recalculated automatically.',
+        summary: 'Approve a review',
         security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(
-                name: 'review',
-                in: 'path',
-                required: true,
-                description: 'Review ID',
-                schema: new OA\Schema(type: 'integer', example: 1)
-            ),
+            new OA\Parameter(name: 'review', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
         ],
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Review approved successfully',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(property: 'message', type: 'string', example: 'Review approved successfully.'),
-                        new OA\Property(property: 'data', ref: '#/components/schemas/Review'),
-                    ]
-                )
-            ),
-            new OA\Response(response: 401, description: 'Unauthenticated'),
-            new OA\Response(response: 404, description: 'Review not found'),
+            new OA\Response(response: 200, description: 'Review approved'),
         ]
     )]
     public function approve(Review $review)
     {
-        $review->update(['status' => 'approved']);
-
-        $this->updateProductRating($review->product_id);
+        $review = $this->reviewService->approve($review);
 
         return response()->json([
             'success' => true,
             'message' => 'Review approved successfully.',
-            'data' => new ReviewResource($review->load('user')),
+            'data' => new ReviewResource($review),
         ]);
     }
 
     // ================================================================
-    // Admin: Reject Review
+    // Admin: Reject
     // ================================================================
     #[OA\Post(
         path: '/api/admin/reviews/{review}/reject',
         tags: ['Admin Reviews'],
-        summary: 'Reject a review (Admin)',
-        description: 'Rejects a pending or approved review. Product rating is recalculated automatically.',
+        summary: 'Reject a review',
         security: [['bearerAuth' => []]],
         parameters: [
-            new OA\Parameter(
-                name: 'review',
-                in: 'path',
-                required: true,
-                description: 'Review ID',
-                schema: new OA\Schema(type: 'integer', example: 1)
-            ),
+            new OA\Parameter(name: 'review', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
         ],
         responses: [
-            new OA\Response(
-                response: 200,
-                description: 'Review rejected successfully',
-                content: new OA\JsonContent(
-                    properties: [
-                        new OA\Property(property: 'success', type: 'boolean', example: true),
-                        new OA\Property(property: 'message', type: 'string', example: 'Review rejected successfully.'),
-                        new OA\Property(property: 'data', ref: '#/components/schemas/Review'),
-                    ]
-                )
-            ),
-            new OA\Response(response: 401, description: 'Unauthenticated'),
-            new OA\Response(response: 404, description: 'Review not found'),
+            new OA\Response(response: 200, description: 'Review rejected'),
         ]
     )]
     public function reject(Review $review)
     {
-        $review->update(['status' => 'rejected']);
-
-        $this->updateProductRating($review->product_id);
+        $review = $this->reviewService->reject($review);
 
         return response()->json([
             'success' => true,
             'message' => 'Review rejected successfully.',
-            'data' => new ReviewResource($review->load('user')),
-        ]);
-    }
-
-    // ================================================================
-    // Helper: Update Product Rating
-    // ================================================================
-    private function updateProductRating(int $productId): void
-    {
-        $average = Review::where('product_id', $productId)
-            ->approved()
-            ->avg('rating');
-
-        Product::where('id', $productId)->update([
-            'rating' => $average ? round($average, 2) : 0,
+            'data' => new ReviewResource($review),
         ]);
     }
 }

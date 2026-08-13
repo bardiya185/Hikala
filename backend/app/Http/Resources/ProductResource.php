@@ -10,6 +10,7 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            // ===== اطلاعات پایه =====
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
@@ -26,12 +27,35 @@ class ProductResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
 
-            'brand' => new BrandResource(
-                $this->whenLoaded('brand')
+            // ===== 💰 اطلاعات قیمت و تخفیف (از ProductService میاد) =====
+            'pricing' => $this->when(
+                isset($this->_final_price),
+                fn() => [
+                    'base_price' => $this->_base_price ?? null,
+                    'final_price' => $this->_final_price ?? null,
+                    'discount_amount' => $this->_discount_amount ?? 0,
+                    'discount_percent' => $this->_discount_percent ?? 0,
+                    'has_discount' => ($this->_discount_percent ?? 0) > 0,
+                ]
             ),
 
-             'categories' => ProductCategoryResource::collection(
-            $this->whenLoaded('categories')
+            // ===== 🎯 اطلاعات کمپین (داینامیک) =====
+            'campaign' => $this->when(
+                isset($this->_campaign_slug) && $this->_campaign_slug,
+                fn() => [
+                    'slug' => $this->_campaign_slug,
+                    'name' => $this->_campaign_name,
+                    'icon' => $this->_campaign_icon,
+                    'color' => $this->_campaign_color,
+                    'ends_at' => $this->_campaign_ends_at,
+                ]
+            ),
+
+            // ===== 🔗 روابط =====
+            'brand' => new BrandResource($this->whenLoaded('brand')),
+
+            'categories' => ProductCategoryResource::collection(
+                $this->whenLoaded('categories')
             ),
 
             'images' => ProductImageResource::collection(
@@ -42,13 +66,22 @@ class ProductResource extends JsonResource
                 $this->whenLoaded('variants')
             ),
 
-            'discounts' => $this->whenLoaded('discounts'),
-           
-           'reviews_count' => $this->whenCounted('approvedReviews'),
+            'discounts' => DiscountResource::collection(
+                $this->whenLoaded('discounts')
+            ),
+
+            // ===== ⭐ نظرات =====
+            'reviews_count' => $this->whenCounted('approvedReviews'),
             'reviews' => ReviewResource::collection(
                 $this->whenLoaded('approvedReviews')
             ),
-           
+
+            'in_wishlist' => $this->when(
+            $request->user() !== null,
+            fn() => \App\Models\Wishlist::where('user_id', $request->user()->id)
+            ->where('product_id', $this->id)
+            ->exists()
+),
         ];
     }
 }

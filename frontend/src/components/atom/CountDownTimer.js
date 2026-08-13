@@ -1,6 +1,10 @@
+"use client";
 
 import { useState, useEffect, useRef } from "react";
 
+// ================================================================
+// 🎴 Flip Unit Component
+// ================================================================
 function FlipUnit({ value, label }) {
   const [displayValue, setDisplayValue] = useState(value);
   const [flipping, setFlipping] = useState(false);
@@ -38,28 +42,33 @@ function FlipUnit({ value, label }) {
   );
 }
 
+// ================================================================
+// ⏰ Countdown Timer
+// ================================================================
 export default function CountdownTimer({ targetDate }) {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(targetDate));
 
-  function calculateTimeLeft() {
-    const difference = +new Date(targetDate) - +new Date();
+  // 🔥 محاسبه با روز
+  function calculateTimeLeft(target) {
+    const difference = +new Date(target) - +new Date();
     let timeLeft = {};
 
     if (difference > 0) {
       timeLeft = {
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)),      // 🔥 روز اضافه شد
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
         minutes: Math.floor((difference / 1000 / 60) % 60),
         seconds: Math.floor((difference / 1000) % 60),
       };
     } else {
-      timeLeft = { hours: 0, minutes: 0, seconds: 0 };
+      timeLeft = { days: 0, hours: 0, minutes: 0, seconds: 0 };
     }
     return timeLeft;
   }
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft());
+      setTimeLeft(calculateTimeLeft(targetDate));
     }, 1000);
 
     return () => clearInterval(timer);
@@ -69,6 +78,13 @@ export default function CountdownTimer({ targetDate }) {
 
   return (
     <div className="flex items-center gap-2" dir="ltr">
+      {/* 🔥 روز فقط وقتی نشون داده میشه که > 0 باشه */}
+      {timeLeft.days > 0 && (
+        <>
+          <FlipUnit value={formatNumber(timeLeft.days)} label="days" />
+          <span className="text-red-200 text-lg font-bold -mt-4">:</span>
+        </>
+      )}
       <FlipUnit value={formatNumber(timeLeft.hours)} label="hours" />
       <span className="text-red-200 text-lg font-bold -mt-4">:</span>
       <FlipUnit value={formatNumber(timeLeft.minutes)} label="minutes" />

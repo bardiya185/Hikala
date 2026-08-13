@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             BannerPositionSeeder::class,
             BannerSeeder::class,
             ReviewSeeder::class,
+            ReviewReactionSeeder::class,
 
         ]);
     }

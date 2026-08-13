@@ -67,24 +67,37 @@ class Banner extends Model
     // ✅ ساخت لینک نهایی
     public function getUrlAttribute(): ?string
     {
-        // لینک سفارشی
+        // اولویت ۱: custom_url
         if ($this->custom_url) {
             return $this->custom_url;
         }
-
-        // لینک به موجودیت
-        if ($this->linkable_type && $this->linkable_id) {
+    
+        // اولویت ۲: linkable با eager load (استفاده از slug)
+        if ($this->linkable) {
             return match ($this->linkable_type) {
-                'App\Models\Product' => "/products/{$this->linkable_id}",
-                'App\Models\Category' => "/category/{$this->linkable_id}",
-                'App\Models\Brand' => "/brand/{$this->linkable_id}",
+                \App\Models\Product::class => "/products/{$this->linkable->id}",
+                \App\Models\Category::class => $this->linkable->slug 
+                    ? "/category/{$this->linkable->slug}" 
+                    : "/products?category_id={$this->linkable->id}",
+                \App\Models\Brand::class => $this->linkable->slug 
+                    ? "/brand/{$this->linkable->slug}" 
+                    : "/products?brand_id={$this->linkable->id}",
                 default => null,
             };
         }
-
+    
+        // اولویت ۳: فقط ID (اگه linkable load نشده)
+        if ($this->linkable_type && $this->linkable_id) {
+            return match ($this->linkable_type) {
+                \App\Models\Product::class => "/products/{$this->linkable_id}",
+                \App\Models\Category::class => "/products?category_id={$this->linkable_id}",
+                \App\Models\Brand::class => "/products?brand_id={$this->linkable_id}",
+                default => null,
+            };
+        }
+    
         return null;
     }
-
     // ✅ آدرس کامل تصویر
     public function getImageUrlAttribute(): string
     {

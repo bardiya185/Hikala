@@ -62,6 +62,7 @@ export default function SearchBar() {
         />
         <input
           type="text"
+          suppressHydrationWarning
           value={query}
           onChange={(e) => {
             setQuery(e.target.value);

@@ -27,6 +27,7 @@ class ProductVariantResource extends JsonResource
                 : 0,
     
             'stock' => $this->stock,
+            'max_order_quantity' => $this->max_order_quantity,
             'weight' => $this->weight,
     
             // ✅ اضافه شد - برای انتخاب درست در فرانت
