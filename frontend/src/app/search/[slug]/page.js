@@ -9,6 +9,8 @@ async function getCategoryProducts(searchParams) {
       sort_by,
       sort_order,
       brands,
+      source,     // 🎯 دریافت پارامتر source
+      bannerId,
     } = searchParams;
 
     const sortBy = sort_by || "created_at";
@@ -27,6 +29,10 @@ async function getCategoryProducts(searchParams) {
 
     if (brands) {
       params.append("brand_id", brands);
+    }
+    if (source === 'banner') {
+      params.append("source", "banner");
+      if (bannerId) params.append("banner_id", bannerId);
     }
 
     params.append("sort_by", sortBy);
@@ -52,18 +58,27 @@ async function getCategoryProducts(searchParams) {
 }
 
 export default async function SearchResultPage({ params, searchParams }) {
-  const sp = await searchParams;
-  const { slug, id } = await params;
+ 
+  const resolvedSearchParams = await searchParams;
+  const resolvedParams = await params;
 
-  const products = await getCategoryProducts(sp);
+  
+  
+  // ۲. دریافت پارامتر source از URL (در صورت وجود)
+  const bannerId = resolvedSearchParams?.bannerId || resolvedSearchParams?.banner_id || null;
+  const isFromBanner = Boolean(bannerId) || resolvedSearchParams?.source === 'banner';
+
+  const products = await getCategoryProducts(resolvedSearchParams);
 
   return (
     <div>
       <CategoryPage
         data={products}
-        current_sort={sp.sort_by || "created_at"}
-        current_sortorder={sp.sort_order || "desc"}
-        category_id={sp.category_id || sp.category_ids || ""}
+        current_sort={resolvedSearchParams.sort_by || "created_at"}
+        current_sortorder={resolvedSearchParams.sort_order || "desc"}
+        category_id={resolvedSearchParams.category_id || resolvedSearchParams.category_id || ""}
+        isFromBanner={isFromBanner} 
+        bannerId={bannerId}
       />
     </div>
   );

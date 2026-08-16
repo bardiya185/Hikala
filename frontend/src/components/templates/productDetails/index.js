@@ -276,14 +276,14 @@ function ProductsDe({ data }) {
               </div>
             </div>
           </div>
-          <div className="w-[360px] h-[500px] border border-solid border-neutral-500 rounded-lg mt-16">
+          <div className=" sticky top-8 w-[360px] h-[500px] border border-solid border-neutral-500 rounded-lg mt-16">
             <div className="flex justify-between px-5 pt-5">
               <p>Seller</p>
               <span className="text-orange-400 animate-split font-medium">
                 3 other sellers
               </span>
             </div>
-            <div className="flex items-center gap-2 pl-5 mt-5">
+            <div className=" flex items-center gap-2 pl-5 mt-5">
               <Image
                 src="/icons/idigi.jfif"
                 width={22}
@@ -407,7 +407,7 @@ function ProductsDe({ data }) {
       </div>
       <div className="border-b border-solid border-neutral-400 w-1/1 mx-10 mt-8"></div>
       <div>
-        <ProductMoreDetials data={data} selectedVariant={selectedVariant} />
+        <ProductMoreDetials data={data} selectedVariant={selectedVariant} cartItem={cartItem} handleAddToCarts={handleAddToCarts} handleDeacrease={handleDeacrease} handleIncrease={handleDeacrease} up={up} isPending={isPending}  />
       </div>
     </>
   );

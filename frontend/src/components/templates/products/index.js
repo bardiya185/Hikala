@@ -2,7 +2,7 @@
 import Image from "next/image";
 import React from "react";
 import { TfiAlignLeft } from "react-icons/tfi";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { formatPrice } from "@/core/utils/formatPrice";
 import ReactStars from "react-stars";
@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText"; 
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 
 gsap.registerPlugin(SplitText);
 
@@ -39,10 +40,41 @@ function ProductSkeleton() {
   );
 }
 
-function Products({ data, current_sort, current_sortorder }) {
+function Products({ data, current_sort, current_sortorder,isFromBanner,bannerId }) {
+  const searchParams = useSearchParams()
+const clientIsFromBanner = isFromBanner || searchParams.get("source") === "banner" || Boolean(searchParams.get("bannerId"));
+  const clientBannerId = bannerId || searchParams.get("bannerId");
+
+
+
+
+
+
+
+
+
+
+
+
+console.log("Is from banner?:", isFromBanner, "Banner ID:", bannerId);
+
+
+
+
+
+
+
+
   const router = useRouter();
   const pathname = usePathname();
-  const containerRef = useRef(null);
+  const containerRef = useRef(null)
+  
+  ;
+
+  
+
+ 
+  
 
   const handleSortChange = (sort_by, sort_order) => {
     const params = new URLSearchParams(window.location.search);
@@ -59,9 +91,17 @@ function Products({ data, current_sort, current_sortorder }) {
 
   const isLoading = !data || data.length === 0;
 
+  
+
+
 
   return (
     <>
+    {clientIsFromBanner && (
+      <div>
+        <h1>sobhan</h1>
+      </div>
+    )}
       
       <div className="flex gap-4 pl-4 mb-4 items-center" dir="ltr">
         <div className="flex items-center gap-2 text-neutral-700">

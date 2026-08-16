@@ -69,3 +69,10 @@ export function useCart() {
     
   });
 }
+
+export const useGetCommentProduct = (productId)=>{
+  const queryKey = ["comments",productId]
+  const queryFn = ()=>api.get(`/api/products/${productId}/reviews`)
+
+  return useQuery({queryKey,queryFn})
+}
