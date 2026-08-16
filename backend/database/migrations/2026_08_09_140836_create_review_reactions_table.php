@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('review_reactions', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignId('user_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+            $table->foreignId('review_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+            $table->enum('type', ['like', 'dislike']);
+
+            $table->timestamps();
+
+            // هر کاربر فقط یک واکنش برای هر نظر
+            $table->unique(['user_id', 'review_id']);
+
+            $table->index('review_id');
+            $table->index('user_id');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('review_reactions');
+    }
+};

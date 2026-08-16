@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -11,97 +12,82 @@ class RolePermissionSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->command->info('🚀 Creating roles and permissions...');
+
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = [
-
-            // Users
-            'user.view',
-            'user.create',
-            'user.update',
-            'user.delete',
-
-            // Roles
-            'role.view',
-            'role.create',
-            'role.update',
-            'role.delete',
-
-            // Permissions
-            'permission.view',
-            'permission.create',
-            'permission.update',
-            'permission.delete',
+            // Products
+            'view-products',
+            'create-products',
+            'update-products',
+            'delete-products',
 
             // Categories
-            'category.view',
-            'category.create',
-            'category.update',
-            'category.delete',
-
-            // Products
-            'product.view',
-            'product.create',
-            'product.update',
-            'product.delete',
-
-            // Product Images
-            'product-image.view',
-            'product-image.create',
-            'product-image.update',
-            'product-image.delete',
-
-            // Product Attributes
-            'attribute.view',
-            'attribute.create',
-            'attribute.update',
-            'attribute.delete',
-
-            // Product Variants
-            'variant.view',
-            'variant.create',
-            'variant.update',
-            'variant.delete',
-
-            // Inventory
-            'inventory.view',
-            'inventory.update',
-
-            // Orders
-            'order.view',
-            'order.update',
-            'order.cancel',
-
-            // Cart
-            'cart.view',
-            'cart.update',
-
-            // Coupons
-            'coupon.view',
-            'coupon.create',
-            'coupon.update',
-            'coupon.delete',
-
-            // Comments
-            'comment.view',
-            'comment.approve',
-            'comment.delete',
+            'view-categories',
+            'create-categories',
+            'update-categories',
+            'delete-categories',
 
             // Brands
-            'brand.view',
-            'brand.create',
-            'brand.update',
-            'brand.delete',
+            'view-brands',
+            'create-brands',
+            'update-brands',
+            'delete-brands',
 
-            // Sliders
-            'slider.view',
-            'slider.create',
-            'slider.update',
-            'slider.delete',
+            // Orders
+            'view-orders',
+            'create-orders',
+            'update-orders',
+            'cancel-orders',
+            'refund-orders',
+
+            // Users
+            'view-users',
+            'create-users',
+            'update-users',
+            'delete-users',
+            'assign-roles',
+
+            // Reviews
+            'view-reviews',
+            'create-reviews',
+            'update-reviews',
+            'delete-reviews',
+            'approve-reviews',
+            'reject-reviews',
+
+            // Discounts
+            'view-discounts',
+            'create-discounts',
+            'update-discounts',
+            'delete-discounts',
+
+            // Campaigns
+            'view-campaigns',
+            'create-campaigns',
+            'update-campaigns',
+            'delete-campaigns',
+
+            // Coupons
+            'view-coupons',
+            'create-coupons',
+            'update-coupons',
+            'delete-coupons',
+
+            // Banners
+            'view-banners',
+            'create-banners',
+            'update-banners',
+            'delete-banners',
 
             // Settings
-            'setting.view',
-            'setting.update',
+            'view-settings',
+            'update-settings',
+
+            // Reports
+            'view-reports',
+            'export-reports',
         ];
 
         foreach ($permissions as $permission) {
@@ -111,7 +97,6 @@ class RolePermissionSeeder extends Seeder
             ]);
         }
 
-        // Roles
         $superAdmin = Role::firstOrCreate([
             'name' => 'super-admin',
             'guard_name' => 'sanctum',
@@ -122,101 +107,119 @@ class RolePermissionSeeder extends Seeder
             'guard_name' => 'sanctum',
         ]);
 
-        $warehouse = Role::firstOrCreate([
-            'name' => 'warehouse',
+        $seller = Role::firstOrCreate([
+            'name' => 'seller',
             'guard_name' => 'sanctum',
         ]);
 
-        $support = Role::firstOrCreate([
-            'name' => 'support',
+        $user = Role::firstOrCreate([
+            'name' => 'user',
             'guard_name' => 'sanctum',
         ]);
 
-        $customer = Role::firstOrCreate([
-            'name' => 'customer',
-            'guard_name' => 'sanctum',
-        ]);
+        $superAdmin->syncPermissions($permissions);
 
-        // Super Admin
-        $superAdmin->syncPermissions(Permission::all());
-
-        // Admin
         $admin->syncPermissions([
-            'product.view',
-            'product.create',
-            'product.update',
-            'product.delete',
+            'view-products',
+            'create-products',
+            'update-products',
+            'delete-products',
 
-            'category.view',
-            'category.create',
-            'category.update',
-            'category.delete',
+            'view-categories',
+            'create-categories',
+            'update-categories',
+            'delete-categories',
 
-            'brand.view',
-            'brand.create',
-            'brand.update',
-            'brand.delete',
+            'view-brands',
+            'create-brands',
+            'update-brands',
+            'delete-brands',
 
-            'attribute.view',
-            'attribute.create',
-            'attribute.update',
-            'attribute.delete',
+            'view-orders',
+            'update-orders',
+            'cancel-orders',
+            'refund-orders',
 
-            'variant.view',
-            'variant.create',
-            'variant.update',
-            'variant.delete',
+            'view-users',
+            'update-users',
 
-            'product-image.view',
-            'product-image.create',
-            'product-image.update',
-            'product-image.delete',
+            'view-reviews',
+            'approve-reviews',
+            'reject-reviews',
+            'delete-reviews',
 
-            'inventory.view',
-            'inventory.update',
+            'view-discounts',
+            'create-discounts',
+            'update-discounts',
+            'delete-discounts',
 
-            'order.view',
-            'order.update',
-            'order.cancel',
+            'view-campaigns',
+            'create-campaigns',
+            'update-campaigns',
+            'delete-campaigns',
 
-            'comment.view',
-            'comment.approve',
+            'view-coupons',
+            'create-coupons',
+            'update-coupons',
+            'delete-coupons',
 
-            'coupon.view',
-            'coupon.create',
-            'coupon.update',
+            'view-banners',
+            'create-banners',
+            'update-banners',
+            'delete-banners',
 
-            'slider.view',
-            'slider.create',
-            'slider.update',
-
-            'setting.view',
-            'setting.update',
+            'view-reports',
         ]);
 
-        // Warehouse
-        $warehouse->syncPermissions([
-            'product.view',
-            'product.update',
-
-            'inventory.view',
-            'inventory.update',
-
-            'order.view',
+        $seller->syncPermissions([
+            'view-products',
+            'create-products',
+            'update-products',
+            'view-orders',
+            'view-reviews',
+            'view-discounts',
+            'view-reports',
         ]);
 
-        // Support
-        $support->syncPermissions([
-            'user.view',
-
-            'order.view',
-            'order.update',
-
-            'comment.view',
-            'comment.approve',
+        $user->syncPermissions([
+            'view-products',
+            'view-categories',
+            'view-brands',
+            'create-orders',
+            'view-orders',
+            'cancel-orders',
+            'create-reviews',
+            'update-reviews',
+            'delete-reviews',
         ]);
 
-        // Customer
-        $customer->syncPermissions([]);
+        $allUsers = User::all();
+
+        if ($allUsers->isNotEmpty()) {
+            $firstUser = $allUsers->first();
+            if ($firstUser && !$firstUser->hasRole('super-admin')) {
+                $firstUser->assignRole('super-admin');
+            }
+
+            $secondUser = $allUsers->skip(1)->first();
+            if ($secondUser && !$secondUser->hasRole('admin')) {
+                $secondUser->assignRole('admin');
+            }
+
+            $thirdUser = $allUsers->skip(2)->first();
+            if ($thirdUser && !$thirdUser->hasRole('seller')) {
+                $thirdUser->assignRole('seller');
+            }
+
+            foreach ($allUsers->skip(3) as $u) {
+                if (!$u->hasRole('user')) {
+                    $u->assignRole('user');
+                }
+            }
+        }
+
+        $this->command->info('✅ Roles and permissions created successfully.');
+        $this->command->line('   • Permissions: ' . Permission::count());
+        $this->command->line('   • Roles: ' . Role::count());
     }
 }

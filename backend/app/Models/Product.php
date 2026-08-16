@@ -62,7 +62,16 @@ class Product extends Model
     {
         return $this->hasMany(Review::class)->where('status', 'approved');
     }
+    public function wishlists()
+    {
+        return $this->hasMany(Wishlist::class);
+    }
 
+    public function wishlistedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'wishlists')
+                    ->withTimestamps();
+    }
 
     use HasFactory;
 }

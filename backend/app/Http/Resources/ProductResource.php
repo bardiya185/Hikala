@@ -75,6 +75,13 @@ class ProductResource extends JsonResource
             'reviews' => ReviewResource::collection(
                 $this->whenLoaded('approvedReviews')
             ),
+
+            'in_wishlist' => $this->when(
+            $request->user() !== null,
+            fn() => \App\Models\Wishlist::where('user_id', $request->user()->id)
+            ->where('product_id', $this->id)
+            ->exists()
+),
         ];
     }
 }

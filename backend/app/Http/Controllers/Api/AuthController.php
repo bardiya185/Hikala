@@ -310,19 +310,19 @@ class AuthController extends Controller
         ]
     )]
     public function whoAmI(Request $request)
-    {
-        $user = $request->user();
+{
+    $user = $request->user();
 
-        if (!$user) {
-            return response()->json([
-                'authenticated' => false,
-                'data' => null,
-            ], 200);
-        }
-
+    if (!$user) {
         return response()->json([
-            'authenticated' => true,
-            'data' => new UserResource($user),
+            'authenticated' => false,
+            'data' => null,
         ]);
     }
+
+    return response()->json([
+        'authenticated' => true,
+        'data' => new UserResource($user),
+    ]);
+}
 }
