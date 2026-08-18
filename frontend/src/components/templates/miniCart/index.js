@@ -43,7 +43,7 @@ function MiniCart() {
   }
   return (
     <div className="absolute  right-4 top-full mt-2 w-[550px] bg-white border border-gray-100 rounded-2xl shadow-xl p-6 text-center z-50">
-      <div className="flex items-center gap-2">
+      <div key={items.id} className=" flex items-center gap-2">
         <p>Your shopping cart summary</p>
         <span>{items?.length} item</span>
       </div>

@@ -5,7 +5,7 @@ import Products from "./products";
 import { useSearchParams } from "next/navigation";
 import { usegetBrandsFilter } from "@/core/services/queries";
 
-export default function CategoryPage({ data, current_sort, current_sortorder,brands }) {
+export default function CategoryPage({ data, current_sort, current_sortorder,brands,isFromBanner,bannerId }) {
   const searchParams = useSearchParams()
   const seletedBrands = searchParams.get("brands")||""
   const {data:productsData,isLoading} = usegetBrandsFilter()
@@ -29,6 +29,8 @@ export default function CategoryPage({ data, current_sort, current_sortorder,bra
             data={data} 
             current_sort={current_sort} 
             current_sortorder={current_sortorder} 
+            isFromBanner={isFromBanner}
+            bannerId={bannerId}
           />
         </main>
 

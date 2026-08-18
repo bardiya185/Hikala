@@ -10,12 +10,13 @@ async function getFlashSaleCampaign() {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/campaigns/flash-sale/products`,
-      { 
-        next: { revalidate: 60 } // ⚡ Cache 60 ثانیه (برای Flash Sale مهمه که تازه باشه)
+      {
+        next: { revalidate: 60 },
       }
     );
 
     if (!res.ok) return null;
+
     return res.json();
   } catch (error) {
     console.error("Error fetching flash sale:", error);
@@ -30,12 +31,13 @@ async function getBanners() {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/banners`,
-      { 
-        next: { revalidate: 300 } // 🖼️ Cache 5 دقیقه
+      {
+        next: { revalidate: 300 },
       }
     );
 
     if (!res.ok) return null;
+
     return res.json();
   } catch (error) {
     console.error("Error fetching banners:", error);
@@ -47,34 +49,54 @@ async function getBanners() {
 // 🏠 Home Page
 // ================================================================
 export default async function Home() {
-  // 🚀 موازی fetch میشن (سریع‌تر)
   const [flashSaleData, bannerData] = await Promise.all([
     getFlashSaleCampaign(),
     getBanners(),
   ]);
 
-  // 🔍 پیدا کردن بنر وسط
   const middleSection = bannerData?.data?.find(
     (item) => item.key === "home_middle_4"
   );
 
   return (
-    <div>
-      <Stories />
-      <TopBanner data={bannerData} />
+    <main className="w-full overflow-x-hidden">
+      {/* Stories */}
+      {/* <Stories /> */}
 
-      <div className="container mx-auto px-28">
+      {/* Top Banner */}
+      <section className="w-full">
+        <TopBanner data={bannerData} />
+      </section>
+
+      {/* Main Content */}
+      <div
+        className="
+          container
+          mx-auto
+          w-full
+          px-4
+          sm:px-5
+          md:px-6
+          lg:px-8
+          xl:px-10
+          2xl:px-12
+        "
+      >
         {/* ⚡ Flash Sale Section */}
         {flashSaleData && (
-          <AmazingSliders 
-            campaign={flashSaleData.campaign}
-            products={flashSaleData.data}
-          />
+          <section className="w-full">
+            <AmazingSliders
+              campaign={flashSaleData.campaign}
+              products={flashSaleData.data}
+            />
+          </section>
         )}
 
         {/* 🖼️ Middle Banners */}
-        <CardShop data={middleSection} />
+        <section className="w-full">
+          <CardShop data={middleSection} />
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

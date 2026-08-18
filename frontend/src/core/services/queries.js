@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import api from "../config/api";
+import { getGuestSessionId } from "../utils/gustSession";
 
 export const useGetUserData = ()=>{
     const queryFn =()=> api.get("/api/who-am-i")
@@ -57,15 +58,27 @@ export function useSearchProducts(query) {
 }
 
 const fetchCart = async () => {
-  const res = await api.get("/api/cart");
+  const sessionId = getGuestSessionId();
+
+  const res = await api.get("/api/cart", {
+    headers: {
+      "X-Session-Id": sessionId,
+    },
+  });
+
   return res.data;
-  
 };
 
 export function useCart() {
   return useQuery({
     queryKey: ["cart"],
     queryFn: fetchCart,
-    
   });
+}
+
+export const useGetCommentProduct = (productId)=>{
+  const queryKey = ["comments",productId]
+  const queryFn = ()=>api.get(`/api/products/${productId}/reviews`)
+
+  return useQuery({queryKey,queryFn})
 }

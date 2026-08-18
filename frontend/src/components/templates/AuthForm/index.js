@@ -1,4 +1,5 @@
 "use client";
+
 import ModalContainer from "@/components/partials/container/ModalContainer";
 import React, { useState } from "react";
 import { TbLogin } from "react-icons/tb";
@@ -19,34 +20,84 @@ function AuthForm() {
   const { data } = useGetUserData();
   const { data: userData } = data || {};
 
+  // =========================
+  // User is logged in
+  // =========================
   if (userData) {
     return (
-      <div className="relative cursor-pointer">
-        <div onClick={() => setIsOpen(!isOpen)} className="flex items-center">
-          <HiUser className="w-[24px] h-[24px]" />
-          <AiOutlineCaretDown className="w-[20px] h-[24px]" />
-        </div>
+      <div className="relative shrink-0">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="
+            flex
+            items-center
+            justify-center
+            gap-1
+            min-w-[44px]
+            h-10
+            px-2
+            rounded-xl
+            border
+            border-neutral-200
+            hover:bg-neutral-50
+            transition-colors
+            cursor-pointer
+          "
+        >
+          <HiUser className="w-5 h-5 text-neutral-700" />
+
+          <AiOutlineCaretDown
+            className={`w-4 h-4 text-neutral-500 transition-transform ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
         {isOpen && (
-          <div className="absolute left-0 top-full w-[256px] h-auto mt-2 overflow-hidden shadow-lg rounded-lg bg-white pb-2 z-50 border border-neutral-100 flex flex-col">
-            <Link className="block text-neutral-700 hover:bg-neutral-50" href="/profile">
-              <div className="flex mx-4 py-4 border-b mt-[15px] border-neutral-200 justify-between items-center">
-                <span className="font-iranyekanbold text-sm font-bold text-neutral-800">
+          <div
+            className="
+              absolute
+              right-0
+              top-full
+              mt-2
+              w-[256px]
+              max-w-[calc(100vw-24px)]
+              max-h-[80vh]
+              overflow-y-auto
+              rounded-xl
+              bg-white
+              shadow-xl
+              border
+              border-neutral-100
+              z-[100]
+            "
+          >
+            <Link
+              href="/profile"
+              className="block text-neutral-700 hover:bg-neutral-50"
+            >
+              <div className="mx-4 py-4 border-b border-neutral-200">
+                <span className="text-sm font-bold text-neutral-800">
                   {userData?.data?.mobile}
                 </span>
               </div>
             </Link>
 
-            <ul className="flex flex-1 flex-col grow justify-between">
-              <li className="px-4 cursor-pointer w-full hover:bg-neutral-50">
-                <Link href="/digiclub/" className="flex items-center text-neutral-700 w-full border-b border-neutral-200 py-2">
-                  <div className="w-8 pl-3">
+            <ul className="flex flex-col">
+              <li className="px-4 hover:bg-neutral-50">
+                <Link
+                  href="/digiclub/"
+                  className="flex items-center text-neutral-700 w-full border-b border-neutral-200 py-3"
+                >
+                  <div className="w-8 pl-2">
                     <img src="/icons/club.svg" alt="club" />
                   </div>
+
                   <div className="flex-1 flex justify-between items-center">
-                    <span className="font-iranyekanbold text-lg">دیجی کلاب</span>
-                    <span className="text-lg font-bold text-neutral-700">
-                      0
-                      <small className="font-iranyekanbold text-neutral-400 mr-1">امتیاز</small>
+                    <span className="text-base font-bold">DigiClub </span>
+
+                    <span className="text-sm font-bold">
+                      0<small className="text-neutral-400 mr-1">Score</small>
                     </span>
                   </div>
                 </Link>
@@ -54,23 +105,40 @@ function AuthForm() {
 
               {menuItems.map((item) => {
                 const IconComponent = item.icon;
+
                 return (
-                  <li key={item.id} className="px-4 cursor-pointer w-full hover:bg-neutral-50">
-                    <Link href={item.href} className="flex items-center text-neutral-700 w-full py-2 border-b border-neutral-200">
-                      <div className="w-8 pl-3 flex justify-center items-center">
-                        <IconComponent className="w-6 h-6 text-neutral-600" />
+                  <li key={item.id} className="px-4 hover:bg-neutral-50">
+                    <Link
+                      href={item.href}
+                      className="
+                        flex
+                        items-center
+                        text-neutral-700
+                        w-full
+                        py-3
+                        border-b
+                        border-neutral-200
+                      "
+                    >
+                      <div className="w-8 pl-2 flex justify-center">
+                        <IconComponent className="w-5 h-5 text-neutral-600" />
                       </div>
-                      <div className="flex-1 text-lg font-iranyekanbold">{item.label}</div>
+
+                      <div className="flex-1 text-base font-bold">
+                        {item.label}
+                      </div>
                     </Link>
                   </li>
                 );
               })}
-              <li className="px-4 cursor-pointer w-full hover:bg-neutral-50 text-red-500">
+
+              <li className="px-4 hover:bg-neutral-50 text-red-500">
                 <div className="flex items-center w-full py-3">
-                  <div className="w-8 pl-3">
-                    <IoLogOutOutline className="w-[24px] h-[24px]" />
+                  <div className="w-8 pl-2">
+                    <IoLogOutOutline className="w-5 h-5" />
                   </div>
-                  <div className="flex-1 font-iranyekanbold">خروج از حساب کاربری</div>
+
+                  <div className="flex-1 font-bold">Log out</div>
                 </div>
               </li>
             </ul>
@@ -80,29 +148,93 @@ function AuthForm() {
     );
   }
 
+  // =========================
+  // User is NOT logged in
+  // =========================
   return (
     <>
-      
       <button
+        type="button"
         onClick={() => {
           setStep(1);
           setIsOpen(true);
         }}
-        className="group flex items-center justify-center gap-2 w-[120px] h-[40px] border border-neutral-200/80 hover:border-neutral-900 bg-white hover:bg-neutral-900 text-neutral-700 hover:text-white rounded-xl text-sm font-medium shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-300 ease-in-out cursor-pointer"
+        className="
+          group
+          flex
+          shrink-0
+          items-center
+          justify-center
+          gap-1.5
+
+          w-[92px]
+          sm:w-[105px]
+          md:w-[120px]
+
+          h-[38px]
+          sm:h-[40px]
+
+          px-2
+          sm:px-3
+
+          border
+          border-neutral-200
+
+          bg-white
+          hover:bg-neutral-900
+
+          text-neutral-700
+          hover:text-white
+
+          rounded-lg
+          sm:rounded-xl
+
+          text-xs
+          sm:text-sm
+          font-medium
+
+          shadow-sm
+          hover:shadow-md
+
+          transition-all
+          duration-300
+
+          cursor-pointer
+        "
       >
-        <TbLogin className="w-5 h-5 text-neutral-500 group-hover:text-white transition-colors duration-300" />
-        <span>Sign In</span>
+        <TbLogin
+          className="
+            w-4
+            h-4
+            sm:w-5
+            sm:h-5
+            shrink-0
+            text-neutral-500
+            group-hover:text-white
+            transition-colors
+          "
+        />
+
+        <span className="whitespace-nowrap">Sign In</span>
       </button>
 
       {step === 1 && (
         <ModalContainer isOpen={isOpen} setIsOpen={setIsOpen}>
-          <SendOtpForm setStep={setStep} mobile={mobile} setMobile={setMobile} />
+          <SendOtpForm
+            setStep={setStep}
+            mobile={mobile}
+            setMobile={setMobile}
+          />
         </ModalContainer>
       )}
 
       {step === 2 && (
         <ModalContainer isOpen={isOpen} setIsOpen={setIsOpen}>
-          <CheckOtpForm mobile={mobile} setStep={setStep} setIsOpen={setIsOpen} />
+          <CheckOtpForm
+            mobile={mobile}
+            setStep={setStep}
+            setIsOpen={setIsOpen}
+          />
         </ModalContainer>
       )}
     </>

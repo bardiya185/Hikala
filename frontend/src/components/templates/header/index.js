@@ -1,17 +1,21 @@
 "use client";
+
 import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { CiMobile1 } from "react-icons/ci";
-import { TbDeviceLaptop, TbFridge, TbShirt } from "react-icons/tb";
+import { CiMobile1, CiSearch } from "react-icons/ci";
+import {
+  TbDeviceLaptop,
+  TbFridge,
+  TbShirt,
+  TbChevronRight,
+} from "react-icons/tb";
 import { GiGoldBar, GiCarKey } from "react-icons/gi";
-import { CiSearch } from "react-icons/ci";
 import { MdShoppingCartCheckout } from "react-icons/md";
 import { RxHamburgerMenu } from "react-icons/rx";
-import { TbChevronRight } from "react-icons/tb";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
+
+import { useRouter, usePathname } from "next/navigation";
 
 import AuthForm from "../AuthForm";
 
@@ -20,8 +24,13 @@ import {
   useGetMainCategories,
   useGetSubCategory,
 } from "@/core/services/queries";
+
 import SearchBar from "@/components/atom/SearchBar";
 import MiniCart from "../miniCart";
+
+// ======================================================
+// Category Icons
+// ======================================================
 
 const iconMap = {
   mobile: CiMobile1,
@@ -35,39 +44,73 @@ const iconMap = {
 
 function CategoryIcon({ iconKey, className }) {
   const IconComponent = iconMap[iconKey];
+
   if (!IconComponent) return null;
+
   return <IconComponent className={className} />;
 }
+
+// ======================================================
+// Header
+// ======================================================
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeId, setActiveId] = useState(null);
-  const closeTimer = useRef(null);
   const [isOpenMiniCart, setIsOpenMiniCart] = useState(false);
 
-  const { data: cart, isLoading } = useCart();
-
-  const totalCount =
-    cart?.data?.items?.reduce((sum, item) => sum + (item?.quantity || 0), 0) ||
-    0;
+  const closeTimer = useRef(null);
 
   const router = useRouter();
   const pathname = usePathname();
 
+  // ======================================================
+  // Cart
+  // ======================================================
+
+  const { data: cart } = useCart();
+
+  const totalCount =
+    cart?.data?.items?.reduce(
+      (sum, item) => sum + (item?.quantity || 0),
+      0
+    ) || 0;
+
+  // ======================================================
+  // Categories
+  // ======================================================
+
   const { data: categoriess } = useGetMainCategories();
+
   const mainDataArray = categoriess?.data?.data || [];
 
-  const { data: categoryMenu, isLoading: isSubLoading } =
-    useGetSubCategory(activeId);
-  console.log(categoryMenu);
+  const {
+    data: categoryMenu,
+    isLoading: isSubLoading,
+  } = useGetSubCategory(activeId);
+
   const subDataArray = categoryMenu?.data?.data || [];
+
+  // ======================================================
+  // Set default category
+  // ======================================================
 
   useEffect(() => {
     if (mainDataArray.length > 0 && !activeId) {
-      const targetCategory = mainDataArray.find((c) => c.slug === "mobile");
-      setActiveId(targetCategory?.id || mainDataArray[0]?.id);
+      const targetCategory = mainDataArray.find(
+        (c) => c.slug === "mobile"
+      );
+
+      setActiveId(
+        targetCategory?.id ||
+          mainDataArray[0]?.id
+      );
     }
   }, [mainDataArray, activeId]);
+
+  // ======================================================
+  // Close menu timer
+  // ======================================================
 
   const clearCloseTimer = useCallback(() => {
     if (closeTimer.current) {
@@ -78,26 +121,42 @@ function Header() {
 
   const scheduleClose = useCallback(() => {
     clearCloseTimer();
-    closeTimer.current = setTimeout(() => setIsOpen(false), 150);
+
+    closeTimer.current = setTimeout(() => {
+      setIsOpen(false);
+    }, 150);
   }, [clearCloseTimer]);
 
   const openMenu = useCallback(() => {
     clearCloseTimer();
-    if (!isOpen) setIsOpen(true);
-  }, [clearCloseTimer, isOpen]);
+
+    setIsOpen(true);
+  }, [clearCloseTimer]);
+
+  // ======================================================
+  // Active Category
+  // ======================================================
 
   const activeCategory =
-    mainDataArray?.find((c) => c.id === activeId) || mainDataArray[0];
+    mainDataArray?.find(
+      (c) => c.id === activeId
+    ) || mainDataArray[0];
 
   const getTargetCategory = (category) => {
     if (!category) return null;
-    if (category.children && category.children.length > 0) {
+
+    if (
+      category.children &&
+      category.children.length > 0
+    ) {
       return category.children[0];
     }
+
     return category;
   };
 
-  const targetCategory = getTargetCategory(activeCategory);
+  const targetCategory =
+    getTargetCategory(activeCategory);
 
   const finalSubList = Array.isArray(subDataArray)
     ? subDataArray
@@ -106,148 +165,765 @@ function Header() {
       subDataArray?.subcategories ||
       [];
 
+  // ======================================================
+  // Render
+  // ======================================================
+
   return (
-    <div dir="ltr" className="lg:w-full font-sans select-none">
-      <div>
+    <header
+      dir="ltr"
+      className="
+        w-full
+        bg-white
+        font-sans
+        select-none
+      "
+    >
+      {/* ==================================================
+          TOP BANNER
+      ================================================== */}
+
+      <div className="w-full overflow-hidden">
         <Image
           src="/icons/1.png"
           width={1270}
           height={60}
           alt="banner"
-          className="w-full inline-block"
+          priority
+          className="
+            block
+            w-full
+            h-[45px]
+            sm:h-[50px]
+            md:h-[60px]
+            object-cover
+          "
         />
       </div>
 
-      <div className="flex justify-between items-center px-[16px] mt-[17px]">
-        <div className="flex items-center gap-7">
-          <Image src="/icons/en-logo.svg" width={195} height={30} alt="logo" />
-          <div className="relative flex items-center">
-            <CiSearch className="absolute left-3 text-neutral-500 w-5 h-5" />
-            <SearchBar />
-          </div>
-        </div>
+      {/* ==================================================
+          MAIN HEADER
+      ================================================== */}
 
+      <div
+        className="
+          w-full
+          px-3
+          sm:px-4
+          lg:px-6
+
+          mt-3
+          sm:mt-4
+        "
+      >
         <div
-          onMouseEnter={() => setIsOpenMiniCart(true)}
-          onMouseLeave={() => setIsOpenMiniCart(false)}
-          className="relative flex items-center gap-7 pr-[20px]"
+          className="
+            flex
+            items-center
+            justify-between
+
+            gap-2
+            sm:gap-3
+            lg:gap-6
+
+            w-full
+          "
         >
-          <AuthForm />
-          <Link href="/checkout/cart">
-            <div className="p-2 hover:bg-neutral-100 rounded-full transition-colors">
-              <MdShoppingCartCheckout className="w-[24px] h-[24px] text-neutral-700" />
+          {/* ==============================================
+              LOGO + SEARCH
+          ============================================== */}
+
+          <div
+            className="
+              flex
+              items-center
+
+              gap-2
+              sm:gap-4
+              lg:gap-6
+
+              flex-1
+              min-w-0
+            "
+          >
+            {/* Logo */}
+
+            <Link
+              href="/"
+              className="
+                shrink-0
+                flex
+                items-center
+              "
+            >
+              <Image
+                src="/icons/en-logo.svg"
+                width={195}
+                height={30}
+                alt="logo"
+                priority
+                className="
+                  w-[85px]
+                  sm:w-[120px]
+                  md:w-[155px]
+                  lg:w-[195px]
+                  h-auto
+                "
+              />
+            </Link>
+
+            {/* Search */}
+
+            <div
+              className="
+                flex-1
+                min-w-0
+              "
+            >
+              <SearchBar />
             </div>
-            <span className="absolute -top-1 -right-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[11px] font-bold text-white shadow-sm animate-in zoom-in duration-200">
-              {totalCount > 99 ? "+99" : totalCount}
-            </span>
-          </Link>
-          {isOpenMiniCart && <MiniCart />}
+          </div>
+
+          {/* ==============================================
+              LOGIN + CART
+          ============================================== */}
+
+          <div
+            className="
+              flex
+              items-center
+
+              gap-1
+              sm:gap-2
+
+              shrink-0
+            "
+          >
+            {/* Login */}
+
+            <AuthForm />
+
+            {/* Cart */}
+
+            <div
+              onMouseEnter={() =>
+                setIsOpenMiniCart(true)
+              }
+              onMouseLeave={() =>
+                setIsOpenMiniCart(false)
+              }
+              className="
+                relative
+                flex
+                items-center
+                shrink-0
+              "
+            >
+              <Link
+                href="/checkout/cart"
+                className="
+                  relative
+                  block
+                "
+              >
+                <div
+                  className="
+                    p-1.5
+                    sm:p-2
+
+                    rounded-full
+
+                    hover:bg-neutral-100
+
+                    transition-colors
+                  "
+                >
+                  <MdShoppingCartCheckout
+                    className="
+                      w-[21px]
+                      h-[21px]
+
+                      sm:w-[24px]
+                      sm:h-[24px]
+
+                      text-neutral-700
+                    "
+                  />
+                </div>
+
+                {/* Cart Count */}
+
+                <span
+                  className="
+                    absolute
+
+                    -top-1
+                    -right-1
+
+                    flex
+                    items-center
+                    justify-center
+
+                    h-4
+                    w-4
+
+                    sm:h-5
+                    sm:w-5
+
+                    rounded-full
+
+                    bg-red-500
+
+                    text-[9px]
+                    sm:text-[11px]
+
+                    font-bold
+                    text-white
+
+                    shadow-sm
+                  "
+                >
+                  {totalCount > 99
+                    ? "+99"
+                    : totalCount}
+                </span>
+              </Link>
+
+              {/* Mini Cart */}
+
+              {isOpenMiniCart && (
+                <div
+                  className="
+                    hidden
+                    sm:block
+                  "
+                >
+                  <MiniCart />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
+      {/* ==================================================
+          CATEGORY MENU
+      ================================================== */}
+
       <div
-        className="relative inline-block mt-4 px-[16px]"
+        className="
+          relative
+
+          mt-3
+          sm:mt-4
+
+          px-3
+          sm:px-4
+          lg:px-6
+        "
         onMouseLeave={scheduleClose}
       >
+        {/* Category Button */}
+
         <button
           type="button"
-          className="flex items-center gap-2 cursor-pointer py-2 text-neutral-800 hover:text-red-600 transition-colors"
           onMouseEnter={openMenu}
-          onClick={() => setIsOpen((v) => !v)}
+          onClick={() =>
+            setIsOpen((prev) => !prev)
+          }
+          className="
+            flex
+            items-center
+
+            gap-2
+
+            cursor-pointer
+
+            py-2
+
+            text-neutral-800
+            hover:text-red-600
+
+            transition-colors
+          "
         >
-          <RxHamburgerMenu className="w-5 h-5" />
-          <span className="text-sm font-bold">Categories</span>
+          <RxHamburgerMenu
+            className="
+              w-5
+              h-5
+            "
+          />
+
+          <span
+            className="
+              text-xs
+              sm:text-sm
+
+              font-bold
+            "
+          >
+            Categories
+          </span>
         </button>
+
+        {/* ==================================================
+            DESKTOP CATEGORY MEGA MENU
+        ================================================== */}
 
         {isOpen && (
           <div
-            className="absolute top-[calc(100%+4px)] left-4 z-30 flex w-[700px] h-[350px] bg-white rounded-lg shadow-xl overflow-hidden border border-neutral-100"
             onMouseEnter={clearCloseTimer}
+            className="
+              absolute
+
+              top-[calc(100%+4px)]
+              left-3
+              sm:left-4
+
+              z-[80]
+
+              hidden
+              md:flex
+
+              w-[680px]
+              lg:w-[750px]
+
+              h-[350px]
+
+              bg-white
+
+              rounded-xl
+
+              shadow-2xl
+
+              overflow-hidden
+
+              border
+              border-neutral-100
+            "
           >
-            <nav className="flex flex-col w-[220px] shrink-0 overflow-y-auto border-r border-neutral-100 py-2 bg-neutral-50">
+            {/* ============================================
+                MAIN CATEGORIES
+            ============================================ */}
+
+            <nav
+              className="
+                flex
+                flex-col
+
+                w-[210px]
+                lg:w-[220px]
+
+                shrink-0
+
+                overflow-y-auto
+
+                border-r
+                border-neutral-100
+
+                py-2
+
+                bg-neutral-50
+              "
+            >
               {mainDataArray?.map((c) => {
-                const isActive = activeId === c.id;
+                const isActive =
+                  activeId === c.id;
+
                 return (
                   <div
                     key={c.id}
-                    onMouseEnter={() => setActiveId(c.id)}
-                    className={`flex items-center justify-between px-4 py-2.5 text-[13px] font-semibold cursor-pointer transition-colors ${
-                      isActive
-                        ? "bg-white text-red-600 border-l-4 border-l-red-500"
-                        : "text-neutral-900 hover:bg-neutral-100"
-                    }`}
+                    onMouseEnter={() =>
+                      setActiveId(c.id)
+                    }
+                    className={`
+                      flex
+                      items-center
+                      justify-between
+
+                      px-4
+                      py-2.5
+
+                      text-[13px]
+
+                      font-semibold
+
+                      cursor-pointer
+
+                      transition-colors
+
+                      ${
+                        isActive
+                          ? "bg-white text-red-600 border-l-4 border-l-red-500"
+                          : "text-neutral-900 hover:bg-neutral-100"
+                      }
+                    `}
                   >
-                    <div className="flex items-center gap-2">
+                    <div
+                      className="
+                        flex
+                        items-center
+                        gap-2
+                        min-w-0
+                      "
+                    >
                       <CategoryIcon
                         iconKey={c.icon_key}
-                        className={`w-[18px] h-[18px] ${
-                          isActive ? "text-red-600" : "text-neutral-500"
-                        }`}
+                        className={`
+                          w-[18px]
+                          h-[18px]
+                          shrink-0
+
+                          ${
+                            isActive
+                              ? "text-red-600"
+                              : "text-neutral-500"
+                          }
+                        `}
                       />
-                      <span>{c.name}</span>
+
+                      <span className="truncate">
+                        {c.name}
+                      </span>
                     </div>
+
                     <TbChevronRight
-                      className={`w-3.5 h-3.5 ${
-                        isActive ? "text-red-500" : "text-neutral-300"
-                      }`}
+                      className={`
+                        w-3.5
+                        h-3.5
+                        shrink-0
+
+                        ${
+                          isActive
+                            ? "text-red-500"
+                            : "text-neutral-300"
+                        }
+                      `}
                     />
                   </div>
                 );
               })}
             </nav>
 
-            <div className="flex-1 overflow-y-auto px-6 py-5 bg-white relative">
+            {/* ============================================
+                SUB CATEGORIES
+            ============================================ */}
+
+            <div
+              className="
+                flex-1
+
+                overflow-y-auto
+
+                px-5
+                lg:px-6
+
+                py-5
+
+                bg-white
+
+                relative
+              "
+            >
               {isSubLoading ? (
-                <div className="absolute inset-0 flex items-center justify-center bg-white/50">
-                  <div className="w-6 h-6 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                <div
+                  className="
+                    absolute
+                    inset-0
+
+                    flex
+                    items-center
+                    justify-center
+
+                    bg-white/60
+                  "
+                >
+                  <div
+                    className="
+                      w-6
+                      h-6
+
+                      border-2
+                      border-red-500
+                      border-t-transparent
+
+                      rounded-full
+
+                      animate-spin
+                    "
+                  />
                 </div>
               ) : (
                 <>
+                  {/* All Products */}
+
                   <Link
-                    href={`/search/${targetCategory?.slug || "all"}?category_id=${targetCategory?.id}`}
-                    className="flex items-center gap-1 mb-4 text-[13px] font-bold text-red-600 whitespace-nowrap hover:underline"
+                    href={`/search/${
+                      targetCategory?.slug || "all"
+                    }?category_id=${
+                      targetCategory?.id || ""
+                    }`}
+                    className="
+                      flex
+                      items-center
+                      gap-1
+
+                      mb-4
+
+                      text-[13px]
+                      font-bold
+
+                      text-red-600
+
+                      whitespace-nowrap
+
+                      hover:underline
+                    "
                   >
-                    All {activeCategory?.name} Products
-                    <TbChevronRight className="w-3.5 h-3.5" />
+                    All{" "}
+                    {activeCategory?.name}{" "}
+                    Products
+
+                    <TbChevronRight
+                      className="
+                        w-3.5
+                        h-3.5
+                      "
+                    />
                   </Link>
 
-                  <div className="grid grid-cols-3 gap-6">
-                    {finalSubList?.map((col, idx) => (
-                      <div
-                        key={col.id || idx}
-                        className="flex flex-col whitespace-nowrap"
-                      >
-                        <Link
-                          href={`/search/${col.slug || "category"}?category_id=${col.id}`}
-                          className="flex items-center justify-between mb-2 py-1 text-sm font-bold text-neutral-900 border-b border-neutral-100 group"
-                        >
-                          <span className="group-hover:text-red-600 transition-colors">
-                            {col.name}
-                          </span>
-                          <TbChevronRight className="w-3.5 h-3.5 text-neutral-400 group-hover:text-red-600 transition-colors" />
-                        </Link>
+                  {/* Sub Categories */}
 
-                        {(col.children || col.subs || col.leaves)?.map(
-                          (leaf, lIdx) => (
-                            <Link
-                              key={leaf.id || lIdx}
-                              href={`/search/${leaf.slug || "child"}?category_id=${leaf.id}`}
-                              className="py-1 text-[13px] text-neutral-500 hover:text-red-600 transition-colors"
+                  <div
+                    className="
+                      grid
+
+                      grid-cols-2
+                      lg:grid-cols-3
+
+                      gap-5
+                      lg:gap-6
+                    "
+                  >
+                    {finalSubList?.map(
+                      (col, idx) => (
+                        <div
+                          key={
+                            col.id || idx
+                          }
+                          className="
+                            flex
+                            flex-col
+
+                            min-w-0
+                          "
+                        >
+                          <Link
+                            href={`/search/${
+                              col.slug ||
+                              "category"
+                            }?category_id=${
+                              col.id
+                            }`}
+                            className="
+                              flex
+                              items-center
+                              justify-between
+
+                              mb-2
+                              py-1
+
+                              text-sm
+                              font-bold
+
+                              text-neutral-900
+
+                              border-b
+                              border-neutral-100
+
+                              group
+                            "
+                          >
+                            <span
+                              className="
+                                truncate
+
+                                group-hover:text-red-600
+
+                                transition-colors
+                              "
                             >
-                              {leaf.name}
-                            </Link>
-                          ),
-                        )}
-                      </div>
-                    ))}
+                              {col.name}
+                            </span>
+
+                            <TbChevronRight
+                              className="
+                                w-3.5
+                                h-3.5
+
+                                shrink-0
+
+                                text-neutral-400
+
+                                group-hover:text-red-600
+
+                                transition-colors
+                              "
+                            />
+                          </Link>
+
+                          {(
+                            col.children ||
+                            col.subs ||
+                            col.leaves ||
+                            []
+                          ).map(
+                            (
+                              leaf,
+                              lIdx
+                            ) => (
+                              <Link
+                                key={
+                                  leaf.id ||
+                                  lIdx
+                                }
+                                href={`/search/${
+                                  leaf.slug ||
+                                  "child"
+                                }?category_id=${
+                                  leaf.id
+                                }`}
+                                className="
+                                  py-1
+
+                                  text-[13px]
+
+                                  text-neutral-500
+
+                                  hover:text-red-600
+
+                                  transition-colors
+
+                                  truncate
+                                "
+                              >
+                                {leaf.name}
+                              </Link>
+                            )
+                          )}
+                        </div>
+                      )
+                    )}
                   </div>
                 </>
               )}
             </div>
           </div>
         )}
+
+        {/* ==================================================
+            MOBILE CATEGORY MENU
+        ================================================== */}
+
+        {isOpen && (
+          <div
+            className="
+              md:hidden
+
+              absolute
+
+              top-[calc(100%+4px)]
+              left-3
+              right-3
+
+              z-[80]
+
+              bg-white
+
+              rounded-xl
+
+              shadow-2xl
+
+              border
+              border-neutral-100
+
+              overflow-hidden
+            "
+          >
+            <div
+              className="
+                max-h-[70vh]
+
+                overflow-y-auto
+              "
+            >
+              {mainDataArray?.map((c) => {
+                return (
+                  <Link
+                    key={c.id}
+                    href={`/search/${c.slug}?category_id=${c.id}`}
+                    onClick={() =>
+                      setIsOpen(false)
+                    }
+                    className="
+                      flex
+                      items-center
+                      justify-between
+
+                      px-4
+                      py-3
+
+                      border-b
+                      border-neutral-100
+
+                      text-sm
+                      font-medium
+
+                      text-neutral-800
+
+                      hover:bg-neutral-50
+
+                      active:bg-neutral-100
+                    "
+                  >
+                    <div
+                      className="
+                        flex
+                        items-center
+                        gap-3
+                      "
+                    >
+                      <CategoryIcon
+                        iconKey={c.icon_key}
+                        className="
+                          w-5
+                          h-5
+
+                          text-neutral-500
+                        "
+                      />
+
+                      <span>
+                        {c.name}
+                      </span>
+                    </div>
+
+                    <TbChevronRight
+                      className="
+                        w-4
+                        h-4
+
+                        text-neutral-400
+                      "
+                    />
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </header>
   );
 }
 

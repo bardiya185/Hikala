@@ -1,1 +1,0 @@
-'optional.auth' => \App\Http\Middleware\OptionalAuth::class,
