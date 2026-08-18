@@ -27,10 +27,7 @@ import {
 
 import SearchBar from "@/components/atom/SearchBar";
 import MiniCart from "../miniCart";
-
-// ======================================================
-// Category Icons
-// ======================================================
+import MobileBottomNav from "./MobileBottomNav";
 
 const iconMap = {
   mobile: CiMobile1,
@@ -50,10 +47,6 @@ function CategoryIcon({ iconKey, className }) {
   return <IconComponent className={className} />;
 }
 
-// ======================================================
-// Header
-// ======================================================
-
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeId, setActiveId] = useState(null);
@@ -64,53 +57,28 @@ function Header() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // ======================================================
-  // Cart
-  // ======================================================
-
   const { data: cart } = useCart();
 
   const totalCount =
-    cart?.data?.items?.reduce(
-      (sum, item) => sum + (item?.quantity || 0),
-      0
-    ) || 0;
-
-  // ======================================================
-  // Categories
-  // ======================================================
+    cart?.data?.items?.reduce((sum, item) => sum + (item?.quantity || 0), 0) ||
+    0;
 
   const { data: categoriess } = useGetMainCategories();
 
   const mainDataArray = categoriess?.data?.data || [];
 
-  const {
-    data: categoryMenu,
-    isLoading: isSubLoading,
-  } = useGetSubCategory(activeId);
+  const { data: categoryMenu, isLoading: isSubLoading } =
+    useGetSubCategory(activeId);
 
   const subDataArray = categoryMenu?.data?.data || [];
 
-  // ======================================================
-  // Set default category
-  // ======================================================
-
   useEffect(() => {
     if (mainDataArray.length > 0 && !activeId) {
-      const targetCategory = mainDataArray.find(
-        (c) => c.slug === "mobile"
-      );
+      const targetCategory = mainDataArray.find((c) => c.slug === "mobile");
 
-      setActiveId(
-        targetCategory?.id ||
-          mainDataArray[0]?.id
-      );
+      setActiveId(targetCategory?.id || mainDataArray[0]?.id);
     }
   }, [mainDataArray, activeId]);
-
-  // ======================================================
-  // Close menu timer
-  // ======================================================
 
   const clearCloseTimer = useCallback(() => {
     if (closeTimer.current) {
@@ -133,30 +101,20 @@ function Header() {
     setIsOpen(true);
   }, [clearCloseTimer]);
 
-  // ======================================================
-  // Active Category
-  // ======================================================
-
   const activeCategory =
-    mainDataArray?.find(
-      (c) => c.id === activeId
-    ) || mainDataArray[0];
+    mainDataArray?.find((c) => c.id === activeId) || mainDataArray[0];
 
   const getTargetCategory = (category) => {
     if (!category) return null;
 
-    if (
-      category.children &&
-      category.children.length > 0
-    ) {
+    if (category.children && category.children.length > 0) {
       return category.children[0];
     }
 
     return category;
   };
 
-  const targetCategory =
-    getTargetCategory(activeCategory);
+  const targetCategory = getTargetCategory(activeCategory);
 
   const finalSubList = Array.isArray(subDataArray)
     ? subDataArray
@@ -165,11 +123,9 @@ function Header() {
       subDataArray?.subcategories ||
       [];
 
-  // ======================================================
-  // Render
-  // ======================================================
-
   return (
+    <>
+      
     <header
       dir="ltr"
       className="
@@ -246,7 +202,7 @@ function Header() {
               min-w-0
             "
           >
-            {/* Logo */}
+            {}
 
             <Link
               href="/"
@@ -272,7 +228,7 @@ function Header() {
               />
             </Link>
 
-            {/* Search */}
+            {}
 
             <div
               className="
@@ -289,8 +245,8 @@ function Header() {
           ============================================== */}
 
           <div
-            className="
-              flex
+            className="hidden
+              lg:flex
               items-center
 
               gap-1
@@ -299,22 +255,18 @@ function Header() {
               shrink-0
             "
           >
-            {/* Login */}
+            {}
 
             <AuthForm />
 
-            {/* Cart */}
+            {}
 
             <div
-              onMouseEnter={() =>
-                setIsOpenMiniCart(true)
-              }
-              onMouseLeave={() =>
-                setIsOpenMiniCart(false)
-              }
-              className="
+              onMouseEnter={() => setIsOpenMiniCart(true)}
+              onMouseLeave={() => setIsOpenMiniCart(false)}
+              className=" hidden
                 relative
-                flex
+                lg:flex
                 items-center
                 shrink-0
               "
@@ -351,7 +303,7 @@ function Header() {
                   />
                 </div>
 
-                {/* Cart Count */}
+                {}
 
                 <span
                   className="
@@ -383,13 +335,11 @@ function Header() {
                     shadow-sm
                   "
                 >
-                  {totalCount > 99
-                    ? "+99"
-                    : totalCount}
+                  {totalCount > 99 ? "+99" : totalCount}
                 </span>
               </Link>
 
-              {/* Mini Cart */}
+              {}
 
               {isOpenMiniCart && (
                 <div
@@ -423,16 +373,15 @@ function Header() {
         "
         onMouseLeave={scheduleClose}
       >
-        {/* Category Button */}
+        {}
 
         <button
           type="button"
           onMouseEnter={openMenu}
-          onClick={() =>
-            setIsOpen((prev) => !prev)
-          }
+          onClick={() => setIsOpen((prev) => !prev)}
           className="
-            flex
+          hidden
+            lg:flex
             items-center
 
             gap-2
@@ -482,13 +431,12 @@ function Header() {
 
               z-[80]
 
-              hidden
-              md:flex
-
-              w-[680px]
+             flex
+              w-auto
+              
               lg:w-[750px]
 
-              h-[350px]
+              lg:h-[350px]
 
               bg-white
 
@@ -527,15 +475,12 @@ function Header() {
               "
             >
               {mainDataArray?.map((c) => {
-                const isActive =
-                  activeId === c.id;
+                const isActive = activeId === c.id;
 
                 return (
                   <div
                     key={c.id}
-                    onMouseEnter={() =>
-                      setActiveId(c.id)
-                    }
+                    onMouseEnter={() => setActiveId(c.id)}
                     className={`
                       flex
                       items-center
@@ -574,17 +519,11 @@ function Header() {
                           h-[18px]
                           shrink-0
 
-                          ${
-                            isActive
-                              ? "text-red-600"
-                              : "text-neutral-500"
-                          }
+                          ${isActive ? "text-red-600" : "text-neutral-500"}
                         `}
                       />
 
-                      <span className="truncate">
-                        {c.name}
-                      </span>
+                      <span className="truncate">{c.name}</span>
                     </div>
 
                     <TbChevronRight
@@ -593,11 +532,7 @@ function Header() {
                         h-3.5
                         shrink-0
 
-                        ${
-                          isActive
-                            ? "text-red-500"
-                            : "text-neutral-300"
-                        }
+                        ${isActive ? "text-red-500" : "text-neutral-300"}
                       `}
                     />
                   </div>
@@ -655,14 +590,12 @@ function Header() {
                 </div>
               ) : (
                 <>
-                  {/* All Products */}
+                  {}
 
                   <Link
                     href={`/search/${
                       targetCategory?.slug || "all"
-                    }?category_id=${
-                      targetCategory?.id || ""
-                    }`}
+                    }?category_id=${targetCategory?.id || ""}`}
                     className="
                       flex
                       items-center
@@ -680,10 +613,7 @@ function Header() {
                       hover:underline
                     "
                   >
-                    All{" "}
-                    {activeCategory?.name}{" "}
-                    Products
-
+                    All {activeCategory?.name} Products
                     <TbChevronRight
                       className="
                         w-3.5
@@ -692,7 +622,7 @@ function Header() {
                     />
                   </Link>
 
-                  {/* Sub Categories */}
+                  {}
 
                   <div
                     className="
@@ -705,27 +635,21 @@ function Header() {
                       lg:gap-6
                     "
                   >
-                    {finalSubList?.map(
-                      (col, idx) => (
-                        <div
-                          key={
-                            col.id || idx
-                          }
-                          className="
+                    {finalSubList?.map((col, idx) => (
+                      <div
+                        key={col.id || idx}
+                        className="
                             flex
                             flex-col
 
                             min-w-0
                           "
-                        >
-                          <Link
-                            href={`/search/${
-                              col.slug ||
-                              "category"
-                            }?category_id=${
-                              col.id
-                            }`}
-                            className="
+                      >
+                        <Link
+                          href={`/search/${
+                            col.slug || "category"
+                          }?category_id=${col.id}`}
+                          className="
                               flex
                               items-center
                               justify-between
@@ -743,21 +667,21 @@ function Header() {
 
                               group
                             "
-                          >
-                            <span
-                              className="
+                        >
+                          <span
+                            className="
                                 truncate
 
                                 group-hover:text-red-600
 
                                 transition-colors
                               "
-                            >
-                              {col.name}
-                            </span>
+                          >
+                            {col.name}
+                          </span>
 
-                            <TbChevronRight
-                              className="
+                          <TbChevronRight
+                            className="
                                 w-3.5
                                 h-3.5
 
@@ -769,31 +693,17 @@ function Header() {
 
                                 transition-colors
                               "
-                            />
-                          </Link>
+                          />
+                        </Link>
 
-                          {(
-                            col.children ||
-                            col.subs ||
-                            col.leaves ||
-                            []
-                          ).map(
-                            (
-                              leaf,
-                              lIdx
-                            ) => (
-                              <Link
-                                key={
-                                  leaf.id ||
-                                  lIdx
-                                }
-                                href={`/search/${
-                                  leaf.slug ||
-                                  "child"
-                                }?category_id=${
-                                  leaf.id
-                                }`}
-                                className="
+                        {(col.children || col.subs || col.leaves || []).map(
+                          (leaf, lIdx) => (
+                            <Link
+                              key={leaf.id || lIdx}
+                              href={`/search/${
+                                leaf.slug || "child"
+                              }?category_id=${leaf.id}`}
+                              className="
                                   py-1
 
                                   text-[13px]
@@ -806,14 +716,13 @@ function Header() {
 
                                   truncate
                                 "
-                              >
-                                {leaf.name}
-                              </Link>
-                            )
-                          )}
-                        </div>
-                      )
-                    )}
+                            >
+                              {leaf.name}
+                            </Link>
+                          ),
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </>
               )}
@@ -862,9 +771,7 @@ function Header() {
                   <Link
                     key={c.id}
                     href={`/search/${c.slug}?category_id=${c.id}`}
-                    onClick={() =>
-                      setIsOpen(false)
-                    }
+                    onClick={() => setIsOpen(false)}
                     className="
                       flex
                       items-center
@@ -903,9 +810,7 @@ function Header() {
                         "
                       />
 
-                      <span>
-                        {c.name}
-                      </span>
+                      <span>{c.name}</span>
                     </div>
 
                     <TbChevronRight
@@ -924,6 +829,9 @@ function Header() {
         )}
       </div>
     </header>
+
+    <MobileBottomNav totalCount={totalCount} openMenu={()=>setIsOpen(true)}/>
+    </>
   );
 }
 
