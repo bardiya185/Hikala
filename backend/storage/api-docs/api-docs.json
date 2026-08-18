@@ -934,42 +934,6 @@
                 ]
             }
         },
-        "/api/refresh-token": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Refresh access token",
-                "operationId": "beea51bdb8817484efefd18932d1b642",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "refresh_token"
-                                ],
-                                "properties": {
-                                    "refresh_token": {
-                                        "type": "string",
-                                        "example": "your_refresh_token_here"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Access token created"
-                    },
-                    "401": {
-                        "description": "Invalid or expired refresh token"
-                    }
-                }
-            }
-        },
         "/api/send-otp": {
             "post": {
                 "tags": [
@@ -1001,7 +965,7 @@
                         "description": "OTP sent successfully"
                     },
                     "429": {
-                        "description": "Too many requests - Rate limit exceeded"
+                        "description": "Too many requests"
                     },
                     "422": {
                         "description": "Validation error"
@@ -1014,7 +978,7 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Verify OTP",
+                "summary": "Verify OTP and login",
                 "operationId": "25b81e0ec7fc1574f497502269bdbd30",
                 "requestBody": {
                     "required": true,
@@ -1042,10 +1006,46 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Login Success"
+                        "description": "Login successful"
                     },
                     "401": {
-                        "description": "Invalid or expired OTP"
+                        "description": "Invalid OTP"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/refresh-token": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Refresh access token",
+                "operationId": "beea51bdb8817484efefd18932d1b642",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "refresh_token": {
+                                        "type": "string",
+                                        "example": "your_refresh_token_here"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Access token refreshed"
+                    },
+                    "401": {
+                        "description": "Invalid refresh token"
                     }
                 }
             }
@@ -1059,7 +1059,10 @@
                 "operationId": "ad65cbbd4e9f201619eae184a5961a98",
                 "responses": {
                     "200": {
-                        "description": "Logout success"
+                        "description": "Logout successful"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
                 },
                 "security": [
@@ -1074,12 +1077,11 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Who Am I",
-                "description": "Get authenticated user information or auth status",
+                "summary": "Get authenticated user information",
                 "operationId": "df5ae5103354bd83da5161c94dcd772b",
                 "responses": {
                     "200": {
-                        "description": "Auth status retrieved successfully"
+                        "description": "User information retrieved"
                     },
                     "401": {
                         "description": "Unauthenticated"
