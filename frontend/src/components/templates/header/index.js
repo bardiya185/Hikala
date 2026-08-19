@@ -355,6 +355,7 @@ function Header() {
           </div>
         </div>
       </div>
+          </div>
 
       {/* ==================================================
           CATEGORY MENU
