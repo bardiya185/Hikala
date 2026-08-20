@@ -741,6 +741,83 @@
                 ]
             }
         },
+        "/api/admin/notifications/broadcast": {
+            "post": {
+                "tags": [
+                    "Admin Notifications"
+                ],
+                "summary": "Send broadcast notification to all users",
+                "operationId": "345966058fbeaa11b1460003b2fa9956",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "message"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Spring Sale Started!"
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "example": "Up to 50% discount on all selected products."
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "example": "/campaigns/spring-sale",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Broadcast queued successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/admin/notifications/wishlist-discount/{product}": {
+            "post": {
+                "tags": [
+                    "Admin Notifications"
+                ],
+                "summary": "Notify users who wishlisted a specific product",
+                "operationId": "9ddb4720346bf99ae9ff4e8fc24c4707",
+                "parameters": [
+                    {
+                        "name": "product",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification queued for target users"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/attributes": {
             "get": {
                 "tags": [
@@ -4321,6 +4398,102 @@
                 ]
             }
         },
+        "/api/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get all user notifications",
+                "operationId": "6d56a555955089a73fdf3f7229e8ead8",
+                "responses": {
+                    "200": {
+                        "description": "Notifications retrieved"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/{id}/read": {
+            "put": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark a specific notification as read",
+                "operationId": "bf4a71383df08623c93c72b3103d323e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Marked as read"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/read-all": {
+            "put": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark all notifications as read",
+                "operationId": "02988ec1ebbf6620f0464259ee734ba4",
+                "responses": {
+                    "200": {
+                        "description": "All marked as read"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/{id}": {
+            "delete": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Delete a notification",
+                "operationId": "ab7264b840570ab1351fff8ba6732bdc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/orders/checkout": {
             "post": {
                 "tags": [
@@ -4720,12 +4893,21 @@
                         }
                     },
                     {
-                        "name": "attributes_id",
+                        "name": "attribute_value_ids",
                         "in": "query",
-                        "description": "Filter by attribute values (comma separated)",
+                        "description": "Filter by attribute value IDs (comma-separated). Groups values by attribute type (OR logic within same attribute, AND logic across different attributes). Example: 10,11,25 (10,11=Red,Blue | 25=XL)",
                         "schema": {
                             "type": "string",
-                            "example": "1,2,3"
+                            "example": "10,11,25"
+                        }
+                    },
+                    {
+                        "name": "attributes_id",
+                        "in": "query",
+                        "description": "Alias for attribute_value_ids (comma-separated attribute value IDs).",
+                        "schema": {
+                            "type": "string",
+                            "example": "10,11,25"
                         }
                     },
                     {
@@ -7411,6 +7593,10 @@
     },
     "tags": [
         {
+            "name": "Admin Notifications",
+            "description": "Admin tools to send broadcasts and promotional notifications"
+        },
+        {
             "name": "Banners",
             "description": "Banner management and display"
         },
@@ -7425,6 +7611,10 @@
         {
             "name": "Discount Campaigns",
             "description": "Manage discount campaigns"
+        },
+        {
+            "name": "Notifications",
+            "description": "User notifications management (Bell icon)"
         },
         {
             "name": "Orders",

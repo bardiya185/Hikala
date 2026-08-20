@@ -65,10 +65,16 @@ class ProductController extends Controller
                 schema: new OA\Schema(type: 'string', example: 'iphone')
             ),
             new OA\Parameter(
+                name: 'attribute_value_ids',
+                in: 'query',
+                description: 'Filter by attribute value IDs (comma-separated). Groups values by attribute type (OR logic within same attribute, AND logic across different attributes). Example: 10,11,25 (10,11=Red,Blue | 25=XL)',
+                schema: new OA\Schema(type: 'string', example: '10,11,25')
+            ),
+            new OA\Parameter(
                 name: 'attributes_id',
                 in: 'query',
-                description: 'Filter by attribute values (comma separated)',
-                schema: new OA\Schema(type: 'string', example: '1,2,3')
+                description: 'Alias for attribute_value_ids (comma-separated attribute value IDs).',
+                schema: new OA\Schema(type: 'string', example: '10,11,25')
             ),
             new OA\Parameter(
                 name: 'campaign',

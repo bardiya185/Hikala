@@ -224,12 +224,36 @@ class ProductService
 
     private function applyAttributesFilter(Builder $query, Request $request): void
     {
-        if (!$request->has('attributes_id')) return;
-
-        $attributeIds = explode(',', $request->attributes_id);
-        $query->whereHas('variants.attributeValues', fn($q) =>
-            $q->whereIn('attribute_value_id', $attributeIds)
-        );
+        // گرفتن مقادیر (پشتیبانی از هر دو اسم برای خراب نشدن فرانت)
+        $rawIds = $request->get('attribute_value_ids') ?? $request->get('attributes_id');
+    
+        if (!$rawIds) {
+            return;
+        }
+    
+        // تبدیل به آرایه تمیز از اعداد صحیح
+        $valueIds = is_array($rawIds) ? $rawIds : explode(',', $rawIds);
+        $valueIds = array_filter(array_map('intval', $valueIds));
+    
+        if (empty($valueIds)) {
+            return;
+        }
+    
+        // ۱. گروه‌بندی مقادیر بر اساس ویژگی والد (Group values by parent attribute_id)
+        $groupedValues = DB::table('attribute_values')
+            ->whereIn('id', $valueIds)
+            ->select('id', 'attribute_id')
+            ->get()
+            ->groupBy('attribute_id');
+    
+        // ۲. اعمال منطق AND بین ویژگی‌های مختلف و OR بین مقادیر یک ویژگی
+        foreach ($groupedValues as $attributeId => $values) {
+            $targetValueIds = $values->pluck('id')->toArray();
+    
+            $query->whereHas('variants.attributeValues', function (Builder $q) use ($targetValueIds) {
+                $q->whereIn('attribute_value_id', $targetValueIds);
+            });
+        }
     }
 
     private function applySearchFilter(Builder $query, Request $request): void

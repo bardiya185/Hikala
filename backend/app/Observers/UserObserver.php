@@ -9,7 +9,6 @@ class UserObserver
 {
     public function created(User $user): void
     {
-        // اگر هیچ رولی نداشت، role پیش‌فرض user بگیره
         if (!$user->hasAnyRole()) {
             $defaultRole = Role::where('name', 'user')
                 ->where('guard_name', 'sanctum')

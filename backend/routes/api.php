@@ -21,6 +21,8 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserRoleController;
 use App\Http\Controllers\Api\WishlistController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\AdminNotificationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -151,6 +153,22 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::get('/delivery/options', [OrderController::class, 'deliveryOptions']);
+
+    Route::prefix('wishlist')->group(function () {
+        Route::get('/', [WishlistController::class, 'index']);
+        Route::delete('/', [WishlistController::class, 'clear']);
+        Route::post('/{product}', [WishlistController::class, 'store']);
+        Route::delete('/{product}', [WishlistController::class, 'destroy']);
+        Route::post('/{product}/toggle', [WishlistController::class, 'toggle']);
+        Route::get('/{product}/check', [WishlistController::class, 'check']);
+    });
+
+    Route::prefix('notifications')->group(function () {
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::put('/read-all', [NotificationController::class, 'markAllAsRead']);
+        Route::put('/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::delete('/{id}', [NotificationController::class, 'destroy']);
+    });
 });
 
 
@@ -284,13 +302,20 @@ Route::prefix('admin')
         Route::post('/{user}/roles', [UserRoleController::class, 'attach']);
         Route::delete('/{user}/roles/{role}', [UserRoleController::class, 'destroy']);
     });
-
-    Route::prefix('wishlist')->group(function () {
-        Route::get('/', [WishlistController::class, 'index']);
-        Route::delete('/', [WishlistController::class, 'clear']);
-        Route::post('/{product}', [WishlistController::class, 'store']);
-        Route::delete('/{product}', [WishlistController::class, 'destroy']);
-        Route::post('/{product}/toggle', [WishlistController::class, 'toggle']);
-        Route::get('/{product}/check', [WishlistController::class, 'check']);
-    });
+    
 });
+
+Route::prefix('admin')
+    ->middleware(['auth:sanctum', 'role:super-admin|admin'])
+    ->group(function () {
+    
+    // ... بقیه روت‌های ادمین ...
+
+    // ===== 📢 Admin Notifications (ارسال اعلانات) =====
+    Route::prefix('notifications')->group(function () {
+        Route::post('/broadcast', [AdminNotificationController::class, 'sendBroadcast']);
+        Route::post('/wishlist-discount/{product}', [AdminNotificationController::class, 'notifyWishlist']);
+    });
+
+});
+ 
