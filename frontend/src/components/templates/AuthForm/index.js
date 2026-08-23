@@ -19,10 +19,6 @@ function AuthForm() {
 
   const { data } = useGetUserData();
   const { data: userData } = data || {};
-
-  // =========================
-  // User is logged in
-  // =========================
   if (userData) {
     return (
       <div className="relative shrink-0">
@@ -147,10 +143,6 @@ function AuthForm() {
       </div>
     );
   }
-
-  // =========================
-  // User is NOT logged in
-  // =========================
   return (
     <>
       <button
