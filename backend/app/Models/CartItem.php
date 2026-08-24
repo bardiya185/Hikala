@@ -39,25 +39,17 @@ class CartItem extends Model
         return $this->belongsTo(Discount::class);
     }
 
-    /**
-     * جمع این آیتم (قیمت اصلی × تعداد)
-     */
     public function getSubtotalAttribute(): float
     {
         return $this->base_price * $this->quantity;
     }
 
-    /**
-     * جمع نهایی این آیتم (قیمت با تخفیف × تعداد)
-     */
+ 
     public function getTotalAttribute(): float
     {
         return $this->final_price * $this->quantity;
     }
 
-    /**
-     * درصد تخفیف
-     */
     public function getDiscountPercentAttribute(): int
     {
         if ($this->base_price <= 0) return 0;

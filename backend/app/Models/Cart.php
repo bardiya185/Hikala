@@ -91,7 +91,7 @@ public function getCouponDiscountAttribute(): float
      */
     public function getItemsCountAttribute(): int
     {
-        return $this->items->sum('quantity');
+        return $this->items->count();
     }
 
     /**

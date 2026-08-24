@@ -153,7 +153,7 @@ final class ModuleNode extends Node
             ;
         }
         $compiler
-            ->write('', '* /', $this->getSourceContext()->getName())." */\n")
+            ->write('/* ' . $this->getSourceContext()->getName() . " */\n")
             ->write('class '.$compiler->getEnvironment()->getTemplateClass($this->getSourceContext()->getName(), $this->getAttribute('index')))
             ->raw(" extends Template\n")
             ->write("{\n")

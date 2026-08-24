@@ -89,8 +89,8 @@ class ManageController extends AbstractController
             $filename = 'phpMyAdmin-config-' . urlencode(Core::getenv('HTTP_HOST')) . '.php';
             Core::downloadHeader($filename, 'application/php');
             $settings = $this->userPreferences->load();
-            echo '\n\n";
-            echo '\n\n";
+            echo "\n\n";
+            echo "\n\n";
             foreach ($settings['config_data'] as $key => $val) {
                 echo '$cfg[\'' . str_replace('/', '\'][\'', $key) . '\'] = ';
                 echo var_export($val, true) . ";\n";

@@ -172,9 +172,11 @@ Route::prefix('categories')->group(function () {
 });
 
     // ===== 🏷️ Brands Management =====
-    Route::prefix('brands')->middleware('permission:create-brands')->group(function () {
-        Route::post('/', [BrandController::class, 'store']);
-        Route::put('/{brand}', [BrandController::class, 'update']);
+    Route::prefix('brands')->group(function () {
+        Route::post('/', [BrandController::class, 'store'])->
+        middleware('permission:create-brands');
+        Route::put('/{brand}', [BrandController::class, 'update'])
+        ->middleware('permission:update-brands');
         Route::delete('/{brand}', [BrandController::class, 'destroy'])
             ->middleware('permission:delete-brands');
     });
