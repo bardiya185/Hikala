@@ -27,7 +27,7 @@
                     <xsl:for-each select="*">
                         <div>
                             <xsl:for-each select="Vitals">
-                                <h1 id="title" style="_color: #000; /* ie6 fix */">
+                                <h1 id="title" style="_color: #000; ">
                                     <span>
                                         <xsl:text>System information : </xsl:text>
                                     </span>

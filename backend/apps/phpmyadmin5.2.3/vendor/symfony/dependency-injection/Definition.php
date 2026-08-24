@@ -710,7 +710,7 @@ class Definition
      *
      * @throws InvalidArgumentException when the message template is invalid
      */
-    public function setDeprecated(/* string $package, string $version, string $message */)
+    public function setDeprecated()
     {
         $args = \func_get_args();
 

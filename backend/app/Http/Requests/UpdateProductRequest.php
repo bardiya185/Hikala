@@ -17,7 +17,6 @@ class UpdateProductRequest extends FormRequest
         $productId = $this->route('product') ? $this->route('product')->id : null;
 
         return [
-            // ===== اطلاعات اصلی محصول =====
             'brand_id' => [
                 'nullable',
                 'exists:brands,id',
@@ -80,8 +79,6 @@ class UpdateProductRequest extends FormRequest
                 'nullable',
                 'boolean',
             ],
-
-            // ===== دسته‌بندی‌ها =====
             'categories' => [
                 'nullable',
                 'array',
@@ -91,8 +88,6 @@ class UpdateProductRequest extends FormRequest
             'categories.*' => [
                 'exists:categories,id',
             ],
-
-            // ===== تنوع‌ها (Variants) =====
             'variants' => [
                 'nullable',
                 'array',
@@ -144,8 +139,6 @@ class UpdateProductRequest extends FormRequest
                 'nullable',
                 'boolean',
             ],
-
-            // ===== ویژگی‌های تنوع =====
             'variants.*.attributes' => [
                 'nullable',
                 'array',

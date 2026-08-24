@@ -20,10 +20,10 @@ use function is_array;
 
 final class ExportController extends AbstractController
 {
-    /** @var Export */
+    
     private $export;
 
-    /** @var Options */
+    
     private $exportOptions;
 
     public function __construct(

@@ -55,7 +55,7 @@ class Template
             return;
         }
 
-        /** @var Config|null $config */
+        
         $config = $GLOBALS['config'];
         $cacheDir = $config !== null ? $config->getTempDir('twig') : null;
 
@@ -66,7 +66,7 @@ class Template
     {
         global $cfg, $containerBuilder;
 
-        /* Twig expects false when cache is not configured */
+        
         if ($cacheDir === null) {
             $cacheDir = false;
         }
@@ -82,8 +82,6 @@ class Template
         if (is_array($cfg) && ($cfg['environment'] ?? '') === 'development') {
             $twig->enableDebug();
             $twig->addExtension(new DebugExtension());
-            // This will enable debug for the extension to print lines
-            // It is used in po file lines re-mapping
             TransNode::$enableAddDebugInfo = true;
         }
 
@@ -122,7 +120,7 @@ class Template
         try {
             $template = static::$twig->load($templateName . '.twig');
         } catch (RuntimeException $e) {
-            /* Retry with disabled cache */
+            
             static::$twig->setCache(false);
             $template = static::$twig->load($templateName . '.twig');
             /*

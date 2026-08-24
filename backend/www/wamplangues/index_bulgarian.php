@@ -1,9 +1,4 @@
 <?php
-// 3.2.5 - documentation-of added for languages requiring it
-// for English is identical to documentation
-// 3.2.6 - txtNoHosts
-// 3.2.8 - phpNotExists - txtProjectsLink -	phpExtensions - phpVersionsUse
-// 3.3.0 - txtPathNoSlash
 
 $langues = array(
 	'langue' => 'Български',

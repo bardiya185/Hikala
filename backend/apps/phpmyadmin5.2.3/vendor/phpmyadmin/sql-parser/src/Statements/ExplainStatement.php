@@ -242,7 +242,7 @@ class ExplainStatement extends Statement
         }
 
         // We reached end of the state 3 and no table name was found
-        /** Token parsed at this moment. */
+        
         $token = $list->tokens[$list->idx];
         $parser->error('Expected a table name.', $token);
     }

@@ -27,7 +27,7 @@ use function strlen;
  */
 class TwoFactorPlugin
 {
-    /** @var string */
+    
     public static $id = '';
 
     /**
@@ -37,16 +37,16 @@ class TwoFactorPlugin
      */
     public static $showSubmit = true;
 
-    /** @var TwoFactor */
+    
     protected $twofactor;
 
-    /** @var bool */
+    
     protected $provided = false;
 
-    /** @var string */
+    
     protected $message = '';
 
-    /** @var Template */
+    
     public $template;
 
     /**

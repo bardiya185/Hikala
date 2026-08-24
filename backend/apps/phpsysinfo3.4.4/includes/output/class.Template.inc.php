@@ -73,19 +73,11 @@ class Template
         if (!$file) {
             $file = $this->_file;
         }
-
-        // Extract the vars to local namespace
         extract($this->_vars);
-
-        // Start output buffering
         ob_start();
 
         include(PSI_APP_ROOT.$file);
-
-        // Get the contents of the buffer
         $contents = ob_get_contents();
-
-        // End buffering and discard
         ob_end_clean();
 
         return $contents;

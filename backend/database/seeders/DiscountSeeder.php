@@ -11,24 +11,14 @@ class DiscountSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('🚀 Creating discounts for specific products...');
-
-        // ================================================================
-        // 🧹 پاک کردن داده‌های قبلی
-        // ================================================================
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('discount_usages')->truncate();
         DB::table('discount_user_limits')->truncate();
         DB::table('discountables')->truncate();
         DB::table('discounts')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        // ================================================================
-        // 📥 گرفتن داده‌های مورد نیاز
-        // ================================================================
         $allProducts = DB::table('products')->pluck('id')->toArray();
         $users = DB::table('users')->pluck('id')->toArray();
-        
-        // ✅ گرفتن Campaign ها
         $flashSaleCampaign = DB::table('discount_campaigns')
             ->where('slug', 'flash-sale')
             ->first();
@@ -40,8 +30,6 @@ class DiscountSeeder extends Seeder
         $weeklyCampaign = DB::table('discount_campaigns')
             ->where('slug', 'weekly')
             ->first();
-
-        // ⚠️ اگه Campaign ها نبودن، پیام بده
         if (!$flashSaleCampaign || !$specialCampaign) {
             $this->command->warn('⚠️ Discount Campaigns not found!');
             $this->command->warn('   Please run DiscountCampaignSeeder first.');
@@ -52,14 +40,8 @@ class DiscountSeeder extends Seeder
             $this->command->warn('⚠️ No products found. Please seed products first.');
             return;
         }
-
-        // تعداد محصولات برای هر تخفیف
         $productsPerDiscount = 4;
         shuffle($allProducts);
-
-        // ================================================================
-        // ۱️⃣ تعریف تخفیف‌ها
-        // ================================================================
         $discounts = [
             [
                 'campaign_id' => $flashSaleCampaign->id,   // ⚡ Flash Sale
@@ -102,10 +84,6 @@ class DiscountSeeder extends Seeder
                 'priority' => 1,
             ],
         ];
-
-        // ================================================================
-        // ۲️⃣ ذخیره تخفیف‌ها
-        // ================================================================
         $discountIds = [];
 
         foreach ($discounts as $index => $discount) {
@@ -128,17 +106,12 @@ class DiscountSeeder extends Seeder
             $campaignName = $discount['campaign_id'] ? 'in campaign' : 'standalone';
             $this->command->line("  ✅ Created: {$discount['name']} ({$campaignName})");
         }
-
-        // ================================================================
-        // ۳️⃣ اتصال تخفیف‌ها به محصولات
-        // ================================================================
         $this->command->info('🔗 Attaching discounts to products...');
 
         $attachedCount = 0;
         $usedProductIds = [];
 
         foreach ($discountIds as $index => $discountId) {
-            // محصولات باقی‌مونده
             $availableProducts = array_values(array_diff($allProducts, $usedProductIds));
             
             if (empty($availableProducts)) {
@@ -147,8 +120,6 @@ class DiscountSeeder extends Seeder
             }
             
             shuffle($availableProducts);
-
-            // انتخاب محصولات
             $count = min($productsPerDiscount, count($availableProducts));
             $selectedForThisDiscount = array_slice($availableProducts, 0, $count);
 
@@ -169,16 +140,11 @@ class DiscountSeeder extends Seeder
         }
 
         $this->command->info("✅ Total {$attachedCount} discountable relationships created!");
-
-        // ================================================================
-        // ۴️⃣ محدودیت کاربری (اختیاری)
-        // ================================================================
         if (!empty($users)) {
             $this->command->info('👤 Creating user limits...');
 
             $limitCount = 0;
             foreach ($discountIds as $discountId) {
-                // فقط برای بعضی تخفیف‌ها محدودیت بذار
                 if (rand(0, 1) === 0) continue;
                 
                 $selectedUsers = array_slice($users, 0, min(rand(3, 5), count($users)));
@@ -197,10 +163,6 @@ class DiscountSeeder extends Seeder
 
             $this->command->info("✅ {$limitCount} user limits created!");
         }
-
-        // ================================================================
-        // ۵️⃣ ثبت استفاده
-        // ================================================================
         if (!empty($users)) {
             $this->command->info('📝 Creating discount usages...');
 
@@ -227,10 +189,6 @@ class DiscountSeeder extends Seeder
 
             $this->command->info("✅ {$usageCount} discount usages created!");
         }
-
-        // ================================================================
-        // ۶️⃣ گزارش نهایی
-        // ================================================================
         $this->command->newLine();
         $this->command->info('🎉 Discount seeding completed!');
         $this->command->info('📊 Statistics:');
@@ -238,8 +196,6 @@ class DiscountSeeder extends Seeder
         $this->command->line('   • Discountables: ' . DB::table('discountables')->count());
         $this->command->line('   • User Limits: ' . DB::table('discount_user_limits')->count());
         $this->command->line('   • Usages: ' . DB::table('discount_usages')->count());
-        
-        // نمایش تخفیف‌های هر کمپین
         $this->command->newLine();
         $this->command->info('📋 Discounts per Campaign:');
         

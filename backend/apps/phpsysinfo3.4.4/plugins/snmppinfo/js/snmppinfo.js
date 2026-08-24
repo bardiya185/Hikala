@@ -17,11 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-//
-// $Id: snmppinfo.js 661 2012-08-27 11:26:39Z namiltd $
-//
-
-/*global $, jQuery, buildBlock, datetime, plugin_translate, createBar, genlang */
 
 "use strict";
 
@@ -32,79 +27,112 @@ var snmppinfo_show = false;
  * @param {jQuery} xml plugin-XML
  */
 function snmppinfo_buildTable(xml) {
-    var html = "", tree = [], closed = [], hostname = "";
+    var html = "",
+        tree = [],
+        closed = [],
+        hostname = "";
 
     $("#Plugin_SNMPPInfo #Plugin_SNMPPInfoTable").remove();
 
-    hostname = $("Plugins Plugin_SNMPInfo", xml).attr('Hostname');
+    hostname = $("Plugins Plugin_SNMPInfo", xml).attr("Hostname");
     if (hostname !== undefined) {
-        $('span[class=Hostname_SNMPInfo]').html(hostname);
+        $("span[class=Hostname_SNMPInfo]").html(hostname);
     }
 
-    html += "  <div style=\"overflow-x:auto;\">\n";
-    html += "    <table id=\"Plugin_SNMPPInfoTable\" class=\"tablemain\">\n";
+    html += '  <div style="overflow-x:auto;">\n';
+    html += '    <table id="Plugin_SNMPPInfoTable" class="tablemain">\n';
     html += "     <thead>\n";
     html += "      <tr>\n";
     html += "       <th>" + genlang(2, "SNMPPInfo") + "</th>\n";
-    html += "       <th style=\"width:31%;\">" + genlang(3, "SNMPPInfo") + "</th>\n";
-    html += "       <th class=\"right\" style=\"width:28.7%;\">" + genlang(4, "SNMPPInfo") + "</th>\n";
+    html +=
+        '       <th style="width:31%;">' + genlang(3, "SNMPPInfo") + "</th>\n";
+    html +=
+        '       <th class="right" style="width:28.7%;">' +
+        genlang(4, "SNMPPInfo") +
+        "</th>\n";
     html += "      </tr>\n";
     html += "     </thead>\n";
-    html += "     <tbody class=\"tree\">\n";
+    html += '     <tbody class="tree">\n';
 
-    var lastdev="", index = 0 ;
-    $("Plugins Plugin_SNMPPInfo Printer MarkerSupplies", xml).each(function snmppinfo_getprinters(id) {
-        var close = 0, name = "", device = "", desc = "", unit = 0, max = 0, level = 0, percent = 0, units = "", supply = 0, sunits = "";
-        name = $(this).parent().attr("Name");
-        device = $(this).parent().attr("Device");
-        desc = $(this).attr("Description");
+    var lastdev = "",
+        index = 0;
+    $("Plugins Plugin_SNMPPInfo Printer MarkerSupplies", xml).each(
+        function snmppinfo_getprinters(id) {
+            var close = 0,
+                name = "",
+                device = "",
+                desc = "",
+                unit = 0,
+                max = 0,
+                level = 0,
+                percent = 0,
+                units = "",
+                supply = 0,
+                sunits = "";
+            name = $(this).parent().attr("Name");
+            device = $(this).parent().attr("Device");
+            desc = $(this).attr("Description");
 
-        unit = parseInt($(this).attr("SupplyUnit"), 10);
-        max = parseInt($(this).attr("MaxCapacity"), 10);
-        level = parseInt($(this).attr("Level"), 10);
-        supply = parseInt($(this).attr("SupplyUnit"), 10);
+            unit = parseInt($(this).attr("SupplyUnit"), 10);
+            max = parseInt($(this).attr("MaxCapacity"), 10);
+            level = parseInt($(this).attr("Level"), 10);
+            supply = parseInt($(this).attr("SupplyUnit"), 10);
 
-        if (max>0 && (level>=0) && (level<=max) ) {
-            percent = Math.round(100*level/max);
-            units = level+" / "+max;
-        } else if (max==-2 && (level>=0) && (level<=100) ) {
-            percent = level;
-            units = level+" / 100";
-        } else if (level==-3) {
-            percent = 100;
-            units = genlang(5, "SNMPPInfo");
-        } else {
-            percent = 0;
-            units = genlang(6, "SNMPPInfo");
-        }
-
-        if (device!=lastdev) {
-            html += "      <tr><td colspan=\"3\"><div class=\"treediv\"><span class=\"treespanbold\">" + device + " (" + name + ") </div></span></td></tr>\n";
-            index = tree.push(0);
-            lastdev = device;
-        }
-
-        if (!isNaN(supply)) {
-            switch (supply) {
-                case 7:
-                    sunits = "<br>" + genlang(9, "SNMPPInfo");
-                    break;
-                case 13:
-                    sunits = "<br>" + genlang(8, "SNMPPInfo");
-                    break;
-                case 15:
-                    sunits = "<br>" + genlang(7, "SNMPPInfo");
-                    break;
-                case 19:
-                    sunits = "<br>" + genlang(3, "SNMPPInfo");
-                    break;
+            if (max > 0 && level >= 0 && level <= max) {
+                percent = Math.round((100 * level) / max);
+                units = level + " / " + max;
+            } else if (max == -2 && level >= 0 && level <= 100) {
+                percent = level;
+                units = level + " / 100";
+            } else if (level == -3) {
+                percent = 100;
+                units = genlang(5, "SNMPPInfo");
+            } else {
+                percent = 0;
+                units = genlang(6, "SNMPPInfo");
             }
-        }
-        html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + desc + "</div></span></td><td>" + createBar(percent) +"</td><td class=\"right\">" + units + sunits + "</td></tr>\n";
 
-        tree.push(index);
-        snmppinfo_show = true;
-    });
+            if (device != lastdev) {
+                html +=
+                    '      <tr><td colspan="3"><div class="treediv"><span class="treespanbold">' +
+                    device +
+                    " (" +
+                    name +
+                    ") </div></span></td></tr>\n";
+                index = tree.push(0);
+                lastdev = device;
+            }
+
+            if (!isNaN(supply)) {
+                switch (supply) {
+                    case 7:
+                        sunits = "<br>" + genlang(9, "SNMPPInfo");
+                        break;
+                    case 13:
+                        sunits = "<br>" + genlang(8, "SNMPPInfo");
+                        break;
+                    case 15:
+                        sunits = "<br>" + genlang(7, "SNMPPInfo");
+                        break;
+                    case 19:
+                        sunits = "<br>" + genlang(3, "SNMPPInfo");
+                        break;
+                }
+            }
+            html +=
+                '      <tr><td><div class="treediv"><span class="treespan">' +
+                desc +
+                "</div></span></td><td>" +
+                createBar(percent) +
+                '</td><td class="right">' +
+                units +
+                sunits +
+                "</td></tr>\n";
+
+            tree.push(index);
+            snmppinfo_show = true;
+        },
+    );
 
     html += "     </tbody>\n";
     html += "    </table>\n";
@@ -125,9 +153,8 @@ function snmppinfo_buildTable(xml) {
         column: 0,
         striped: true,
         highlight: false,
-        state: false
+        state: false,
     });
-
 }
 
 /**
@@ -148,7 +175,7 @@ function snmppinfo_request() {
                 plugin_translate("SNMPPInfo");
                 $("#Plugin_SNMPPInfo").show();
             }
-        }
+        },
     });
 }
 

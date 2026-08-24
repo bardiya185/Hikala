@@ -63,7 +63,7 @@ abstract class AbstractTypedMap extends AbstractMap implements TypedMapInterface
             );
         }
 
-        /** @psalm-suppress MixedArgumentTypeCoercion */
+        
         parent::offsetSet($offset, $value);
     }
 }

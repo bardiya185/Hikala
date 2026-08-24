@@ -1,6 +1,4 @@
 <?php
-
-//Script to rebuild symbolic links
 if(!defined('WAMPTRACE_PROCESS')) require 'config.trace.php';
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = "script ".__FILE__;
@@ -18,8 +16,6 @@ $verify = (!empty($_SERVER['argv'][2])) ? true : false;
 $doReport = (!empty($_SERVER['argv'][3]) && $_SERVER['argv'][3] == 'doreport') ? true : false;
 $noCreate = (!empty($_SERVER['argv'][4]) && $_SERVER['argv'][4] == 'nocreate') ? true : false;
 $message = '';
-
-// Re-create symbolic links
 if(!$noCreate) linkPhpDllToApacheBin($newPhpVersion);
 
 $checkSymlinkResult = CheckSymlink($newPhpVersion);

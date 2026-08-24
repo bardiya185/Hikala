@@ -29,8 +29,6 @@ class WishlistSeeder extends Seeder
 
         $count = 0;
         $usedPairs = [];
-
-        // هر کاربر بین 2 تا 10 محصول در wishlist داشته باشه
         foreach ($users as $userId) {
             $numberOfItems = rand(2, min(10, count($products)));
 
@@ -58,15 +56,11 @@ class WishlistSeeder extends Seeder
         }
 
         $this->command->info("✅ {$count} wishlist items created!");
-
-        // Statistics
         $this->command->newLine();
         $this->command->info('📊 Statistics:');
         $this->command->line('   • Total items: ' . DB::table('wishlists')->count());
         $this->command->line('   • Users with wishlist: ' . DB::table('wishlists')->distinct('user_id')->count('user_id'));
         $this->command->line('   • Products in wishlists: ' . DB::table('wishlists')->distinct('product_id')->count('product_id'));
-
-        // Top 5 most wishlisted products
         $this->command->newLine();
         $this->command->info('🏆 Top 5 Most Wishlisted Products:');
 

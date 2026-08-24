@@ -95,8 +95,6 @@ final class AndroidSafetyNetAttestationStatementSupport implements AttestationSt
         }
         $this->jwsSerializer = new CompactSerializer();
         $this->initJwsVerifier();
-
-        //To be removed in 4.0
         $this->leeway = $leeway ?? 0;
         $this->maxAge = $maxAge ?? 60000;
         $this->apiKey = $apiKey;
@@ -170,15 +168,11 @@ final class AndroidSafetyNetAttestationStatementSupport implements AttestationSt
         Assertion::keyExists($parsedCertificate['subject'], 'CN', 'Invalid attestation object');
         Assertion::eq($parsedCertificate['subject']['CN'], 'attest.android.com', 'Invalid attestation object');
 
-        /** @var JWS $jws */
+        
         $jws = $attestationStatement->get('jws');
         $payload = $jws->getPayload();
         $this->validatePayload($payload, $clientDataJSONHash, $authenticatorData);
-
-        //Check the signature
         $this->validateSignature($jws, $trustPath);
-
-        //Check against Google service
         $this->validateUsingGoogleApi($attestationStatement);
 
         return true;
@@ -278,11 +272,11 @@ final class AndroidSafetyNetAttestationStatementSupport implements AttestationSt
             Algorithm\ES256::class, Algorithm\ES384::class, Algorithm\ES512::class,
             Algorithm\EdDSA::class,
         ];
-        /* @var AlgorithmInterface[] $algorithms */
+        
         $algorithms = [];
         foreach ($algorithmClasses as $algorithm) {
             if (class_exists($algorithm)) {
-                /* @var AlgorithmInterface $algorithm */
+                
                 $algorithms[] = new $algorithm();
             }
         }

@@ -110,8 +110,6 @@
                         headers['X-XSRF-TOKEN'] = getCookie('XSRF-TOKEN');
                     });
                 }
-
-                // content type has to be unset otherwise file upload won't work
                 if (form.dataset.hasfiles === "1") {
                     delete headers['Content-Type'];
                 }
@@ -126,8 +124,6 @@
                             contentEl.textContent = contentEl.dataset.emptyResponseText;
                             return;
                         }
-
-                        // Prettify it if it's JSON
                         let isJson = false;
                         try {
                             const jsonParsed = JSON.parse(responseContent);
@@ -136,8 +132,6 @@
                                 responseContent = JSON.stringify(jsonParsed, null, 4);
                             }
                         } catch (e) {}
-
-                        // Replace HTML entities
                         responseContent = responseContent.replace(/[<>&]/g, (i) => '&#' + i.charCodeAt(0) + ';');
 
                         contentEl.innerHTML = responseContent;
@@ -258,9 +252,6 @@
         highlightSidebarItem();
 
         document.querySelectorAll('.code-editor').forEach(elem => CodeJar(elem, (editor) => {
-            // highlight.js does not trim old tags,
-            // which means highlighting doesn't update on type (only on paste)
-            // See https://github.com/antonmedv/codejar/issues/18
             editor.textContent = editor.textContent
             return hljs.highlightElement(editor)
         }));

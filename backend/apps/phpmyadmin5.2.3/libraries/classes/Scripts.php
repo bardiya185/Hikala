@@ -29,7 +29,7 @@ class Scripts
      */
     private $code;
 
-    /** @var Template */
+    
     private $template;
 
     /**
@@ -114,7 +114,6 @@ class Scripts
     {
         $retval = [];
         foreach ($this->files as $file) {
-            //If filename contains a "?", continue.
             if (str_contains($file['filename'], '?')) {
                 continue;
             }

@@ -39,30 +39,30 @@ use function strlen;
  */
 class ShapeRecord
 {
-    /** @var resource */
+    
     private $shpFile = null;
-    /** @var resource */
+    
     private $dbfFile = null;
-    /** @var ShapeFile */
+    
     private $shapeFile = null;
 
-    /** @var int */
+    
     private $size = 0;
-    /** @var int */
+    
     private $read = 0;
 
-    /** @var int|null */
+    
     public $recordNumber = null;
 
-    /** @var int */
+    
     public $shapeType = null;
 
-     /** @var string */
+     
     public $lastError = '';
 
-    /** @var array */
+    
     public $shpData = [];
-    /** @var array */
+    
     public $dbfData = [];
 
     public function __construct(int $shapeType)
@@ -84,7 +84,7 @@ class ShapeRecord
         $this->dbfFile = $dbfFile;
         $this->loadHeaders();
 
-        /* No header read */
+        
         if ($this->read === 0) {
             return;
         }
@@ -134,12 +134,12 @@ class ShapeRecord
                 break;
         }
 
-        /* We need to skip rest of the record */
+        
         while ($this->read < $this->size) {
             $this->loadData('V', 4);
         }
 
-        /* Check if we didn't read too much */
+        
         if ($this->read !== $this->size) {
             $this->setError(sprintf('Failed to parse record, read=%d, size=%d', $this->read, $this->size));
         }
@@ -390,7 +390,7 @@ class ShapeRecord
 
     private function loadMultiPointMZRecord(string $type): void
     {
-        /* The m dimension is optional, depends on bounding box data */
+        
         if ($type === 'm' && ! $this->shapeFile->hasMeasure()) {
             return;
         }
@@ -493,7 +493,7 @@ class ShapeRecord
 
     private function loadPolyLineMZRecord(string $type): void
     {
-        /* The m dimension is optional, depends on bounding box data */
+        
         if ($type === 'm' && ! $this->shapeFile->hasMeasure()) {
             return;
         }

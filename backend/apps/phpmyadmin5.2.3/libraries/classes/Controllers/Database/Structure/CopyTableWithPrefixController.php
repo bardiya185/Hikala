@@ -17,7 +17,7 @@ use function mb_substr;
 
 final class CopyTableWithPrefixController extends AbstractController
 {
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(

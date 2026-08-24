@@ -60,10 +60,10 @@ use const E_USER_DEPRECATED;
  */
 class TwigLintCommand extends Command
 {
-    /** @var string|null */
+    
     protected static $defaultName = 'lint:twig';
 
-    /** @var string|null */
+    
     protected static $defaultDescription = 'Lint a Twig template and outputs encountered errors';
 
     protected function configure(): void
@@ -73,10 +73,10 @@ class TwigLintCommand extends Command
             ->addOption('show-deprecations', null, InputOption::VALUE_NONE, 'Show deprecations as errors');
     }
 
-    /** @return string[] */
+    
     protected function findFiles(string $baseFolder): array
     {
-        /* Open the handle */
+        
         $handle = @opendir($baseFolder);
         if ($handle === false) {
             return [];
@@ -103,7 +103,7 @@ class TwigLintCommand extends Command
             $foundFiles[] = $itemPath;
         }
 
-        /* Close the handle */
+        
         closedir($handle);
 
         return $foundFiles;
@@ -142,7 +142,7 @@ class TwigLintCommand extends Command
         return $this->display($output, $io, $filesInfo);
     }
 
-    /** @return array{template: string, file: string, valid: bool, line?: int, exception?: Error}[] */
+    
     public function getFilesInfo(string $templatesPath): array
     {
         $filesInfo = [];
@@ -162,7 +162,7 @@ class TwigLintCommand extends Command
         return (string) file_get_contents($filePath);
     }
 
-    /** @return array{template: string, file: string, valid: bool, line?: int, exception?: Error} */
+    
     private function validate(string $template, string $file): array
     {
         $twig = Template::getTwigEnvironment(null);
@@ -232,9 +232,6 @@ class TwigLintCommand extends Command
         } else {
             $output->text(sprintf('<error> ERROR </error> (line %s)', $line));
         }
-
-        // If the line is not known (this might happen for deprecations if we fail at detecting the line for instance),
-        // we render the message without context, to ensure the message is displayed.
         if ($line <= 0) {
             $output->text(sprintf('<error> >> %s</error> ', $exception->getRawMessage()));
 

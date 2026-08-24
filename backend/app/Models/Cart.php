@@ -14,10 +14,6 @@ class Cart extends Model
         'coupon_id',
     ];
 
-    // ================================================================
-    // Relationships
-    // ================================================================
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -32,10 +28,6 @@ class Cart extends Model
     {
         return $this->belongsTo(Coupon::class);
     }
-
-    // ================================================================
-    // Accessors (محاسبات خودکار)
-    // ================================================================
 
     /**
      * جمع قیمت‌های اصلی
@@ -64,15 +56,12 @@ class Cart extends Model
     /**
      * مقدار تخفیف کوپن
      */
-    // app/Models/Cart.php
 
 public function getCouponDiscountAttribute(): float
 {
     if (!$this->coupon || !$this->coupon->discount) return 0;
     
     $discount = $this->coupon->discount;
-    
-    // چک فعال بودن
     if (!$discount->is_active) return 0;
     if ($discount->ends_at && now()->gt($discount->ends_at)) return 0;
     
@@ -104,10 +93,6 @@ public function getCouponDiscountAttribute(): float
     {
         return $this->items->sum('quantity');
     }
-
-    // ================================================================
-    // Helpers
-    // ================================================================
 
     /**
      * چک کن سبد خالیه یا نه

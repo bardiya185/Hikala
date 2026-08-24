@@ -19,13 +19,13 @@ use function implode;
  */
 class FormDisplayTemplate
 {
-    /** @var int */
+    
     public $group;
 
-    /** @var Config */
+    
     protected $config;
 
-    /** @var Template */
+    
     public $template;
 
     /**

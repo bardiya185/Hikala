@@ -143,14 +143,11 @@ final class ColumnsDefinition
         }
 
         if (isset($_POST['submit_num_fields']) || isset($_POST['submit_partition_change'])) {
-            //if adding new fields, set regenerate to keep the original values
             $regenerate = 1;
         }
 
         $foreigners = $relation->getForeigners($db, $table, '', 'foreign');
         $child_references = null;
-        // From MySQL 5.6.6 onwards columns with foreign keys can be renamed.
-        // Hence, no need to get child references
         if ($dbi->getVersion() < 50606) {
             $child_references = $relation->getChildReferences($db, $table);
         }
@@ -299,12 +296,8 @@ final class ColumnsDefinition
                     $length = $extracted_columnspec['spec_in_brackets'];
                 }
             } else {
-                // creating a column
                 $columnMeta['Type'] = '';
             }
-
-            // Variable tell if current column is bound in a foreign key constraint or not.
-            // MySQL version from 5.6.6 allow renaming columns with foreign keys
             if (isset($columnMeta['Field'], $form_params['table']) && $dbi->getVersion() < 50606) {
                 $columnMeta['column_status'] = $relation->checkChildForeignReferences(
                     $form_params['db'],
@@ -314,11 +307,6 @@ final class ColumnsDefinition
                     $child_references
                 );
             }
-
-            // some types, for example longtext, are reported as
-            // "longtext character set latin7" when their charset and / or collation
-            // differs from the ones of the corresponding database.
-            // rtrim the type, for cases like "float unsigned"
             $type = rtrim(
                 preg_replace('/[\s]character set[\s][\S]+/', '', $type)
             );
@@ -327,7 +315,6 @@ final class ColumnsDefinition
              * old column attributes
              */
             if ($is_backup) {
-                // old column name
                 if (isset($columnMeta['Field'])) {
                     $form_params['field_orig[' . $columnNumber . ']'] = $columnMeta['Field'];
                     if (isset($columnMeta['column_status']) && ! $columnMeta['column_status']['isEditable']) {
@@ -336,18 +323,11 @@ final class ColumnsDefinition
                 } else {
                     $form_params['field_orig[' . $columnNumber . ']'] = '';
                 }
-
-                // old column type
-                // keep in uppercase because the new type will be in uppercase
                 $form_params['field_type_orig[' . $columnNumber . ']'] = mb_strtoupper($type);
                 if (isset($columnMeta['column_status']) && ! $columnMeta['column_status']['isEditable']) {
                     $form_params['field_type[' . $columnNumber . ']'] = mb_strtoupper($type);
                 }
-
-                // old column length
                 $form_params['field_length_orig[' . $columnNumber . ']'] = $length;
-
-                // old column default
                 $form_params = array_merge(
                     $form_params,
                     [
@@ -400,8 +380,6 @@ final class ColumnsDefinition
 
             $default_value = '';
             $type_upper = mb_strtoupper($type);
-
-            // For a TIMESTAMP, do not show the string "CURRENT_TIMESTAMP" as a default value
             if (isset($columnMeta['DefaultValue'])) {
                 $default_value = $columnMeta['DefaultValue'];
             }

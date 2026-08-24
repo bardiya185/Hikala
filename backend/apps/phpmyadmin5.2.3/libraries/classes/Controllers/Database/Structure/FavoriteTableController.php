@@ -22,7 +22,7 @@ use function sha1;
 
 final class FavoriteTableController extends AbstractController
 {
-    /** @var Relation */
+    
     private $relation;
 
     public function __construct(ResponseRenderer $response, Template $template, string $db, Relation $relation)
@@ -59,11 +59,7 @@ final class FavoriteTableController extends AbstractController
         } else {
             $favoriteTables = [];
         }
-
-        // Required to keep each user's preferences separate.
         $user = sha1($cfg['Server']['user']);
-
-        // Request for Synchronization of favorite tables.
         if (isset($parameters['sync_favorite_tables'])) {
             $relationParameters = $this->relation->getRelationParameters();
             if ($relationParameters->favoriteTablesFeature !== null) {
@@ -87,7 +83,6 @@ final class FavoriteTableController extends AbstractController
 
         if (isset($_REQUEST['remove_favorite'])) {
             if ($alreadyFavorite) {
-                // If already in favorite list, remove it.
                 $favoriteInstance->remove($this->db, $favoriteTable);
                 $alreadyFavorite = false; // for favorite_anchor template
             }
@@ -97,7 +92,6 @@ final class FavoriteTableController extends AbstractController
                 if ($numTables == $cfg['NumFavoriteTables']) {
                     $changes = false;
                 } else {
-                    // Otherwise add to favorite list.
                     $favoriteInstance->add($this->db, $favoriteTable);
                     $alreadyFavorite = true; // for favorite_anchor template
                 }
@@ -116,8 +110,6 @@ final class FavoriteTableController extends AbstractController
 
             return;
         }
-
-        // Check if current table is already in favorite list.
         $favoriteParams = [
             'db' => $this->db,
             'ajax_request' => true,
@@ -161,8 +153,6 @@ final class FavoriteTableController extends AbstractController
         }
 
         $favoriteTables[$user] = $favoriteInstance->getTables();
-
-        // Set flag when localStorage and pmadb(if present) are in sync.
         $_SESSION['tmpval']['favorites_synced'][$GLOBALS['server']] = true;
 
         return [

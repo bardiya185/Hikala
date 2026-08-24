@@ -53,7 +53,7 @@ class StringCodec implements CodecInterface
 
     public function encode(UuidInterface $uuid): string
     {
-        /** @var FieldsInterface $fields */
+        
         $fields = $uuid->getFields();
 
         return $fields->getTimeLow()->toString()
@@ -75,7 +75,7 @@ class StringCodec implements CodecInterface
      */
     public function encodeBinary(UuidInterface $uuid): string
     {
-        /** @phpstan-ignore-next-line PHPStan complains that this is not a non-empty-string. */
+        
         return $uuid->getFields()->getBytes();
     }
 

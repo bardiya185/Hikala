@@ -17,10 +17,10 @@ use function count;
 
 final class AddIndexController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(

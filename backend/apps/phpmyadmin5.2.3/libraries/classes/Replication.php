@@ -157,9 +157,6 @@ class Replication
         $server['host'] = Core::sanitizeMySQLHost($host);
         $server['port'] = $port;
         $server['socket'] = $socket;
-
-        // 5th parameter set to true means that it's an auxiliary connection
-        // and we must not go back to login page if it fails
         return $dbi->connect(DatabaseInterface::CONNECT_AUXILIARY, $server);
     }
 

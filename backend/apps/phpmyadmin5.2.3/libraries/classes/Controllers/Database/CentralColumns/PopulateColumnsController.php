@@ -11,7 +11,7 @@ use PhpMyAdmin\Template;
 
 final class PopulateColumnsController extends AbstractController
 {
-    /** @var CentralColumns */
+    
     private $centralColumns;
 
     public function __construct(

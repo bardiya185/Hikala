@@ -69,8 +69,6 @@ final class AppleAttestationStatementSupport implements AttestationStatementSupp
         Assertion::isInstanceOf($trustPath, CertificateTrustPath::class, 'Invalid trust path');
 
         $certificates = $trustPath->getCertificates();
-
-        //Decode leaf attestation certificate
         $leaf = $certificates[0];
 
         $this->checkCertificateAndGetPublicKey($leaf, $clientDataJSONHash, $authenticatorData);
@@ -83,8 +81,6 @@ final class AppleAttestationStatementSupport implements AttestationStatementSupp
         $resource = openssl_pkey_get_public($certificate);
         $details = openssl_pkey_get_details($resource);
         Assertion::isArray($details, 'Unable to read the certificate');
-
-        //Check that authData publicKey matches the public key in the attestation certificate
         $attestedCredentialData = $authenticatorData->getAttestedCredentialData();
         Assertion::notNull($attestedCredentialData, 'No attested credential data found');
         $publicKeyData = $attestedCredentialData->getCredentialPublicKey();
@@ -96,14 +92,10 @@ final class AppleAttestationStatementSupport implements AttestationStatementSupp
         $publicKey = Key::createFromData($coseKey);
 
         Assertion::true(($publicKey instanceof Ec2Key) || ($publicKey instanceof RsaKey), 'Unsupported key type');
-
-        //We check the attested key corresponds to the key in the certificate
         Assertion::eq($publicKey->asPEM(), $details['key'], 'Invalid key');
 
-        /*---------------------------*/
+        
         $certDetails = openssl_x509_parse($certificate);
-
-        //Find Apple Extension with OID “1.2.840.113635.100.8.2” in certificate extensions
         Assertion::isArray($certDetails, 'The certificate is not valid');
         Assertion::keyExists($certDetails, 'extensions', 'The certificate has no extension');
         Assertion::isArray($certDetails['extensions'], 'The certificate has no extension');
@@ -112,8 +104,6 @@ final class AppleAttestationStatementSupport implements AttestationStatementSupp
 
         $nonceToHash = $authenticatorData->getAuthData().$clientDataHash;
         $nonce = hash('sha256', $nonceToHash);
-
-        //'3024a1220420' corresponds to the Sequence+Explicitly Tagged Object + Octet Object
         Assertion::eq('3024a1220420'.$nonce, bin2hex($extension), 'The client data hash is not valid');
     }
 }

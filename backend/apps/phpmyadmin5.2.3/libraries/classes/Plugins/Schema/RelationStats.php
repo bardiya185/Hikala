@@ -22,28 +22,28 @@ use function min;
  */
 abstract class RelationStats
 {
-    /** @var object */
+    
     protected $diagram;
 
-    /** @var mixed */
+    
     public $xSrc;
 
-    /** @var mixed */
+    
     public $ySrc;
 
-    /** @var int */
+    
     public $srcDir;
 
-    /** @var int */
+    
     public $destDir;
 
-    /** @var mixed */
+    
     public $xDest;
 
-    /** @var mixed */
+    
     public $yDest;
 
-    /** @var int */
+    
     public $wTick = 0;
 
     /**
@@ -117,8 +117,6 @@ abstract class RelationStats
     private function getXy($table, $column)
     {
         $pos = array_search($column, $table->fields);
-
-        // x_left, x_right, y
         return [
             $table->x,
             $table->x + $table->width,

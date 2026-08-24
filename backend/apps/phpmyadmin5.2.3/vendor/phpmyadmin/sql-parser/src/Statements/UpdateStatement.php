@@ -151,7 +151,7 @@ class UpdateStatement extends Statement
      */
     public function after(Parser $parser, TokensList $list, Token $token)
     {
-        /** @psalm-var string $tokenValue */
+        
         $tokenValue = $token->value;
         // Ensure we finished to parse the "SET" token, and if yes, ensure that assignments are defined.
         if ($this->set !== [] || (Parser::$KEYWORD_PARSERS[$tokenValue]['field'] ?? null) !== 'set') {

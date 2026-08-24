@@ -38,7 +38,6 @@ abstract class TrustPathLoader
                 if (in_array(TrustPath::class, $implements, true)) {
                     return $type::createFromArray($data);
                 }
-                // no break
             default:
                 throw new InvalidArgumentException(sprintf('The trust path type "%s" is not supported', $data['type']));
         }

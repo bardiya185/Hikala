@@ -4,11 +4,11 @@ namespace CodeLts\U2F\U2FServer;
 
 class RegistrationRequest implements \JsonSerializable
 {
-    /** @var string Protocol version */
+    
     protected $version = U2FServer::VERSION;
-    /** @var string Registration challenge */
+    
     protected $challenge;
-    /** @var string Application id */
+    
     protected $appId;
 
     /**

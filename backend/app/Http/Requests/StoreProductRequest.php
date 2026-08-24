@@ -15,7 +15,6 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // ===== اطلاعات اصلی محصول =====
             'brand_id' => [
                 'nullable',
                 'exists:brands,id',
@@ -78,8 +77,6 @@ class StoreProductRequest extends FormRequest
                 'nullable',
                 'boolean',
             ],
-
-            // ===== دسته‌بندی‌ها =====
             'categories' => [
                 'nullable',
                 'array',
@@ -89,8 +86,6 @@ class StoreProductRequest extends FormRequest
             'categories.*' => [
                 'exists:categories,id',
             ],
-
-            // ===== تنوع‌ها (Variants) =====
             'variants' => [
                 'nullable',
                 'array',
@@ -138,8 +133,6 @@ class StoreProductRequest extends FormRequest
                 'nullable',
                 'boolean',
             ],
-
-            // ===== ویژگی‌های تنوع =====
             'variants.*.attributes' => [
                 'nullable',
                 'array',
@@ -156,7 +149,6 @@ class StoreProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            // ===== پیام‌های محصول =====
             'brand_id.exists' => 'برند انتخاب شده معتبر نیست',
             
             'title.required' => 'عنوان محصول الزامی است',
@@ -180,13 +172,9 @@ class StoreProductRequest extends FormRequest
             'sort_order.min' => 'ترتیب نمایش نباید کمتر از ۰ باشد',
             
             'is_active.boolean' => 'وضعیت فعال باید true یا false باشد',
-
-            // ===== پیام‌های دسته‌بندی =====
             'categories.array' => 'دسته‌بندی‌ها باید به صورت آرایه ارسال شوند',
             'categories.min' => 'حداقل یک دسته‌بندی انتخاب کنید',
             'categories.*.exists' => 'دسته‌بندی انتخاب شده معتبر نیست',
-
-            // ===== پیام‌های تنوع =====
             'variants.array' => 'تنوع‌ها باید به صورت آرایه ارسال شوند',
             'variants.min' => 'حداقل یک تنوع برای محصول ایجاد کنید',
 
@@ -209,8 +197,6 @@ class StoreProductRequest extends FormRequest
             'variants.*.weight.min' => 'وزن نباید کمتر از ۰ باشد',
 
             'variants.*.is_active.boolean' => 'وضعیت فعال باید true یا false باشد',
-
-            // ===== پیام‌های ویژگی‌ها =====
             'variants.*.attributes.array' => 'ویژگی‌ها باید به صورت آرایه ارسال شوند',
             'variants.*.attributes.min' => 'حداقل یک ویژگی برای هر تنوع انتخاب کنید',
             'variants.*.attributes.*.attribute_value_id.required' => 'شناسه مقدار ویژگی الزامی است',

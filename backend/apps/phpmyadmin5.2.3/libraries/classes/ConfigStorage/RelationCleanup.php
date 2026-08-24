@@ -12,10 +12,10 @@ use PhpMyAdmin\Util;
  */
 class RelationCleanup
 {
-    /** @var Relation */
+    
     public $relation;
 
-    /** @var DatabaseInterface */
+    
     public $dbi;
 
     /**

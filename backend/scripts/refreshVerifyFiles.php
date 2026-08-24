@@ -9,21 +9,11 @@ if(WAMPTRACE_PROCESS) {
 	error_log($errorTxt."\n",3,WAMPTRACE_FILE);
 }
 clearstatcache(true);
-
-//****************************************************************
-//**** Verify some files before generate wampmanager.ini file ****
-// Check all lines are DOS (CR/LF) ending - Modify if not - Don't return contents
-// Apache httpd-vhosts.conf file
 file_get_contents_dos($c_apacheVhostConfFile, false);
-// PhpForApache.ini and php.ini file of used PHP
 file_get_contents_dos($c_phpConfFile, false);
 file_get_contents_dos($c_phpConfFileIni, false);
-// php.ini file of CLI php
 file_get_contents_dos($c_phpCliConfFile, false);
-
-// *** Verify DO NOT EDIT in wamp(64)/bin/php/phpx.y.z/php.ini file's - Insert if not
 $phpVersionList = listDir($c_phpVersionDir,'checkPhpConf','php',true);
-// *** For wamp(64)/bin/php/phpx.y.z/php.ini file
 $search = "EDIT THIS FILE for PHP CLI or FCGI used with fcgid_module";
 $replace = <<< NOTEDITEOF
 [PHP]
@@ -44,7 +34,6 @@ foreach($phpVersionList as $value) {
 	$inifile = $c_phpVersionDir."/php".$value."/".$typeIni;
 	$iniFileContents = file_get_contents($inifile);
 	if(strpos($iniFileContents,$search) === false) {
-		//Extract [PHP]... ; About php.ini   ;
 		$mask = "~(\[PHP\].*^; About php\.ini   ;)\r?$~ms";
 		if(preg_match($mask,$iniFileContents,$matches) > 0) {
 			$iniFileContents = str_replace(array($matches[1],'PHPVERSIONZZ'), array($replace,str_pad(' PHP '.$value,12)), $iniFileContents, $count);
@@ -52,7 +41,6 @@ foreach($phpVersionList as $value) {
 		}
 	}
 }
-//*** For wamp(64)/bin/php/phpx.y.z/phpForApache.ini file
 $search = "EDIT THIS FILE for PHP used as an Apache module";
 $replace = <<< NOTEDITEOF
 [PHP]
@@ -73,7 +61,6 @@ foreach($phpVersionList as $value) {
 	$inifile = $c_phpVersionDir."/php".$value."/".$typeIni;
 	$iniFileContents = file_get_contents($inifile);
 	if(strpos($iniFileContents,$search) === false) {
-		//Extract [PHP]... ; About php.ini   ;
 		$mask = "~(\[PHP\].*^; About php\.ini   ;)\r?$~ms";
 		if(preg_match($mask,$iniFileContents,$matches) > 0) {
 			$iniFileContents = str_replace(array($matches[1],'PHPVERSIONZZ'), array($replace,str_pad(' PHP '.$value,12)), $iniFileContents, $count);
@@ -82,8 +69,6 @@ foreach($phpVersionList as $value) {
 	}
 }
 unset($iniFileContents);
-
-// *** Check if the file wamp/bin/php/DO_NOT_DELETE_x.y.z.txt match CLI php version used
 if(!file_exists($c_phpVersionDir."/DO_NOT_DELETE_".$c_phpCliVersion.".txt")) {
 	$do_not_delete_txt = "This PHP version ".$c_phpCliVersion." is used by WampServer in CLI mode.\r\nIf you delete it, WampServer won't work anymore.";
 	if($handle = opendir($c_phpVersionDir))	{
@@ -102,11 +87,8 @@ if(!file_exists($c_phpVersionDir."/DO_NOT_DELETE_".$c_phpCliVersion.".txt")) {
 	}
 	write_file($c_phpVersionDir."/DO_NOT_DELETE_".$c_phpCliVersion.".txt",$do_not_delete_txt);
 }
-
-// *** Verify some Apache variables into httpd.conf - Add if not
 $c_ApacheDefineVerif = array();
 $ApacheDefineError = false;
-//--------------------------------
 $tryfind = 'Define VERSION_APACHE';
 $search = 'Define APACHE24 Apache2.4
 ';
@@ -162,7 +144,6 @@ else { // Variables exists - Verify contents
 		}
 	}
 }
-// *** Modify ServerRoot and move it after Define's ServerRoot "j:/wamp/bin/apache/apache2.4.xx"
 if(preg_match('~^ServerRoot[ \t]*"'.$c_installDir.'.*$~m',$httpdFileContents,$matches) > 0) {
 	$search = array(
 		$matches[0],
@@ -178,12 +159,8 @@ ServerRoot "${SRVROOT}"
 	$httpdFileContents = str_replace($search,$replace,$httpdFileContents,$count);
 	$counts += $count;
 }
-
-// *** Replace all install paths like "c:/wamp(64) by "${INSTALL_DIR}
 $httpdFileContents = str_replace('"'.$c_installDir,'"${INSTALL_DIR}',$httpdFileContents, $count);
 $counts += $count;
-
-// *** Check ThreadStackSize
 if(preg_match('~^#*[ \t]*ThreadStackSize[ \t]+[0-9]+.*\r?$~mi',$httpdFileContents,$matches) === 0) {
 	$search = "AcceptFilter https none
 ";
@@ -204,8 +181,6 @@ EOF;
 	$httpdFileContents = str_replace($search,$search.$replace,$httpdFileContents,$count);
 	$counts += $count;
 }
-
-// *** Check ThreadsPerChild
 if(preg_match('~^#*[ \t]*ThreadsPerChild[ \t]+[0-9]+.*\r?$~mi',$httpdFileContents,$matches) === 0) {
 	$search = "
 # Supplemental configuration";
@@ -236,8 +211,6 @@ EOF;
 	$httpdFileContents = str_replace($search,$replace.$search,$httpdFileContents,$count);
 	$counts += $count;
 }
-
-// *** Check LoadModule fcgid_module modules/mod_fcgid.so
 $load_fcgid_module = true;
 if(strpos($httpdFileContents,'LoadModule fcgid_module modules/mod_fcgid.so') === false) {
 	$replace = <<< 'EOF'
@@ -266,13 +239,10 @@ EOF;
 	$load_fcgid_module = false;
 	$counts += $count;
 }
-
-// *** Check if fcgid_module exists
 $mod_fcgid_exists = true;
 $mod_fcgid_file = 'mod_fcgid64.so';
 if(!file_exists($c_apacheModulesDir.'/mod_fcgid.so')) {
 	$mod_fcgid_exists = false;
-	//Check if wamp(64)/bin/apache/modules_sup/mod_fcgid.so exists
 	if(file_exists($c_apacheVersionDir.'/modules_sup/'.$mod_fcgid_file)) {
 		$copy_OK = copy($c_apacheVersionDir.'/modules_sup/'.$mod_fcgid_file,$c_apacheModulesDir.'/mod_fcgid.so');
 	}
@@ -281,8 +251,6 @@ if((!$mod_fcgid_exists && $copy_OK) || !$load_fcgid_module) {
 	$httpdFileContents = str_replace('#LoadModule fcgid_module modules/mod_fcgid.so','LoadModule fcgid_module modules/mod_fcgid.so',$httpdFileContents,$count);
 	$counts += $count;
 }
-
-// *** Verify PHPIniDir "${APACHE_DIR}/bin into httpd.conf
 if(strpos($httpdFileContents,'PHPIniDir "${APACHE_DIR}/bin"') === false) {
 	$insert = 'PHPIniDir "${APACHE_DIR}/bin"
 ';
@@ -290,8 +258,6 @@ if(strpos($httpdFileContents,'PHPIniDir "${APACHE_DIR}/bin"') === false) {
 	$httpdFileContents = str_replace($replace,$insert.$replace,$httpdFileContents,$count);
 	$counts += $count;
 }
-
-// *** Verify correct case and space(s) for parameters)
 $search = $replace = $matche1 = array();
 foreach($apache_Params as $key => $value ) {
 	if(preg_match('~^[ \t]*#?[ \t]*('.$key.')([ \t]+)('.$value['mask'].')\r?$~mi',$httpdFileContents,$matches) > 0) {
@@ -304,8 +270,6 @@ foreach($apache_Params as $key => $value ) {
 		}
 	}
 }
-
-//Does httpd.conf need to be modified?
 if(count($search) > 0) {
 	$httpdFileContents = str_replace($search,$replace,$httpdFileContents,$count);
 	$counts += $count;
@@ -315,8 +279,6 @@ if($counts > 0) {
 	if(WAMPTRACE_PROCESS) error_log("write ".$c_apacheConfFile." in ".__FILE__." line ". __LINE__."\n",3,WAMPTRACE_FILE);
  	write_file($c_apacheConfFile,$httpdFileContents);
 }
-
-// Verify some values of AllowOverride and Require
 $httpd_error_txt = '';
 if($wampConf['CheckHttpdRequire'] == 'on') {
   if(preg_match('~(<Directory />[^<]*(?:<(?!/Directory)[^<]*)*</Directory>)\r?$~mis',$httpdFileContents,$matches) > 0) {
@@ -339,16 +301,11 @@ if($wampConf['CheckHttpdRequire'] == 'on') {
   	}
   }
 }
-
-// *** Retrieve Apache variables from file wamp(64)\bin\apache\apache2.4.xx\wampdefineapache.conf
 $w_wampbase = base64_decode($c_wampserverBase);
 $c_ApacheDefine = retrieve_apache_define($c_apacheDefineConf);
-//Retrieve Apache variables from Apache itself (Define)
 $c_ApacheDefineVerif = retrieve_apache_define($c_apacheDefineConf,true);
 
 if($c_ApacheDefineVerif != $c_ApacheDefine) {
-	//Variables from wampdefineapache.conf are different of Apache variables
-	//recreate wampdefineapache.conf file
 	if(WAMPTRACE_PROCESS) error_log("write ".$c_apacheDefineConf." in ".__FILE__." line ". __LINE__."\n",3,WAMPTRACE_FILE);
 	$defineVar = "; Variables defined by Apache - To be used by some PHP scripts.\n\n";
 	if(count($c_ApacheDefineVerif) > 0) {
@@ -365,8 +322,6 @@ if($c_ApacheDefineVerif != $c_ApacheDefine) {
 	write_file($c_apacheDefineConf,$defineVar);
 	$c_ApacheDefine = retrieve_apache_define($c_apacheDefineConf);
 }
-// *********************************************************************************************
-// **** Verification of restart_wampserver.bat, quit_wampserver.bat, uninstall_services.bat ****
 $file =array();
 $file[0]['file'] = $c_installDir.'/quit_wampserver.bat';
 $file[0]['content'] = <<< EOF
@@ -412,9 +367,6 @@ foreach($file as $key => $value) {
 	}
 	if($writeFile) write_file($file[$key]['file'],$file[$key]['content']);
 }
-
-// *********************************************************************
-// **** Verify if httpd-ssl.conf file is ready for https manual mode ***
 $https_auto = 'Define CERTIFS ${INSTALL_DIR}/bin/Certs';
 $https_manual = 'Define CERTIFICATS ${INSTALL_DIR}/bin/certificats';
 $httpdsslFileContents = file_get_contents($c_apacheConfDir.'/extra/httpd-ssl.conf');
@@ -427,12 +379,8 @@ if(strpos($httpdsslFileContents,$https_auto) !== false) {
 		}
 	}
 }
-
-// ***********************************************
-// **** Rename alias phpmyadmin.conf if exists ***
 if(file_exists($aliasDir.'phpmyadmin.conf')) {
 	$contents = file_get_contents($aliasDir.'phpmyadmin.conf');
-	//<Directory "${INSTALL_DIR}/apps/phpmyadmin4.9.11/">
 	if(preg_match('~^[ \t]*<Directory.*apps/phpmyadmin([0-9\.]+)/.+\r?$~mi',$contents,$matches) === 1) {
 		$contents = str_replace('Alias /phpmyadmin','Alias /phpmyadmin'.$matches[1],$contents,$count);
 		if($count > 0) {
@@ -444,8 +392,5 @@ if(file_exists($aliasDir.'phpmyadmin.conf')) {
 }
 
 unset($httpdsslFileContents,$contents,$https_auto,$https_manual);
-
-//***************** End of verify files ***********************
-//*************************************************************
 
 ?>

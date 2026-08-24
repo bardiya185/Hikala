@@ -23,15 +23,8 @@ class DiscountUsageService
             $user,
             $quantity
         ) {
-
-
-            // قفل کردن رکورد تخفیف
             $discount = Discount::lockForUpdate()
                 ->find($discount->id);
-
-
-
-            // بررسی ظرفیت
             if (
                 $discount->quantity_limit &&
                 ($discount->used_quantity + $quantity)
@@ -44,10 +37,6 @@ class DiscountUsageService
 
             }
 
-
-
-            // ثبت استفاده
-
             $usage = DiscountUsage::create([
 
                 'discount_id' => $discount->id,
@@ -57,10 +46,6 @@ class DiscountUsageService
                 'quantity' => $quantity,
 
             ]);
-
-
-
-            // افزایش مقدار استفاده
 
             $discount->increment(
                 'used_quantity',

@@ -13,8 +13,6 @@ class ReviewReactionService
         $existing = ReviewReaction::where('user_id', $user->id)
             ->where('review_id', $review->id)
             ->first();
-
-        // Same type → remove (toggle off)
         if ($existing && $existing->type === $type) {
             $existing->delete();
             $this->updateCounts($review);
@@ -26,8 +24,6 @@ class ReviewReactionService
                 'dislikes_count' => $review->dislikes()->count(),
             ];
         }
-
-        // Different type → change
         if ($existing) {
             $existing->update(['type' => $type]);
             $this->updateCounts($review);
@@ -39,8 +35,6 @@ class ReviewReactionService
                 'dislikes_count' => $review->dislikes()->count(),
             ];
         }
-
-        // New reaction
         ReviewReaction::create([
             'user_id' => $user->id,
             'review_id' => $review->id,

@@ -8,7 +8,7 @@ if (class_exists('ParagonIE_Sodium_File', false)) {
  */
 class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
 {
-    /* PHP's default buffer size is 8192 for fread()/fwrite(). */
+    
     const BUFFER_SIZE = 8192;
 
     /**
@@ -32,7 +32,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         #[\SensitiveParameter]
         $keyPair
     ) {
-        /* Type checks: */
+        
         if (!is_string($inputFile)) {
             throw new TypeError('Argument 1 must be a string, ' . gettype($inputFile) . ' given.');
         }
@@ -43,7 +43,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new TypeError('Argument 3 must be a string, ' . gettype($nonce) . ' given.');
         }
 
-        /* Input validation: */
+        
         if (!is_string($keyPair)) {
             throw new TypeError('Argument 4 must be a string, ' . gettype($keyPair) . ' given.');
         }
@@ -54,19 +54,19 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new TypeError('Argument 4 must be CRYPTO_BOX_KEYPAIRBYTES bytes');
         }
 
-        /** @var int $size */
+        
         $size = filesize($inputFile);
         if (!is_int($size)) {
             throw new SodiumException('Could not obtain the file size');
         }
 
-        /** @var resource $ifp */
+        
         $ifp = fopen($inputFile, 'rb');
         if (!is_resource($ifp)) {
             throw new SodiumException('Could not open input file for reading');
         }
 
-        /** @var resource $ofp */
+        
         $ofp = fopen($outputFile, 'wb');
         if (!is_resource($ofp)) {
             fclose($ifp);
@@ -103,7 +103,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         #[\SensitiveParameter]
         $keypair
     ) {
-        /* Type checks: */
+        
         if (!is_string($inputFile)) {
             throw new TypeError('Argument 1 must be a string, ' . gettype($inputFile) . ' given.');
         }
@@ -117,7 +117,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new TypeError('Argument 4 must be a string, ' . gettype($keypair) . ' given.');
         }
 
-        /* Input validation: */
+        
         if (self::strlen($nonce) !== ParagonIE_Sodium_Compat::CRYPTO_BOX_NONCEBYTES) {
             throw new TypeError('Argument 4 must be CRYPTO_BOX_NONCEBYTES bytes');
         }
@@ -128,19 +128,19 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         if (!file_exists($inputFile)) {
             throw new SodiumException('Input file does not exist');
         }
-        /** @var int $size */
+        
         $size = filesize($inputFile);
         if (!is_int($size)) {
             throw new SodiumException('Could not obtain the file size');
         }
 
-        /** @var resource $ifp */
+        
         $ifp = fopen($inputFile, 'rb');
         if (!is_resource($ifp)) {
             throw new SodiumException('Could not open input file for reading');
         }
 
-        /** @var resource $ofp */
+        
         $ofp = @fopen($outputFile, 'wb');
         if (!is_resource($ofp)) {
             fclose($ifp);
@@ -180,7 +180,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         #[\SensitiveParameter]
         $publicKey
     ) {
-        /* Type checks: */
+        
         if (!is_string($inputFile)) {
             throw new TypeError('Argument 1 must be a string, ' . gettype($inputFile) . ' given.');
         }
@@ -191,7 +191,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new TypeError('Argument 3 must be a string, ' . gettype($publicKey) . ' given.');
         }
 
-        /* Input validation: */
+        
         if (self::strlen($publicKey) !== ParagonIE_Sodium_Compat::CRYPTO_BOX_PUBLICKEYBYTES) {
             throw new TypeError('Argument 3 must be CRYPTO_BOX_PUBLICKEYBYTES bytes');
         }
@@ -199,45 +199,45 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         if (!file_exists($inputFile)) {
             throw new SodiumException('Input file does not exist');
         }
-        /** @var int $size */
+        
         $size = filesize($inputFile);
         if (!is_int($size)) {
             throw new SodiumException('Could not obtain the file size');
         }
 
-        /** @var resource $ifp */
+        
         $ifp = fopen($inputFile, 'rb');
         if (!is_resource($ifp)) {
             throw new SodiumException('Could not open input file for reading');
         }
 
-        /** @var resource $ofp */
+        
         $ofp = @fopen($outputFile, 'wb');
         if (!is_resource($ofp)) {
             fclose($ifp);
             throw new SodiumException('Could not open output file for writing');
         }
 
-        /** @var string $ephKeypair */
+        
         $ephKeypair = ParagonIE_Sodium_Compat::crypto_box_keypair();
 
-        /** @var string $msgKeypair */
+        
         $msgKeypair = ParagonIE_Sodium_Compat::crypto_box_keypair_from_secretkey_and_publickey(
             ParagonIE_Sodium_Compat::crypto_box_secretkey($ephKeypair),
             $publicKey
         );
 
-        /** @var string $ephemeralPK */
+        
         $ephemeralPK = ParagonIE_Sodium_Compat::crypto_box_publickey($ephKeypair);
 
-        /** @var string $nonce */
+        
         $nonce = ParagonIE_Sodium_Compat::crypto_generichash(
             $ephemeralPK . $publicKey,
             '',
             24
         );
 
-        /** @var int $firstWrite */
+        
         $firstWrite = fwrite(
             $ofp,
             $ephemeralPK,
@@ -263,7 +263,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             ParagonIE_Sodium_Compat::memzero($nonce);
             ParagonIE_Sodium_Compat::memzero($ephKeypair);
         } catch (SodiumException $ex) {
-            /** @psalm-suppress PossiblyUndefinedVariable */
+            
             unset($ephKeypair);
         }
         return $res;
@@ -291,7 +291,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         #[\SensitiveParameter]
         $ecdhKeypair
     ) {
-        /* Type checks: */
+        
         if (!is_string($inputFile)) {
             throw new TypeError('Argument 1 must be a string, ' . gettype($inputFile) . ' given.');
         }
@@ -302,7 +302,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new TypeError('Argument 3 must be a string, ' . gettype($ecdhKeypair) . ' given.');
         }
 
-        /* Input validation: */
+        
         if (self::strlen($ecdhKeypair) !== ParagonIE_Sodium_Compat::CRYPTO_BOX_KEYPAIRBYTES) {
             throw new TypeError('Argument 3 must be CRYPTO_BOX_KEYPAIRBYTES bytes');
         }
@@ -312,19 +312,19 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         if (!file_exists($inputFile)) {
             throw new SodiumException('Input file does not exist');
         }
-        /** @var int $size */
+        
         $size = filesize($inputFile);
         if (!is_int($size)) {
             throw new SodiumException('Could not obtain the file size');
         }
 
-        /** @var resource $ifp */
+        
         $ifp = fopen($inputFile, 'rb');
         if (!is_resource($ifp)) {
             throw new SodiumException('Could not open input file for reading');
         }
 
-        /** @var resource $ofp */
+        
         $ofp = @fopen($outputFile, 'wb');
         if (!is_resource($ofp)) {
             fclose($ifp);
@@ -383,7 +383,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         $key = '',
         $outputLength = 32
     ) {
-        /* Type checks: */
+        
         if (!is_string($filePath)) {
             throw new TypeError('Argument 1 must be a string, ' . gettype($filePath) . ' given.');
         }
@@ -401,7 +401,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             $outputLength = (int) $outputLength;
         }
 
-        /* Input validation: */
+        
         if (!empty($key)) {
             if (self::strlen($key) < ParagonIE_Sodium_Compat::CRYPTO_GENERICHASH_KEYBYTES_MIN) {
                 throw new TypeError('Argument 2 must be at least CRYPTO_GENERICHASH_KEYBYTES_MIN bytes');
@@ -420,13 +420,13 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         if (!file_exists($filePath)) {
             throw new SodiumException('File does not exist');
         }
-        /** @var int $size */
+        
         $size = filesize($filePath);
         if (!is_int($size)) {
             throw new SodiumException('Could not obtain the file size');
         }
 
-        /** @var resource $fp */
+        
         $fp = fopen($filePath, 'rb');
         if (!is_resource($fp)) {
             throw new SodiumException('Could not open input file for reading');
@@ -469,7 +469,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         #[\SensitiveParameter]
         $key
     ) {
-        /* Type checks: */
+        
         if (!is_string($inputFile)) {
             throw new TypeError('Argument 1 must be a string, ' . gettype($inputFile) . ' given..');
         }
@@ -480,7 +480,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new TypeError('Argument 3 must be a string, ' . gettype($nonce) . ' given.');
         }
 
-        /* Input validation: */
+        
         if (self::strlen($nonce) !== ParagonIE_Sodium_Compat::CRYPTO_SECRETBOX_NONCEBYTES) {
             throw new TypeError('Argument 3 must be CRYPTO_SECRETBOX_NONCEBYTES bytes');
         }
@@ -494,19 +494,19 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         if (!file_exists($inputFile)) {
             throw new SodiumException('Input file does not exist');
         }
-        /** @var int $size */
+        
         $size = filesize($inputFile);
         if (!is_int($size)) {
             throw new SodiumException('Could not obtain the file size');
         }
 
-        /** @var resource $ifp */
+        
         $ifp = @fopen($inputFile, 'rb');
         if (!is_resource($ifp)) {
             throw new SodiumException('Could not open input file for reading');
         }
 
-        /** @var resource $ofp */
+        
         $ofp = fopen($outputFile, 'wb');
         if (!is_resource($ofp)) {
             fclose($ifp);
@@ -542,7 +542,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         #[\SensitiveParameter]
         $key
     ) {
-        /* Type checks: */
+        
         if (!is_string($inputFile)) {
             throw new TypeError('Argument 1 must be a string, ' . gettype($inputFile) . ' given.');
         }
@@ -556,7 +556,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new TypeError('Argument 4 must be a string, ' . gettype($key) . ' given.');
         }
 
-        /* Input validation: */
+        
         if (self::strlen($nonce) !== ParagonIE_Sodium_Compat::CRYPTO_SECRETBOX_NONCEBYTES) {
             throw new TypeError('Argument 3 must be CRYPTO_SECRETBOX_NONCEBYTES bytes');
         }
@@ -567,19 +567,19 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         if (!file_exists($inputFile)) {
             throw new SodiumException('Input file does not exist');
         }
-        /** @var int $size */
+        
         $size = filesize($inputFile);
         if (!is_int($size)) {
             throw new SodiumException('Could not obtain the file size');
         }
 
-        /** @var resource $ifp */
+        
         $ifp = fopen($inputFile, 'rb');
         if (!is_resource($ifp)) {
             throw new SodiumException('Could not open input file for reading');
         }
 
-        /** @var resource $ofp */
+        
         $ofp = @fopen($outputFile, 'wb');
         if (!is_resource($ofp)) {
             fclose($ifp);
@@ -592,7 +592,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         try {
             ParagonIE_Sodium_Compat::memzero($key);
         } catch (SodiumException $ex) {
-            /** @psalm-suppress PossiblyUndefinedVariable */
+            
             unset($key);
         }
         return $res;
@@ -615,7 +615,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         #[\SensitiveParameter]
         $secretKey
     ) {
-        /* Type checks: */
+        
         if (!is_string($filePath)) {
             throw new TypeError('Argument 1 must be a string, ' . gettype($filePath) . ' given.');
         }
@@ -623,7 +623,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new TypeError('Argument 2 must be a string, ' . gettype($secretKey) . ' given.');
         }
 
-        /* Input validation: */
+        
         if (self::strlen($secretKey) !== ParagonIE_Sodium_Compat::CRYPTO_SIGN_SECRETKEYBYTES) {
             throw new TypeError('Argument 2 must be CRYPTO_SIGN_SECRETKEYBYTES bytes');
         }
@@ -634,19 +634,19 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         if (!file_exists($filePath)) {
             throw new SodiumException('File does not exist');
         }
-        /** @var int $size */
+        
         $size = filesize($filePath);
         if (!is_int($size)) {
             throw new SodiumException('Could not obtain the file size');
         }
 
-        /** @var resource $fp */
+        
         $fp = fopen($filePath, 'rb');
         if (!is_resource($fp)) {
             throw new SodiumException('Could not open input file for reading');
         }
 
-        /** @var string $az */
+        
         $az = hash('sha512', self::substr($secretKey, 0, 32), true);
 
         $az[0] = self::intToChr(self::chrToInt($az[0]) & 248);
@@ -654,19 +654,19 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
 
         $hs = hash_init('sha512');
         self::hash_update($hs, self::substr($az, 32, 32));
-        /** @var resource $hs */
+        
         $hs = self::updateHashWithFile($hs, $fp, $size);
 
-        /** @var string $nonceHash */
+        
         $nonceHash = hash_final($hs, true);
 
-        /** @var string $pk */
+        
         $pk = self::substr($secretKey, 32, 32);
 
-        /** @var string $nonce */
+        
         $nonce = ParagonIE_Sodium_Core_Ed25519::sc_reduce($nonceHash) . self::substr($nonceHash, 32);
 
-        /** @var string $sig */
+        
         $sig = ParagonIE_Sodium_Core_Ed25519::ge_p3_tobytes(
             ParagonIE_Sodium_Core_Ed25519::ge_scalarmult_base($nonce)
         );
@@ -674,19 +674,19 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         $hs = hash_init('sha512');
         self::hash_update($hs, self::substr($sig, 0, 32));
         self::hash_update($hs, self::substr($pk, 0, 32));
-        /** @var resource $hs */
+        
         $hs = self::updateHashWithFile($hs, $fp, $size);
 
-        /** @var string $hramHash */
+        
         $hramHash = hash_final($hs, true);
 
-        /** @var string $hram */
+        
         $hram = ParagonIE_Sodium_Core_Ed25519::sc_reduce($hramHash);
 
-        /** @var string $sigAfter */
+        
         $sigAfter = ParagonIE_Sodium_Core_Ed25519::sc_muladd($hram, $az, $nonce);
 
-        /** @var string $sig */
+        
         $sig = self::substr($sig, 0, 32) . self::substr($sigAfter, 0, 32);
 
         try {
@@ -717,7 +717,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         $filePath,
         $publicKey
     ) {
-        /* Type checks: */
+        
         if (!is_string($sig)) {
             throw new TypeError('Argument 1 must be a string, ' . gettype($sig) . ' given.');
         }
@@ -728,7 +728,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new TypeError('Argument 3 must be a string, ' . gettype($publicKey) . ' given.');
         }
 
-        /* Input validation: */
+        
         if (self::strlen($sig) !== ParagonIE_Sodium_Compat::CRYPTO_SIGN_BYTES) {
             throw new TypeError('Argument 1 must be CRYPTO_SIGN_BYTES bytes');
         }
@@ -743,7 +743,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             return self::verify_core32($sig, $filePath, $publicKey);
         }
 
-        /* Security checks */
+        
         if (
             (ParagonIE_Sodium_Core_Ed25519::chrToInt($sig[63]) & 240)
                 &&
@@ -768,46 +768,46 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         if (!file_exists($filePath)) {
             throw new SodiumException('File does not exist');
         }
-        /** @var int $size */
+        
         $size = filesize($filePath);
         if (!is_int($size)) {
             throw new SodiumException('Could not obtain the file size');
         }
 
-        /** @var resource $fp */
+        
         $fp = fopen($filePath, 'rb');
         if (!is_resource($fp)) {
             throw new SodiumException('Could not open input file for reading');
         }
 
-        /** @var bool The original value of ParagonIE_Sodium_Compat::$fastMult */
+        
         $orig = ParagonIE_Sodium_Compat::$fastMult;
 
         // Set ParagonIE_Sodium_Compat::$fastMult to true to speed up verification.
         ParagonIE_Sodium_Compat::$fastMult = true;
 
-        /** @var ParagonIE_Sodium_Core_Curve25519_Ge_P3 $A */
+        
         $A = ParagonIE_Sodium_Core_Ed25519::ge_frombytes_negate_vartime($publicKey);
 
         $hs = hash_init('sha512');
         self::hash_update($hs, self::substr($sig, 0, 32));
         self::hash_update($hs, self::substr($publicKey, 0, 32));
-        /** @var resource $hs */
+        
         $hs = self::updateHashWithFile($hs, $fp, $size);
-        /** @var string $hDigest */
+        
         $hDigest = hash_final($hs, true);
 
-        /** @var string $h */
+        
         $h = ParagonIE_Sodium_Core_Ed25519::sc_reduce($hDigest) . self::substr($hDigest, 32);
 
-        /** @var ParagonIE_Sodium_Core_Curve25519_Ge_P2 $R */
+        
         $R = ParagonIE_Sodium_Core_Ed25519::ge_double_scalarmult_vartime(
             $h,
             $A,
             self::substr($sig, 32)
         );
 
-        /** @var string $rcheck */
+        
         $rcheck = ParagonIE_Sodium_Core_Ed25519::ge_tobytes($R);
 
         // Close the file handle
@@ -915,23 +915,23 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         }
         $first32 = self::ftell($ifp);
 
-        /** @var string $subkey */
+        
         $subkey = ParagonIE_Sodium_Core_HSalsa20::hsalsa20($nonce, $key);
 
-        /** @var string $realNonce */
+        
         $realNonce = ParagonIE_Sodium_Core_Util::substr($nonce, 16, 8);
 
-        /** @var string $block0 */
+        
         $block0 = str_repeat("\x00", 32);
 
-        /** @var int $mlen - Length of the plaintext message */
+        
         $mlen0 = $mlen;
         if ($mlen0 > 64 - ParagonIE_Sodium_Crypto::secretbox_xsalsa20poly1305_ZEROBYTES) {
             $mlen0 = 64 - ParagonIE_Sodium_Crypto::secretbox_xsalsa20poly1305_ZEROBYTES;
         }
         $block0 .= ParagonIE_Sodium_Core_Util::substr($plaintext, 0, $mlen0);
 
-        /** @var string $block0 */
+        
         $block0 = ParagonIE_Sodium_Core_Salsa20::salsa20_xor(
             $block0,
             $realNonce,
@@ -950,7 +950,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         $start = self::ftell($ofp);
         fwrite($ofp, str_repeat("\x00", 16));
 
-        /** @var string $c */
+        
         $cBlock = ParagonIE_Sodium_Core_Util::substr(
             $block0,
             ParagonIE_Sodium_Crypto::secretbox_xsalsa20poly1305_ZEROBYTES
@@ -959,10 +959,10 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         fwrite($ofp, $cBlock);
         $mlen -= 32;
 
-        /** @var int $iter */
+        
         $iter = 1;
 
-        /** @var int $incr */
+        
         $incr = self::BUFFER_SIZE >> 6;
 
         /*
@@ -1034,20 +1034,20 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new SodiumException('Could not read input file');
         }
 
-        /** @var string $subkey */
+        
         $subkey = ParagonIE_Sodium_Core_HSalsa20::hsalsa20($nonce, $key);
 
-        /** @var string $realNonce */
+        
         $realNonce = ParagonIE_Sodium_Core_Util::substr($nonce, 16, 8);
 
-        /** @var string $block0 */
+        
         $block0 = ParagonIE_Sodium_Core_Salsa20::salsa20(
             64,
             ParagonIE_Sodium_Core_Util::substr($nonce, 16, 8),
             $subkey
         );
 
-        /* Verify the Poly1305 MAC -before- attempting to decrypt! */
+        
         $state = new ParagonIE_Sodium_Core_Poly1305_State(self::substr($block0, 0, 32));
         if (!self::onetimeauth_verify($state, $ifp, $tag, $mlen)) {
             throw new SodiumException('Invalid MAC');
@@ -1071,13 +1071,13 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         );
         $mlen -= 32;
 
-        /** @var int $iter */
+        
         $iter = 1;
 
-        /** @var int $incr */
+        
         $incr = self::BUFFER_SIZE >> 6;
 
-        /* Decrypts ciphertext, writes to output file. */
+        
         while ($mlen > 0) {
             $blockSize = $mlen > self::BUFFER_SIZE
                 ? self::BUFFER_SIZE
@@ -1114,13 +1114,13 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         $tag = '',
         $mlen = 0
     ) {
-        /** @var int $pos */
+        
         $pos = self::ftell($ifp);
 
-        /** @var int $iter */
+        
         $iter = 1;
 
-        /** @var int $incr */
+        
         $incr = self::BUFFER_SIZE >> 6;
 
         while ($mlen > 0) {
@@ -1159,7 +1159,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
      */
     public static function updateHashWithFile($hash, $fp, $size = 0)
     {
-        /* Type checks: */
+        
         if (PHP_VERSION_ID < 70200) {
             if (!is_resource($hash)) {
                 throw new TypeError('Argument 1 must be a resource, ' . gettype($hash) . ' given.');
@@ -1177,13 +1177,13 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new TypeError('Argument 3 must be an integer, ' . gettype($size) . ' given.');
         }
 
-        /** @var int $originalPosition */
+        
         $originalPosition = self::ftell($fp);
 
         // Move file pointer to beginning of file
         fseek($fp, 0, SEEK_SET);
         for ($i = 0; $i < $size; $i += self::BUFFER_SIZE) {
-            /** @var string|bool $message */
+            
             $message = fread(
                 $fp,
                 ($size - $i) > self::BUFFER_SIZE
@@ -1193,8 +1193,8 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             if (!is_string($message)) {
                 throw new SodiumException('Unexpected error reading from file.');
             }
-            /** @var string $message */
-            /** @psalm-suppress InvalidArgument */
+            
+            
             self::hash_update($hash, $message);
         }
         // Reset file pointer's position
@@ -1226,7 +1226,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new SodiumException('Could not open input file for reading');
         }
 
-        /** @var string $az */
+        
         $az = hash('sha512', self::substr($secretKey, 0, 32), true);
 
         $az[0] = self::intToChr(self::chrToInt($az[0]) & 248);
@@ -1234,7 +1234,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
 
         $hs = hash_init('sha512');
         self::hash_update($hs, self::substr($az, 32, 32));
-        /** @var resource $hs */
+        
         $hs = self::updateHashWithFile($hs, $fp, $size);
 
         $nonceHash = hash_final($hs, true);
@@ -1247,7 +1247,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         $hs = hash_init('sha512');
         self::hash_update($hs, self::substr($sig, 0, 32));
         self::hash_update($hs, self::substr($pk, 0, 32));
-        /** @var resource $hs */
+        
         $hs = self::updateHashWithFile($hs, $fp, $size);
 
         $hramHash = hash_final($hs, true);
@@ -1256,7 +1256,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
 
         $sigAfter = ParagonIE_Sodium_Core32_Ed25519::sc_muladd($hram, $az, $nonce);
 
-        /** @var string $sig */
+        
         $sig = self::substr($sig, 0, 32) . self::substr($sigAfter, 0, 32);
 
         try {
@@ -1284,7 +1284,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
      */
     public static function verify_core32($sig, $filePath, $publicKey)
     {
-        /* Security checks */
+        
         if (ParagonIE_Sodium_Core32_Ed25519::check_S_lt_L(self::substr($sig, 32, 32))) {
             throw new SodiumException('S < L - Invalid signature');
         }
@@ -1303,48 +1303,48 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new SodiumException('All zero public key');
         }
 
-        /** @var int|bool $size */
+        
         $size = filesize($filePath);
         if (!is_int($size)) {
             throw new SodiumException('Could not obtain the file size');
         }
-        /** @var int $size */
+        
 
-        /** @var resource|bool $fp */
+        
         $fp = fopen($filePath, 'rb');
         if (!is_resource($fp)) {
             throw new SodiumException('Could not open input file for reading');
         }
-        /** @var resource $fp */
+        
 
-        /** @var bool The original value of ParagonIE_Sodium_Compat::$fastMult */
+        
         $orig = ParagonIE_Sodium_Compat::$fastMult;
 
         // Set ParagonIE_Sodium_Compat::$fastMult to true to speed up verification.
         ParagonIE_Sodium_Compat::$fastMult = true;
 
-        /** @var ParagonIE_Sodium_Core32_Curve25519_Ge_P3 $A */
+        
         $A = ParagonIE_Sodium_Core32_Ed25519::ge_frombytes_negate_vartime($publicKey);
 
         $hs = hash_init('sha512');
         self::hash_update($hs, self::substr($sig, 0, 32));
         self::hash_update($hs, self::substr($publicKey, 0, 32));
-        /** @var resource $hs */
+        
         $hs = self::updateHashWithFile($hs, $fp, $size);
-        /** @var string $hDigest */
+        
         $hDigest = hash_final($hs, true);
 
-        /** @var string $h */
+        
         $h = ParagonIE_Sodium_Core32_Ed25519::sc_reduce($hDigest) . self::substr($hDigest, 32);
 
-        /** @var ParagonIE_Sodium_Core32_Curve25519_Ge_P2 $R */
+        
         $R = ParagonIE_Sodium_Core32_Ed25519::ge_double_scalarmult_vartime(
             $h,
             $A,
             self::substr($sig, 32)
         );
 
-        /** @var string $rcheck */
+        
         $rcheck = ParagonIE_Sodium_Core32_Ed25519::ge_tobytes($R);
 
         // Close the file handle
@@ -1375,23 +1375,23 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         }
         $first32 = self::ftell($ifp);
 
-        /** @var string $subkey */
+        
         $subkey = ParagonIE_Sodium_Core32_HSalsa20::hsalsa20($nonce, $key);
 
-        /** @var string $realNonce */
+        
         $realNonce = ParagonIE_Sodium_Core32_Util::substr($nonce, 16, 8);
 
-        /** @var string $block0 */
+        
         $block0 = str_repeat("\x00", 32);
 
-        /** @var int $mlen - Length of the plaintext message */
+        
         $mlen0 = $mlen;
         if ($mlen0 > 64 - ParagonIE_Sodium_Crypto::secretbox_xsalsa20poly1305_ZEROBYTES) {
             $mlen0 = 64 - ParagonIE_Sodium_Crypto::secretbox_xsalsa20poly1305_ZEROBYTES;
         }
         $block0 .= ParagonIE_Sodium_Core32_Util::substr($plaintext, 0, $mlen0);
 
-        /** @var string $block0 */
+        
         $block0 = ParagonIE_Sodium_Core32_Salsa20::salsa20_xor(
             $block0,
             $realNonce,
@@ -1410,7 +1410,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         $start = self::ftell($ofp);
         fwrite($ofp, str_repeat("\x00", 16));
 
-        /** @var string $c */
+        
         $cBlock = ParagonIE_Sodium_Core32_Util::substr(
             $block0,
             ParagonIE_Sodium_Crypto::secretbox_xsalsa20poly1305_ZEROBYTES
@@ -1419,10 +1419,10 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         fwrite($ofp, $cBlock);
         $mlen -= 32;
 
-        /** @var int $iter */
+        
         $iter = 1;
 
-        /** @var int $incr */
+        
         $incr = self::BUFFER_SIZE >> 6;
 
         /*
@@ -1491,20 +1491,20 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
             throw new SodiumException('Could not read input file');
         }
 
-        /** @var string $subkey */
+        
         $subkey = ParagonIE_Sodium_Core32_HSalsa20::hsalsa20($nonce, $key);
 
-        /** @var string $realNonce */
+        
         $realNonce = ParagonIE_Sodium_Core32_Util::substr($nonce, 16, 8);
 
-        /** @var string $block0 */
+        
         $block0 = ParagonIE_Sodium_Core32_Salsa20::salsa20(
             64,
             ParagonIE_Sodium_Core32_Util::substr($nonce, 16, 8),
             $subkey
         );
 
-        /* Verify the Poly1305 MAC -before- attempting to decrypt! */
+        
         $state = new ParagonIE_Sodium_Core32_Poly1305_State(self::substr($block0, 0, 32));
         if (!self::onetimeauth_verify_core32($state, $ifp, $tag, $mlen)) {
             throw new SodiumException('Invalid MAC');
@@ -1528,13 +1528,13 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         );
         $mlen -= 32;
 
-        /** @var int $iter */
+        
         $iter = 1;
 
-        /** @var int $incr */
+        
         $incr = self::BUFFER_SIZE >> 6;
 
-        /* Decrypts ciphertext, writes to output file. */
+        
         while ($mlen > 0) {
             $blockSize = $mlen > self::BUFFER_SIZE
                 ? self::BUFFER_SIZE
@@ -1573,7 +1573,7 @@ class ParagonIE_Sodium_File extends ParagonIE_Sodium_Core_Util
         $tag = '',
         $mlen = 0
     ) {
-        /** @var int $pos */
+        
         $pos = self::ftell($ifp);
 
         while ($mlen > 0) {

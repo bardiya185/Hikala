@@ -124,38 +124,22 @@ final class PackedAttestationStatementSupport implements AttestationStatementSup
     {
         $parsed = openssl_x509_parse($attestnCert);
         Assertion::isArray($parsed, 'Invalid certificate');
-
-        //Check version
         Assertion::false(!isset($parsed['version']) || 2 !== $parsed['version'], 'Invalid certificate version');
-
-        //Check subject field
         Assertion::false(!isset($parsed['name']) || false === mb_strpos($parsed['name'], '/OU=Authenticator Attestation'), 'Invalid certificate name. The Subject Organization Unit must be "Authenticator Attestation"');
-
-        //Check extensions
         Assertion::false(!isset($parsed['extensions']) || !is_array($parsed['extensions']), 'Certificate extensions are missing');
-
-        //Check certificate is not a CA cert
         Assertion::false(!isset($parsed['extensions']['basicConstraints']) || 'CA:FALSE' !== $parsed['extensions']['basicConstraints'], 'The Basic Constraints extension must have the CA component set to false');
 
         $attestedCredentialData = $authenticatorData->getAttestedCredentialData();
         Assertion::notNull($attestedCredentialData, 'No attested credential available');
-
-        // id-fido-gen-ce-aaguid OID check
         Assertion::false(in_array('1.3.6.1.4.1.45724.1.1.4', $parsed['extensions'], true) && !hash_equals($attestedCredentialData->getAaguid()->getBytes(), $parsed['extensions']['1.3.6.1.4.1.45724.1.1.4']), 'The value of the "aaguid" does not match with the certificate');
     }
 
     private function processWithCertificate(string $clientDataJSONHash, AttestationStatement $attestationStatement, AuthenticatorData $authenticatorData, CertificateTrustPath $trustPath): bool
     {
         $certificates = $trustPath->getCertificates();
-
-        // Check leaf certificate
         $this->checkCertificate($certificates[0], $authenticatorData);
-
-        // Get the COSE algorithm identifier and the corresponding OpenSSL one
         $coseAlgorithmIdentifier = (int) $attestationStatement->get('alg');
         $opensslAlgorithmIdentifier = Algorithms::getOpensslAlgorithmFor($coseAlgorithmIdentifier);
-
-        // Verification of the signature
         $signedData = $authenticatorData->getAuthData().$clientDataJSONHash;
         $result = openssl_verify($signedData, $attestationStatement->get('sig'), $certificates[0], $opensslAlgorithmIdentifier);
 

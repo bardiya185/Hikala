@@ -10,7 +10,6 @@ if(WAMPTRACE_PROCESS) {
 }
 
 $doReport = (isset($_SERVER['argv'][1]) && trim($_SERVER['argv'][1]) == 'doreport') ? true : false;
-//$doReport = true;
 
 if($doReport) {
 	$wampReportTxt = '';
@@ -21,8 +20,6 @@ if($doReport) {
 
 require 'config.inc.php';
 require 'wampserver.lib.php';
-
-// **** Get Tray Menu Manager version and some variables ****
 $contents = file_get_contents($wampserverIniFile);
 $wamp_versions_here['wamp_aestan'] = '0.0.0.0';
 if(preg_match('~^Tray Menu Manager Version=([0-9\.]+)\r?$~mi',$contents,$matches) === 1)
@@ -34,14 +31,10 @@ $wamp_Ini['CountStart'] = 0;
 if(preg_match('~^CountStart=([0-9]+)\r?$~m',$contents,$matches) ===1)
 	$wamp_Ini['CountStart']=$matches[1];
 unset($contents);
-
-// **** Warnings at the end if needed
 $WarningsAtEnd 	= false;
 $WarningMenu = ';WAMPMENULEFTEND
 ';
 $WarningText = '';
-
-// **** Verify local IP ****
 if(!in_array($wampConf['LinksChooseIp'],$c_local_ip_list)) {
 	$wampIniNewContents['LinksChooseIp'] = $c_local_ip;
 	wampIniSet($configurationFile, $wampIniNewContents);
@@ -50,8 +43,6 @@ if(!in_array($wampConf['LinksChooseIp'],$c_local_ip_list)) {
 else {
 	$c_local_ip = $wampConf['LinksChooseIp'];
 }
-
-// **** Verify some files ****
 require 'refreshVerifyFiles.php';
 if($httpd_error_txt !== '') {
 	$WarningsAtEnd = true;
@@ -59,24 +50,15 @@ if($httpd_error_txt !== '') {
 	$WarningText .= 'Type: item; Caption: "Bad AllowOverride or Require"; Glyph: 19; Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($message).'";WorkingDir: "'.$c_installDir.'/scripts"; Flags: waituntilterminated
 ';
 }
-
-// *****************************
-// **** language management ****
-// List of all supported encodings
 $List_Encodings = array_map('mb_strtolower',mb_list_encodings());
-
-// Load default language file if exists
 require $langDir.$wampConf['defaultLanguage'].'.lang';
 $charset_used = $charset_saved = $file_charset;
 $charset_used_valid = in_array(mb_strtolower($file_charset),$List_Encodings) ? true : false;
 
 $utf8_file = '';
 $use_utf8 = $convertOK = false;
-// Load language file if exists
 if(file_exists($langDir.$lang.'.lang')){
-	//$Text_Encoding['CodePage'] = '65001';
 	if(isset($wampConf['utf8_beta']) && $wampConf['utf8_beta'] == 'on' && $Text_Encoding['CodePage'] == '65001') {
-		//Beta utf-8 region option is checked
 		$utf8_file = '_utf-8';
 		$use_utf8 = true;
 		if(!file_exists($langDir.$lang.$utf8_file.'.lang')) {
@@ -108,13 +90,8 @@ if(file_exists($langDir.$lang.'.lang')){
 	$charset_used_valid = in_array(mb_strtolower($file_charset),$List_Encodings) ? true : false;
 }
 unset($file_charset);
-
-// Load modules default language files - settings_english.php
 require $langDir.$modulesDir.'settings_'.$wampConf['defaultLanguage'].'.php';
-//Save array $w_settings default language
 $w_settings_save = $w_settings;
-
-// Load modules current language files if exists
 if(file_exists($langDir.$modulesDir.'settings_'.$lang.'.php')) {
 	if($use_utf8) {
 		if(!file_exists($langDir.$modulesDir.'settings_'.$lang.$utf8_file.'.php')) {
@@ -128,14 +105,9 @@ if(file_exists($langDir.$modulesDir.'settings_'.$lang.'.php')) {
 		}
 	}
 	require $langDir.$modulesDir.'settings_'.$lang.$utf8_file.'.php';
-	//Merge save array with current language
 	$w_settings = array_replace($w_settings_save,$w_settings);
 }
 unset($temp,$temp_utf8);
-// **** END of language management ****
-// ************************************
-
-// **** Update string to use alternate port ****
 $w_AlternatePort = sprintf($w_UseAlternatePort, $c_UsedPort);
 if($c_UsedPort == $c_DefaultPort) {
 	$UrlPort = '';
@@ -145,7 +117,6 @@ else {
 	$UrlPort = ':'.$c_UsedPort;
 	$w_newPort = "80";
 }
-//Update string if there are more than one Apache Listen ports
 $c_listenPort = listen_ports($c_apacheConfFile);
 $TplListenPorts = ';';
 $ListenPorts = '';
@@ -155,14 +126,11 @@ if(count($c_listenPort) > 1) {
 	$TplListenPorts = '';
 	$ListenPortsExists = true;
 }
-//Update string for add Listen Port
 $w_addPort = 8081;
 while(in_array($w_addPort, $c_listenPort)) {
 	$w_addPort++;
 }
 $w_addPort = (string)$w_addPort;
-
-//Update string to use alternate MySQL port.
 $w_AlternateMysqlPort = sprintf($w_UseAlternatePort, $c_UsedMysqlPort);
 if($c_UsedMysqlPort == $c_DefaultMysqlPort) {
 	$w_newMysqlPort = "3308";
@@ -170,7 +138,6 @@ if($c_UsedMysqlPort == $c_DefaultMysqlPort) {
 else {
 	$w_newMysqlPort = "3306";
 }
-//Update string to use alternate MariaDB port.
 $w_AlternateMariaPort = sprintf($w_UseAlternatePort, $c_UsedMariaPort);
 if($c_UsedMariaPort == $c_DefaultMysqlPort) {
 	$w_newMariaPort = "3309";
@@ -178,31 +145,17 @@ if($c_UsedMariaPort == $c_DefaultMysqlPort) {
 else {
 	$w_newMariaPort = "3306";
 }
-
-// ***********************************************************
-// **** Before to require wampmanager.tpl ($templateFile) ****
-// **** we need to change some options, otherwise the     ****
-// **** variables are replaced by their content.          ****
-// ***********************************************************
-// **** Retrieve last start date of Wampserver
 $WampStartOnOri = $wampConf['wampStartDate'];
-// **** Wampserver last launched date and hour (formated)
 $WampStartOn = IntlDateFormatter::formatObject(new DateTime($WampStartOnOri),$w_FormatDate);
 if(!$use_utf8 && $charset_used_valid) {
 	$temp = mb_convert_encoding($WampStartOn, $charset_used, "utf-8");
 	if($temp !== false) $WampStartOn = $temp;
 }
-// **** Option to see Browser Choice
 $SeeBrowsers = $wampConf['BrowserChoice'] == 'on' ? '' : ';';
-// **** Option to launch Homepage at startup
 $RunAtStart = ($wampConf['HomepageAtStartup'] == 'on' ? '' : ';');
-// **** Option to see www dir in menu
 $ShowWWWdir = ($wampConf['ShowWWWdirMenu'] == 'on' ? '' : ';');
-// **** Item submenu Apache Check port used (if not 80)
 $ApaTestPortUsed = ($wampConf['apacheUseOtherPort'] == 'on' ? '' : ';');
-// **** Item Tools submenu Check MySQL port used (if not 3306)
 $MysqlTestPortUsed = (($wampConf['SupportMySQL'] == 'on' && ($wampConf['mysqlUseOtherPort'] == 'on'  && $wampConf['mysqlPortOptionsMenu'] == 'on')) ? '' : ';');
-// **** Item Tools submenu Check MariaDB port used (if not 3306)
 $MariaTestPortUsed = (($wampConf['SupportMariaDB'] == 'on' && ($wampConf['mariaUseOtherPort'] == 'on' && $wampConf['mariadbPortOptionsMenu'] == 'on')) ? '' : ';');
 $SupportMysqlAndMariaDB = (($wampConf['SupportMariaDB'] == 'on' && $wampConf['SupportMySQL'] == 'on') ? '' : ';');
 $MariadbDefault = (($wampConf['SupportMySQL'] == 'on' && $wampConf['SupportMariaDB'] == 'on' && $wampConf['mariaPortUsed'] == $wampConf['mysqlDefaultPort']) ? '' : ';');
@@ -211,8 +164,6 @@ if(!empty($MariadbDefault) && !empty($MysqlDefault))
 	$DefaultDBMS = 'none';
 else
 	$DefaultDBMS = (empty($MariadbDefault) ? 'MariaDB '.$c_mariadbVersion : 'MySQL '.$c_mysqlVersion);
-
-// **** Check if Apache Graceful Restart is supported
 $Apache_Graceful_Restart = <<< EOF
 Action: run; Filename: "{$c_apacheExe}"; Parameters: "-n {$c_apacheService} -k restart"; ShowCmd: hidden; Flags: ignoreerrors waituntilterminated
 EOF;
@@ -225,10 +176,6 @@ if($wampConf['apacheGracefulRestart'] == 'on') {
 	$Apache_Restart = $Apache_Graceful_Restart;
 	$Apache_Graceful = '';
 }
-
-// **** Wampmanager.ini common append multi actions
-// **** with : Action: multi; Actions: section_name; Flags:appendsection
-// ;WAMPCOMMONAPPENDACTIONS
 $GotoMySQLRestart = $GotoMariaDBRestart = '';
 if($wampConf['SupportMySQL'] == 'on') {
 	$GotoMySQLRestart = <<< EOF
@@ -246,15 +193,9 @@ Action: multi; Actions: refresh_readconfig; Flags:appendsection
 
 EOF;
 }
-
-// **** Check some values about Apache VirtualHost
 $virtualHost = check_virtualhost();
-// **** Option to show Edit httpd-vhosts.conf
 $EditVhostConf  = (($virtualHost['include_vhosts'] === false || $virtualHost['vhosts_exist'] === false) ? ';' : '');
-// **** Translated by in About
 $w_translated_by = (isset($w_translated_by )) ? $w_translated_by : '';
-
-// **** Add value to Wampserver Report
 if($doReport) {
 $WinVer = php_uname('s').' '.php_uname('r').' '.php_uname('v');
 $TextEncoding = print_r($Text_Encoding,true);
@@ -275,12 +216,6 @@ $wampReport['gen1'] .= <<< EOF
 
 EOF;
 }
-
-// **** Update MySQL and/or MariaDB my.ini file
-// Replace # comment by ; to be compatible with parse_ini_file
-// PHP 5.3.0 Hash marks (#) should no longer be used as comments and will throw a deprecation warning if used.
-// PHP 7.0.0 Hash marks (#) are no longer recognized as comments.
-// **** Option to support MySQL
 $mysqlVersionList = listDir($c_mysqlVersionDir,'checkMysqlConf','mysql',true);
 $mysqlMysqlService = $mysqlCmdScService = ';';
 if($wampConf['SupportMySQL'] == 'on' && count($mysqlVersionList) > 0) {
@@ -295,7 +230,6 @@ if($wampConf['SupportMySQL'] == 'on' && count($mysqlVersionList) > 0) {
 	}
 	unset ($myIniContents);
 	if($doReport)	$wampReport['mysql'] .= "\n- MySQL ".$c_mysqlVersion." Port ".$c_UsedMysqlPort;
-	// **** Support mysql Service with mysqld.exe or windows command sc
 	require $c_mysqlVersionDir.'/mysql'.$wampConf['mysqlVersion'].'/wampserver.conf';
 	$mysqlMysqlService = '';
 	$mysqlCmdScService = ';';
@@ -311,8 +245,6 @@ else {
 	$SupportMySQL = ';';
 	$EmptyMysqlLog = '';
 }
-
-// **** Option to support MariaDB
 $mariadbVersionList = listDir($c_mariadbVersionDir,'checkMariaDBConf','mariadb',true);
 $mariaMysqlService = $mariaCmdScService = ';';
 if($wampConf['SupportMariaDB'] == 'on' && count($mariadbVersionList) > 0) {
@@ -328,7 +260,6 @@ if($wampConf['SupportMariaDB'] == 'on' && count($mariadbVersionList) > 0) {
 	}
 	unset ($myIniContents);
 	if($doReport)	$wampReport['mariadb'] .= "\n- MariaDB ".$c_mariadbVersion." Port ".$c_UsedMariaPort;
-	// **** Support mariadb Service with mysqld.exe or windows command sc
 	require $c_mariadbVersionDir.'/mariadb'.$wampConf['mariadbVersion'].'/wampserver.conf';
 	$mariaMysqlService = '';
 	$mariaCmdScService = ';';
@@ -344,8 +275,6 @@ else {
 	$SupportMariaDB = ';';
 	$EmptyMariaLog = '';
 }
-
-// **** Option if neither MySQL nor MariaDB
 if($SupportMySQL == ';' && $SupportMariaDB == ';') {
 	$noDBMS = true;
 	$SupportDBMS = ';';
@@ -378,16 +307,12 @@ EOF;
 	$wampReport['gen2'] .= "---------------------------------------------\n";
 	unset($wampConfSections,$sections,$section,$value);
 }
-
-// **** Is there an .htaccess file in www?
 if(file_exists($wwwDir.'/.htaccess')) {
 	$WarningsAtEnd = true;
 	$message = color('red',"\r\nThere is a .htaccess file in the folder ".$wwwDir."\r\nThis is detrimental to the proper operation of localhost\r\nPlease delete this .htaccess file\r\n");
 	$WarningText .= 'Type: item; Caption: ".htaccess file in www directory"; Glyph: 19; Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($message).'";WorkingDir: "'.$c_installDir.'/scripts"; Flags: waituntilterminated
 ';
 }
-
-// **** Get Alias, PhpMyAdmin, Adminer, PhpSysInfo version's
 GetAliasVersions();
 if($phmyadOK) {
 	$temp = '0.0.0';
@@ -398,34 +323,13 @@ if($phmyadOK) {
 	$wamp_versions_here += array('wamp_phpmyadmin' => $temp);
 }
 unset($value);
-
-// **** Get adminer version
 $wamp_versions_here += array('wamp_adminer' => $Alias_Contents['adminer']['version']);
-
-// ***************************************************************************
-// **** At this point, $phpVersionList, $phpFcgiVersionList,              ****
-// **** $phpFcgiVersionListUsed, $virtualHost, Alias_Contents are correct ****
-//error_log("Alias_Contents=".print_r($Alias_Contents,true));
-//error_log("phpFcgiVersionList=\n".print_r($phpFcgiVersionList,true));
-//error_log("phpFcgiVersionList unique=\n".print_r(array_unique($phpFcgiVersionList),true));
-//error_log("phpFcgiVersionListUsed=\n".print_r($phpFcgiVersionListUsed,true));
-//foreach($phpFcgiVersionListUsed as $key => $value) $phpFcgiVersionListUsed[$key] = array_unique($phpFcgiVersionListUsed[$key]);
-//error_log("phpFcgiVersionListUsed unique=\n".print_r($phpFcgiVersionListUsed,true));
-//error_log("phpVersionList=\n".print_r(array_unique($phpVersionList),true));
-//error_log("virtualHost=\n".print_r($virtualHost,true));
-// ***************************************************************************
-
-// **** Check if localhost is in HTTPS mode
 $localhostHTTP = 'http';
 if(in_array('localhost',$virtualHost['ServerNameHttps'])) {
 	$localhostHTTP = 'https';
 }
-
-// **** Check if there is any PHP version used as FCGI
 $phpFcgiVersionList = array_unique($phpFcgiVersionList);
 $NoPhpFCGI = (isset($c_ApacheDefine['PHPROOT']) && count($phpFcgiVersionList) > 0) ? '' : ';';
-
-// **** Warning if hosts file is not writable
 if(!$c_hostsFile_writable) {
 	$WarningsAtEnd = true;
 	$message = color('red',"\r\nThere is problem with the file C:\\Windows\\System32\\drivers\\etc\\hosts\r\nIn order to create or modify VirtualHost,\r\nit is imperative to be able to write to the hosts file.\r\nCheck that your anti-virus allows to write the hosts file.\r\n");
@@ -435,22 +339,17 @@ if(!$c_hostsFile_writable) {
 	if($doReport)	$wampReport['gen2'] .= "\nFile C:\\Windows\\System32\\drivers\\etc\\hosts is not writable.";
 }
 else {
-	// **** Verify hosts file contents
 	if($wampConf['NotVerifyHosts'] == 'off') {
-		//Cleaning of hosts file
 		$rewriteHost = $validServer = $localIPv4 = $localIPv6 = false;
 		$myHostsContents = file_get_contents($c_hostsFile);
 		$myHostsContents = clean_file_contents($myHostsContents,array(2,1),true);
 		$rewriteHost = $clean_count;
-		// **** Verify if there is at least one valid ServerName
 		if(preg_match('~^(127\.|10\.|172\.16\.|192\.168\.)[ \t]*.*\s?$~m',$myHostsContents) > 0 )
 			$validServer = true;
-		// **** Verify at least 127.0.0.1 localhost and ::1 localhost
 		if(preg_match('~^127\.0\.0\.1[ \t]*localhost\s?$~m',$myHostsContents) > 0 )
 			$localIPv4 = true;
 		if(preg_match('~^::1[ \t]*localhost\s?$~m',$myHostsContents) > 0 )
 			$localIPv6 = true;
-		// **** Rewrite host file if necessary
 		if(!$validServer) {
 			$myHostsContents = "#\r\n";
 			$rewriteHost = true;
@@ -464,7 +363,6 @@ else {
 			$rewriteHost = true;
 		}
 		if($rewriteHost) {
-			// **** Try to do a backup of hosts file
 			if($wampConf['BackupHosts'] == 'on') {
 				@copy($c_hostsFile,$c_hostsFile."_wampsave.".$next_hosts_save);
 				$next_hosts_save++;
@@ -504,8 +402,6 @@ else {
 			}
 			fclose($fp);
 		}
-		// **** Warning if hosts file is too big
-		// **** Count number of lines in hosts file
 		if(($c_hostsFile_toobig = count(file($c_hostsFile, FILE_IGNORE_NEW_LINES))) > $wampConf['HostsLinesLimit']) {
 			if($doReport)	$wampReport['gen2'] .= "\nToo more lines in ".$c_hostsFile." file";
 			$WarningsAtEnd = true;
@@ -517,17 +413,13 @@ else {
 }
 
 if($doReport) {
-	// hosts file
 	$wampReport['gen2'] .="\n------ ".$c_hostsFile." file contents ------\n------ Limited to the first 30 lines ------\n";
 	$wampReport['gen2'] .= implode(PHP_EOL, array_slice(file($c_hostsFile), 0, 30));
 	$wampReport['gen2'] .="\n----------------------------------------------";
-	// httpd-vhosts.conf file
 	$wampReport['gen2'] .="\n-- ".$c_apacheVhostConfFile." file contents --\n------ Limited to the first 40 lines ------\n";
 	$wampReport['gen2'] .= implode(PHP_EOL, array_slice(file($c_apacheVhostConfFile), 0, 40));
 	$wampReport['gen2'] .="\n----------------------------------------------";
 }
-
-// **** Warning if tmp/ folder does not exist or is not writable
 $checktmp = checkDir($c_installDir.'/tmp');
 if($checktmp !== 'OK') {
 	if($doReport)	$wampReport['gen2'] .= "\n-- ".$c_installDir."/tmp/ directory doesn't exists or is not writable";
@@ -536,7 +428,6 @@ if($checktmp !== 'OK') {
 	$WarningText .= 'Type: item; Caption: "Error '.$c_installDir.'/tmp"; Glyph: 19; Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($message).'";WorkingDir: "'.$c_installDir.'/scripts"; Flags: waituntilterminated
 ';
 }
-// **** Warning if syntax error in Apache config files
 $command = $c_apacheExe.'  -t';
 $output = proc_open_output($command);
 if(!empty($output)) {
@@ -548,8 +439,6 @@ if(!empty($output)) {
 	if($doReport)	$wampReport['gen2'] .= "\nWARNING:\n".$message;
 	}
 }
-
-// **** Warning if not Apache variables
 if($ApacheDefineError) {
 	$WarningsAtEnd = true;
 	$message = color('red',"\r\nUnable to find the Apache variables.\r\nThere may be a syntax error in Apache conf files.\r\nTo be checked by the tool integrated in Wampserver:\r\nRight-click -> Tools -> Check httpd.conf syntax.\r\n");
@@ -557,8 +446,6 @@ if($ApacheDefineError) {
 ';
 	if($doReport)	$wampReport['gen2'] .= "\nWARNING: Unable to find Apache variables\nThere may be a syntax error in Apache conf files.\n";
 }
-
-// **** Verify that default browser exists
 if(!file_exists($c_navigator)) {
 	$WarningsAtEnd = true;
 	$message = color('red',"\r\n".$c_navigator." is defined as default browser\r\nThis browser exe file does not exist\r\n");
@@ -566,8 +453,6 @@ if(!file_exists($c_navigator)) {
 	$WarningText .= 'Type: item; Caption: "Default browser does not exist"; Glyph: 19; Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($message).'";WorkingDir: "'.$c_installDir.'/scripts"; Flags: waituntilterminated
 ';
 }
-
-// **** Verify that default editor exists
 if(!file_exists($c_editor)) {
 	$WarningsAtEnd = true;
 	$message = color('red',"\r\n".$c_editor." is defined as default text editor\r\nThis editor exe file does not exist\r\n");
@@ -575,7 +460,6 @@ if(!file_exists($c_editor)) {
 	$WarningText .= 'Type: item; Caption: "Default text editor does not exist"; Glyph: 19; Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($message).'";WorkingDir: "'.$c_installDir.'/scripts"; Flags: waituntilterminated
 ';
 }
-// **** Verify that default logviewer exists
 if(!file_exists($c_logviewer)) {
 	$WarningsAtEnd = true;
 	$message = color('red',"\r\n".$c_logviewer." is defined as default log viewer\r\nThis log viewer exe file does not exist\r\n");
@@ -583,26 +467,15 @@ if(!file_exists($c_logviewer)) {
 	$WarningText .= 'Type: item; Caption: "Default log viewer does not exist"; Glyph: 19; Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($message).'";WorkingDir: "'.$c_installDir.'/scripts"; Flags: waituntilterminated
 ';
 }
-
-// **** Forum for help - linklang
 $forum = ($lang == 'french') ? '1' : '2';
 $LinkLang = ($lang == 'french') ? 'french' : 'english';
-
-// ************************************
-// **** Clean logs files if needed ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Start cleaning log files';
 	require_once 'start_time.php';
 	$errorTxt .= ' - Mem='.memory_get_peak_usage(true).' - Elapsed time='.(microtime(true)-$start_time);
 	error_log("script ".__FILE__.$errorTxt."\n",3,WAMPTRACE_FILE);
 }
-// $with_file = true uses file(), count() and array_slice() fast but uses a lot of memory.
-// $with_file = false uses shell_exec() and powershell slow but uses little memory.
-// Under the same log file size conditions (two log file with 210000 lines), we have :
-// true : memory usage=459276288 bytes - time=0.190 sec
-// false: memory usage=  2097152 bytes - time=9.671 sec
 $with_file = true;
-// **** Get filesize of log files
 $logFilesSize = $logFilesSizeClean = array();
 foreach($logFilesList as $value) {
 	$size = filesize($value);
@@ -613,8 +486,6 @@ unset($value);
 if($wampConf['AutoCleanLogs'] == 'on') {
 	if($wampConf['AutoCleanLogsMin'] < 1) $wampConf['AutoCleanLogsMin'] = 1;
 	foreach($logFilesSizeClean as $key => $value) {
-		// Before counting the number of lines in the file, which consumes resources,
-		// we look at the size and count the lines only if the size is > 100000 bytes
 		if($value > 100000) {
 			if($with_file) {
 				$fileArray = file($key);
@@ -656,14 +527,6 @@ if(WAMPTRACE_PROCESS) {
 	$errorTxt .= ' - Mem='.memory_get_peak_usage(true).' - Elapsed time='.(microtime(true)-$start_time);
 	error_log("script ".__FILE__.$errorTxt."\n",3,WAMPTRACE_FILE);
 }
-// **** END of clean log files ****
-// ********************************
-
-// *********************************************
-// **** Load Template file as file contents ****
-// Find all variables assigned to the PromptText fields
-// of the Aestan Tray menu's Prompt variables type and
-// replace the end of lines with #13 and commas with &#44;
 $tpl = file_get_contents($templateFile);
 if(preg_match_all('~^.*PromptText:[\t ]*"(\$.+)"[\t ]*;.*$~mi',$tpl,$matches) > 0) {
 	foreach($matches[1] as $value) {
@@ -685,12 +548,6 @@ if(preg_match('~^;WAMPMENULEFTSTART\s?\n(Type: separator; Caption: "(.+)"\s?\n){
 	}
 }
 unset($tpl,$matches,$value);
-// **** END of PromptText replacements ****
-// ****************************************
-
-// ******************************************************************
-// **** Create definitions of TextMenu (TextKeyx) for Text items ****
-// **** From $AesTextMenus in config.inc.php                     ****
 $TextSubmenuName = $TextSubmenuCaption = $Glyph = array();
 $TextMenus = '';
 foreach($AesTextMenus as $key => $value) {
@@ -703,8 +560,6 @@ foreach($AesTextMenus as $key => $value) {
 	if(strpos($value[1],'$') === 0){
 		$temp = substr($value[1],1);
 		$CaptionTemp = $$temp;
-		// Add space at the end of the variable to avoid duplicate Captions
-		//$$temp .= ' ';
 	}
 	else{
 		$CaptionTemp = $value[1];
@@ -763,11 +618,6 @@ foreach($AesTextMenus as $key => $value) {
 	}
 }
 unset($value);
-
-// *****************************************************
-// **** Create submenus definitions - Example below ****
-// **** [AddingVersions]
-//Type: item; Caption: "Add Apache, PHP, MySQL, MariaDB, etc. versions."; Action: TextKey
 $i = 0;
 $TextSubmenus = '';
 reset($Glyph);
@@ -782,30 +632,11 @@ $i++;
 next($Glyph);
 }
 unset($value);
-// **** END of TextMenu (TextKeyx) ****
-// ************************************
-
-// *********************************************
-// **** Create definitions of Custom Prompt ****
-// **** From $AesPromptCustom in config.inc.php
 $PromptCustom = AestanMenuColor($AesPromptCustom,'PromptKey');
-// Create definitions of TextMenuColor
-// From $AesTextMenuColor in config.inc.php
 $TextMenuColor = AestanMenuColor($AesTextMenuColor,'TextKeyColor');
-// Create definitions of LeftSeparatorMenuColor
-// From $AesSeparatorLeftMenuColor in config.inc.php
 $SeparatorLeftMenuColor = AestanMenuColor($AesSeparatorLeftMenuColor,'LeftSeparatorKeyColor');
-// Create definitions of RightSeparatorMenuColor
-// From $AesSeparatorRightMenuColor in config.inc.php
 $SeparatorRightMenuColor = AestanMenuColor($AesSeparatorRightMenuColor,'RightSeparatorKeyColor');
-// **** END of $AesPromptCustom ****
-// *********************************
-
-// *********************************************************************
-// **** Load Template file as require - $tpl is the template string ****
 require $templateFile;
-
-// **** Do TextMenus replacements
 $search = ';WAMPTEXTMENUSTART
 ';
 $tpl = str_replace($search,$search.$TextMenus,$tpl);
@@ -813,31 +644,20 @@ $search = ';WAMPITEMSTEXTSTART
 ';
 $tpl = str_replace($search,$search.$TextSubmenus,$tpl);
 unset($TextMenus,$TextSubmenus,$TextSubmenuName,$TextSubmenuCaption,$tempText);
-
-// **** Do CustomPrompt replacement
 $search = ';WAMPPROMPTCUSTOMSTART
 ';
 $tpl = str_replace($search,$search.$PromptCustom,$tpl);
-
-// **** Do TextMenuColor replacement
 $search = ';WAMPTEXTMENUCOLORSTART
 ';
 $tpl = str_replace($search,$search.$TextMenuColor,$tpl);
-
-// **** Do SeparatorLeftMenuColor replacement
 $search = ';WAMPLEFTSEPARATORSTART
 ';
 $tpl = str_replace($search,$search.$SeparatorLeftMenuColor,$tpl);
-
-// **** Do SeparatorRightMenuColor replacement
 $search = ';WAMPRIGHTSEPARATORSTART
 ';
 $tpl = str_replace($search,$search.$SeparatorRightMenuColor,$tpl);
 
 unset($PromptCustom,$PromptTemp,$TextMenuColor,$TextTemp,$SeparatorLeftMenuColor,$SeparatorRightMenuColor);
-
-// **************************************************
-// **** Create menu with the available languages ****
 if($handle = opendir($langDir)) {
 	while (false !== ($file = readdir($handle))) {
 		if($file != "." && $file != ".." && strpos($file, '_utf-8') === false && preg_match('|\.lang|',$file))	{
@@ -878,15 +698,7 @@ EOF;
 
 $tpl = str_replace(';WAMPLANGUAGESTART',$langText,$tpl);
 unset($langText);
-// **** END of menu with the available languages ****
-// **************************************************
-
-// **** Verify if Apache module fcgid_module is loaded
-// **** If yes, Apache variable PHPROOT must exists
 $fcgid_module_loaded = is_apache_var('${PHPROOT}');
-
-// ************************************
-// **** Creating PHP versions menu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating PHP versions menu';
 	require_once 'start_time.php';
@@ -908,7 +720,6 @@ Type: item; Caption: "php.ini PHP {$onePhpVersion} [FCGI - CLI]"; Glyph: 33; Act
 EOF;
 	}
   $phpGlyph = '';
-  //it checks if the PHP is compatible with the current version of apache
   unset($phpConf);
   include $c_phpVersionDir.'/php'.$onePhpVersion.'/'.$wampBinConfFiles;
 
@@ -917,8 +728,6 @@ EOF;
     $pos = strrpos($apacheVersionTemp,'.');
     $apacheVersionTemp = substr($apacheVersionTemp,0,$pos);
   }
-
-  // Is PHP incompatible with the current version of apache
   $incompatiblePhp = 0;
   if(empty($apacheVersionTemp)) {
     $incompatiblePhp = -1;
@@ -970,11 +779,6 @@ EOF;
 
 $tpl = str_replace($myPattern,$myreplace.$myreplacemenu,$tpl);
 unset($myreplace,$myreplacemenu,$myPattern);
-// **** END of PHP versions menu ****
-// **********************************
-
-// ******************************************
-// **** Creating the PHP extensions menu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating PHP extensions menu';
 	require_once 'start_time.php';
@@ -985,8 +789,6 @@ $PHP_Apache_Module = false;
 $PHP_List_Versions = $phpVersionList;
 $PHP_FCGI_Mode = false;
 $PHP_extensions = array();
-//To be able to manage php.ini and phpForApache.ini extensions
-//if a PHP version is used both as an Apache module and in FCGI mode.
 if(in_array($c_phpVersion,$phpFcgiVersionList)){
 	$PHP_List_Versions[] = $c_phpVersion;
 	natsort($PHP_List_Versions);
@@ -995,7 +797,6 @@ if(in_array($c_phpVersion,$phpFcgiVersionList)){
 foreach($PHP_List_Versions as $php_version_value) {
 	$PHP_submenu_txt = '';
 	if(!$PHP_Apache_Module && $php_version_value == $c_phpVersion) {
-		//PHP used as Apache module
 		$PHP_FCGI_Mode = false;
 		$PHP_Apache_Module = true;
 		$PHP_ini_File = $c_phpConfFile;
@@ -1006,7 +807,6 @@ foreach($PHP_List_Versions as $php_version_value) {
 	}
 	else {
 		if($fcgid_module_loaded && in_array($php_version_value,$phpFcgiVersionList)) {
-			//PHP used as FCGI
 			$PHP_FCGI_Mode = true;
 			$PHP_ini_File = $c_phpVersionDir.'/php'.$php_version_value.'/php.ini';
 			$PHP_ext_Dir = $c_phpVersionDir.'/php'.$php_version_value.'/ext/';
@@ -1024,13 +824,10 @@ foreach($PHP_List_Versions as $php_version_value) {
 	$myphpini = file_get_contents_dos($PHP_ini_File);
 	$myphpini = clean_file_contents($myphpini,array(2,1),false,false,true,$PHP_ini_File);
 	$NBextPHPlines = 0;
-	//recovering the extensions loading configuration
 	preg_match_all('/^extension\s*=\s*"?([a-z0-9_]+)"?.*\r?$/im',$myphpini,$matchesON);
 	preg_match_all('/^;extension\s*=\s*"?([a-z0-9_]+)"?.*\r$/im',$myphpini,$matchesOFF);
 
 	$ext = array_fill_keys($matchesON[1], '1') + array_fill_keys($matchesOFF[1], '0');
-
-	//recovering the zend_extensions loading configuration
 	preg_match_all('~^zend_extension\s*=\s*"([a-z0-9_:/\-\.]+)\.dll"?~im',$myphpini,$matchesON);
 	preg_match_all('~^;zend_extension\s*=\s*"([a-z0-9_:/\-\.]+)\.dll"?~im',$myphpini,$matchesOFF);
 	if(count($matchesON[0]) > 0 ) {
@@ -1067,17 +864,12 @@ foreach($PHP_List_Versions as $php_version_value) {
 	unset($value);
 	ksort($ext);
 	$Extensions_in_php_ini = array_combine(array_keys($ext),array_keys($ext));
-	// recovering the extensions list (.dll files) present in the directory ext
 	$extDirContents = glob($PHP_ext_Dir.'/*.dll');
 	array_walk($extDirContents,function(&$item){$item = str_replace('.dll','',basename($item));});
 	$dll_in_php_ext_dir = array_combine($extDirContents,$extDirContents);
-	//For PHP 7.2.0+ we have to add php_ at the beginning if not
 	array_walk($Extensions_in_php_ini,function(&$item,$key){if(strpos($item,'php_') === false)$item = 'php_'.$item;});
 	$Extensions_in_php_ini = array_combine($Extensions_in_php_ini,$Extensions_in_php_ini);
-	// both tables are "crossed"
-	//DLL extension file exists but no extension= line in phpForApache.ini
 	$noExtLine = array_diff_key($dll_in_php_ext_dir,$Extensions_in_php_ini);
-	//extension= line exists in phpForApache.ini but no dll file
 	$noDllFile = array_diff_key($Extensions_in_php_ini,$dll_in_php_ext_dir);
 	foreach($noExtLine as $value) {
 		if(array_key_exists($value,$zend_extensions_ver[$PHP_version])) {
@@ -1103,23 +895,18 @@ foreach($PHP_List_Versions as $php_version_value) {
 		}
 	}
 	unset($value);
-	// Check if it is a zend_extension
 	foreach($ext as $key => $value) {
 		if(array_key_exists($key,$zend_extensions_ver[$PHP_version])) {
 			$ext[$key] = -4; //dll must be loaded by zend_extension
-			// Check if there is content
 			if(empty($zend_extensions_ver[$PHP_version][$key]['content'])) {
 				$ext[$key] = -5; //Does not exists
 			}
-			// Check if dll file exists
 			elseif(!file_exists($zend_extensions_ver[$PHP_version][$key]['content'].".dll")) {
 				$ext[$key] = -6; //Dll not exists
 			}
 		}
 	}
 	unset($value);
-
-	//we construct the corresponding menu
 	$extText = <<< EOF
 ;WAMPPHP_EXTSTART
 [php_ext_{$PHP_version}]
@@ -1142,7 +929,6 @@ EOF;
 ';
 				$notLine = true;
 			}
-	   	//Warning icon to indicate problem with this extension: No extension line in php.ini
 	    $extTextNoline .= 'Type: item; Caption: "'.$extname.'"; Action: multi; Actions: php_ext_'.$PHP_version.$extname.' ; Glyph: 19;
 ';
 		}
@@ -1152,7 +938,6 @@ EOF;
 ';
 				$notDll = true;
 			}
-	   	//Square red icon to indicate problem with this extension: no dll file in ext directory
 	    $extTextNoDll .= 'Type: item; Caption: "'.$extname.'"; Action: multi; Actions: php_ext_'.$PHP_version.$extname.' ; Glyph: 11;
 ';
 		}
@@ -1162,7 +947,6 @@ EOF;
 ';
 				$notloadExt = true;
 			}
-	   	//blue || icon to indicate that the dll must not be loaded by extension = in php.ini
 	    $extTextInfo .= 'Type: item; Caption: "'.$extname.'"; Action: multi; Actions: php_ext_'.$PHP_version.$extname.' ; Glyph: 22;
 ';
 		}
@@ -1179,7 +963,6 @@ EOF;
 ';
 		}
 	  elseif($ext[$extname] == -5) {
-	  	 //Zend extension does not exixts - do nothing
 	  }
 	  elseif($ext[$extname] == -6) { //Zend extension dll file does not exixts - do nothing
 			if(!$notDll) {
@@ -1187,7 +970,6 @@ EOF;
 ';
 				$notDll = true;
 			}
-	   	//Square red icon to indicate problem with this extension: no dll file in ext directory
 	    $extTextNoDll .= 'Type: item; Caption: "'.$extname.'"; Action: multi; Actions: php_ext_'.$PHP_version.$extname.' ; Glyph: 11;
 ';
 	  }
@@ -1234,7 +1016,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php '.$msgNum.' '.base64
 ';
 		}
 	}
-	//error_log("NBext=".$NBextPHPlines);
 	$NBextPHPlines = ceil(($NBextPHPlines)/2);
 	if($PHP_extSubmenu) {
 		$AesBigMenu[] = array($w_phpExtensions.' '.$PHP_version_space,'$NBextPHPlines',1);
@@ -1251,11 +1032,6 @@ EOF;
 	}
 	unset($extText,$extTextNoline,$extTextNoDll,$extTextInfo,$PHP_submenu_txt);
 }//End foreach $phpVersionList
-// *** END of PHP extensions menu ****
-// ***********************************
-
-// ********************************************************
-// **** Creating the PHP parameters configuration menu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating PHP parameters configuration menu';
 	require_once 'start_time.php';
@@ -1265,9 +1041,6 @@ if(WAMPTRACE_PROCESS) {
 $PHP_Apache_Module = false;
 $PHP_List_Versions = $phpVersionList;
 $PHP_FCGI_Mode = false;
-//To be able to manage php.ini and phpForApache.ini extensions
-//if a PHP version is used both as an Apache module and in FCGI mode
-//   or if PHP version is also PHP for Wampserver scripts
 if(in_array($c_phpVersion,$phpFcgiVersionList) || $c_phpVersion == $c_phpCliVersion){
 	$PHP_List_Versions[] = $c_phpVersion;
 	natsort($PHP_List_Versions);
@@ -1278,7 +1051,6 @@ foreach($PHP_List_Versions as $php_version_value) {
 	$params_for_wampini = array();
 	$PHP_submenu_txt = '';
 	if(!$PHP_Apache_Module && $php_version_value == $c_phpVersion) {
-		//PHP used as Apache module
 		$PHP_FCGI_Mode = false;
 		$PHP_Apache_Module = true;
 		$PHP_ini_File = $c_phpConfFile;
@@ -1289,7 +1061,6 @@ foreach($PHP_List_Versions as $php_version_value) {
 	}
 	else {
 		if($fcgid_module_loaded && in_array($php_version_value,$phpFcgiVersionList)) {
-			//PHP used as FCGI
 			$PHP_FCGI_Mode = true;
 			$PHP_ini_File = $c_phpVersionDir.'/php'.$php_version_value.'/php.ini';
 			$PHP_ext_Dir = $c_phpVersionDir.'/php'.$php_version_value.'/ext/';
@@ -1362,7 +1133,6 @@ foreach($phpParams as $next_param_name => $next_param_text) {
 ksort($phpReportConf);
 
 if($doReport && $PHP_version == $c_phpVersion) {
-	//PHP configuration values
 	$wampReport['phpConf'] .= "\n-- PHP Configuration values\n\n";
 	$nbbyline = 0;
 	foreach($phpReportConf as $key => $value) {
@@ -1422,7 +1192,6 @@ foreach ($params_for_wampini as $paramname => $paramstatus) {
 ';
 			$information_only = true;
 		}
-		// Tests for 'error_reporting'
 		if(($paramname == 'error_reporting') && (version_compare($c_phpVersion, '5.4.0') >= 0)) {
 			$seeInfoGlyphException[$paramname] = true;
 			$report_err = errorLevel($myphpini[$paramname]);
@@ -1465,7 +1234,6 @@ foreach ($params_for_wampini as $paramname => $paramstatus) {
 		}
 	} //End for -2
 	elseif($params_for_wampini[$paramname] == -4) {
-		// Do nothing
 	}
 	elseif($params_for_wampini[$paramname] == -5) {
 		$NBparamPHPcomment++;
@@ -1473,12 +1241,8 @@ foreach ($params_for_wampini as $paramname => $paramstatus) {
 ';
 	}
 } // end foreach $params_for_wampini
-// $NBparamPHPlines used for BigMenus (Aestan Tray Menu columns menus)
-//error_log("NBparamPHP=".$NBparamPHP."\nNBparamPHPinfo=".$NBparamPHPinfo."\nNBparaPHPcomment=".$NBparamPHPcomment."\nNBparamPHPxdebug=".$NBparamPHPxdebug."\n");
 $NBparamPHPlines = $NBparamPHP + 1;
 unset($NBparamPHP,$NBparamPHPinfo,$NBparamPHPcomment,$NBparamPHPxdebug);
-
-//Check for supplemtary actions
 $MenuSup = $SubMenuSup = array();
 if(count($action_sup) > 0) {
 	$i = 0;
@@ -1531,7 +1295,6 @@ EOF;
 			}
 		} // End of date.timezone
 		else {
-			//If parameter doesn't support 'Apache Graceful Restart' but 'Apache service restart'
 			$Apache_Restart_Php_Conf = in_array($action,$phpParamsApacheRestart) ? 'Action: multi; Actions: apache_stop_start_refresh; Flags:appendsection' : 'Action: multi; Actions: apache_restart_refresh; Flags:appendsection';
 			$MenuSup[$i] .= '['.$PHP_version.$action.']
 Type: separator; Caption: "'.$phpParamsNotOnOff[$action]['title'].'"
@@ -1570,7 +1333,6 @@ EOF;
 	$i++;
 	}
 }
-// Is there commented php.ini directives ?
 $phpConfTextCommentSub = $phpConfTextCommentSubMenu = "";
 if(!empty($phpConfTextComment)) {
 	$phpConfTextCommentSub .= 'Type: submenu; Caption: "'.$w_settings['iniCommented'].'"; Submenu: '.$PHP_version.'phpinicommented; Glyph: 9
@@ -1589,7 +1351,6 @@ foreach ($params_for_wampini as $paramname=>$paramstatus) {
 			$SwitchAction = ($params_for_wampini[$paramname] == '1' ? '0' : '1');
 		else
 			$SwitchAction = ($params_for_wampini[$paramname] == 'on' ? 'off' : 'on');
-		//If parameter doesn't support 'Apache Graceful Restart' but 'Apache service restart'
 		$Apache_Restart_Php_Conf = in_array($paramname,$phpParamsApacheRestart) ? 'Action: multi; Actions: apache_stop_start_refresh; Flags:appendsection' : 'Action: multi; Actions: apache_restart_refresh; Flags:appendsection';
   	$phpConfText .= <<< EOF
 [{$PHP_version}{$phpParams[$paramname]}]
@@ -1627,11 +1388,6 @@ if(!empty($PHP_submenu_txt)) {
 unset($phpConfText,$phpConfTextCommentSubMenu,$PHP_submenu_txt,$params_for_wampini);
 $phpParams = $save_phpParams;
 }//End foreach
-// **** END of PHP parameters configuration menu ****
-// **************************************************
-
-// **************************************************
-// *** Create PhpMyAdmin and Adminer menu item's ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating PhpMyAdmin and Adminer menu';
 	require_once 'start_time.php';
@@ -1656,7 +1412,6 @@ EOF;
 Type: item; Caption: "{$Alias_Contents[$value]['name']}  {$Alias_Contents[$value]['version']}{$Alias_Contents[$value]['fcgiaff']}"; Action: run; FileName: "{$c_navigator}"; Parameters: "{$localhostHTTP}://localhost{$UrlPort}/{$value}/"; Glyph: {$glyph}
 
 EOF;
-		//--- For PhpMyAdmin > 5.2.1 the PHP sodium extension must be activated.
 		if(stripos($value,'adminer') === false && version_compare($Alias_Contents[$value]['version'],'5.2.1','>')) {
 			$PHP_Version_used = $c_phpVersion;
 			$PMA_ver = $PMA_version;
@@ -1709,7 +1464,6 @@ Action: multi; Actions: refresh_readconfig; Flags:appendsection
 
 EOF;
 		}
-		// Verify if there is php_admin_value's into phpmyadmin alias
 		if(!empty($Alias_Contents[$value]['php_admin_value'])) {
 			$Alias_Value = $value;
 			$ItemMenuPMA .= <<< EOF
@@ -1720,11 +1474,7 @@ EOF;
 [phpmyadminvalue{$Alias_Contents[$value]['version']}]
 
 EOF;
-
-			// ***********************************************************************
-			// *** Creating PhpMyAdmin and adminer alias parameters configuration menu
 			$PhpMyAdminVersion = $Alias_Contents[$value]['version'];
-			//Put alias PhpMyAdmin specific parameters into $PMA_Alias_Params
 			$PMA_Alias_Params = array();
 			foreach($Alias_Contents[$value]['php_admin_value'] as $kad => $vad) {
 				$PMA_Alias_Params[$vad['param']] = $vad['value'];
@@ -1814,7 +1564,6 @@ EOF;
 ';
 				}
 			}
-			//Check for supplemtary actions
 			$MenuSup = $SubMenuSup = array();
 			if(count($action_sup) > 0) {
 				$i = 0;
@@ -1850,7 +1599,6 @@ Type: separator; Caption: "'.$PMA_ParamsNotOnOff[$action]['title'].'"
 Action: run; FileName: "{$c_phpExe}";Parameters: "changeMiscParam.php phpmyadmin aliasvalue {$Alias_Path} {$quoted} {$action} {$param_value}{$param_third}";WorkingDir: "{$c_installDir}/scripts"; Flags: waituntilterminated; ShowCmd: hidden
 
 EOF;
-							//It must be another item that must have the same value
 							if($action_sup_code[$i] = 'same') {
 								$new_action = $params_same[$action];
 							$SubMenuSup[$i] .= <<< EOF
@@ -1895,8 +1643,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 6 '.base64_encode($p
 				for($i = 0 ; $i < count($MenuSup); $i++)
 					$PMA_ConfText .= $MenuSup[$i].$SubMenuSup[$i];
 			}
-			// *** End of PhpMyAdmin and adminer alias parameters menu ***
-			// ***********************************************************
 
 			$SubMenuPMA .= $PMA_ConfText;
 
@@ -1913,7 +1659,6 @@ EOF;
 Type: submenu; Caption: "{$w_DataBasesManagement}"; Submenu: MultiplephpMyAdmin; Glyph: 45
 
 EOF;
-	// Do PhpMyAdmin replacements
 	$search = ';WAMPPHPMYADMIN
 ';
 	$tpl = str_replace($search,$search.$subPhpMyAdmin,$tpl);
@@ -1923,8 +1668,6 @@ EOF;
 	$search = ';WAMPMULTIPLEPHPMYADMINEND
 ';
 	$tpl = str_replace($search,$search.$SubMenuPMA,$tpl);
-
-	// Add warnings PhpMyAdmin if needed
 	if($WarningsPMA) {
 		$WarningTextAll = '
 Type: separator
@@ -1933,11 +1676,6 @@ Type: separator
 	}
 	unset($ItemMenuPMA,$SubMenuPMA,$SubPhpMyAdmin);
 }
-// **** END of PhpMyAdmin and adminer menu ****
-// ********************************************
-
-// **************************************************************************
-// **** Modify phpmyadmin and adminer alias if php_admin_value and FCGID mode
 foreach($Alias_Contents['alias'] as $Alias_Value) {
 	if($Alias_Contents[$Alias_Value]['fcgid'] && array_key_exists('php_admin_value',$Alias_Contents[$Alias_Value])){
 		$Alias_Path = $Alias_Contents[$Alias_Value]['aliaspath'];
@@ -1949,7 +1687,6 @@ foreach($Alias_Contents['alias'] as $Alias_Value) {
 		$count = $counts = 0;
 		$write_file = false;
 		if(stripos($Alias_PMA_Contents, '${FCGIPHPOPTIONS}') !== false) {
-			//Have the php_admin_value options changed?
 			if(stripos($Alias_PMA_Contents,'"'.$phpfcgi_options.'"') === false) {
 				$Alias_PMA_Contents = preg_replace('~^([ \t]*)Define FCGIPHPOPTIONS.+\r?$~mi',"$1Define FCGIPHPOPTIONS \"".$phpfcgi_options."\"",$Alias_PMA_Contents,-1,$count);
 				if($count == 1) $write_file = true;
@@ -1968,11 +1705,6 @@ foreach($Alias_Contents['alias'] as $Alias_Value) {
 		}
 	}
 }
-// **** END of phpmyadmin and adminer php_admin_value and FCGID mode
-// *****************************************************************
-
-// ***************************************
-// **** Creating Apache versions menu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating Apache versions menu';
 	require_once 'start_time.php';
@@ -1989,7 +1721,6 @@ $myreplacemenu = '';
 
 foreach ($apacheVersionList as $oneApacheVersion) {
   $apacheGlyph = '';
-	//we check if Apache is compatible with the current version of PHP
   unset($phpConf);
   include $c_phpVersionDir.'/php'.$wampConf['phpVersion'].'/'.$wampBinConfFiles;
   $apacheVersionTemp = $oneApacheVersion;
@@ -1998,8 +1729,6 @@ foreach ($apacheVersionList as $oneApacheVersion) {
     $pos = strrpos($apacheVersionTemp,'.');
     $apacheVersionTemp = substr($apacheVersionTemp,0,$pos);
   }
-
-  // Apache incompatible with the current version of PHP
   $incompatibleApache = 0;
   if(empty($apacheVersionTemp))
   {
@@ -2020,8 +1749,6 @@ foreach ($apacheVersionList as $oneApacheVersion) {
     $apacheGlyph = '; Glyph: 23';
 		$apacheErrorMsg = $c_phpVersionDir.'/php'.$wampConf['phpVersion'].'/'.$phpConf['apache'][$apacheVersionTemp]['LoadModuleFile']." does not exists.".PHP_EOL.PHP_EOL."First switch on a version of PHP that contains ".$phpConf['apache'][$apacheVersionTemp]['LoadModuleFile']." file before you change to Apache version ".$oneApacheVersion.".";
   }
-
-  //File wamp/bin/apache/apachex.y.z/wampserver.conf
   $ApacheConfFile = $c_apacheVersionDir.'/apache'.$oneApacheVersion.'/'.$wampBinConfFiles;
   unset($apacheConf);
   include $ApacheConfFile;
@@ -2065,11 +1792,6 @@ $myreplace .= 'Type: submenu; Caption: " "; Submenu: AddingVersions; Glyph: 1
 
 ';
 $tpl = str_replace($myPattern,$myreplace.$myreplacemenu,$tpl);
-// **** END of Apache versions menu ****
-// *************************************
-
-// *****************************************
-// **** Creating of Apache modules menu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating Apache modules menu';
 	require_once 'start_time.php';
@@ -2077,45 +1799,33 @@ if(WAMPTRACE_PROCESS) {
 	error_log("script ".__FILE__.$errorTxt."\n",3,WAMPTRACE_FILE);
 }
 $myhttpdContents = @file_get_contents($c_apacheConfFile);
-// Recovering the extensions loading configuration
 preg_match_all('~^LoadModule\s+([0-9a-z_]+)\s+(?:modules/|)(.+)\r?$~im',$myhttpdContents,$matchesON);
 preg_match_all('~^\#LoadModule\s+([0-9a-z_]+)\s+(?:modules/|)(.+)\\r?$~im',$myhttpdContents,$matchesOFF);
-// Key = module_name - Value = Module loaded = 1, not loaded = 0
 $mod = array_fill_keys($matchesON[1], '1') + array_fill_keys($matchesOFF[1], '0');
-// Key = module_name - Value = file name in modules/ folder
 $mod_load = array_combine($matchesON[1],$matchesON[2]) + array_combine($matchesOFF[1],$matchesOFF[2]);
 array_walk($mod_load,function(&$item){$item = trim($item);});
 ksort($mod);
 ksort($mod_load);
-
-// Retrieve list of modules in the /modules/ folder
 $modDirContents = glob($c_apacheVersionDir.'/apache'.$wampConf['apacheVersion'].'/modules/*.so');
 array_walk($modDirContents,function(&$item){$item = basename($item);});
 $mod_in_modules_dir = array_combine($modDirContents,$modDirContents);
-
-// xxxxx.so file exists but no LoadModule line in httpd.conf
 $noModLine = array_diff($mod_in_modules_dir,$mod_load);
 foreach($noModLine as $value) {
 	$value = str_replace(array("mod_",".so"),array("","_module"),$value);
 	$mod[$value] = -2 ; //Module file exists but no loadModule line in httpd.conf
 }
 unset($value);
-// LoadModule line exists in httpd.conf but no xxxxx.so file in modules/ folder
 $noModFile = array_diff($mod_load,$mod_in_modules_dir);
 foreach($noModFile as $key => $value) {
 	$mod[$key] = -1 ; // loadModule line in httpd.conf but no file .so in modules dir
 }
 unset($value);
-
-// Module should not be unload if $virtualHost['index'] is true
 foreach($apacheModuleNotUnload as $key => $value) {
 	if($virtualHost[$value['index']] === true) {
 		$mod[$key] = -3; //Apache modules which should not be disabled
 	}
 }
 unset($value);
-
-// LoadModule should not be disabled
 foreach($apacheModNotDisable as $value) {
 	if(array_key_exists($value,$mod))
 		$mod[$value] = -3 ; //Apache modules which should not be disabled
@@ -2171,8 +1881,6 @@ $httpdTextInfo = str_replace('# #13 ','',$httpdTextInfo);
 $httpdTextInfo .= '"; Action: none
 Type: item; Caption: "'.$w_mod_not_disable.'"; Action: none; Glyph: 22
 ';
-
-// Apache Compiled in modules
 $ApacheCompiledModules = '';
 $command = $c_apacheExe." -l";
 $output = proc_open_output($command);
@@ -2226,11 +1934,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php '.$msgNum.' '.base64
 $NBmodApacheLines = ceil(($NBmodApacheLines+8)/4);
 
 $tpl = str_replace(';WAMPAPACHE_MODSTART',$httpdText,$tpl);
-// **** END of Apache modules menu ****
-// ************************************
-
-// ****************************************************
-// **** Creating Apache configuration compare menu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating Apache configuration menu';
 	require_once 'start_time.php';
@@ -2264,13 +1967,6 @@ EOF;
 	$tpl = str_replace(';WAMPAPACHEITEMCOMPARE',$httpdTextSubMenu,$tpl);
 	$tpl = str_replace(';WAMPAPACHEITEMMENUS',$httpdTextMenu,$tpl);
 }
-// **** END of Apache configuration compare menu ****
-// **************************************************
-
-// ****************************************************
-// **** Creating Apache restore orignal files menu ****
-//The base directory is Apache conf directory ie $c_apacheConfDir
-//File were saved into:
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating Apache restore original files menu';
 	require_once 'start_time.php';
@@ -2278,7 +1974,6 @@ if(WAMPTRACE_PROCESS) {
 	error_log("script ".__FILE__.$errorTxt."\n",3,WAMPTRACE_FILE);
 }
 $c_apacheOriginalDir = $c_apacheConfDir.'/original/wampserver/';
-//To be restored into $c_apacheConfDir or $c_apacheConfDir/extra
 if($wampConf['apacheRestoreFiles'] == 'on' && is_dir($c_apacheOriginalDir)) {
 	$httpdTextMenu = '';
 	$httpdText = ';WAMPAPACHERESTORE
@@ -2314,11 +2009,6 @@ EOF;
 		$tpl = str_replace(';WAMPAPACHEMENUSRESTORE',$httpdTextMenu,$tpl);
 	}
 }
-// **** END of Apache restore original files menu ****
-// ***************************************************
-
-// ********************************************
-// **** Creating Apache configuration menu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating Apache compare configurations menu';
 	require_once 'start_time.php';
@@ -2334,9 +2024,7 @@ $ApacheDefaultTitle = false;
 $i=-1;
 foreach($apache_Params as $key => $value ) {
 	$param_commented = $param_exists = false;
-	//Does the key contain at least one space?
 	if(preg_match('~^[ \t]*(#?)[ \t]*('.$key.')[ \t]+('.$value['mask'].')\r?$~mi',$myhttpdContents,$matches) > 0) {
-		//error_log("key=".$key."\nmatches=".print_r($matches,true));
 		$param_exists = true;
 		$httpdParams[$key] = $matches[3];
 		if($matches[1] == '#') {
@@ -2373,7 +2061,6 @@ foreach($apache_Params as $key => $value ) {
 	}
 }
 unset($key,$value);
-//error_log("httpdConfParams=".print_r($httpdConfParams,true));
 
 foreach($httpdConfParams as $key => $value) {
 	$treated = false;
@@ -2381,7 +2068,6 @@ foreach($httpdConfParams as $key => $value) {
 		if(stripos($value1,'^') !== false ){
 			$temp = explode('^',$value1);
 			$value1 = $temp[0];
-			// $temp[0] value - $temp[1] = parameter on which we depend - $temp[3] = max value
 			if($temp[0] > $temp[2]) {
 				$message = " The value: '".$temp[0]."' for Apache httpd.conf directive '".$key1."' is limited\n\n";
 				$message .= " by the value of parameter '".$temp[1]."' witch is '".$temp[2]."'\n\n";
@@ -2458,11 +2144,6 @@ EOF;
 
 $tpl = str_replace(';WAMPAPACHEPARAMSSTART',$httpdText.$ApacheDefaultOnlyTxt.$httpdTextSub.$httpdTextSubMenu.$httpdTextSubMenuTxt,$tpl);
 unset($key,$key1,$value,$value1,$httpdConfParams,$httpdText,$httpdTextSub,$httpdTextSubMenu,$httpdTextSubMenuTxt,$ApacheDefaultOnlyTxt,$myhttpdContents);
-// **** END of Apache configuration menu ****
-// ******************************************
-
-// ************************************
-// **** Creating alias Apache menu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating alias Apache menu';
 	require_once 'start_time.php';
@@ -2509,11 +2190,6 @@ EOF;
 }
 
 $tpl = str_replace($mypattern,$myreplace.$myreplacemenu.$mydeletemenu,$tpl);
-// **** END of alias Apache menu ****
-// **********************************
-
-// ***********************************************
-// **** Creating DBMS (MySQL - MariaDB) menus ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - DBMS (MySQL - MariaDB) menus';
 	require_once 'start_time.php';
@@ -2536,13 +2212,11 @@ else { // At least one DBMS MySQL and/or MariaDB
 	$DBMSdefault = '';
 	$NoDefaultDBMS = true;
 	$DBMSList = array();
-	// Arrange MariaDB and MySQL tools if both
 	$myPattern = ';WAMPMYSQLMARIADBTOOLSORDER';
 	$myreplace = $myPattern."
 ;WAMPMYSQLSUPPORTTOOLS
 ;WAMPMARIADBSUPPORTTOOLS
 ";
-	// MySQL versions and settings
 	if($wampConf['SupportMySQL'] == 'on') {
 		$glyph = '28';
 		$DBMSList[] = 'refreshMySQL.php';
@@ -2556,7 +2230,6 @@ Type: submenu; Caption: "MySQL		{$c_mysqlVersion}"; SubMenu: mysqlMenu; Glyph: {
 
 EOF;
 	}
-	//MariaDB versions and settings
 	if($wampConf['SupportMariaDB'] == 'on') {
 		$glyph = '28';
 		$DBMSList[] = 'refreshMariadb.php';
@@ -2601,7 +2274,6 @@ EOF;
 			$WarningText .= 'Type: item; Caption: "No Default DBMS"; Glyph: 19; Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($message).'";WorkingDir: "'.$c_installDir.'/scripts"; Flags: waituntilterminated
 ';
 		}
-		// Check that MySQL and MariaDB ports are not the same
 		if($nbDBMS > 1) {
 			if($c_mysqlPortUsed == $c_mariadbPortUsed) {
 				$WarningsAtEnd = true;
@@ -2618,12 +2290,6 @@ EOF;
 	unset($value);
 }
 $tpl = str_replace($myDBMSPattern,$myDBMSreplace,$tpl);
-
-// **** END of DBMS (MySQL - MariaDB) menus ****
-// *********************************************
-
-// **********************************
-// **** Creating local test menu ****
 if($wampConf['LocalTest'] == 'on') {
 	$LOCALPattern = ';WAMPLOCALTEST';
 	$LOCALreplace = $LOCALPattern."
@@ -2635,11 +2301,6 @@ Type: item; Caption: "For local test only"; Action: run; FileName: "{$c_phpExe}"
 EOF;
 	$tpl = str_replace($LOCALPattern,$LOCALreplace,$tpl);
 }
-// **** END of local test menu ****
-// ********************************
-
-// *************************************************************************
-// **** Creating tools menu to invert default DBMS if MySQL and MariaDB ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating tools menu to invert default DBMS';
 	require_once 'start_time.php';
@@ -2678,11 +2339,6 @@ EOF;
 		$tpl = str_replace($myPattern,$myreplace,$tpl);
 	}
 }
-// **** END of tools menu to invert default DBMS if MySQL and MariaDB ****
-// ***********************************************************************
-
-// ********************************
-// **** Creating Alias submenu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating Alias submenu';
 	require_once 'start_time.php';
@@ -2690,15 +2346,12 @@ if(WAMPTRACE_PROCESS) {
 	error_log("script ".__FILE__.$errorTxt."\n",3,WAMPTRACE_FILE);
 }
 if($wampConf['AliasSubmenu'] == "on") {
-	//Add item for submenu
 	$myPattern = ';WAMPALIASSUBMENU';
 	$myreplace = $myPattern."
 ";
 	$myreplacesubmenu = 'Type: submenu; Caption: "'.$w_aliasSubMenu.'"; Submenu: myAliasMenu; Glyph: 3
 ';
 	$tpl = str_replace($myPattern,$myreplace.$myreplacesubmenu,$tpl);
-
-	//Add submenu
 	$myPattern = ';WAMPMENULEFTEND';
 	$myreplace = $myPattern."
 ";
@@ -2710,8 +2363,6 @@ if($wampConf['AliasSubmenu'] == "on") {
 
 ';
 	$tpl = str_replace($myPattern,$myreplace.$myreplacesubmenu,$tpl);
-
-	//Construct submenu
 	$myPattern = ';WAMPALIASMENUSTART';
 	$myreplace = $myPattern."
 Type: separator; Caption: \"".$w_aliasSubMenu."\"
@@ -2728,12 +2379,6 @@ Type: separator; Caption: \"".$w_aliasSubMenu."\"
 		$tpl = str_replace($myPattern,$myreplace.$myreplacesubmenuAlias,$tpl);
 	}
 }
-// **** END of Alias submenu ****
-// ******************************
-
-// ****************************************
-// **** Creating Virtual Hosts submenu ****
-//Add item for submenu
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating VirtualHosts submenu';
 	require_once 'start_time.php';
@@ -2746,7 +2391,6 @@ $myreplace = $myPattern."
 $myreplacesubmenu = 'Type: submenu; Caption: "'.$w_virtualHostsSubMenu.'"; Submenu: myVhostsMenu; Glyph: 5
 ';
 $tpl = str_replace($myPattern,$myreplace.$myreplacesubmenu,$tpl);
-//Add submenu
 $myPattern = ';WAMPMENULEFTEND';
 $myreplace = $myPattern."
 ";
@@ -2763,10 +2407,6 @@ $myreplace = $myPattern."
 Type: separator; Caption: \"".$w_virtualHostsSubMenu."\"
 ";
 $myreplacesubmenuVhosts = $myreplacesubmenuVhostsError = '';
-
-//$virtualHost = check_virtualhost();
-
-//is Include conf/extra/httpd-vhosts.conf uncommented?
 if($virtualHost['include_vhosts'] === false) {
 	$myreplacesubmenuVhosts .= 'Type: item; Caption: "Virtual Host ERROR"; Action: multi; Actions: server_not_included; Glyph: 21
 ';
@@ -2793,21 +2433,18 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 15 '.base64_encode($
 			$nb_End_Directory = $virtualHost['nb_End_Directory'];
 
 			$port_number = true;
-			//Check number of <Directory equals to number of </Directory
 			if($nb_End_Directory != $nb_Directory) {
 				$value = "ServerName_Directory";
 				$server_name[$value] = -2;
 				$myreplacesubmenuVhosts .= 'Type: item; Caption: "'.$value.'"; Action: multi; Actions: server_'.$value.'; Glyph: 23
 ';
 			}
-			//Check number of DocumentRoot equals to number of ServerName
 			if($nb_Document != $nb_Server) {
 				$value = "ServerName_Document";
 				$server_name[$value] = -7;
 				$myreplacesubmenuVhosts .= 'Type: item; Caption: "'.$value.'"; Action: multi; Actions: server_'.$value.'; Glyph: 23
 ';
 			}
-			//Check validity of DocumentRoot
 			$documentPathError = '';
 			if($virtualHost['document'] === false) {
 				foreach($virtualHost['documentPath'] as $value) {
@@ -2828,7 +2465,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 15 '.base64_encode($
 ';
 			}
 			unset($value);
-			//Check validity of Directory Path
 			$directoryPathError = '';
 			if($virtualHost['directory'] === false) {
 				foreach($virtualHost['directoryPath'] as $value) {
@@ -2843,7 +2479,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 15 '.base64_encode($
 ';
 			}
 			unset($value);
-			//Check Directory Path ended with a slash /
 			$directoryPathErrorSlash = '';
 			if($virtualHost['directorySlash'] === false) {
 				foreach($virtualHost['directoryPath'] as $value) {
@@ -2858,8 +2493,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 15 '.base64_encode($
 ';
 			}
 			unset($value);
-
-			//Check number of <VirtualHost equals or > to number of ServerName
 			if($nb_Server != $nb_Virtual && $wampConf['NotCheckDuplicate'] == 'off') {
 				$value = "ServerName_Virtual";
 				$server_name[$value] = -3;
@@ -2867,8 +2500,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 15 '.base64_encode($
 				$myreplacesubmenuVhosts .= 'Type: item; Caption: "'.$value.'"; Action: multi; Actions: server_'.$value.'; Glyph: 23
 ';
 			}
-
-			//Check number of port definition of <VirtualHost *:xx> equals to number of ServerName
 			if($virtualHost['nb_Virtual_Port'] != $nb_Virtual) {
 				$value = "VirtualHost_Port";
 				$server_name[$value] = -4;
@@ -2876,7 +2507,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 15 '.base64_encode($
 				$myreplacesubmenuVhosts .= 'Type: item; Caption: "'.$value.'"; Action: multi; Actions: server_'.$value.'; Glyph: 23
 ';
 			}
-			//Check validity of port number
 			if($port_number && $virtualHost['port_number'] === false) {
 				$value = "VirtualHost_PortValue";
 				$server_name[$value] = -5;
@@ -2884,7 +2514,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 15 '.base64_encode($
 				$myreplacesubmenuVhosts .= 'Type: item; Caption: "'.$value.'"; Action: multi; Actions: server_'.$value.'; Glyph: 23
 ';
 			}
-			//Check if duplicate ServerName
 			if($virtualHost['nb_duplicate'] > 0) {
 				$DuplicateNames = '';
 				$value = "Duplicate_ServerName";
@@ -2988,7 +2617,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 15 '.base64_encode($
 			$myreplacesubmenuVhosts .= 'Type: separator
 Type: item; Caption: "'.$w_add_VirtualHost.'"; Action: run; FileName: "'.$c_navigator.'"; Parameters: "'.$localhostHTTP.'://localhost'.$UrlPort.'/add_vhost.php"; Glyph: 33
 ';
-			//Submenu to create https VirtualHost
 			$myreplacesubmenuHttps = $myreplaceHttps = '';
 			if($wampConf['httpsReady'] == 'on' && count($server_no_https) > 0) {
 				$myreplaceHttps .= '
@@ -3072,7 +2700,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($
 		}
 	}
 }
-//Virtualhost 'localhost' does not exist ?
 if(array_key_exists('localhost',$server_name) !== true) {
 	$message = "In the httpd-vhosts.conf file:\r\n\r\nThe first VirtualHost 'localhost' has been deleted.\r\n\r\n";
 	$WarningsAtEnd = true;
@@ -3081,7 +2708,6 @@ if(array_key_exists('localhost',$server_name) !== true) {
 ';
 }
 else {
-	//Does the VirtualHost 'localhost' use Require local?
 	if($wampConf['CheckHttpdRequire'] == 'on') {
 		if(!empty($virtualHost['ServerNameRequire']['localhost'])) {
 			if(strpos($virtualHost['ServerNameRequire']['localhost'],'local') === false) {
@@ -3094,11 +2720,6 @@ else {
 	}
 }
 $tpl = str_replace($myPattern,$myreplace.$myreplacesubmenuVhosts.$myreplaceHttps.$myreplacesubmenuHttps.$myreplacesubmenuVhostsError,$tpl);
-// **** END of Virtual Hosts submenu ****
-// **************************************
-
-// ***********************************************
-// **** Creating Wampmanager settings submenu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating Wampmanager settings submenu';
 	require_once 'start_time.php';
@@ -3185,7 +2806,6 @@ $wampConfInto = 'wampConfText';
 $$wampConfInto = ";WAMPSETTINGSSTART
 Type: Separator; Caption: \"".$w_wampSettings."\"
 ";
-//error_log("param_for=".print_r($params_for_wampconf,true));
 foreach ($params_for_wampconf as $paramname => $paramstatus) {
   if($paramstatus == -5) {
 		if(!$information_only) {
@@ -3251,7 +2871,6 @@ EOF;
 	}
 	if($wampConfParams['endsub'][$paramname]) $wampConfInto = 'wampConfText';
 }
-//Check for supplemtary actions
 $MenuSup = $SubMenuSup = array();
 if(count($action_sup) > 0) {
 	$i = 0;
@@ -3298,11 +2917,6 @@ if(count($MenuSup) > 0) {
 
 $tpl = str_replace(';WAMPSETTINGSSTART',$wampConfText.$wampConfSub.$wampConfActions,$tpl);
 unset($wampConfText,$wampConfSub,$wampConfActions);
-// **** END of Wampmanager settings submenu ****
-// *********************************************
-
-// ******************************************************
-// **** Creating change Wampserver browser tool menu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating change Wampserver browser tool menu';
 	require_once 'start_time.php';
@@ -3342,11 +2956,6 @@ EOF;
 		}
 	}
 }
-// **** END of change Wampserver browser tool menu ****
-// ****************************************************
-
-// ************************************************
-// **** Creating delete old versions tool menu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating delete old versions tool menu';
 	require_once 'start_time.php';
@@ -3357,7 +2966,6 @@ $delOldVer = ";WAMPDELETEOLDVERSIONSSTART
 Type: separator; Caption: \"".$w_deleteVer."\"
 ";
 $delOldVerMenu = $delOldVerSub = '';
-//All versions but USED or CLI OR FCGI
 $Versions = ListAllVersions();
 $VersionsNotUsed = array_filter_recursive($Versions,function($value){return (strpos($value,'CLI') === false && strpos($value,'USED') === false && strpos($value,'FCGI') === false);});
 $counts = 0;
@@ -3381,11 +2989,6 @@ EOF;
 }
 if($counts > 0) $tpl = str_replace(';WAMPDELETEOLDVERSIONSSTART',$delOldVer.$delOldVerMenu.$delOldVerSub,$tpl);
 unset($delOldVer,$delOldVerMenu,$delOldVerSub);
-// **** END of delete old versions tool menu ****
-// **********************************************
-
-// ******************************************************
-// **** Creating delete Listen Port Apache tool menu ****
 if(WAMPTRACE_PROCESS) {
 	$errorTxt = ' - Creating delete Listen Port Apache menu';
 	require_once 'start_time.php';
@@ -3413,12 +3016,6 @@ EOF;
 $tpl = str_replace(';WAMPDELETELISTENPORTSTART',$delListenPort.$delListenPortMenu.$delListenPortSub,$tpl);
 unset($delListenPort,$delListenPortMenu,$delListenPortSub);
 }
-// **** END of delete Listen Port Apache tool menu ****
-// ****************************************************
-
-// ******************************************************
-// **** Create definitions of BigMenu (Column menus) ****
-// **** From $AesBigMenu in config.inc.php           ****
 $BigKeys = "[BigMenu]\r\n";
 foreach($AesBigMenu as $key => $value) {
 	$BigKeys .= 'BigKey'.$key.'=';
@@ -3443,11 +3040,6 @@ $search = ';WAMPBIGMENUSTART
 ';
 $tpl = str_replace($search,$search.$BigKeys,$tpl);
 unset($BigKeys,$value);
-// **** END of BigMenu ****
-// ************************
-
-// ***************************************************************
-// **** Create wampserver configuration report file if needed ****
 if($doReport) {
 	foreach($wampReport as $value) $wampReportTxt .= $value;
 	unset($value);
@@ -3456,7 +3048,6 @@ if($doReport) {
 	$wampReportTxt .= @file_get_contents($c_installDir."/wampConfReportTemp.txt");
 	@unlink($c_installDir."/wampConfReportTemp.txt");
 	$wampReportTxt .= "\n--------------------------------------------------\n";
-	//Error files to add (last 20 lines)
 	$wampErrorReportTxt = '';
 	$error_files = array(
 		'Apache error log' => 'apache_error.log',
@@ -3478,16 +3069,11 @@ if($doReport) {
 	$wampReportTxt .= $wampErrorReportTxt;
 	write_file($c_installDir."/wampConfReport.txt",color('clean',clean_file_contents($wampReportTxt,array(1,0)),true));
 }
-
-//Check if wampserver report configuration file exists
 if(file_exists($c_installDir."/wampConfReport.txt")) {
-	//Get timestamp of the report file
 	$fp = fopen($c_installDir."/wampConfReport.txt","rb");
 	$timestamp = (int)fgets($fp);
 	fclose($fp);
-	//$timestamp -= (86400*10);
 	if((time() - $timestamp)/86400 > 10) {
-		//Report file more than ten days old.
 		unlink($c_installDir."/wampConfReport.txt");
 	}
 	else {
@@ -3498,11 +3084,6 @@ EOF;
 	$tpl = str_replace(';WAMPREPORTCONFFILE',$confFileExists,$tpl);
 	}
 }
-// **** END of Wampserver report ****
-// **********************************
-
-// *********************************
-// **** Clean tmp dir if needed ****
 if($wampConf['AutoCleanTmp'] == 'on') {
 	$fileTmp = glob($c_installDir.'/tmp/*');
 	if(count($fileTmp) > $wampConf['AutoCleanTmpMax']) {
@@ -3516,19 +3097,12 @@ if($wampConf['AutoCleanTmp'] == 'on') {
 	}
 	unset($fileTmp);
 }
-
-
-// **************************************************************
-// **** Add warnings at the end of Left-Click menu if needed ****
 if($WarningsAtEnd) {
 	$WarningTextAll = '
 Type: separator; Caption: ">>>>>    '.$w_warning.'    <<<<<"
 ';
 	$tpl = str_replace(';WAMPMENULEFTEND',$WarningMenu.$WarningTextAll.$WarningText,$tpl);
 }
-
-// *************************************************************************
-// **** The creation of wampmanager.ini file is complete, save the file ****
 write_file($wampserverIniFile,$tpl);
 unset($tpl);
 if(WAMPTRACE_PROCESS) {
@@ -3537,11 +3111,6 @@ if(WAMPTRACE_PROCESS) {
 	$errorTxt .= ' - Mem='.memory_get_peak_usage(true).' - Elapsed time='.(microtime(true)-$start_time);
 	error_log("script ".__FILE__.$errorTxt."\n",3,WAMPTRACE_FILE);
 }
-// **** END of load Template file as require ****
-// **********************************************
-
-//Write last_versions_here.txt file
-//to check updates from checkUpdates.php script
 $writeNewFile = true;
 $NewFileContents = '<?php'."\n\n".'$wamp_versions_here = '.var_export($wamp_versions_here, true).';'."\n\n".'?>';
 if(file_exists('last_versions_here.txt')) {
@@ -3552,16 +3121,10 @@ if(file_exists('last_versions_here.txt')) {
 if($writeNewFile) {
 	write_file('last_versions_here.txt',$NewFileContents);
 }
-
-// **** Check alias and paths in httpd-autoindex.conf ****
 check_autoindex();
-
-// Create Apache loaded modules file
 $loadedModules = GetApacheLoadedModules($c_apacheVersion, 6, true, false);
 $NewFileContents = '<?php'."\n\n".'$ApacheLoadedModule = '.var_export($loadedModules, true).';'."\n\n".'?>';
 write_file($c_installDir.'/files/apacheloadedmodules.php',$NewFileContents);
-
-// **** create php_error.log if not exist ****
 if(!file_exists($c_installDir.'/logs/php_error.log'))
 	error_log("No error - Only to create the file");
 if(WAMPTRACE_PROCESS) {

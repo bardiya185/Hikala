@@ -11,7 +11,7 @@ use PhpMyAdmin\Config\Forms\BaseFormList;
 
 class PageFormList extends BaseFormList
 {
-    /** @var string[] */
+    
     protected static $all = [
         'Browse',
         'DbStructure',
@@ -22,6 +22,6 @@ class PageFormList extends BaseFormList
         'Sql',
         'TableStructure',
     ];
-    /** @var string */
+    
     protected static $ns = 'PhpMyAdmin\\Config\\Forms\\Page\\';
 }

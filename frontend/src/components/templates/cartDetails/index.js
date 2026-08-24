@@ -52,14 +52,10 @@ export default function CartDetails() {
 
   const grandTotal = items.reduce((sum, item) => {
     const price =
-      item.product_variant?.price ??
-      item.product_variant?.final_price ??
-      0;
+      item.product_variant?.price ?? item.product_variant?.final_price ?? 0;
 
     return sum + price * item.quantity;
   }, 0);
-
-  // Loading
   if (isLoading) {
     return (
       <div className="w-full max-w-4xl mx-auto px-4 py-8 text-center text-gray-400">
@@ -67,20 +63,18 @@ export default function CartDetails() {
       </div>
     );
   }
-
-  // Empty Cart
   if (items.length === 0) {
     return (
       <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 py-4">
         <div className="w-full border border-neutral-200 rounded-xl overflow-hidden bg-white">
-          {/* Header */}
+          {}
           <div className="border-b border-neutral-200 px-4 sm:px-6 py-4">
             <h1 className="text-base sm:text-lg font-semibold">
               Shopping Cart
             </h1>
           </div>
 
-          {/* Empty State */}
+          {}
           <div className="flex flex-col items-center justify-center text-center px-4 py-12 sm:py-20">
             <Image
               src="/icons/hand-basket.svg"
@@ -127,35 +121,40 @@ export default function CartDetails() {
       </div>
     );
   }
+ return (
+  <div
+    className="
+      w-full
+      max-w-4xl
+      mx-auto
 
-  // Cart
-  return (
-    <div
-      className="
-        w-full
-        max-w-4xl
-        mx-auto
-        px-3
-        sm:px-4
-        md:px-6
-        py-4
-        sm:py-6
-        space-y-3
-        sm:space-y-4
-        font-sans
-        dir-ltr
-      "
-    >
-      {items.map((item) => (
-        <CartItem
-          key={item.id}
-          item={item}
-          onIncrease={() => handleIncrease(item)}
-          onDecrease={() => handleDecrease(item)}
-          onRemove={() => handleRemove(item)}
-          isPending={isPending}
-        />
-      ))}
-    </div>
-  );
+      px-3
+      sm:px-4
+      md:px-6
+
+      pt-1
+      sm:pt-2
+
+      pb-24
+      lg:pb-6
+
+      space-y-3
+      sm:space-y-4
+
+      font-sans
+      dir-ltr
+    "
+  >
+    {items.map((item) => (
+      <CartItem
+        key={item.id}
+        item={item}
+        onIncrease={() => handleIncrease(item)}
+        onDecrease={() => handleDecrease(item)}
+        onRemove={() => handleRemove(item)}
+        isPending={isPending}
+      />
+    ))}
+  </div>
+);
 }

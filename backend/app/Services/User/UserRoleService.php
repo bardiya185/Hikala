@@ -43,8 +43,6 @@ class UserRoleService
     public function removeRole(User $targetUser, Role $role, User $actor): User
     {
         $this->ensureCanAssign($role, $actor);
-
-        // Don't allow removing the last super-admin
         if ($role->name === 'super-admin') {
             $superAdminCount = User::role('super-admin')->count();
 
@@ -76,7 +74,6 @@ class UserRoleService
 
     private function ensureCanAssign(Role $role, User $actor): void
     {
-        // Only super-admin can assign/remove super-admin role
         if ($role->name === 'super-admin' && !$actor->hasRole('super-admin')) {
             abort(403, 'Only super-admin can manage super-admin role.');
         }

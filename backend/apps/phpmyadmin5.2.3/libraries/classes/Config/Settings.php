@@ -1025,19 +1025,19 @@ final class Settings
      */
     public $RowActionType;
 
-    /** @var Export */
+    
     public $Export;
 
-    /** @var Import */
+    
     public $Import;
 
-    /** @var Schema */
+    
     public $Schema;
 
-    /** @var string[] */
+    
     public $PDFPageSizes;
 
-    /** @var string */
+    
     public $PDFDefaultPageSize;
 
     /**
@@ -2150,7 +2150,7 @@ final class Settings
         }
 
         $hosts = [];
-        /** @var mixed $host */
+        
         foreach ($settings['MysqlSslWarningSafeHosts'] as $host) {
             $safeHost = (string) $host;
             if (strlen($safeHost) === 0) {
@@ -2601,7 +2601,7 @@ final class Settings
 
         if (count($settings['NavigationTreeTableSeparator']) > 0) {
             $navigationTreeTableSeparator = [];
-            /** @var mixed $separator */
+            
             foreach ($settings['NavigationTreeTableSeparator'] as $separator) {
                 $navigationTreeTableSeparator[] = (string) $separator;
             }
@@ -3599,7 +3599,7 @@ final class Settings
         }
 
         $pdfPageSizes = [];
-        /** @var mixed $pageSize */
+        
         foreach ($settings['PDFPageSizes'] as $pageSize) {
             $pdfPageSizes[] = (string) $pageSize;
         }
@@ -3742,7 +3742,7 @@ final class Settings
         }
 
         $availableCharsets = [];
-        /** @var mixed $availableCharset */
+        
         foreach ($settings['AvailableCharsets'] as $availableCharset) {
             $availableCharsets[] = (string) $availableCharset;
         }
@@ -4101,7 +4101,7 @@ final class Settings
         }
 
         $userprefsDisallow = [];
-        /** @var mixed $userPreference */
+        
         foreach ($settings['UserprefsDisallow'] as $userPreference) {
             $userprefsDisallow[] = (string) $userPreference;
         }

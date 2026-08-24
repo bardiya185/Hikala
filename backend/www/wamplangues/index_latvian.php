@@ -1,6 +1,4 @@
 <?php
-// 3.2.5 - pievienota dokumentācija valodām, kurām tas nepieciešams
-// angļu valodai ir identiska dokumentācijai
 
 $langues = array(
 	'langue' => 'latviešu valoda',

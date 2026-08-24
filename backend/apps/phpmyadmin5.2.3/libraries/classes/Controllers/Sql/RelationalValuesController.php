@@ -12,10 +12,10 @@ use PhpMyAdmin\Template;
 
 final class RelationalValuesController extends AbstractController
 {
-    /** @var Sql */
+    
     private $sql;
 
-    /** @var CheckUserPrivileges */
+    
     private $checkUserPrivileges;
 
     public function __construct(

@@ -58,7 +58,6 @@ class CertificateToolbox
         $rehashProcess = new Process(['openssl', 'rehash', $caDirname]);
         $rehashProcess->run();
         while ($rehashProcess->isRunning()) {
-            //Just wait
         }
         if (!$rehashProcess->isSuccessful()) {
             throw new InvalidArgumentException('Invalid certificate or certificate chain');
@@ -82,7 +81,6 @@ class CertificateToolbox
         $process = new Process($processArguments);
         $process->run();
         while ($process->isRunning()) {
-            //Just wait
         }
 
         foreach ($filenames as $filename) {
@@ -207,7 +205,6 @@ class CertificateToolbox
         $rehashProcess = new Process(['rm', '-rf', $dirname]);
         $rehashProcess->run();
         while ($rehashProcess->isRunning()) {
-            //Just wait
         }
     }
 

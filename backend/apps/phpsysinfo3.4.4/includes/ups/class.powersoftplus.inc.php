@@ -61,8 +61,6 @@ class PowerSoftPlus extends UPS
         foreach ($this->_output as $ups) {
 
             $dev = new UPSDevice();
-
-            // General info
             $dev->setName("EVER");
             $dev->setMode("PowerSoftPlus");
             $maxpwr = 0;
@@ -79,14 +77,12 @@ class PowerSoftPlus extends UPS
             if (preg_match('/^Output load\s*:\s*(.*)\s\[\%\]\r?$/m', $ups, $data)) {
                $load = trim($data[1]);
             }
-            //wrong Output load issue
             if (($load == 0) && ($maxpwr != 0) && preg_match('/^Effective power\s*:\s*(.*)\s\[W\]\r?$/m', $ups, $data)) {
                 $load = 100.0*trim($data[1])/$maxpwr;
             }
             if ($load != null) {
                 $dev->setLoad($load);
             }
-            // Battery
             if (preg_match('/^Battery voltage\s*:\s*(.*)\s\[Volt\]\r?$/m', $ups, $data)) {
                 $dev->setBatteryVoltage(trim($data[1]));
             }
@@ -97,7 +93,6 @@ class PowerSoftPlus extends UPS
                     $dev->setBatterCharge(0);
                 }
             }
-            // Line
             if (preg_match('/^Input voltage\s*:\s*(.*)\s\[Volt\]\r?$/m', $ups, $data)) {
                 $dev->setLineVoltage(trim($data[1]));
             }

@@ -105,7 +105,7 @@ class FormDisplay
      */
     private $userprefsDisallow;
 
-    /** @var FormDisplayTemplate */
+    
     private $formDisplayTemplate;
 
     /**
@@ -811,7 +811,7 @@ class FormDisplay
                 );
             }
 
-            /* mbstring is always there thanks to polyfill */
+            
             $opts['comment'] = $comment;
             $opts['comment_warning'] = true;
         }

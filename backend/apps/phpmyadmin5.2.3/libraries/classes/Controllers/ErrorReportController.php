@@ -27,10 +27,10 @@ use function time;
  */
 class ErrorReportController extends AbstractController
 {
-    /** @var ErrorReport */
+    
     private $errorReport;
 
-    /** @var ErrorHandler */
+    
     private $errorHandler;
 
     public function __construct(
@@ -48,15 +48,15 @@ class ErrorReportController extends AbstractController
     {
         global $cfg;
 
-        /** @var string $exceptionType */
+        
         $exceptionType = $request->getParsedBodyParam('exception_type', '');
-        /** @var string|null $sendErrorReport */
+        
         $sendErrorReport = $request->getParsedBodyParam('send_error_report');
-        /** @var string|null $automatic */
+        
         $automatic = $request->getParsedBodyParam('automatic');
-        /** @var string|null $alwaysSend */
+        
         $alwaysSend = $request->getParsedBodyParam('always_send');
-        /** @var string|null $getSettings */
+        
         $getSettings = $request->getParsedBodyParam('get_settings');
 
         if (! in_array($exceptionType, ['js', 'php'])) {
@@ -88,7 +88,6 @@ class ErrorReportController extends AbstractController
             }
 
             $reportData = $this->errorReport->getData($exceptionType);
-            // report if and only if there were 'actual' errors.
             if (count($reportData) > 0) {
                 $server_response = $this->errorReport->send($reportData);
                 if (! is_string($server_response)) {
@@ -99,7 +98,7 @@ class ErrorReportController extends AbstractController
                         $decoded_response['success'] : false;
                 }
 
-                /* Message to show to the user */
+                
                 if ($success) {
                     if ($automatic === 'true' || $cfg['SendErrorReports'] === 'always') {
                         $msg = __(
@@ -119,14 +118,14 @@ class ErrorReportController extends AbstractController
 
                 $msg .= ' ' . __('You may want to refresh the page.');
 
-                /* Create message object */
+                
                 if ($success) {
                     $msg = Message::notice($msg);
                 } else {
                     $msg = Message::error($msg);
                 }
 
-                /* Add message to response */
+                
                 if ($this->response->isAjax()) {
                     if ($exceptionType === 'js') {
                         $this->response->addJSON('message', $msg);
@@ -141,11 +140,10 @@ class ErrorReportController extends AbstractController
                 }
 
                 if ($exceptionType === 'php') {
-                    // clear previous errors & save new ones.
                     $this->errorHandler->savePreviousErrors();
                 }
 
-                /* Persist always send settings */
+                
                 if ($alwaysSend === 'true') {
                     $userPreferences = new UserPreferences();
                     $userPreferences->persistOption('SendErrorReports', 'always', 'ask');
@@ -157,7 +155,6 @@ class ErrorReportController extends AbstractController
             $this->response->addJSON('report_modal', $this->errorReport->getEmptyModal());
             $this->response->addHTML($this->errorReport->getForm());
         } else {
-            // clear previous errors & save new ones.
             $this->errorHandler->savePreviousErrors();
         }
     }

@@ -114,7 +114,7 @@ class Linux extends OS
                 ((($dmesg = $this->_get_dmesg_c()) !== null) && preg_match('/^[\s\[\]\.\d]*DMI:\s*(.+)/m', $dmesg, $ar_buf))) {
                 $this->_machine_info['machine'] = trim($ar_buf[1]);
                 if (defined('PSI_SHOW_VIRTUALIZER_INFO') && PSI_SHOW_VIRTUALIZER_INFO && ($this->system_detect_virt === null)) {
-                    /* Test this before sys_vendor to detect KVM over QEMU */
+                    
                     if (CommonFunctions::rfts('/sys/devices/virtual/dmi/id/product_name', $buf, 1, 4096, false) && (trim($buf)!="")) {
                         $vendor_array[] = $product_name = trim($buf);
                     } else {
@@ -142,7 +142,6 @@ class Linux extends OS
             } else { // 'machine' data from /sys/devices/virtual/dmi/id/
                 $bios = "";
                 if (defined('PSI_SHOW_VIRTUALIZER_INFO') && PSI_SHOW_VIRTUALIZER_INFO && ($this->system_detect_virt === null)) {
-                    // Test this before sys_vendor to detect KVM over QEMU
                     if (CommonFunctions::rfts('/sys/devices/virtual/dmi/id/product_name', $buf, 1, 4096, false) && (trim($buf)!="")) {
                         $vendor_array[] = $product_name = trim($buf);
                     } else {
@@ -361,12 +360,6 @@ class Linux extends OS
             $cpuvirt = $this->sys->getVirtualizer(); // previous info from _cpuinfo()
 
             $novm = true;
-            // code based on src/basic/virt.c from systemd-detect-virt source code (https://github.com/systemd/systemd)
-
-            // First, try to detect Oracle Virtualbox, Amazon EC2 Nitro and Parallels, even if they use KVM,
-            // as well as Xen even if it cloaks as Microsoft Hyper-V. Attempt to detect uml at this stage also
-            // since it runs as a user-process nested inside other VMs. Also check for Xen now, because Xen PV
-            // mode does not override CPUID when nested inside another hypervisor.
             $machine_info = $this->_get_machine_info();
             if (isset($machine_info['hypervisor'])) {
                 $hypervisor = $machine_info['hypervisor'];
@@ -375,20 +368,13 @@ class Linux extends OS
                     $novm = false;
                 }
             }
-
-            // Detect UML
             if ($novm) {
                 if (isset($cpuvirt["cpuid:UserModeLinux"])) {
                     $this->sys->setVirtualizer('uml'); // User-mode Linux
                     $novm = false;
                 }
             }
-
-            // Detect Xen
             if ($novm && is_dir('/proc/xen')) {
-                // xen Dom0 is detected as XEN in hypervisor and maybe others.
-                // In order to detect the Dom0 as not virtualization we need to
-                // double-check it
                 if (CommonFunctions::rfts('/sys/hypervisor/properties/features', $features, 1, 4096, false)) {
                     if ((hexdec($features) & 2048) == 0) { // XENFEAT_dom0 is not set
                         $this->sys->setVirtualizer('xen'); // Xen hypervisor (only domU, not dom0)
@@ -399,9 +385,6 @@ class Linux extends OS
                     $novm = false;
                 }
             }
-
-            // Second, try to detect from CPUID, this will report KVM for whatever software is used even if info in DMI is overwritten.
-            // Since the vendor_id in /proc/cpuinfo is overwritten on virtualization we use values from msr-cpuid.
             if ($novm && CommonFunctions::executeProgram('msr-cpuid', '', $bufr, false)
                && (preg_match('/^40000000 00000000:  [0-9a-f]{8} \S{4}  [0-9a-f]{8} ([A-Za-z0-9\.]{4})  [0-9a-f]{8} ([A-Za-z0-9\.]{4})  [0-9a-f]{8} ([A-Za-z0-9\.]{4})/m', $bufr, $cpuid))) {
                 $virt = CommonFunctions::decodevirtualizer($cpuid[1].$cpuid[2].$cpuid[3]);
@@ -409,14 +392,10 @@ class Linux extends OS
                     $this->sys->setVirtualizer($virt);
                 }
             }
-
-            // Third, try to detect from DMI.
             if ($novm && isset($hypervisor)) {
                 $this->sys->setVirtualizer($hypervisor);
                 $novm = false;
             }
-
-            // Check high-level hypervisor sysfs file
             if ($novm && CommonFunctions::rfts('/sys/hypervisor/type', $type, 1, 4096, false) && ($type === "xen")) {
                 $this->sys->setVirtualizer('xen'); // Xen hypervisor
                 $novm = false;
@@ -470,8 +449,6 @@ class Linux extends OS
                 }
                 $novm = false;
             }
-
-            // Additional tests outside of the systemd-detect-virt source code
             if ($novm && (
                 ((($dmesg = $this->_get_dmesg_f()) !== null) && preg_match('/^[\s\[\]\.\d]*Hypervisor detected:\s*(.+)/m', $dmesg, $ar_buf)) ||
                 ((($dmesg = $this->_get_dmesg_c()) !== null) && preg_match('/^[\s\[\]\.\d]*Hypervisor detected:\s*(.+)/m', $dmesg, $ar_buf)))) {
@@ -500,9 +477,6 @@ class Linux extends OS
                 case 'Xen':
                 case 'Xen PV':
                 case 'Xen HVM':
-                    // xen Dom0 is detected as XEN in hypervisor and maybe others.
-                    // In order to detect the Dom0 as not virtualization we need to
-                    // double-check it
                     if (CommonFunctions::rfts('/sys/hypervisor/properties/features', $features, 1, 4096, false)) {
                         if ((hexdec($features) & 2048) == 0) { // XENFEAT_dom0 is not set
                             $this->sys->setVirtualizer('xen'); // Xen hypervisor (only domU, not dom0)
@@ -514,8 +488,6 @@ class Linux extends OS
                     }
                 }
             }
-
-            // Detect QEMU cpu
             if ($novm && isset($cpuvirt["cpuid:QEMU"])) {
                 $this->sys->setVirtualizer('qemu'); // QEMU
                 $novm = false;
@@ -604,7 +576,6 @@ class Linux extends OS
     {
         if ((($buf !== null) || CommonFunctions::rfts('/proc/loadavg', $buf, 1, 4096, PSI_OS != 'Android')) && preg_match("/^\d/", trim($buf))) {
             $result = preg_split("/\s/", $buf, 4);
-            // don't need the extra values, only first three
             unset($result[3]);
             $this->sys->setLoad(implode(' ', $result));
         } elseif (($buf === null) && ((($this->_uptime !== null) || CommonFunctions::executeProgram('uptime', '', $this->_uptime)) && preg_match("/load average: (.*), (.*), (.*)$/", $this->_uptime, $ar_buf))) {
@@ -645,8 +616,6 @@ class Linux extends OS
                         $cpu_tmp[$cpu]['total'] = $ab + $ac + $ad + $ae; // cpu.total
                     }
                 }
-
-                // we need a second value, wait 1 second befor getting (< 1 second no good value will occour)
                 sleep(1);
 
                 if (CommonFunctions::rfts('/proc/stat', $buf, 0, 4096, PSI_DEBUG)) {
@@ -694,8 +663,6 @@ class Linux extends OS
         if (($bufr !== null) || CommonFunctions::rfts('/proc/cpuinfo', $bufr)) {
             $cpulist = null;
             $raslist = null;
-
-            // sparc
             if (preg_match('/\nCpu(\d+)Bogo\s*:/i', $bufr)) {
                 $bufr = preg_replace('/\nCpu(\d+)ClkTck\s*:/i', "\nCpu0ClkTck:", preg_replace('/\nCpu(\d+)Bogo\s*:/i', "\n\nprocessor: $1\nCpu0Bogo:", $bufr));
             } else {
@@ -705,16 +672,10 @@ class Linux extends OS
             if (preg_match('/\nprocessor\s*:\s*\d+\r?\nprocessor\s*:\s*\d+/', $bufr)) {
                 $bufr = preg_replace('/^(processor\s*:\s*\d+)\r?$/m', "$1\n", $bufr);
             }
-
-            // IBM/S390
             $bufr = preg_replace('/\ncpu number\s*:\s*(\d+)\r?\ncpu MHz dynamic\s*:\s*(\d+)/m', "\nprocessor:$1\nclock:$2", $bufr);
-
-            // machine
             $bufr = preg_replace('/(\nmachine\s*:\s*[^\r\n]+)/m', "$1\n", $bufr);
 
             $processors = preg_split('/\s?\n\s?\n/', trim($bufr));
-
-            //first stage
             $_arch = null;
             $_impl = null;
             $_part = null;
@@ -780,8 +741,6 @@ class Linux extends OS
                     }
                 }
             }
-
-            //second stage
             $cpucount = 0;
             $speedset = false;
             foreach ($processors as $processor) if (preg_match('/^\s*processor\s*:/mi', $processor)) {
@@ -903,20 +862,12 @@ class Linux extends OS
                 if ($impl === null) $impl = $_impl;
                 if ($part === null) $part = $_part;
                 if ($vari === null) $vari = $_vari;
-
-                // sparc64 specific code follows
-                // This adds the ability to display the cache that a CPU has
-                // Originally made by Sven Blumenstein <bazik@gentoo.org> in 2004
-                // Modified by Tom Weustink <freshy98@gmx.net> in 2004
                 $sparclist = array('SUNW,UltraSPARC@0,0', 'SUNW,UltraSPARC-II@0,0', 'SUNW,UltraSPARC@1c,0', 'SUNW,UltraSPARC-IIi@1c,0', 'SUNW,UltraSPARC-II@1c,0', 'SUNW,UltraSPARC-IIe@0,0');
                 foreach ($sparclist as $name) {
                     if (CommonFunctions::rfts('/proc/openprom/'.$name.'/ecache-size', $buf, 1, 32, false)) {
                         $dev->setCache(base_convert(trim($buf), 16, 10));
                     }
                 }
-                // sparc64 specific code ends
-
-                // XScale detection code
                 if (($arch === "5TE") && (($bogo = $dev->getBogomips()) !== null) && ($bogo > 0)) {
                     $dev->setCpuSpeed($bogo); // BogoMIPS are not BogoMIPS on this CPU, it's the speed
                     $speedset = true;
@@ -944,7 +895,6 @@ class Linux extends OS
                     if (!is_numeric($proc)) {
                         $proc = 0;
                     }
-                    // variable speed processors specific code follows
                     if (CommonFunctions::rfts('/sys/devices/system/cpu/cpu'.$proc.'/cpufreq/cpuinfo_cur_freq', $buf, 1, 4096, false)
                        || CommonFunctions::rfts('/sys/devices/system/cpu/cpu'.$proc.'/cpufreq/scaling_cur_freq', $buf, 1, 4096, false)) {
                         if (round(trim($buf)/1000) > 0) {
@@ -960,7 +910,6 @@ class Linux extends OS
                        || CommonFunctions::rfts('/sys/devices/system/cpu/cpu'.$proc.'/cpufreq/scaling_min_freq', $buf, 1, 4096, false)) {
                         $dev->setCpuSpeedMin(round(trim($buf)/1000));
                     }
-                    // variable speed processors specific code ends
                     if (PSI_LOAD_BAR) {
                             $dev->setLoad($this->_parseProcStat('cpu'.$proc));
                     }
@@ -1201,7 +1150,7 @@ class Linux extends OS
 
                     if (defined('PSI_SHOW_DEVICES_INFOS') && PSI_SHOW_DEVICES_INFOS
                        && ($dev_type[1]==='Direct-Access')) {
-                       $sizelist = CommonFunctions::findglob('/sys/bus/scsi/devices/'.intval($scsiid[1]).':'.intval($scsiid[2]).':'.intval($scsiid[3]).':'.intval($scsiid[4]).'/*/*/size', GLOB_NOSORT);
+                       $sizelist = CommonFunctions::findglob('/sys/bus/scsi/devices/'.intval($scsiid[1]).':'.intval($scsiid[2]).':'.intval($scsiid[3]).':'.intval($scsiid[4]).'size', GLOB_NOSORT);
                        if (is_array($sizelist) && (($total = count($sizelist)) > 0)) {
                            $buf = "";
                            for ($i = 0; $i < $total; $i++) {
@@ -1509,7 +1458,6 @@ class Linux extends OS
                         if (($bufr2!="") || CommonFunctions::executeProgram('ifconfig', trim($dev_name).' 2>/dev/null', $bufr2, PSI_DEBUG)) {
                             $bufe2 = preg_split("/\n/", $bufr2, -1, PREG_SPLIT_NO_EMPTY);
                             foreach ($bufe2 as $buf2) {
-//                                if (preg_match('/^'.trim($dev_name).'\s+Link\sencap:Ethernet\s+HWaddr\s(\S+)/i', $buf2, $ar_buf2)
                                 if (preg_match('/\s+encap:Ethernet\s+HWaddr\s(\S+)/i', $buf2, $ar_buf2)
                                    || preg_match('/\s+encap:UNSPEC\s+HWaddr\s(\S+)-00-00-00-00-00-00-00-00-00-00\s*$/i', $buf2, $ar_buf2)
                                    || preg_match('/^\s+ether\s+(\S+)\s+txqueuelen/i', $buf2, $ar_buf2)
@@ -1524,7 +1472,7 @@ class Linux extends OS
                                 } elseif (preg_match('/^\s+inet\saddr:(\S+)\s+P-t-P:(\S+)/i', $buf2, $ar_buf2)
                                        || preg_match('/^\s+inet\s+(\S+)\s+netmask.+destination\s+(\S+)/i', $buf2, $ar_buf2)
                                        || preg_match('/^\s+inet\s+([^\/\s]+).*peer\s+([^\/\s]+).*\s+scope\s((global)|(host))/i', $buf2, $ar_buf2)
-                                       /*|| preg_match('/^\s+link\/sit\s+([^\/\s]+).*peer\s+([^\/\s]+)/i', $buf2, $ar_buf2)*/) {
+                                       ) {
                                     if ($ar_buf2[1] != $ar_buf2[2]) {
                                         $dev->setInfo(($dev->getInfo()?$dev->getInfo().';':'').$ar_buf2[1].";:".$ar_buf2[2]);
                                     } else {
@@ -1643,7 +1591,7 @@ class Linux extends OS
                                     }
                                 }
                             } elseif (preg_match('/^\s+inet\s+([^\/\s]+).*peer\s+([^\/\s]+).*\s+scope\s((global)|(host))/i', $line, $ar_buf2)
-                                     /*|| preg_match('/^\s+link\/sit\s+([^\/\s]+).*peer\s+([^\/\s]+)/i', $line, $ar_buf2)*/) {
+                                     ) {
                                 if ($ar_buf2[1] != $ar_buf2[2]) {
                                      $dev->setInfo(($dev->getInfo()?$dev->getInfo().';':'').$ar_buf2[1].";:".$ar_buf2[2]);
                                 } else {
@@ -1807,7 +1755,6 @@ class Linux extends OS
                 }
             }
             $this->sys->setMemUsed($this->sys->getMemTotal() - $this->sys->getMemFree());
-            // values for splitting memory usage
             if (($this->sys->getMemCache() !== null) && ($this->sys->getMemBuffer() !== null)) {
                 $this->sys->setMemApplication($this->sys->getMemUsed() - $this->sys->getMemCache() - $this->sys->getMemBuffer());
             }
@@ -1880,7 +1827,6 @@ class Linux extends OS
         $_ignore_lsb_release = false;
         $_Distrib = "";
         $_DistribIcon = "";
-        // We have the '2>/dev/null' because Ubuntu gives an error on this command which causes the distro to be unknown
         if (CommonFunctions::executeProgram('lsb_release', '-a 2>/dev/null', $distro_info, PSI_DEBUG) && strlen($distro_info) > 0) {
             $distro_tmp = preg_split("/\r?\n/", $distro_info, -1, PREG_SPLIT_NO_EMPTY);
             foreach ($distro_tmp as $info) {
@@ -1897,7 +1843,6 @@ class Linux extends OS
                     if (preg_match('/^(\S+)\s*/', $distro_tmp[0], $id_buf)
                         && isset($list[strtolower(trim($id_buf[1]))]['Image'])) {
                             $_DistribIcon = $list[strtolower(trim($id_buf[1]))]['Image'];
-                            // set ignore lsb_release for some distributions
                             if (isset($list[strtolower(trim($id_buf[1]))]['Test']) && ($list[strtolower(trim($id_buf[1]))]['Test'] === "nolsbfirst")) $_ignore_lsb_release = true;
                     }
                 }
@@ -1962,15 +1907,12 @@ class Linux extends OS
                     }
                     if (($distrib!==$distrib3) && isset($list[strtolower($distrib3)]['Image'])) {
                         $_DistribIcon = $list[strtolower($distrib3)]['Image'];
-                        // set ignore lsb_release for some distributions
                         if (isset($list[strtolower($distrib3)]['Test']) && ($list[strtolower($distrib3)]['Test'] === "nolsbfirst")) $_ignore_lsb_release = true;
                     } elseif (($distrib!==$distrib2) && isset($list[strtolower($distrib2)]['Image'])) {
                         $_DistribIcon = $list[strtolower($distrib2)]['Image'];
-                        // set ignore lsb_release for some distributions
                         if (isset($list[strtolower($distrib2)]['Test']) && ($list[strtolower($distrib2)]['Test'] === "nolsbfirst")) $_ignore_lsb_release = true;
                     } elseif (($distrib!=="n/a") && isset($list[strtolower($distrib)]['Image'])) {
                         $_DistribIcon = $list[strtolower($distrib)]['Image'];
-                        // set ignore lsb_release for some distributions
                         if (isset($list[strtolower($distrib)]['Test']) && ($list[strtolower($distrib)]['Test'] === "nolsbfirst")) $_ignore_lsb_release = true;
                     }
                 }
@@ -1981,18 +1923,14 @@ class Linux extends OS
             if ($_Distrib !== "") $this->sys->setDistribution(preg_replace("/ - Version:| Build:| Release| version| build| based in Ubuntu/i", "", $_Distrib));
             if ($_DistribIcon !== "") $this->sys->setDistributionIcon($_DistribIcon);
         }
-
-        // if the distribution is still unknown
         if ($this->sys->getDistribution() == "Linux") {
-            /* default error handler */
+            
             if (function_exists('errorHandlerPsi')) {
                 restore_error_handler();
             }
-            /* fatal errors only */
+            
             $old_err_rep = error_reporting();
             error_reporting(E_ERROR);
-
-            // Fall back in case 'lsb_release' does not exist but exist /etc/lsb-release
             if (CommonFunctions::fileexists($filename="/etc/lsb-release")
                && CommonFunctions::rfts($filename, $buf, 0, 4096, false)
                && (preg_match('/^DISTRIB_ID="?([^"\r\n]+)/m', $buf, $id_buf) || preg_match('/^DISTRIB_DESCRIPTION="?([^"\r\n]+)/m', $buf, $id_buf))) {
@@ -2149,14 +2087,12 @@ class Linux extends OS
                     }
                 }
             }
-            // if the distribution is still unknown
             if ($this->sys->getDistribution() == "Linux") {
                 if ($_ignore_lsb_release) { // if lsb_release was ignored
                     if ($_Distrib !== "") $this->sys->setDistribution(preg_replace("/ - Version:| Build:| Release| version| build| based in Ubuntu/i", "", $_Distrib));
                     if ($_DistribIcon !== "") $this->sys->setDistributionIcon($_DistribIcon);
                 }
             }
-            // if the distribution is still unknown
             if ($this->sys->getDistribution() == "Linux") {
                 if (((defined('PSI_EMU_PORT') && CommonFunctions::executeProgram('cat', '/etc/os-release', $buf, false))
                     || (!defined('PSI_EMU_PORT') && CommonFunctions::fileexists($filename="/etc/os-release") && CommonFunctions::rfts($filename, $buf, 0, 4096, false)))
@@ -2318,9 +2254,9 @@ class Linux extends OS
                     }
                 }
             }
-            /* restore error level */
+            
             error_reporting($old_err_rep);
-            /* restore error handler */
+            
             if (function_exists('errorHandlerPsi')) {
                 set_error_handler('errorHandlerPsi');
             }

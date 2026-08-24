@@ -10,25 +10,17 @@ return new class extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            
-            // ✅ کاربر (nullable برای مهمان)
             $table->foreignId('user_id')
                   ->nullable()
                   ->constrained('users')
                   ->cascadeOnDelete();
-            
-            // ✅ session برای مهمان
             $table->string('session_id')->nullable();
-            
-            // ✅ کوپن (nullable)
             $table->foreignId('coupon_id')
                   ->nullable()
                   ->constrained('coupons')
                   ->nullOnDelete();
             
             $table->timestamps();
-            
-            // ✅ Indexes
             $table->index('user_id');
             $table->index('session_id');
         });

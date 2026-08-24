@@ -1,6 +1,4 @@
 <?php
-// 3.2.5 - documentation-of added for languages requiring it
-// for English is identical to documentation
 
 defined('WAMPSERVER_ROOT') or define('WAMPSERVER_ROOT', str_replace('\\', '/', dirname(dirname(__DIR__))));
 

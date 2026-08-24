@@ -20,13 +20,13 @@ use function count;
 
 final class ChangeController extends AbstractController
 {
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Transformations */
+    
     private $transformations;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(

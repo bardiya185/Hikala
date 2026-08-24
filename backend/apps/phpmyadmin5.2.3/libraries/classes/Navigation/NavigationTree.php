@@ -62,7 +62,7 @@ class NavigationTree
 {
     private const SPECIAL_NODE_NAMES = ['tables', 'views', 'functions', 'procedures', 'events'];
 
-    /** @var Node Reference to the root node of the tree */
+    
     private $tree;
     /**
      * @var array The actual paths to all expanded nodes in the tree
@@ -121,10 +121,10 @@ class NavigationTree
      */
     private $largeGroupWarning = false;
 
-    /** @var Template */
+    
     private $template;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     /**
@@ -325,7 +325,7 @@ class NavigationTree
         $data = $this->tree->getData('databases', $this->pos, $this->searchClause);
         $hiddenCounts = $this->tree->getNavigationHidingData();
         foreach ($data as $db) {
-            /** @var NodeDatabase $node */
+            
             $node = NodeFactory::getInstance('NodeDatabase', $db);
             if (isset($hiddenCounts[$db])) {
                 $node->setHiddenCount($hiddenCounts[$db]);
@@ -372,7 +372,7 @@ class NavigationTree
         }
 
         array_shift($path); // remove 'root'
-        /** @var NodeDatabase|null $db */
+        
         $db = $this->tree->getChild($path[0]);
 
         if ($db === null) {
@@ -444,7 +444,7 @@ class NavigationTree
             return $retval;
         }
 
-        /** @var NodeTable|null $table */
+        
         $table = $container->getChild($path[0], true);
         if ($table === null) {
             if (! $db->getPresence('tables', $path[0])) {
@@ -748,7 +748,7 @@ class NavigationTree
             return;
         }
 
-        /** @var Node[] $groups */
+        
         $groups = [];
         foreach ($prefixes as $key => $value) {
             // warn about large groups
@@ -778,7 +778,7 @@ class NavigationTree
                     $class = get_class($child);
                     $className = substr($class, strrpos($class, '\\') + 1);
                     unset($class);
-                    /** @var NodeDatabase $newChild */
+                    
                     $newChild = NodeFactory::getInstance(
                         $className,
                         mb_substr(
@@ -1403,7 +1403,7 @@ class NavigationTree
                     $pos = $node->pos2;
                 }
 
-                /** @var Node $realParent */
+                
                 $realParent = $node->realParent();
                 $num = $realParent->getPresence($node->realName, $this->searchClause2);
                 $retval .= Generator::getListNavigator(

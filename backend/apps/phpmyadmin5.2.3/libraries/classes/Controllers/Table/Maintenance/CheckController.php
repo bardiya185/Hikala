@@ -22,10 +22,10 @@ use function count;
 
 final class CheckController extends AbstractController
 {
-    /** @var Maintenance */
+    
     private $model;
 
-    /** @var Config */
+    
     private $config;
 
     public function __construct(

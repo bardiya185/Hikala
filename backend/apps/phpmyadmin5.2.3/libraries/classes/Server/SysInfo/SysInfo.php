@@ -29,7 +29,6 @@ class SysInfo
      */
     public static function getOs($php_os = PHP_OS)
     {
-        // look for common UNIX-like systems
         $unix_like = [
             'FreeBSD',
             'DragonFly',

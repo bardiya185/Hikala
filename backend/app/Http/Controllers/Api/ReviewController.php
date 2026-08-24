@@ -22,10 +22,6 @@ class ReviewController extends Controller
         private ReviewService $reviewService,
         private ReviewReactionService $reactionService,
     ) {}
-
-    // ================================================================
-    // Get Product Reviews (Public)
-    // ================================================================
     #[OA\Get(
         path: '/api/products/{product}/reviews',
         tags: ['Reviews'],
@@ -60,10 +56,6 @@ class ReviewController extends Controller
             ],
         ]);
     }
-
-    // ================================================================
-    // Submit Review (Auth)
-    // ================================================================
     #[OA\Post(
         path: '/api/reviews',
         tags: ['Reviews'],
@@ -107,10 +99,6 @@ class ReviewController extends Controller
             'data' => new ReviewResource($review),
         ], 201);
     }
-
-    // ================================================================
-    // Update Review (Owner)
-    // ================================================================
     #[OA\Put(
         path: '/api/reviews/{review}',
         tags: ['Reviews'],
@@ -145,10 +133,6 @@ class ReviewController extends Controller
             'data' => new ReviewResource($review),
         ]);
     }
-
-    // ================================================================
-    // Delete Review (Owner)
-    // ================================================================
     #[OA\Delete(
         path: '/api/reviews/{review}',
         tags: ['Reviews'],
@@ -172,10 +156,6 @@ class ReviewController extends Controller
             'message' => 'Your review has been deleted successfully.',
         ]);
     }
-
-    // ================================================================
-    // My Review (Auth)
-    // ================================================================
     #[OA\Get(
         path: '/api/products/{product}/my-review',
         tags: ['Reviews'],
@@ -208,10 +188,6 @@ class ReviewController extends Controller
             'can_review' => is_null($review),
         ]);
     }
-
-    // ================================================================
-    // React to Review (Auth)
-    // ================================================================
     #[OA\Post(
         path: '/api/reviews/{review}/react',
         tags: ['Reviews'],
@@ -254,10 +230,6 @@ class ReviewController extends Controller
             ...$result,
         ]);
     }
-
-    // ================================================================
-    // Admin: List Reviews
-    // ================================================================
     #[OA\Get(
         path: '/api/admin/reviews',
         tags: ['Admin Reviews'],
@@ -289,10 +261,6 @@ class ReviewController extends Controller
             ],
         ]);
     }
-
-    // ================================================================
-    // Admin: Approve
-    // ================================================================
     #[OA\Post(
         path: '/api/admin/reviews/{review}/approve',
         tags: ['Admin Reviews'],
@@ -315,10 +283,6 @@ class ReviewController extends Controller
             'data' => new ReviewResource($review),
         ]);
     }
-
-    // ================================================================
-    // Admin: Reject
-    // ================================================================
     #[OA\Post(
         path: '/api/admin/reviews/{review}/reject',
         tags: ['Admin Reviews'],

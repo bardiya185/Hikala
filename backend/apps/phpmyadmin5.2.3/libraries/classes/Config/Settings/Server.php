@@ -912,7 +912,7 @@ final class Server
                 $onlyDb = (string) $server['only_db'];
             } elseif (count($server['only_db']) > 0) {
                 $onlyDb = [];
-                /** @var mixed $database */
+                
                 foreach ($server['only_db'] as $database) {
                     $onlyDb[] = (string) $database;
                 }
@@ -1301,7 +1301,7 @@ final class Server
             }
 
             if (isset($server['AllowDeny']['rules']) && is_array($server['AllowDeny']['rules'])) {
-                /** @var mixed $rule */
+                
                 foreach ($server['AllowDeny']['rules'] as $rule) {
                     $allowDeny['rules'][] = (string) $rule;
                 }

@@ -56,7 +56,7 @@ class ParagonIE_Sodium_Core_AES_Block extends SplFixedArray
             $keys = range(0, $count - 1);
         }
         $array = array_values($array);
-        /** @var array<int, int> $keys */
+        
 
         $obj = new ParagonIE_Sodium_Core_AES_Block();
         if ($save_indexes) {

@@ -39,13 +39,13 @@ final class IdnaInfo
         Idna::ERROR_CONTEXTO_PUNCTUATION => 'a label does not meet the IDNA CONTEXTO requirements for punctuation characters. Some punctuation characters "Would otherwise have been DISALLOWED" but are allowed in certain contexts',
     ];
 
-    /** @var string */
+    
     private $result;
 
-    /** @var bool */
+    
     private $isTransitionalDifferent;
 
-    /** @var int */
+    
     private $errors;
 
     /**

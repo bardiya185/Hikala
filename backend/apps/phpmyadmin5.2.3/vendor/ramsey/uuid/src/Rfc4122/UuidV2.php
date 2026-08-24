@@ -114,7 +114,7 @@ final class UuidV2 extends Uuid implements UuidInterface
      */
     public function getLocalDomain(): int
     {
-        /** @var Rfc4122FieldsInterface $fields */
+        
         $fields = $this->getFields();
 
         return (int) hexdec($fields->getClockSeqLow()->toString());
@@ -133,7 +133,7 @@ final class UuidV2 extends Uuid implements UuidInterface
      */
     public function getLocalIdentifier(): IntegerObject
     {
-        /** @var Rfc4122FieldsInterface $fields */
+        
         $fields = $this->getFields();
 
         return new IntegerObject(

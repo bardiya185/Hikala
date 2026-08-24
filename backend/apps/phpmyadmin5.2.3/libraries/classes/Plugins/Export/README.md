@@ -40,8 +40,6 @@ class Export[Name] extends PhpMyAdmin\Plugins\ExportPlugin
         $this->setProperties();
     }
 
-    // optional - declare global variables and use getters later
-
     /**
      * Initialize the local variables that are used specific for export SQL
      *
@@ -68,27 +66,12 @@ class Export[Name] extends PhpMyAdmin\Plugins\ExportPlugin
         $exportPluginProperties->setText('[name]');             // the name of your plug-in
         $exportPluginProperties->setExtension('[ext]');         // extension this plug-in can handle
         $exportPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $exportPluginProperties
-        // this will be shown as "Format specific options"
         $exportSpecificOptions = new PhpMyAdmin\Properties\Options\Groups\OptionsPropertyRootGroup(
             'Format Specific Options'
         );
-
-        // general options main group
         $generalOptions = new PhpMyAdmin\Properties\Options\Groups\OptionsPropertyMainGroup(
             'general_opts'
         );
-
-        // optional :
-        // create primary items and add them to the group
-        // type - one of the classes listed in libraries/properties/options/items/
-        // name - form element name
-        // text - description in GUI
-        // size - size of text element
-        // len  - maximal size of input
-        // values - possible values of the item
         $leaf = new PhpMyAdmin\Properties\Options\Items\RadioPropertyItem(
             'structure_or_data'
         );
@@ -100,11 +83,7 @@ class Export[Name] extends PhpMyAdmin\Plugins\ExportPlugin
             ]
         );
         $generalOptions->addProperty($leaf);
-
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($generalOptions);
-
-        // set the options for the export plugin property item
         $exportPluginProperties->setOptions($exportSpecificOptions);
         $this->properties = $exportPluginProperties;
     }
@@ -116,7 +95,6 @@ class Export[Name] extends PhpMyAdmin\Plugins\ExportPlugin
      */
     public function exportHeader()
     {
-        // implementation
         return true;
     }
 
@@ -127,7 +105,6 @@ class Export[Name] extends PhpMyAdmin\Plugins\ExportPlugin
      */
     public function exportFooter()
     {
-        // implementation
         return true;
     }
 
@@ -141,7 +118,6 @@ class Export[Name] extends PhpMyAdmin\Plugins\ExportPlugin
      */
     public function exportDBHeader($db, $dbAlias = '')
     {
-        // implementation
         return true;
     }
 
@@ -154,7 +130,6 @@ class Export[Name] extends PhpMyAdmin\Plugins\ExportPlugin
      */
     public function exportDBFooter($db)
     {
-        // implementation
         return true;
     }
 
@@ -169,7 +144,6 @@ class Export[Name] extends PhpMyAdmin\Plugins\ExportPlugin
      */
     public function exportDBCreate($db, $exportType, $dbAlias = '')
     {
-        // implementation
         return true;
     }
 
@@ -193,24 +167,9 @@ class Export[Name] extends PhpMyAdmin\Plugins\ExportPlugin
         $sqlQuery,
         array $aliases = []
     ) {
-        // implementation;
         return true;
     }
-
-    // optional - implement other methods defined in PhpMyAdmin\Plugins\ExportPlugin.php:
-    //  - exportRoutines()
-    //  - exportStructure()
-    //  - getTableDefStandIn()
-    //  - getTriggers()
-
-    // optional - implement other private methods in order to avoid
-    // having huge methods or avoid duplicate code. Make use of them
-    // as well as of the getters and setters declared both here
-    // and in the PhpMyAdmin\Plugins\ExportPlugin class
-
-
-    // optional:
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Getter description

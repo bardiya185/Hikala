@@ -22,8 +22,6 @@ return new class extends Migration
             $table->enum('type', ['like', 'dislike']);
 
             $table->timestamps();
-
-            // هر کاربر فقط یک واکنش برای هر نظر
             $table->unique(['user_id', 'review_id']);
 
             $table->index('review_id');

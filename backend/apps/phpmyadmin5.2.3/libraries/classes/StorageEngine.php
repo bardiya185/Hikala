@@ -47,13 +47,13 @@ class StorageEngine
     protected const DETAILS_TYPE_NUMERIC = 2; // Has no effect yet...
     protected const DETAILS_TYPE_BOOLEAN = 3; // 'ON' or 'OFF'
 
-    /** @var string engine name */
+    
     public $engine = 'dummy';
 
-    /** @var string engine title/description */
+    
     public $title = 'PMA Dummy Engine Class';
 
-    /** @var string engine lang description */
+    
     public $comment = 'If you read this text inside phpMyAdmin, something went wrong...';
 
     /**
@@ -112,7 +112,7 @@ class StorageEngine
             if (! $dbi->isMariaDB() && $dbi->getVersion() >= 50708) {
                 $disabled = (string) SessionCache::get(
                     'disabled_storage_engines',
-                    /** @return mixed|false */
+                    
                     static function () use ($dbi) {
                         return $dbi->fetchValue(
                             'SELECT @@disabled_storage_engines'
@@ -185,12 +185,10 @@ class StorageEngine
 
                 unset($objectList[$mroongaName]);
             }
-
-            // At this point, we can remove all the data because only need the mroongaName values
             Cache::set($cacheKey, array_keys($objectList));
         }
 
-        /** @var string[] $objectList */
+        
         $objectList = Cache::get($cacheKey, []);
 
         $dataLength = 0;
@@ -206,7 +204,6 @@ class StorageEngine
             );
             $decodedData = json_decode($result[0] ?? '', true);
             if ($decodedData === null) {
-                // Invalid for some strange reason, maybe query failed
                 continue;
             }
 
@@ -230,7 +227,6 @@ class StorageEngine
         $engines = [];
 
         foreach (self::getStorageEngines() as $details) {
-            // Don't show PERFORMANCE_SCHEMA engine (MySQL 5.5)
             if (
                 $details['Support'] === 'NO'
                 || $details['Support'] === 'DISABLED'

@@ -13,10 +13,10 @@ use function in_array;
 
 abstract class AbstractController
 {
-    /** @var ConfigFile */
+    
     protected $config;
 
-    /** @var Template */
+    
     protected $template;
 
     public function __construct(ConfigFile $config, Template $template)
@@ -40,7 +40,7 @@ abstract class AbstractController
                 continue;
             }
 
-            /** @var BaseForm $formClass */
+            
             $formClass = SetupFormList::get($formset);
 
             $pages[$formset] = [

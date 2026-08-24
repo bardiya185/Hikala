@@ -21,7 +21,7 @@ use function trim;
  */
 class GisPoint extends GisGeometry
 {
-    /** @var self */
+    
     private static $instance;
 
     /**

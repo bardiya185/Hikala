@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* navigation/tree/controls.twig */
+
 class __TwigTemplate_eb06dddaff38a97b1d5db95781dc18e1 extends Template
 {
     private $source;
@@ -34,16 +34,13 @@ class __TwigTemplate_eb06dddaff38a97b1d5db95781dc18e1 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<!-- CONTROLS START -->
 <li id=\"navigation_controls_outer\">
     <div id=\"navigation_controls\">
         ";
-        // line 4
         yield ($context["collapse_all"] ?? null);
         yield "
         ";
-        // line 5
         yield ($context["unlink"] ?? null);
         yield "
     </div>

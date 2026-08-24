@@ -26,7 +26,7 @@ use function trim;
  */
 class GisMultiPolygon extends GisGeometry
 {
-    /** @var self */
+    
     private static $instance;
 
     /**

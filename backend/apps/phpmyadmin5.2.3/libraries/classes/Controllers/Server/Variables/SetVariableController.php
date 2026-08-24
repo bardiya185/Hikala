@@ -22,7 +22,7 @@ use function trim;
 
 final class SetVariableController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, DatabaseInterface $dbi)
@@ -74,7 +74,6 @@ final class SetVariableController extends AbstractController
         $json = [];
         if (! preg_match('/[^a-zA-Z0-9_]+/', $variableName)) {
             $this->dbi->query('SET GLOBAL ' . $variableName . ' = ' . $value);
-            // Some values are rounded down etc.
             $varValue = $this->dbi->fetchSingleRow(
                 'SHOW GLOBAL VARIABLES WHERE Variable_name="'
                 . $this->dbi->escapeString($variableName)
@@ -114,7 +113,7 @@ final class SetVariableController extends AbstractController
 
             if ($variableType === 'byte') {
                 $isHtmlFormatted = true;
-                /** @var string[] $bytes */
+                
                 $bytes = Util::formatByteDown($value, 3, 3);
                 $formattedValue = trim(
                     $this->template->render(

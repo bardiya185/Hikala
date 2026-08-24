@@ -33,16 +33,16 @@ class ErrorReport
      */
     private $submissionUrl = 'https://reports.phpmyadmin.net/incidents/create';
 
-    /** @var HttpRequest */
+    
     private $httpRequest;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Template */
+    
     public $template;
 
-    /** @var Config */
+    
     private $config;
 
     /**
@@ -79,7 +79,6 @@ class ErrorReport
     public function getData(string $exceptionType = 'js'): array
     {
         $relationParameters = $this->relation->getRelationParameters();
-        // common params for both, php & js exceptions
         $report = [
             'pma_version' => Version::VERSION,
             'browser_name' => $this->config->get('PMA_USR_BROWSER_AGENT'),
@@ -125,14 +124,13 @@ class ErrorReport
             }
         } elseif ($exceptionType === 'php') {
             $errors = [];
-            // create php error report
             $i = 0;
             if (! isset($_SESSION['prev_errors']) || $_SESSION['prev_errors'] == '') {
                 return [];
             }
 
             foreach ($_SESSION['prev_errors'] as $errorObj) {
-                /** @var Error $errorObj */
+                
                 if (! $errorObj->getLine() || ! $errorObj->getType() || $errorObj->getNumber() == E_USER_WARNING) {
                     continue;
                 }
@@ -146,8 +144,6 @@ class ErrorReport
                     'stackhash' => $errorObj->getHash(),
                 ];
             }
-
-            // if there were no 'actual' errors to be submitted.
             if ($i == 0) {
                 return []; // then return empty array
             }
@@ -190,16 +186,12 @@ class ErrorReport
                 $components = [];
             }
         }
-
-        // get script name
         preg_match('<([a-zA-Z\-_\d\.]*\.php|js\/[a-zA-Z\-_\d\/\.]*\.js)$>', $components['path'] ?? '', $matches);
         if (count($matches) < 2) {
             $scriptName = 'index.php';
         } else {
             $scriptName = $matches[1];
         }
-
-        // remove deployment specific details to make uri more generic
         if (isset($components['query'])) {
             parse_str($components['query'], $queryArray);
             unset($queryArray['db'], $queryArray['table'], $queryArray['token'], $queryArray['server']);

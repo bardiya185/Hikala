@@ -9,7 +9,6 @@ function echoinfo($extension) {
         case 'pcre':
         case 'dom':
         case 'xml':
-//            echo " - reqired";
             break;
         case 'com_dotnet':
             echo " - reqired on WINNT systems";

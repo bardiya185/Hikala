@@ -41,7 +41,7 @@ class OtherObjectManager
 
     public function createObjectForValue(int $value, ?string $data): OtherObject
     {
-        /** @var OtherObject $class */
+        
         $class = $this->getClassForValue($value);
 
         return $class::createFromLoadedData($value, $data);

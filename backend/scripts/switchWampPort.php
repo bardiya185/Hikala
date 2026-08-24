@@ -12,19 +12,14 @@ if(WAMPTRACE_PROCESS) {
 require 'config.inc.php';
 require 'wampserver.lib.php';
 $message = '';
-
-//Replace Used Port by New port ($_SERVER['argv'][1])
 $portToUse = intval(trim($_SERVER['argv'][1]));
 
 $ChangeVhosts = (empty($_SERVER['argv'][2])) ? true : false;
-
-//Check validity
 $goodPort = true;
 if($portToUse < 80 || ($portToUse > 81 && $portToUse < 1025) || $portToUse > 65535)
 	$goodPort = false;
 
 if($goodPort) {
-	//Change port into httpd.conf
 	$httpdFileContents = @file_get_contents($c_apacheConfFile ) or die ("httpd.conf file not found");
 	$findTxtRegex = array(
 	'/^(Listen 0.0.0.0:)[0-9]{2,5}/m',
@@ -48,8 +43,6 @@ if($goodPort) {
 	}
 
 	$virtualHost = check_virtualhost(true);
-
-	//Change port into httpd-vhosts.conf
 	if($virtualHost['include_vhosts'] && $virtualHost['vhosts_exist'] && $ChangeVhosts) {
 		$c_vhostConfFile = $virtualHost['vhosts_file'];
 		$myVhostsContents = file_get_contents($c_vhostConfFile) or die ("httpd-vhosts.conf file not found");
@@ -64,8 +57,6 @@ if($goodPort) {
 				$count += $nb;
 			}
 		}
-
-		//$myVhostsContents = preg_replace($findTxtRegex,$replaceTxtRegex, $myVhostsContents, -1, $count);
 		if($count > 0) write_file($c_vhostConfFile,$myVhostsContents);
 	}
 

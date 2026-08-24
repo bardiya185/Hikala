@@ -1,10 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-
-// ================================================================
-// 🎴 Flip Unit Component
-// ================================================================
 function FlipUnit({ value, label }) {
   const [displayValue, setDisplayValue] = useState(value);
   const [flipping, setFlipping] = useState(false);
@@ -41,21 +37,15 @@ function FlipUnit({ value, label }) {
     </div>
   );
 }
-
-// ================================================================
-// ⏰ Countdown Timer
-// ================================================================
 export default function CountdownTimer({ targetDate }) {
   const [timeLeft, setTimeLeft] = useState(() => calculateTimeLeft(targetDate));
-
-  // 🔥 محاسبه با روز
   function calculateTimeLeft(target) {
     const difference = +new Date(target) - +new Date();
     let timeLeft = {};
 
     if (difference > 0) {
       timeLeft = {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),      // 🔥 روز اضافه شد
+        days: Math.floor(difference / (1000 * 60 * 60 * 24)), // 🔥 روز اضافه شد
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
         minutes: Math.floor((difference / 1000 / 60) % 60),
         seconds: Math.floor((difference / 1000) % 60),
@@ -78,7 +68,7 @@ export default function CountdownTimer({ targetDate }) {
 
   return (
     <div className="flex items-center gap-2" dir="ltr">
-      {/* 🔥 روز فقط وقتی نشون داده میشه که > 0 باشه */}
+      {}
       {timeLeft.days > 0 && (
         <>
           <FlipUnit value={formatNumber(timeLeft.days)} label="days" />

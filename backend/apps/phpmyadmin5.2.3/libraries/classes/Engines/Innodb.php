@@ -118,16 +118,12 @@ class Innodb extends StorageEngine
     public function getPageBufferpool()
     {
         global $dbi;
-
-        // The following query is only possible because we know
-        // that we are on MySQL 5 here (checked above)!
-        // side note: I love MySQL 5 for this. :-)
         $sql = 'SHOW STATUS'
             . ' WHERE Variable_name LIKE \'Innodb\\_buffer\\_pool\\_%\''
             . ' OR Variable_name = \'Innodb_page_size\';';
         $status = $dbi->fetchResult($sql, 0, 1);
 
-        /** @var string[] $bytes */
+        
         $bytes = Util::formatByteDown($status['Innodb_buffer_pool_pages_total'] * $status['Innodb_page_size']);
 
         $output = '<table class="table table-striped table-hover w-auto float-start caption-top">' . "\n"
@@ -176,8 +172,6 @@ class Innodb extends StorageEngine
             . Util::formatNumber($status['Innodb_buffer_pool_pages_misc'], 0) . "\n"
             . '</td>' . "\n"
             . '        </tr>';
-
-        // not present at least since MySQL 5.1.40
         if (isset($status['Innodb_buffer_pool_pages_latched'])) {
             $output .= '        <tr>'
                 . '            <th scope="row">' . __('Latched pages') . '</th>'
@@ -307,8 +301,6 @@ class Innodb extends StorageEngine
         $value = $dbi->fetchValue("SHOW GLOBAL VARIABLES LIKE 'innodb_file_format';", 1);
 
         if ($value === false) {
-            // This variable does not exist anymore on MariaDB >= 10.6.0
-            // This variable does not exist anymore on MySQL >= 8.0.0
             return null;
         }
 

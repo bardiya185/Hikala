@@ -41,7 +41,6 @@ final class CBORDecoder
      */
     private function wellFormed(DataStream $stream)
     {
-        // process initial bytes
         $initialByte = ord($stream->take(1));
         $majorType = $initialByte >> 5;
         $value = $additionalInformation = $initialByte & 0x1f;
@@ -88,8 +87,6 @@ final class CBORDecoder
             case 31:
                 throw new WebAuthnException();
         }
-
-        // process content
         switch ($majorType) {
             case 0:
                 return $this->getUnsignedInteger($value);
@@ -155,7 +152,7 @@ final class CBORDecoder
     {
         $list = [];
         for ($i = 0; $i < $value; $i++) {
-            /** @psalm-suppress MixedAssignment */
+            
             $list[] = $this->wellFormed($stream);
         }
 
@@ -171,7 +168,7 @@ final class CBORDecoder
     {
         $map = [];
         for ($i = 0; $i < $value; $i++) {
-            /** @psalm-suppress MixedAssignment, MixedArrayOffset */
+            
             $map[$this->wellFormed($stream)] = $this->wellFormed($stream);
         }
 
@@ -185,7 +182,6 @@ final class CBORDecoder
      */
     private function getTag(DataStream $stream)
     {
-        // 1 embedded data item
         return $this->wellFormed($stream);
     }
 
@@ -207,7 +203,6 @@ final class CBORDecoder
                 return null;
 
             case 24:
-                // simple value
                 return ord($stream->take(1));
 
             case 25:
@@ -220,7 +215,6 @@ final class CBORDecoder
                 return $this->getDoubleFloat($stream);
 
             case 31:
-                // "break" stop code for indefinite-length items
                 throw new WebAuthnException();
 
             default:

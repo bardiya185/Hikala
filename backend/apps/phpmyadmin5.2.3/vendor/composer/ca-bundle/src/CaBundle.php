@@ -20,9 +20,9 @@ use Symfony\Component\Process\PhpProcess;
  */
 class CaBundle
 {
-    /** @var string|null */
+    
     private static $caPath;
-    /** @var array<string, bool> */
+    
     private static $caFileValidity = array();
 
     /**

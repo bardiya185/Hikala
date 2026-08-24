@@ -35,16 +35,16 @@ use const PHP_URL_HOST;
  */
 class Navigation
 {
-    /** @var Template */
+    
     private $template;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var NavigationTree */
+    
     private $tree;
 
     /**

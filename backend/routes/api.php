@@ -31,73 +31,47 @@ use Illuminate\Support\Facades\Route;
 | 🌐 PUBLIC ROUTES (No Authentication)
 |==================================================================================
 */
-
-// ===== 🔐 Authentication =====
 Route::post('/send-otp', [AuthController::class, 'sendOtp']);
 Route::post('/check-otp', [AuthController::class, 'checkOtp']);
 Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
-
-// ===== 🔐 Who Am I (Optional Auth) =====
 Route::get('/who-am-i', [AuthController::class, 'whoAmI'])
     ->middleware('optional.auth');
-
-// ===== 📦 Products (Read) =====
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::get('/{product}', [ProductController::class, 'show']);
     Route::get('/{product}/images', [ProductImageController::class, 'index']);
     Route::get('/{product}/related', [ProductController::class, 'related']);
 });
-
-// ===== 🗂️ Categories (Read) =====
 Route::prefix('categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
     Route::get('/menu', [CategoryController::class, 'menu']);
     Route::get('/{category}', [CategoryController::class, 'show']);
 });
-
-// ===== 🏷️ Brands (Read) =====
 Route::prefix('brands')->group(function () {
     Route::get('/', [BrandController::class, 'index']);
     Route::get('/{brand}', [BrandController::class, 'show']);
 });
-
-// ===== 🎨 Attributes (Read) =====
 Route::prefix('attributes')->group(function () {
     Route::get('/', [AttributeController::class, 'index']);
     Route::get('/{attribute}', [AttributeController::class, 'show']);
 });
-
-// ===== 🌍 Locations =====
 Route::get('/provinces', [ProvinceController::class, 'index']);
 Route::get('/cities', [CityController::class, 'index']);
-
-// ===== 🚚 Shipping Features (Read) =====
 Route::get('variants/{variant}/shipping-features', [ProductVariantShippingFeatureController::class, 'index']);
 Route::get('shipping-features/{feature}', [ProductVariantShippingFeatureController::class, 'show']);
-
-// ===== 🎁 Discounts (Read) =====
 Route::get('/discounts', [DiscountController::class, 'index']);
 Route::get('/discounts/{discount}', [DiscountController::class, 'show']);
-
-// ===== 🖼️ Banners (Read) =====
 Route::prefix('banners')->group(function () {
     Route::get('/', [BannerController::class, 'all']);
     Route::get('/position/{key}', [BannerController::class, 'byPosition']);
     Route::post('/{banner}/click', [BannerController::class, 'trackClick']);
 });
-
-// ===== 🎫 Coupon Validation =====
 Route::post('/coupons/validate', [CouponController::class, 'validate']);
-
-// ===== 🎯 Discount Campaigns (Public) =====
 Route::prefix('campaigns')->group(function () {
     Route::get('/', [DiscountCampaignController::class, 'index']);
     Route::get('/{slug}', [DiscountCampaignController::class, 'showBySlug']);
     Route::get('/{slug}/products', [DiscountCampaignController::class, 'products']);
 });
-
-// ===== ⭐ Product Reviews (Public) =====
 Route::get('/products/{product}/reviews', [ReviewController::class, 'index']);
 
 
@@ -125,25 +99,15 @@ Route::prefix('cart')->middleware('optional.auth')->group(function () {
 */
 
 Route::middleware('auth:sanctum')->group(function () {
-
-    // ===== 👤 User =====
     Route::get('/user', fn(Request $request) => $request->user());
     Route::post('/logout', [AuthController::class, 'logout']);
-
-    // ===== 🛒 Cart Merge =====
     Route::post('/cart/merge', [CartController::class, 'mergeCart']);
-
-    // ===== 📍 Addresses =====
     Route::apiResource('addresses', AddressController::class);
-
-    // ===== ⭐ Reviews (User) =====
     Route::post('/reviews', [ReviewController::class, 'store']);
     Route::put('/reviews/{review}', [ReviewController::class, 'update']);
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
     Route::get('/products/{product}/my-review', [ReviewController::class, 'myReview']);
     Route::post('/reviews/{review}/react', [ReviewController::class, 'react']);
-
-    // ===== 📦 Orders (User) =====
     Route::prefix('orders')->group(function () {
         Route::post('/checkout', [OrderController::class, 'checkout']);
         Route::get('/', [OrderController::class, 'index']);
@@ -181,16 +145,12 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::prefix('admin')
     ->middleware(['auth:sanctum', 'role:super-admin|admin'])
     ->group(function () {
-
-    // ===== 📦 Products Management =====
     Route::prefix('products')->middleware('permission:create-products')->group(function () {
         Route::post('/', [ProductController::class, 'store']);
         Route::put('/{product}', [ProductController::class, 'update']);
         Route::delete('/{product}', [ProductController::class, 'destroy'])
             ->middleware('permission:delete-products');
     });
-
-    // ===== 🖼️ Product Images =====
     Route::prefix('products/{product}/images')
         ->middleware('permission:update-products')
         ->scopeBindings()
@@ -218,30 +178,22 @@ Route::prefix('categories')->group(function () {
         Route::delete('/{brand}', [BrandController::class, 'destroy'])
             ->middleware('permission:delete-brands');
     });
-
-    // ===== 🎨 Attributes Management =====
     Route::prefix('attributes')->middleware('permission:create-products')->group(function () {
         Route::post('/', [AttributeController::class, 'store']);
         Route::put('/{attribute}', [AttributeController::class, 'update']);
         Route::delete('/{attribute}', [AttributeController::class, 'destroy']);
     });
-
-    // ===== 🎁 Discounts Management =====
     Route::prefix('discounts')->middleware('permission:create-discounts')->group(function () {
         Route::post('/', [DiscountController::class, 'store']);
         Route::put('/{discount}', [DiscountController::class, 'update']);
         Route::delete('/{discount}', [DiscountController::class, 'destroy'])
             ->middleware('permission:delete-discounts');
     });
-
-    // ===== 🚚 Shipping Features Management =====
     Route::middleware('permission:update-products')->group(function () {
         Route::post('variants/{variant}/shipping-features', [ProductVariantShippingFeatureController::class, 'store']);
         Route::put('shipping-features/{feature}', [ProductVariantShippingFeatureController::class, 'update']);
         Route::delete('shipping-features/{feature}', [ProductVariantShippingFeatureController::class, 'destroy']);
     });
-
-    // ===== 🖼️ Banners =====
     Route::prefix('banners')->middleware('permission:create-banners')->group(function () {
         Route::get('/', [BannerController::class, 'adminIndex']);
         Route::post('/', [BannerController::class, 'store']);
@@ -250,16 +202,10 @@ Route::prefix('categories')->group(function () {
         Route::delete('/{banner}', [BannerController::class, 'destroy'])
             ->middleware('permission:delete-banners');
     });
-
-    // ===== 📍 Banner Positions =====
     Route::apiResource('banner-positions', BannerPositionController::class)
         ->middleware('permission:create-banners');
-
-    // ===== 🎫 Coupons =====
     Route::apiResource('coupons', CouponController::class)
         ->middleware('permission:create-coupons');
-
-    // ===== 🎯 Discount Campaigns =====
     Route::prefix('campaigns')->middleware('permission:create-campaigns')->group(function () {
         Route::get('/', [DiscountCampaignController::class, 'adminIndex']);
         Route::post('/', [DiscountCampaignController::class, 'store']);
@@ -268,15 +214,11 @@ Route::prefix('categories')->group(function () {
         Route::delete('/{campaign}', [DiscountCampaignController::class, 'destroy'])
             ->middleware('permission:delete-campaigns');
     });
-
-    // ===== ⭐ Reviews Management =====
     Route::prefix('reviews')->middleware('permission:approve-reviews')->group(function () {
         Route::get('/', [ReviewController::class, 'adminIndex']);
         Route::post('/{review}/approve', [ReviewController::class, 'approve']);
         Route::post('/{review}/reject', [ReviewController::class, 'reject']);
     });
-
-    // ===== 📦 Orders Management =====
     Route::prefix('orders')->middleware('permission:view-orders')->group(function () {
         Route::post('/{order}/refund', [OrderController::class, 'refund'])
             ->middleware('permission:refund-orders');
@@ -293,11 +235,7 @@ Route::prefix('categories')->group(function () {
 Route::prefix('admin')
     ->middleware(['auth:sanctum', 'role:super-admin'])
     ->group(function () {
-
-    // ===== 👥 Roles Management =====
     Route::apiResource('roles', RoleController::class);
-
-    // ===== 👤 User Role Management =====
     Route::prefix('users')->group(function () {
         Route::get('/{user}/roles', [UserRoleController::class, 'index']);
         Route::put('/{user}/role', [UserRoleController::class, 'sync']);

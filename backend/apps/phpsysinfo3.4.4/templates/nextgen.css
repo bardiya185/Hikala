@@ -28,7 +28,7 @@ html {
 body {
     position: relative;
     width: 940px;
-    _width: 945px; /* ie6 */
+    _width: 945px; 
     min-height: 100%;
     overflow: auto;
     margin: 0 auto;
@@ -67,7 +67,7 @@ h2 {
     font-weight: bold;
     letter-spacing: 0.0em;
     text-transform: uppercase;
-    color: #c9de55; /* #7d9100; */
+    color: #c9de55; 
     background: #354242;
 }
 
@@ -106,7 +106,7 @@ select {
 .fullsize, .halfsize {
     float: left;
     margin: 10px 0 0 10px;
-    _margin: 10px 5px 0 5px; /* ie6 */
+    _margin: 10px 5px 0 5px; 
     padding: 1px;
     border: 1px solid #354242;
 }
@@ -135,7 +135,7 @@ select {
 .plugin {
     float: left;
     margin: 10px 0 0 10px;
-    _margin: 10px 5px 0 5px; /* ie6 */
+    _margin: 10px 5px 0 5px; 
     padding: 1px;
     border: 1px solid #354242;
 }
@@ -168,19 +168,19 @@ select {
 
 .treeimg {
     display: table-cell;
-    *float: left; /* ie6 ie7 */
+    *float: left; 
     vertical-align: top;
 }
 
 .treespan {
     display: table-cell;
-    *float: left; /* ie6 ie7 */
+    *float: left; 
 }
 
 .treespanbold {
     font-weight: bold;
     display: table-cell;
-    *float: left; /* ie6 ie7 */
+    *float: left; 
 }
 
 .tree tr td {

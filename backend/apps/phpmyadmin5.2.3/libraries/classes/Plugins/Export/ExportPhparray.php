@@ -43,21 +43,11 @@ class ExportPhparray extends ExportPlugin
         $exportPluginProperties->setExtension('php');
         $exportPluginProperties->setMimeType('text/plain');
         $exportPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $exportPluginProperties
-        // this will be shown as "Format specific options"
         $exportSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-        // general options main group
         $generalOptions = new OptionsPropertyMainGroup('general_opts');
-        // create primary items and add them to the group
         $leaf = new HiddenPropertyItem('structure_or_data');
         $generalOptions->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($generalOptions);
-
-        // set the options for the export plugin property item
         $exportPluginProperties->setOptions($exportSpecificOptions);
 
         return $exportPluginProperties;
@@ -179,15 +169,8 @@ class ExportPhparray extends ExportPlugin
         }
 
         $tablefixed = $table;
-
-        // fix variable names (based on
-        // https://www.php.net/manual/en/language.variables.basics.php)
         if (! preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $table_alias)) {
-            // fix invalid characters in variable names by replacing them with
-            // underscores
             $tablefixed = preg_replace('/[^a-zA-Z0-9_\x7f-\xff]/', '_', $table_alias);
-
-            // variable name must not start with a number or dash...
             if (preg_match('/^[a-zA-Z_\x7f-\xff]/', $tablefixed) === 0) {
                 $tablefixed = '_' . $tablefixed;
             }
@@ -195,7 +178,6 @@ class ExportPhparray extends ExportPlugin
 
         $buffer = '';
         $record_cnt = 0;
-        // Output table name as comment
         $buffer .= $crlf . '/* '
             . $this->commentString(Util::backquote($db_alias)) . '.'
             . $this->commentString(Util::backquote($table_alias)) . ' */' . $crlf;
@@ -203,8 +185,6 @@ class ExportPhparray extends ExportPlugin
         if (! $this->export->outputHandler($buffer)) {
             return false;
         }
-
-        // Reset the buffer
         $buffer = '';
         while ($record = $result->fetchRow()) {
             $record_cnt++;
@@ -225,8 +205,6 @@ class ExportPhparray extends ExportPlugin
             if (! $this->export->outputHandler($buffer)) {
                 return false;
             }
-
-            // Reset the buffer
             $buffer = '';
         }
 

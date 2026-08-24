@@ -116,10 +116,6 @@ class OrderController extends Controller
         private FakePaymentService $paymentService,
         private DeliveryCalculator $deliveryCalculator
     ) {}
-
-    // ================================================================
-    // 🛒 CHECKOUT: Create Order from Cart
-    // ================================================================
     #[OA\Post(
         path: '/api/orders/checkout',
         tags: ['Orders'],
@@ -197,8 +193,6 @@ class OrderController extends Controller
             
             $address = Address::findOrFail($request->address_id);
             $paymentMethod = PaymentMethod::from($request->payment_method);
-            
-            // ✅ Shipping method
             $shippingMethod = $request->shipping_method 
                 ? \App\Enums\ShippingMethod::from($request->shipping_method)
                 : \App\Enums\ShippingMethod::STANDARD;
@@ -206,8 +200,6 @@ class OrderController extends Controller
                 $preferredTimeSlot = $request->preferred_delivery_time_slot
                 ? \App\Enums\DeliveryTimeSlot::from($request->preferred_delivery_time_slot)
                 : null;
-            
-            // ✅ ساخت سفارش با shipping
             $order = $this->creationService->createFromCart(
                 $cart,
                 $user,
@@ -240,10 +232,6 @@ class OrderController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
-
-    // ================================================================
-    // 📋 LIST: User Orders
-    // ================================================================
     #[OA\Get(
         path: '/api/orders',
         tags: ['Orders'],
@@ -278,8 +266,6 @@ class OrderController extends Controller
         
         $query = Order::forUser($user->id)
             ->with(['items', 'address']);
-        
-        // فیلتر بر اساس وضعیت
         if ($request->has('status')) {
             $query->where('status', $request->status);
         }
@@ -297,10 +283,6 @@ class OrderController extends Controller
             ],
         ]);
     }
-
-    // ================================================================
-    // 🔍 SHOW: Order Details
-    // ================================================================
     #[OA\Get(
         path: '/api/orders/{order}',
         tags: ['Orders'],
@@ -325,8 +307,6 @@ class OrderController extends Controller
     {
         try {
             $user = $request->user();
-            
-            // چک دسترسی
             if ($order->user_id !== $user->id) {
                 return response()->json([
                     'success' => false,
@@ -354,10 +334,6 @@ class OrderController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    // ================================================================
-    // ❌ CANCEL Order
-    // ================================================================
     #[OA\Post(
         path: '/api/orders/{order}/cancel',
         tags: ['Orders'],
@@ -407,8 +383,6 @@ class OrderController extends Controller
                 'message' => 'Order canceled successfully',
                 'data' => new OrderResource($order),
             ]);
-
-                // ✅ ذخیره دلیل لغو
         if ($request->reason) {
             $order->update(['cancel_reason' => $request->reason]);
         }
@@ -434,25 +408,17 @@ class OrderController extends Controller
     public function deliveryOptions(Request $request)
     {
         $user = $request->user();
-        
-        // گرفتن سبد کاربر
         $cart = $this->cartService->getOrCreate(
             $user,
             $request->header('X-Session-Id')
         );
-        
-        // بارگذاری shipping features
         $cart->load(['items.variant.shippingFeatures']);
-        
-        // اگه سبد خالیه
         if ($cart->items->isEmpty()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Cart is empty',
             ], 422);
         }
-        
-        // محاسبه
         $dates = $this->deliveryCalculator->getAvailableDates($cart, 7);
         $info = $this->deliveryCalculator->getDeliveryInfo($cart);
         
@@ -465,10 +431,6 @@ class OrderController extends Controller
             ],
         ]);
     }
-
-    // ================================================================
-    // 🔄 REQUEST REFUND
-    // ================================================================
     #[OA\Post(
         path: '/api/orders/{order}/refund',
         tags: ['Orders'],
@@ -530,10 +492,6 @@ class OrderController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
-
-    // ================================================================
-    // 💳 PAY (Fake Payment)
-    // ================================================================
     #[OA\Post(
         path: '/api/orders/{order}/pay',
         tags: ['Orders'],
@@ -557,37 +515,27 @@ class OrderController extends Controller
     {
         try {
             $user = $request->user();
-            
-            // چک دسترسی
             if ($order->user_id !== $user->id) {
                 return response()->json([
                     'success' => false,
                     'message' => 'You do not have access to this order',
                 ], Response::HTTP_FORBIDDEN);
             }
-            
-            // چک اینکه پرداخت نشده باشه
             if ($order->payment_status === PaymentStatus::PAID) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Order already paid',
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
-            
-            // Fake payment - همیشه موفقه
             $result = $this->paymentService->verify(
                 $order,
                 'TXN-FAKE-' . strtoupper(uniqid())
             );
-            
-            // آپدیت سفارش
             $order->update([
                 'payment_status' => PaymentStatus::PAID,
                 'transaction_id' => $result['transaction_id'],
                 'paid_at' => now(),
             ]);
-            
-            // تغییر وضعیت سفارش به paid
             $this->statusService->changeStatus(
                 $order,
                 OrderStatus::PAID,

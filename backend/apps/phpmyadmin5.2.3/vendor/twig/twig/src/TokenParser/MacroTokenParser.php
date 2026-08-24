@@ -32,14 +32,14 @@ final class MacroTokenParser extends AbstractTokenParser
     {
         $lineno = $token->getLine();
         $stream = $this->parser->getStream();
-        $name = $stream->expect(/* Token::NAME_TYPE */ 5)->getValue();
+        $name = $stream->expect( 5)->getValue();
 
         $arguments = $this->parser->getExpressionParser()->parseArguments(true, true);
 
-        $stream->expect(/* Token::BLOCK_END_TYPE */ 3);
+        $stream->expect( 3);
         $this->parser->pushLocalScope();
         $body = $this->parser->subparse([$this, 'decideBlockEnd'], true);
-        if ($token = $stream->nextIf(/* Token::NAME_TYPE */ 5)) {
+        if ($token = $stream->nextIf( 5)) {
             $value = $token->getValue();
 
             if ($value != $name) {
@@ -47,7 +47,7 @@ final class MacroTokenParser extends AbstractTokenParser
             }
         }
         $this->parser->popLocalScope();
-        $stream->expect(/* Token::BLOCK_END_TYPE */ 3);
+        $stream->expect( 3);
 
         $this->parser->setMacro($name, new MacroNode($name, new BodyNode([$body]), $arguments, $lineno, $this->getTag()));
 

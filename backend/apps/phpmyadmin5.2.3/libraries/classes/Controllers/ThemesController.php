@@ -10,7 +10,7 @@ use PhpMyAdmin\ThemeManager;
 
 class ThemesController extends AbstractController
 {
-    /** @var ThemeManager */
+    
     private $themeManager;
 
     public function __construct(ResponseRenderer $response, Template $template, ThemeManager $themeManager)

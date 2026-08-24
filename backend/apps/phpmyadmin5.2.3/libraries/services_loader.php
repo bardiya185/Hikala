@@ -35,8 +35,6 @@ return static function (ContainerConfigurator $configurator): void {
             if (! isset($service['factory'])) {
                 continue;
             }
-
-            // !== null check
             $theService->factory($service['factory']);
         }
     };

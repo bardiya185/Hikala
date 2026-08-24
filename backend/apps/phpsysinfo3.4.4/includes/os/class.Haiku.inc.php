@@ -75,7 +75,6 @@ class Haiku extends OS
     protected function _pci()
     {
         if (CommonFunctions::executeProgram('listdev', '', $bufr, PSI_DEBUG)) {
-//            $devices = preg_split("/^device |\ndevice /", $bufr, -1, PREG_SPLIT_NO_EMPTY);
             $devices = preg_split("/^device /m", $bufr, -1, PREG_SPLIT_NO_EMPTY);
             foreach ($devices as $device) {
                 $ar_buf = preg_split("/\n/", $device);

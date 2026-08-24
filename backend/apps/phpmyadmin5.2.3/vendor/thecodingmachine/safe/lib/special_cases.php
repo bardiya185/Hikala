@@ -199,7 +199,6 @@ function readdir($dir_handle = null)
 function openssl_encrypt(string $data, string $method, string $key, int $options = 0, string $iv = "", string &$tag = "", string $aad = "", int $tag_length = 16): string
 {
     error_clear_last();
-    // The $tag parameter is handled in a weird way by openssl_encrypt. It cannot be provided unless encoding is AEAD
     if (func_num_args() <= 5) {
         $result = \openssl_encrypt($data, $method, $key, $options, $iv);
     } else {

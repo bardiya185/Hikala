@@ -24,9 +24,8 @@ error_reporting(E_ALL | E_STRICT);
  */
 function psi_autoload($class_name)
 {
-    //$class_name = str_replace('-', '', $class_name);
 
-    /* case-insensitive folders */
+    
     $dirs = array('/plugins/'.strtolower($class_name).'/', '/includes/mb/', '/includes/ups/');
 
     foreach ($dirs as $dir) {
@@ -37,7 +36,7 @@ function psi_autoload($class_name)
         }
     }
 
-    /* case-sensitive folders */
+    
     $dirs = array('/includes/', '/includes/interface/', '/includes/to/', '/includes/to/device/', '/includes/os/', '/includes/plugin/', '/includes/xml/', '/includes/web/', '/includes/error/', '/includes/js/', '/includes/output/');
 
     foreach ($dirs as $dir) {

@@ -64,24 +64,14 @@ class ExportPdf extends ExportPlugin
         $exportPluginProperties->setMimeType('application/pdf');
         $exportPluginProperties->setForceFile(true);
         $exportPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $exportPluginProperties
-        // this will be shown as "Format specific options"
         $exportSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-        // general options main group
         $generalOptions = new OptionsPropertyMainGroup('general_opts');
-        // create primary items and add them to the group
         $leaf = new TextPropertyItem(
             'report_title',
             __('Report title:')
         );
         $generalOptions->addProperty($leaf);
-        // add the group to the root group
         $exportSpecificOptions->addProperty($generalOptions);
-
-        // what to dump (structure/data/both) main group
         $dumpWhat = new OptionsPropertyMainGroup(
             'dump_what',
             __('Dump table')
@@ -95,10 +85,7 @@ class ExportPdf extends ExportPlugin
             ]
         );
         $dumpWhat->addProperty($leaf);
-        // add the group to the root group
         $exportSpecificOptions->addProperty($dumpWhat);
-
-        // set the options for the export plugin property item
         $exportPluginProperties->setOptions($exportSpecificOptions);
 
         return $exportPluginProperties;
@@ -125,8 +112,6 @@ class ExportPdf extends ExportPlugin
     public function exportFooter(): bool
     {
         $pdf = $this->getPdf();
-
-        // instead of $pdf->Output():
         return $this->export->outputHandler($pdf->getPDFData());
     }
 
@@ -262,7 +247,6 @@ class ExportPdf extends ExportPlugin
         $purpose = '';
         $this->initAlias($aliases, $db_alias, $table_alias);
         $pdf = $this->getPdf();
-        // getting purpose to show at top
         switch ($exportMode) {
             case 'create_table':
                 $purpose = __('Table structure');
@@ -309,7 +293,7 @@ class ExportPdf extends ExportPlugin
         return true;
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the PhpMyAdmin\Plugins\Export\Helpers\Pdf instance

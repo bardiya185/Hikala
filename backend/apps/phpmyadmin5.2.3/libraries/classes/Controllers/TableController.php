@@ -11,7 +11,7 @@ use PhpMyAdmin\Template;
 
 final class TableController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, DatabaseInterface $dbi)

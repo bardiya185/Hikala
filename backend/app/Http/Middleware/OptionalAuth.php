@@ -17,7 +17,6 @@ class OptionalAuth
                     auth()->setUser($user);
                 }
             } catch (\Exception $e) {
-                // Token invalid → treat as guest
             }
         }
         

@@ -57,7 +57,7 @@ class TransTokenParser extends AbstractTokenParser
         $notes = null;
         $context = null;
 
-        /* If we aren't closing the block, do we have a domain? */
+        
         if ($stream->test(Token::NAME_TYPE)) {
             $stream->expect(Token::NAME_TYPE, 'from');
             $domain = method_exists($this->parser, 'parseExpression')

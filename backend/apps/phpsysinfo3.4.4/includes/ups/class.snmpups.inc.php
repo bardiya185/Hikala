@@ -109,14 +109,14 @@ class SNMPups extends UPS
                     }
                     foreach ($upss as $ups) {
                         if (! PSI_DEBUG) {
-                            restore_error_handler(); /* default error handler */
+                            restore_error_handler(); 
                             $old_err_rep = error_reporting();
-                            error_reporting(E_ERROR); /* fatal errors only */
+                            error_reporting(E_ERROR); 
                         }
                         $bufferarr=snmprealwalk($ups, "public", ".1.3.6.1.4.1.318.1.1.1.1", 1000000 * PSI_SNMP_TIMEOUT_INT, PSI_SNMP_RETRY_INT);
                         if (! PSI_DEBUG) {
-                            error_reporting($old_err_rep); /* restore error level */
-                            set_error_handler('errorHandlerPsi'); /* restore error handler */
+                            error_reporting($old_err_rep); 
+                            set_error_handler('errorHandlerPsi'); 
                         }
                         if (! empty($bufferarr)) {
                             $buffer="";
@@ -125,16 +125,16 @@ class SNMPups extends UPS
                             }
 
                             if (! PSI_DEBUG) {
-                                restore_error_handler(); /* default error handler */
+                                restore_error_handler(); 
                                 $old_err_rep = error_reporting();
-                                error_reporting(E_ERROR); /* fatal errors only */
+                                error_reporting(E_ERROR); 
                             }
                             $bufferarr2=snmprealwalk($ups, "public", ".1.3.6.1.4.1.318.1.1.1.2", 1000000 * PSI_SNMP_TIMEOUT_INT, PSI_SNMP_RETRY_INT);
                             $bufferarr3=snmprealwalk($ups, "public", ".1.3.6.1.4.1.318.1.1.1.3", 1000000 * PSI_SNMP_TIMEOUT_INT, PSI_SNMP_RETRY_INT);
                             $bufferarr4=snmprealwalk($ups, "public", ".1.3.6.1.4.1.318.1.1.1.4", 1000000 * PSI_SNMP_TIMEOUT_INT, PSI_SNMP_RETRY_INT);
                             if (! PSI_DEBUG) {
-                                error_reporting($old_err_rep); /* restore error level */
-                                set_error_handler('errorHandlerPsi'); /* restore error handler */
+                                error_reporting($old_err_rep); 
+                                set_error_handler('errorHandlerPsi'); 
                             }
                             if (! empty($bufferarr2)) {
                                 foreach ($bufferarr2 as $id=>$string) {

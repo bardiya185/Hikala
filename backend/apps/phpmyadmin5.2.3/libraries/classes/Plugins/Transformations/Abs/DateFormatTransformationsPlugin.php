@@ -60,11 +60,8 @@ abstract class DateFormatTransformationsPlugin extends TransformationsPlugin
     public function applyTransformation($buffer, array $options = [], ?FieldMetadata $meta = null)
     {
         $buffer = (string) $buffer;
-        // possibly use a global transform and feed it with special options
         $cfg = $GLOBALS['cfg'];
         $options = $this->getOptions($options, $cfg['DefaultTransformations']['DateFormat']);
-
-        // further operations on $buffer using the $options[] array.
         $options[2] = mb_strtolower($options[2]);
 
         if (empty($options[1])) {
@@ -76,17 +73,8 @@ abstract class DateFormatTransformationsPlugin extends TransformationsPlugin
         }
 
         $timestamp = -1;
-
-        // INT columns will be treated as UNIX timestamps
-        // and need to be detected before the verification for
-        // MySQL TIMESTAMP
         if ($meta !== null && $meta->isType(FieldMetadata::TYPE_INT)) {
             $timestamp = $buffer;
-
-            // Detect TIMESTAMP(6 | 8 | 10 | 12 | 14)
-            // TIMESTAMP (2 | 4) not supported here.
-            // (Note: prior to MySQL 4.1, TIMESTAMP has a display size
-            // for example TIMESTAMP(8) means YYYYMMDD)
         } else {
             if (preg_match('/^(\d{2}){3,7}$/', $buffer)) {
                 if (mb_strlen($buffer) == 14 || mb_strlen($buffer) == 8) {
@@ -113,9 +101,6 @@ abstract class DateFormatTransformationsPlugin extends TransformationsPlugin
                         $aDate['year']
                     );
                 }
-
-                // If all fails, assume one of the dozens of valid strtime() syntaxes
-                // (https://www.gnu.org/manual/tar-1.12/html_chapter/tar_7.html)
             } else {
                 if (preg_match('/^[0-9]\d{1,9}$/', $buffer)) {
                     $timestamp = (int) $buffer;
@@ -124,13 +109,9 @@ abstract class DateFormatTransformationsPlugin extends TransformationsPlugin
                 }
             }
         }
-
-        // If all above failed, maybe it's a Unix timestamp already?
         if ($timestamp < 0 && preg_match('/^[1-9]\d{1,9}$/', $buffer)) {
             $timestamp = $buffer;
         }
-
-        // Reformat a valid timestamp
         if ($timestamp >= 0) {
             $timestamp -= (int) $options[0] * 60 * 60;
             $source = $buffer;
@@ -149,7 +130,7 @@ abstract class DateFormatTransformationsPlugin extends TransformationsPlugin
         return htmlspecialchars((string) $buffer);
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

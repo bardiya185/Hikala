@@ -14,26 +14,19 @@ require 'wampserver.lib.php';
 $message = '';
 $minPort = "3301";
 $maxPort = "3309";
-
-//Replace UsedMysqlPort by NewMysqlport ($_SERVER['argv'][1])
 $portToUse = intval(trim($_SERVER['argv'][1]));
-//Check validity
 $goodPort = true;
 if($portToUse < $minPort || $portToUse > $maxPort || $portToUse == $wampConf['mariaPortUsed'])
 	$goodPort = false;
-//If nocheck second parameter
 if(!empty($_SERVER['argv'][2]) && $_SERVER['argv'][2] == 'nocheck')
 	$goodPort = true;
 
 $myIniReplace = false;
 
 if($goodPort) {
-	//Change port into my.ini
 	$mySqlIniFileContents = @file_get_contents($c_mysqlConfFile) or die ("my.ini file not found");
 	$nb_myIni = 0; //must be three replacements: [client], [wampmariadb] and [mysqld] groups
-	//Find already used ports
 	$portCount = preg_match_all('/^port[ \t]*=[ \t]*('.$portToUse.').*$/m',$mySqlIniFileContents,$matches);
-	//If the port number already exists three times, there is nothing to change.
 	if($portCount !== 3) {
 		$findTxtRegex = '/^((port[ \t]*=[ \t]*)[0-9]*)/m';
 		preg_match_all($findTxtRegex,$mySqlIniFileContents,$matches);

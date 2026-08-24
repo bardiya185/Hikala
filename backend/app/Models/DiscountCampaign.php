@@ -27,20 +27,10 @@ class DiscountCampaign extends Model
         'ends_at' => 'datetime',
     ];
 
-
-    // ================================================================
-    // 🔗 Relationships
-    // ================================================================
-
     public function discounts(): HasMany
     {
         return $this->hasMany(Discount::class, 'campaign_id');
     }
-
-
-    // ================================================================
-    // 🔍 Scopes
-    // ================================================================
 
  
     public function scopeActive($query)
@@ -61,11 +51,6 @@ class DiscountCampaign extends Model
     {
         return $query->orderBy('priority', 'desc');
     }
-
-
-    // ================================================================
-    // 🎯 Helpers
-    // ================================================================
 
 
     public function isCurrentlyActive(): bool

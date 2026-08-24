@@ -539,7 +539,7 @@ class Generator
 
             // Html format the query to be displayed
             // If we want to show some sql code it is easiest to create it here
-            /* SQL-Parser-Analyzer */
+            
 
             if (! empty($GLOBALS['show_as_php'])) {
                 $newLine = '\\n"<br>' . "\n" . '&nbsp;&nbsp;&nbsp;&nbsp;. "';
@@ -580,7 +580,7 @@ class Generator
 
             // Want to have the query explained
             // but only explain a SELECT (that has not been explained)
-            /* SQL-Parser-Analyzer */
+            
             $explainLink = '';
             $isSelect = preg_match('@^SELECT[[:space:]]+@i', $sqlQuery);
             if (! empty($cfg['SQLQuery']['Explain']) && ! $queryTooBig) {

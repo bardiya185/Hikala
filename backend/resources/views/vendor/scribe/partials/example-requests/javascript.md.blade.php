@@ -1,6 +1,6 @@
 @php
     use Knuckles\Scribe\Tools\WritingUtils as u;
-    /** @var  Knuckles\Camel\Output\OutputEndpointData $endpoint */
+    
 @endphp
 ```javascript
 const url = new URL(

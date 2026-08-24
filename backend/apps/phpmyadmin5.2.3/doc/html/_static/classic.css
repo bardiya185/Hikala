@@ -11,10 +11,10 @@
 
 @import url("basic.css");
 
-/* -- page layout ----------------------------------------------------------- */
+
 
 html {
-    /* CSS hack for macOS's scrollbar (see #1125) */
+    
     background-color: #FFFFFF;
 }
 
@@ -121,7 +121,7 @@ div.sphinxsidebar input {
 
 
 
-/* -- hyperlink styles ------------------------------------------------------ */
+
 
 a {
     color: #355f7c;
@@ -139,7 +139,7 @@ a:hover {
 
 
 
-/* -- body styles ----------------------------------------------------------- */
+
 
 div.body h1,
 div.body h2,

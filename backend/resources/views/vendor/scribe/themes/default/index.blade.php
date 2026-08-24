@@ -24,7 +24,7 @@
 
 @if(isset($metadata['example_languages']))
     <style id="language-style">
-        /* starts out as display none and is replaced with js later  */
+        
         @foreach($metadata['example_languages'] as $lang)
             body .content .{{ $lang }}-example code { display: none; }
         @endforeach

@@ -26,7 +26,7 @@ use function strncasecmp;
  */
 class Types
 {
-    /** @var DatabaseInterface Database interface */
+    
     private $dbi;
 
     /**
@@ -775,8 +775,6 @@ class Types
         $isMariaDB = $this->dbi->isMariaDB();
         $serverVersion = $this->dbi->getVersion();
         $isUUIDSupported = Compatibility::isUUIDSupported($this->dbi);
-
-        // most used types
         $ret = [
             'INT',
             'VARCHAR',
@@ -787,8 +785,6 @@ class Types
         if ($isUUIDSupported) {
             $ret[] = 'UUID';
         }
-
-        // numeric
         $ret[_pgettext('numeric types', 'Numeric')] = [
             'TINYINT',
             'SMALLINT',
@@ -805,8 +801,6 @@ class Types
             'BOOLEAN',
             'SERIAL',
         ];
-
-        // Date/Time
         $ret[_pgettext('date and time types', 'Date and time')] = [
             'DATE',
             'DATETIME',
@@ -814,8 +808,6 @@ class Types
             'TIME',
             'YEAR',
         ];
-
-        // Text
         $stringTypes = [
             'CHAR',
             'VARCHAR',

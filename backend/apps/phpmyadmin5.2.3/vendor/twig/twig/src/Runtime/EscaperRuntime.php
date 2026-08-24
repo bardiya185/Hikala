@@ -17,13 +17,13 @@ use Twig\Markup;
 
 final class EscaperRuntime implements RuntimeExtensionInterface
 {
-    /** @var array<string, callable(string $string, string $charset): string> */
+    
     private $escapers = [];
 
-    /** @internal */
+    
     public $safeClasses = [];
 
-    /** @internal */
+    
     public $safeLookup = [];
 
     private $charset;
@@ -114,7 +114,6 @@ final class EscaperRuntime implements RuntimeExtensionInterface
 
                 $string = (string) $string;
             } elseif (\in_array($strategy, ['html', 'js', 'css', 'html_attr', 'url'])) {
-                // we return the input as is (which can be of any type)
                 return $string;
             }
         }
@@ -127,11 +126,6 @@ final class EscaperRuntime implements RuntimeExtensionInterface
 
         switch ($strategy) {
             case 'html':
-                // see https://www.php.net/htmlspecialchars
-
-                // Using a static variable to avoid initializing the array
-                // each time the function is called. Moving the declaration on the
-                // top of the function slow downs other escaping strategies.
                 static $htmlspecialcharsCharsets = [
                     'ISO-8859-1' => true, 'ISO8859-1' => true,
                     'ISO-8859-15' => true, 'ISO8859-15' => true,
@@ -154,7 +148,6 @@ final class EscaperRuntime implements RuntimeExtensionInterface
                 }
 
                 if (isset($htmlspecialcharsCharsets[strtoupper($charset)])) {
-                    // cache the lowercase variant for future iterations
                     $htmlspecialcharsCharsets[$charset] = true;
 
                     return htmlspecialchars($string, \ENT_QUOTES | \ENT_SUBSTITUTE, $charset);
@@ -166,8 +159,6 @@ final class EscaperRuntime implements RuntimeExtensionInterface
                 return iconv('UTF-8', $charset, $string);
 
             case 'js':
-                // escape all non-alphanumeric characters
-                // into their \x or \uHHHH representations
                 if ('UTF-8' !== $charset) {
                     $string = $this->convertEncoding($string, 'UTF-8', $charset);
                 }
@@ -202,9 +193,6 @@ final class EscaperRuntime implements RuntimeExtensionInterface
                     if (0x10000 > $codepoint) {
                         return \sprintf('\u%04X', $codepoint);
                     }
-
-                    // Split characters outside the BMP into surrogate pairs
-                    // https://tools.ietf.org/html/rfc2781.html#section-2.1
                     $u = $codepoint - 0x10000;
                     $high = 0xD800 | ($u >> 10);
                     $low = 0xDC00 | ($u & 0x3FF);
@@ -278,10 +266,10 @@ final class EscaperRuntime implements RuntimeExtensionInterface
                         *     XML Parsing Error: undefined entity
                         */
                         static $entityMap = [
-                            34 => '&quot;', /* quotation mark */
-                            38 => '&amp;',  /* ampersand */
-                            60 => '&lt;',   /* less-than sign */
-                            62 => '&gt;',   /* greater-than sign */
+                            34 => '&quot;', 
+                            38 => '&amp;',  
+                            60 => '&lt;',   
+                            62 => '&gt;',   
                         ];
 
                         if (isset($entityMap[$ord])) {

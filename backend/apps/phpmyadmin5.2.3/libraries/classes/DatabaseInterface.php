@@ -109,7 +109,7 @@ class DatabaseInterface implements DbalInterface
      */
     public const CONNECT_AUXILIARY = 0x102;
 
-    /** @var DbiExtension */
+    
     private $extension;
 
     /**
@@ -119,33 +119,33 @@ class DatabaseInterface implements DbalInterface
      */
     private $links;
 
-    /** @var array Current user and host cache */
+    
     private $currentUser;
 
-    /** @var array<int, array<int, string>>|null Current role and host cache */
+    
     private $currentRoleAndHost = null;
 
-    /** @var string|null lower_case_table_names value cache */
+    
     private $lowerCaseTableNames = null;
 
-    /** @var bool Whether connection is MariaDB */
+    
     private $isMariaDb = false;
-    /** @var bool Whether connection is Percona */
+    
     private $isPercona = false;
-    /** @var int Server version as number */
+    
     private $versionInt = 55000;
-    /** @var string Server version */
+    
     private $versionString = '5.50.0';
-    /** @var string Server version comment */
+    
     private $versionComment = '';
 
-    /** @var Types MySQL types data */
+    
     public $types;
 
-    /** @var Cache */
+    
     private $cache;
 
-    /** @var float */
+    
     public $lastQueryExecutionTime = 0;
 
     /**
@@ -182,7 +182,6 @@ class DatabaseInterface implements DbalInterface
         $result = $this->tryQuery($query, $link, $options, $cache_affected_rows);
 
         if (! $result) {
-            // The following statement will exit
             Generator::mysqlDie($this->getError($link), $query);
 
             exit;
@@ -298,10 +297,6 @@ class DatabaseInterface implements DbalInterface
      */
     public function queryAsControlUser(string $sql): ResultInterface
     {
-        // Avoid caching of the number of rows affected; for example, this function
-        // is called for tracking purposes but we want to display the correct number
-        // of rows affected by the original query, not by the query generated for
-        // tracking.
         return $this->query($sql, self::CONNECT_CONTROL, self::QUERY_BUFFERED, false);
     }
 
@@ -315,10 +310,6 @@ class DatabaseInterface implements DbalInterface
      */
     public function tryQueryAsControlUser(string $sql)
     {
-        // Avoid caching of the number of rows affected; for example, this function
-        // is called for tracking purposes but we want to display the correct number
-        // of rows affected by the original query, not by the query generated for
-        // tracking.
         return $this->tryQuery($sql, self::CONNECT_CONTROL, self::QUERY_BUFFERED, false);
     }
 
@@ -417,24 +408,14 @@ class DatabaseInterface implements DbalInterface
                 $table_type
             );
 
-            // for PMA bc:
-            // `SCHEMA_FIELD_NAME` AS `SHOW_TABLE_STATUS_FIELD_NAME`
-            //
-            // on non-Windows servers,
-            // added BINARY in the WHERE clause to force a case sensitive
-            // comparison (if we are looking for the db Aa we don't want
-            // to find the db aa)
-
             $sql = QueryGenerator::getSqlForTablesFull([$this->escapeString($database)], $sql_where_table);
-
-            // Sort the tables
             $sql .= ' ORDER BY ' . $sort_by . ' ' . $sort_order;
 
             if ($limit_count && ! $paging_applied) {
                 $sql .= ' LIMIT ' . $limit_count . ' OFFSET ' . $limit_offset;
             }
 
-            /** @var mixed[][][] $tables */
+            
             $tables = $this->fetchResult(
                 $sql,
                 [
@@ -444,9 +425,6 @@ class DatabaseInterface implements DbalInterface
                 null,
                 $link
             );
-
-            // here, we check for Mroonga engine and compute the good data_length and index_length
-            // in the StructureController only we need to sum the two values as the other engines
             foreach ($tables as $one_database_name => $one_database_tables) {
                 foreach ($one_database_tables as $one_table_name => $one_table_data) {
                     if ($one_table_data['Engine'] !== 'Mroonga') {
@@ -465,7 +443,6 @@ class DatabaseInterface implements DbalInterface
             }
 
             if ($sort_by === 'Name' && $GLOBALS['cfg']['NaturalOrder']) {
-                // here, the array's first key is by schema name
                 foreach ($tables as $one_database_name => $one_database_tables) {
                     uksort($one_database_tables, 'strnatcasecmp');
 
@@ -476,7 +453,6 @@ class DatabaseInterface implements DbalInterface
                     $tables[$one_database_name] = $one_database_tables;
                 }
             } elseif ($sort_by === 'Data_length') {
-                // Size = Data_length + Index_length
                 foreach ($tables as $one_database_name => $one_database_tables) {
                     uasort(
                         $one_database_tables,
@@ -499,20 +475,10 @@ class DatabaseInterface implements DbalInterface
                     $tables[$one_database_name] = $one_database_tables;
                 }
             }
-
-            // on windows with lower_case_table_names = 1
-            // MySQL returns
-            // with SHOW DATABASES or information_schema.SCHEMATA: `Test`
-            // but information_schema.TABLES gives `test`
-            // see https://github.com/phpmyadmin/phpmyadmin/issues/8402
             $tables = $tables[$database]
                 ?? $tables[mb_strtolower($database)]
                 ?? [];
         }
-
-        // If permissions are wrong on even one database directory,
-        // information_schema does not return any table info for any database
-        // this is why we fall back to SHOW TABLE STATUS even for MySQL >= 50002
         if ($tables === []) {
             $sql = 'SHOW TABLE STATUS FROM ' . Util::backquote($database);
             if (($table !== '' && $table !== []) || ($tbl_is_group === true) || $table_type) {
@@ -554,9 +520,6 @@ class DatabaseInterface implements DbalInterface
             }
 
             $each_tables = $this->fetchResult($sql, 'Name', null, $link);
-
-            // here, we check for Mroonga engine and compute the good data_length and index_length
-            // in the StructureController only we need to sum the two values as the other engines
             foreach ($each_tables as $table_name => $table_data) {
                 if ($table_data['Engine'] !== 'Mroonga') {
                     continue;
@@ -571,9 +534,6 @@ class DatabaseInterface implements DbalInterface
                     $each_tables[$table_name]['Index_length'],
                 ] = StorageEngine::getMroongaLengths($database, $table_name);
             }
-
-            // Sort naturally if the config allows it and we're sorting
-            // the Name column.
             if ($sort_by === 'Name' && $GLOBALS['cfg']['NaturalOrder']) {
                 uksort($each_tables, 'strnatcasecmp');
 
@@ -581,10 +541,6 @@ class DatabaseInterface implements DbalInterface
                     $each_tables = array_reverse($each_tables);
                 }
             } else {
-                // Prepare to sort by creating array of the selected sort
-                // value to pass to array_multisort
-
-                // Size = Data_length + Index_length
                 $sortValues = [];
                 if ($sort_by === 'Data_length') {
                     foreach ($each_tables as $table_name => $table_data) {
@@ -600,7 +556,6 @@ class DatabaseInterface implements DbalInterface
                 }
 
                 if ($sortValues) {
-                    // See https://stackoverflow.com/a/32461188 for the explanation of below hack
                     $keys = array_keys($each_tables);
                     if ($sort_order === 'DESC') {
                         array_multisort($sortValues, SORT_DESC, $each_tables, $keys);
@@ -610,8 +565,6 @@ class DatabaseInterface implements DbalInterface
 
                     $each_tables = array_combine($keys, $each_tables);
                 }
-
-                // cleanup the temporary sort array
                 unset($sortValues);
             }
 
@@ -623,7 +576,6 @@ class DatabaseInterface implements DbalInterface
         }
 
         if ($tables !== []) {
-            // cache table data, so Table does not require to issue SHOW TABLE STATUS again
             $this->cache->cacheTableData($database, $tables);
         }
 
@@ -639,7 +591,7 @@ class DatabaseInterface implements DbalInterface
      */
     public function getVirtualTables(string $db): array
     {
-        /** @var string[] $tables_full */
+        
         $tables_full = array_column($this->getTablesFull($db), 'TABLE_NAME');
         $views = [];
 
@@ -702,8 +654,6 @@ class DatabaseInterface implements DbalInterface
 
                 $apply_limit_and_order_manual = false;
             }
-
-            // get table information from information_schema
             $sqlWhereSchema = '';
             if ($database !== null) {
                 $sqlWhereSchema = 'WHERE `SCHEMA_NAME` LIKE \''
@@ -724,9 +674,6 @@ class DatabaseInterface implements DbalInterface
             if (! count($databases) && isset($GLOBALS['errno'])) {
                 Generator::mysqlDie($mysql_error, $sql);
             }
-
-            // display only databases also in official database list
-            // f.e. to apply hide_db and only_db
             $drops = array_diff(
                 array_keys($databases),
                 (array) $GLOBALS['dblist']->databases
@@ -737,7 +684,6 @@ class DatabaseInterface implements DbalInterface
         } else {
             $databases = [];
             foreach ($GLOBALS['dblist']->databases as $database_name) {
-                // Compatibility with INFORMATION_SCHEMA output
                 $databases[$database_name]['SCHEMA_NAME'] = $database_name;
 
                 $databases[$database_name]['DEFAULT_COLLATION_NAME'] = $this->getDbCollation($database_name);
@@ -745,8 +691,6 @@ class DatabaseInterface implements DbalInterface
                 if (! $force_stats) {
                     continue;
                 }
-
-                // get additional info about tables
                 $databases[$database_name]['SCHEMA_TABLES'] = 0;
                 $databases[$database_name]['SCHEMA_TABLE_ROWS'] = 0;
                 $databases[$database_name]['SCHEMA_DATA_LENGTH'] = 0;
@@ -766,9 +710,6 @@ class DatabaseInterface implements DbalInterface
                     $databases[$database_name]['SCHEMA_DATA_LENGTH'] += $row['Data_length'];
                     $databases[$database_name]['SCHEMA_MAX_DATA_LENGTH'] += $row['Max_data_length'];
                     $databases[$database_name]['SCHEMA_INDEX_LENGTH'] += $row['Index_length'];
-
-                    // for InnoDB, this does not contain the number of
-                    // overhead bytes but the total free space
                     if ($row['Engine'] !== 'InnoDB') {
                         $databases[$database_name]['SCHEMA_DATA_FREE'] += $row['Data_free'];
                     }
@@ -927,7 +868,7 @@ class DatabaseInterface implements DbalInterface
             $this->escapeMysqlLikeString($column),
             $full
         );
-        /** @var array<string, array> $fields */
+        
         $fields = $this->fetchResult($sql, 'Field', null, $link);
 
         $columns = $this->attachIndexInfoToColumns($database, $table, $fields);
@@ -957,7 +898,7 @@ class DatabaseInterface implements DbalInterface
             null,
             $full
         );
-        /** @var array<string, array> $fields */
+        
         $fields = $this->fetchResult($sql, 'Field', null, $link);
 
         return $this->attachIndexInfoToColumns($database, $table, $fields);
@@ -980,8 +921,6 @@ class DatabaseInterface implements DbalInterface
         if (! $fields) {
             return [];
         }
-
-        // Check if column is a part of multiple-column index and set its 'Key'.
         $indexes = Index::getFromTable($table, $database);
         foreach ($fields as $field => $field_data) {
             if (! empty($field_data['Key'])) {
@@ -1024,8 +963,6 @@ class DatabaseInterface implements DbalInterface
         $link = self::CONNECT_USER
     ): array {
         $sql = QueryGenerator::getColumnsSql($database, $table);
-
-        // We only need the 'Field' column which contains the table's column names
         return $this->fetchResult($sql, null, 'Field', $link);
     }
 
@@ -1122,13 +1059,11 @@ class DatabaseInterface implements DbalInterface
         $GLOBALS['charset_connection'] = $default_charset;
         $this->query(sprintf('SET NAMES \'%s\' COLLATE \'%s\';', $default_charset, $default_collation));
 
-        /* Locale for messages */
+        
         $locale = LanguageManager::getInstance()->getCurrentLanguage()->getMySQLLocale();
         if ($locale) {
             $this->tryQuery("SET lc_messages = '" . $locale . "';");
         }
-
-        // Set timezone for the session, if required.
         if ($GLOBALS['cfg']['Server']['SessionTimeZone'] != '') {
             $sql_query_tz = 'SET ' . Util::backquote('time_zone') . ' = '
                 . '\''
@@ -1153,7 +1088,7 @@ class DatabaseInterface implements DbalInterface
             }
         }
 
-        /* Loads closest context to this version. */
+        
         Context::loadClosest(($this->isMariaDb ? 'MariaDb' : 'MySql') . $this->versionInt);
 
         /**
@@ -1170,7 +1105,7 @@ class DatabaseInterface implements DbalInterface
     public function setCollation(string $collation): void
     {
         $charset = $GLOBALS['charset_connection'];
-        /* Automatically adjust collation if not supported by server */
+        
         if ($charset === 'utf8' && str_starts_with($collation, 'utf8mb4_')) {
             $collation = 'utf8_' . substr($collation, 8);
         }
@@ -1200,7 +1135,6 @@ class DatabaseInterface implements DbalInterface
      */
     public function postConnectControl(Relation $relation): void
     {
-        // If Zero configuration mode enabled, check PMA tables in current db.
         if ($GLOBALS['cfg']['ZeroConf'] != true) {
             return;
         }
@@ -1364,8 +1298,6 @@ class DatabaseInterface implements DbalInterface
         $resultrows = [];
 
         $result = $this->tryQuery($query, $link, self::QUERY_BUFFERED, false);
-
-        // return empty array if result is empty or false
         if ($result === false) {
             return $resultrows;
         }
@@ -1373,7 +1305,6 @@ class DatabaseInterface implements DbalInterface
         $fetch_function = self::FETCH_ASSOC;
 
         if ($key === null) {
-            // no nested array if only one field is in result
             if ($result->numFields() === 1) {
                 $value = 0;
                 $fetch_function = self::FETCH_NUM;
@@ -1401,7 +1332,6 @@ class DatabaseInterface implements DbalInterface
                 $result_target = $this->fetchValueOrValueByIndex($row, $value);
             }
         } else {
-            // if $key is an integer use non associative mysql fetch function
             if (is_int($key)) {
                 $fetch_function = self::FETCH_NUM;
             }
@@ -1430,9 +1360,6 @@ class DatabaseInterface implements DbalInterface
             'MYSQL40',
             'MSSQL',
             'ORACLE',
-            // removed; in MySQL 5.0.33, this produces exports that
-            // can't be read by POSTGRESQL (see our bug #1596328)
-            // 'POSTGRESQL',
             'TRADITIONAL',
         ];
     }
@@ -1574,8 +1501,6 @@ class DatabaseInterface implements DbalInterface
                 'returns' => $routine['DTD_IDENTIFIER'] ?? '',
             ];
         }
-
-        // Sort results by name
         $name = array_column($ret, 'name');
         array_multisort($name, SORT_ASC, $ret);
 
@@ -1615,8 +1540,6 @@ class DatabaseInterface implements DbalInterface
                 'status' => $event['Status'],
             ];
         }
-
-        // Sort results by name
         $name = array_column($result, 'name');
         array_multisort($name, SORT_ASC, $result);
 
@@ -1666,9 +1589,6 @@ class DatabaseInterface implements DbalInterface
             $one_result['event_manipulation'] = $trigger['EVENT_MANIPULATION'];
             $one_result['definition'] = $trigger['ACTION_STATEMENT'];
             $one_result['definer'] = $trigger['DEFINER'];
-
-            // do not prepend the schema name; this way, importing the
-            // definition into another schema will work
             $one_result['full_trigger_name'] = Util::backquote($trigger['TRIGGER_NAME']);
             $one_result['drop'] = 'DROP TRIGGER IF EXISTS '
                 . $one_result['full_trigger_name'];
@@ -1682,8 +1602,6 @@ class DatabaseInterface implements DbalInterface
 
             $result[] = $one_result;
         }
-
-        // Sort results by name
         $name = array_column($result, 'name');
         array_multisort($name, SORT_ASC, $result);
 
@@ -1966,15 +1884,13 @@ class DatabaseInterface implements DbalInterface
 
             return false;
         }
-
-        // Do not show location and backtrace for connection errors
         $GLOBALS['errorHandler']->setHideLocation(true);
         $result = $this->extension->connect($user, $password, $server);
         $GLOBALS['errorHandler']->setHideLocation(false);
 
         if ($result) {
             $this->links[$target] = $result;
-            /* Run post connect for user connections */
+            
             if ($target == self::CONNECT_USER) {
                 $this->postConnect();
             }
@@ -1994,8 +1910,6 @@ class DatabaseInterface implements DbalInterface
         }
 
         if ($mode == self::CONNECT_AUXILIARY) {
-            // Do not go back to main login if connection failed
-            // (currently used only in unit testing)
             return false;
         }
 
@@ -2145,14 +2059,6 @@ class DatabaseInterface implements DbalInterface
      */
     public function insertId($link = self::CONNECT_USER): int
     {
-        // If the primary key is BIGINT we get an incorrect result
-        // (sometimes negative, sometimes positive)
-        // and in the present function we don't know if the PK is BIGINT
-        // so better play safe and use LAST_INSERT_ID()
-        //
-        // When no controluser is defined, using mysqli_insert_id($link)
-        // does not always return the last insert id due to a mixup with
-        // the tracking mechanism, but this works:
         return (int) $this->fetchValue('SELECT LAST_INSERT_ID();', 0, $link);
     }
 
@@ -2304,7 +2210,6 @@ class DatabaseInterface implements DbalInterface
     public function getDbCollation(string $db): string
     {
         if (! $GLOBALS['cfg']['Server']['DisableIS']) {
-            // this is slow with thousands of databases
             $sql = 'SELECT DEFAULT_COLLATION_NAME FROM information_schema.SCHEMATA'
                 . ' WHERE SCHEMA_NAME = \'' . $this->escapeString($db)
                 . '\' LIMIT 1';
@@ -2355,7 +2260,7 @@ class DatabaseInterface implements DbalInterface
         return $this->versionComment;
     }
 
-    /** Whether connection is MySQL */
+    
     public function isMySql(): bool
     {
         return ! $this->isMariaDb;

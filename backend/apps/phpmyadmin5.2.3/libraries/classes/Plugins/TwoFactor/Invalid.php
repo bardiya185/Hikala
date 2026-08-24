@@ -14,10 +14,10 @@ use PhpMyAdmin\Plugins\TwoFactorPlugin;
  */
 class Invalid extends TwoFactorPlugin
 {
-    /** @var string */
+    
     public static $id = 'invalid';
 
-    /** @var bool */
+    
     public static $showSubmit = false;
 
     /**

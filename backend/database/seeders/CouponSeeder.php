@@ -10,7 +10,6 @@ class CouponSeeder extends Seeder
 {
     public function run(): void
     {
-        // پیدا کردن تخفیف‌های موجود
         $percentDiscount = Discount::where('type', 'percent')->first();
         $fixedDiscount = Discount::where('type', 'fixed')->first();
 

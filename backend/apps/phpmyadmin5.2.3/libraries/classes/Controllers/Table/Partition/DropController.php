@@ -20,7 +20,7 @@ use function __;
 
 final class DropController extends AbstractController
 {
-    /** @var Maintenance */
+    
     private $model;
 
     public function __construct(

@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class OrderStatusHistory extends Model
 {
     protected $table = 'order_status_history';
-    
-    // ⚠️ فقط created_at داره، updated_at نداره
     public $timestamps = false;
     
     protected $fillable = [
@@ -28,10 +26,6 @@ class OrderStatusHistory extends Model
         'created_at' => 'datetime',
     ];
 
-    // ================================================================
-    // 🔗 Relationships
-    // ================================================================
-
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
@@ -41,10 +35,6 @@ class OrderStatusHistory extends Model
     {
         return $this->belongsTo(User::class, 'changed_by_user_id');
     }
-
-    // ================================================================
-    // 🎯 Accessors
-    // ================================================================
 
     public function getFromLabelAttribute(): ?string
     {

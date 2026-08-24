@@ -57,18 +57,11 @@ class ExportOdt extends ExportPlugin
         $exportPluginProperties->setMimeType('application/vnd.oasis.opendocument.text');
         $exportPluginProperties->setForceFile(true);
         $exportPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $exportPluginProperties
-        // this will be shown as "Format specific options"
         $exportSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-        // what to dump (structure/data/both) main group
         $dumpWhat = new OptionsPropertyMainGroup(
             'general_opts',
             __('Dump table')
         );
-        // create primary items and add them to the group
         $leaf = new RadioPropertyItem('structure_or_data');
         $leaf->setValues(
             [
@@ -78,10 +71,7 @@ class ExportOdt extends ExportPlugin
             ]
         );
         $dumpWhat->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($dumpWhat);
-
-        // structure options main group
         if (! $hide_structure) {
             $structureOptions = new OptionsPropertyMainGroup(
                 'structure',
@@ -89,7 +79,6 @@ class ExportOdt extends ExportPlugin
             );
             $structureOptions->setForce('data');
             $relationParameters = $this->relation->getRelationParameters();
-            // create primary items and add them to the group
             if ($relationParameters->relationFeature !== null) {
                 $leaf = new BoolPropertyItem(
                     'relation',
@@ -110,18 +99,13 @@ class ExportOdt extends ExportPlugin
                 );
                 $structureOptions->addProperty($leaf);
             }
-
-            // add the main group to the root group
             $exportSpecificOptions->addProperty($structureOptions);
         }
-
-        // data options main group
         $dataOptions = new OptionsPropertyMainGroup(
             'data',
             __('Data dump options')
         );
         $dataOptions->setForce('structure');
-        // create primary items and add them to the group
         $leaf = new BoolPropertyItem(
             'columns',
             __('Put columns names in the first row')
@@ -132,10 +116,7 @@ class ExportOdt extends ExportPlugin
             __('Replace NULL with:')
         );
         $dataOptions->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($dataOptions);
-
-        // set the options for the export plugin property item
         $exportPluginProperties->setOptions($exportSpecificOptions);
 
         return $exportPluginProperties;
@@ -233,10 +214,9 @@ class ExportOdt extends ExportPlugin
         $db_alias = $db;
         $table_alias = $table;
         $this->initAlias($aliases, $db_alias, $table_alias);
-        // Gets the data from the database
         $result = $dbi->query($sqlQuery, DatabaseInterface::CONNECT_USER, DatabaseInterface::QUERY_UNBUFFERED);
         $fields_cnt = $result->numFields();
-        /** @var FieldMetadata[] $fieldsMeta */
+        
         $fieldsMeta = $dbi->getFieldsMeta($result);
 
         $GLOBALS['odt_buffer'] .= '<text:h text:outline-level="2" text:style-name="Heading_2"'
@@ -249,8 +229,6 @@ class ExportOdt extends ExportPlugin
             . ' table:name="' . htmlspecialchars($table_alias) . '_structure">'
             . '<table:table-column'
             . ' table:number-columns-repeated="' . $fields_cnt . '"/>';
-
-        // If required, get fields name at the first line
         if (isset($GLOBALS[$what . '_columns'])) {
             $GLOBALS['odt_buffer'] .= '<table:table-row>';
             foreach ($fieldsMeta as $field) {
@@ -270,13 +248,10 @@ class ExportOdt extends ExportPlugin
 
             $GLOBALS['odt_buffer'] .= '</table:table-row>';
         }
-
-        // Format the data
         while ($row = $result->fetchRow()) {
             $GLOBALS['odt_buffer'] .= '<table:table-row>';
             for ($j = 0; $j < $fields_cnt; $j++) {
                 if ($fieldsMeta[$j]->isMappedTypeGeometry) {
-                    // export GIS types as hex
                     $row[$j] = '0x' . bin2hex($row[$j]);
                 }
 
@@ -287,7 +262,6 @@ class ExportOdt extends ExportPlugin
                         . '</text:p>'
                         . '</table:table-cell>';
                 } elseif ($fieldsMeta[$j]->isBinary && $fieldsMeta[$j]->isBlob) {
-                    // ignore BLOB
                     $GLOBALS['odt_buffer'] .= '<table:table-cell office:value-type="string">'
                         . '<text:p></text:p>'
                         . '</table:table-cell>';
@@ -366,7 +340,7 @@ class ExportOdt extends ExportPlugin
         $columns_cnt = 4;
         $GLOBALS['odt_buffer'] .= '<table:table-column'
             . ' table:number-columns-repeated="' . $columns_cnt . '"/>';
-        /* Header */
+        
         $GLOBALS['odt_buffer'] .= '<table:table-row>'
             . '<table:table-cell office:value-type="string">'
             . '<text:p>' . __('Column') . '</text:p>'
@@ -443,8 +417,6 @@ class ExportOdt extends ExportPlugin
          * Gets fields properties
          */
         $dbi->selectDb($db);
-
-        // Check if we can use Relations
         [$res_rel, $have_rel] = $this->relation->getRelationsAndStatus(
             $do_relation && $relationParameters->relationFeature !== null,
             $db,
@@ -470,7 +442,7 @@ class ExportOdt extends ExportPlugin
 
         $GLOBALS['odt_buffer'] .= '<table:table-column'
             . ' table:number-columns-repeated="' . $columns_cnt . '"/>';
-        /* Header */
+        
         $GLOBALS['odt_buffer'] .= '<table:table-row>'
             . '<table:table-cell office:value-type="string">'
             . '<text:p>' . __('Column') . '</text:p>'
@@ -738,7 +710,6 @@ class ExportOdt extends ExportPlugin
                 . __('Stand-in structure for view') . ' '
                 . htmlspecialchars($table_alias)
                 . '</text:h>';
-                // export a stand-in definition to resolve view dependencies
                 $this->getTableDefStandIn($db, $table, $crlf, $aliases);
         }
 

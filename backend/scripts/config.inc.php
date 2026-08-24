@@ -10,7 +10,6 @@ if(WAMPTRACE_PROCESS) {
 }
 $wamp_versions_here = $Alias_Contents = array();
 $configurationFile = '../wampmanager.conf';
-// Loading Wampserver configuration
 $wampConf = @parse_ini_file($configurationFile,false,INI_SCANNER_RAW);
 $c_installDir = $wampConf['installDir'];
 $configurationFile = $c_installDir.'/wampmanager.conf';
@@ -23,12 +22,8 @@ $modulesDir = 'modules/';
 $logDir = 'logs/';
 $wampBinConfFiles = 'wampserver.conf';
 $phpConfFileForApache = 'phpForApache.ini';
-
-// List of log files
 $logFilesList = array();
 $logFilesList = glob($c_installDir.'/'.$logDir.'*.log');
-
-//We enter the variables of the template with the local conf
 $c_wampVersion = $wampConf['wampserverVersion'];
 $wamp_versions_here += array('wamp_update' => $c_wampVersion);
 $c_wampMode = $wampConf['wampserverMode'];
@@ -45,8 +40,6 @@ if(!empty($wampConf['installVersion'])) {
 			$c_wampVersionUpdate .= 'Updated to '.$c_wampVersion.' on '.$wampConf['update'.$c_wampVersion];
 	}
 }
-
-//Retrieve Windows charset
 /*
 --- Normal (French Windows)
 Text_Encoding=Array
@@ -93,9 +86,6 @@ else {
 
 $Text_Encoding['LocaleCtype']= trim(strstr(setlocale(LC_CTYPE,''),'.'),'.');
 $Windows_Charset = 'Windows-'.$Text_Encoding['LocaleCtype'];
-
-//To be able to launch projects by IP instead of localhost
-//http://169.254.x.y/myproject/ instead of http://localhost/myproject/
 $c_local_host = gethostname();
 $c_local_ip_list = array();
 $c_local_ip_list = gethostbynamel($c_local_host);
@@ -106,24 +96,16 @@ if($c_local_host === false || $c_local_ip_list === false || count($c_local_ip_li
 else {
 	$c_local_ip = $c_local_ip_list[0];
 }
-
-// See Message For information items in configuration submenus
 $seeInfoMessage = true;
 
 $c_editor = $wampConf['editor'];
 $c_logviewer = $wampConf['logviewer'];
-
-// Get current language
 $lang = $wampConf['language'];
-
-//Adding Variables for Ports
 $c_DefaultPort = "80";
 $c_UsedPort = $wampConf['apachePortUsed'];
 $c_DefaultMysqlPort = $wampConf['mysqlDefaultPort'];
 $c_UsedMysqlPort = $wampConf['mysqlPortUsed'];
 $c_UsedMariaPort = $wampConf['mariaPortUsed'];
-
-//Variables for Apache
 $c_apacheService = $wampConf['ServiceApache'];
 $c_apacheVersion = $wampConf['apacheVersion'];
 $c_apacheServiceInstallParams = $wampConf['apacheServiceInstallParams'];
@@ -138,8 +120,6 @@ $c_apacheAutoIndexConfFile = $c_apacheVersionDir.'/apache'.$wampConf['apacheVers
 $c_apacheDefineConf = $c_apacheVersionDir.'/apache'.$c_apacheVersion.'/wampdefineapache.conf';
 $c_apacheExe = $c_apacheBinDir.'/'.$wampConf['apacheExeFile'];
 $c_apacheVarNotChange = array('APACHE24', 'VERSION_APACHE', 'INSTALL_DIR', 'APACHE_DIR', 'SRVROOT');
-
-//Variables for PHP
 $c_phpVersion = $wampConf['phpVersion'];
 $c_phpCliVersion = $wampConf['phpWampVersion'];
 $c_phpVersionDir = $c_installDir.'/bin/php';
@@ -152,8 +132,6 @@ $c_phpCli = $c_phpVersionDir.'/php'.$c_phpCliVersion.'/'.$wampConf['phpCliFile']
 $c_phpBinDir = $c_phpVersionDir.'/php'.$wampConf['phpVersion'].'/';
 $c_phpExtDir = $c_phpVersionDir.'/php'.$wampConf['phpVersion'].'/ext/';
 $phpCliMinVersion = "5.6.40";
-
-//Variables for MySQL
 $c_mysqlService = $wampConf['ServiceMysql'];
 $c_mysqlPortUsed = $wampConf['mysqlPortUsed'];
 $c_mysqlVersion = $wampConf['mysqlVersion'];
@@ -166,8 +144,6 @@ $c_mysqlConfFile = $c_mysqlVersionDir.'/mysql'.$wampConf['mysqlVersion'].'/'.$wa
 $c_mysqlConsole = $c_mysqlVersionDir.'/mysql'.$c_mysqlVersion.'/'.$wampConf['mysqlExeDir'].'/mysql.exe';
 $c_mysqlExeAnti = str_replace('/','\\',$c_mysqlExe);
 $c_mysqlConfFileAnti = str_replace('/','\\',$c_mysqlConfFile);
-
-// Variables for MariaDB
 $c_mariadbService = $wampConf['ServiceMariadb'];
 $c_mariadbPortUsed = $wampConf['mariaPortUsed'];
 $c_mariadbVersion = $wampConf['mariadbVersion'];
@@ -180,8 +156,6 @@ $c_mariadbConfFile = $c_mariadbVersionDir.'/mariadb'.$wampConf['mariadbVersion']
 $c_mariadbConsole = $c_mariadbVersionDir.'/mariadb'.$c_mariadbVersion.'/'.$wampConf['mariadbExeDir'].'/mysql.exe';
 $c_mariadbExeAnti = str_replace('/','\\',$c_mariadbExe);
 $c_mariadbConfFileAnti = str_replace('/','\\',$c_mariadbConfFile);
-
-//Check hosts file writable
 $c_hostsFile = str_replace("\\","/",getenv('WINDIR').'/system32/drivers/etc/hosts');
 $c_hostsFile_writable = true;
 $WarningMsg = '';
@@ -206,7 +180,6 @@ if(!empty($WarningMsg)) {
 	error_log($WarningMsg);
 	if(WAMPTRACE_PROCESS) error_log("script ".__FILE__."\n*** ".$WarningMsg."\n",3,WAMPTRACE_FILE);
 }
-//Check last number of wampsave hosts
 $next_hosts_save = 0;
 if($wampConf['BackupHosts'] == 'on') {
 	$hosts_wampsave = @glob($c_hostsFile.'_wampsave.*');
@@ -214,10 +187,6 @@ if($wampConf['BackupHosts'] == 'on') {
 		$next_hosts_save = pathinfo(end($hosts_wampsave),PATHINFO_EXTENSION) + 1;
 	}
 }
-//End check hosts writable
-
-//Symbolic links to be created in apache/bin folder
-//on certain dlls of the PHP version used as an Apache module
 $php_icu_dll = str_replace($c_phpBinDir,'',glob($c_phpBinDir."icu??*[5-9][0-9].dll"));
 $phpDllToCopy = array_merge($php_icu_dll,
 	array (
@@ -235,29 +204,19 @@ $phpDllToCopy = array_merge($php_icu_dll,
 		'php8ts.dll', //For PHP 8
 	)
 );
-
-//Symbolic links created if does not exist as a file in Apache bin folder
-//SSL 3 for PHP >= 8.2.0 extensions curl, ldap, openssl, snmp
 $php820_DllToCopy = array(
 	'libcrypto-3-x64.dll',
 	'libssl-3-x64.dll',
 );
-
-//SSL 1 for PHP < 8.2.0
 $phpN820_DllToCopy = array(
 	'libcrypto-1_1-x64.dll',
 	'libssl-1_1-x64.dll',
 );
-
-//Values must be the same as in php.ini - xdebug parameters must be the latest
-
-//For PHP version only used for Wampserver scripts
 $phpParamsCLI = array(
 	'date.timezone',
 	'max_execution_time',
 	'memory_limit',
 	);
-//For all others PHP versions
 $phpParams = array (
 	'allow_url_fopen',
 	'allow_url_include',
@@ -313,12 +272,6 @@ $phpParams = array (
 	'xdebug.show_local_vars',
 	'xdebug.log_level',
 	);
-
-//PHP parameters with values not On or Off cannot be switched on or off
-//Can be changed if 'change' = true and 'title' & 'values' not empty
-//Parameter name must be also into $phpParams array
-//To manualy enter value, 'Choose' must be the last 'values' and 'title' must be 'Size' or 'Seconds' or 'Integer'
-//Warning : specific treatment for date.timezone - Don't modify.
 $phpParamsNotOnOff = array(
 	'date.timezone' => array(
 		'change' => true,
@@ -401,7 +354,6 @@ $phpParamsNotOnOff = array(
 		'infos' => array('Criticals','Connection','Warnings','Communication','Information','Debug Breakpoint'),
 	),
 );
-//PHP parameters that doesn't support Apache Graceful Restart but only Apache Service Restart
 $phpParamsApacheRestart = array(
 	'xdebug.mode',
 	'xdebug.remote_enable',
@@ -410,9 +362,6 @@ $phpParamsApacheRestart = array(
 	'xdebug.show_local_vars',
 	'xdebug.log_level',
 );
-
-// Extensions can not be loaded by extension =
-// for example zend_extension
 $phpNotLoadExt = array(
 	'php_opcache',
 	'php_xdebug',
@@ -422,9 +371,6 @@ $zend_extensions = array(
 	'php_opcache' => array('loaded' => '0','content' => '', 'version' => ''),
 	'php_xdebug' => array('loaded' => '0','content' =>'', 'version' => ''),
 	);
-
-//MySQL parameters
-// All parameters must be defined with underscores (_) and not dashes (-)
 $mysqlParams = array (
 	'basedir',
 	'datadir',
@@ -449,10 +395,6 @@ $mysqlParams = array (
 	'local_infile',
 	'secure_file_priv',
 );
-//MySQL parameters with values not On or Off cannot be switched on or off
-//Can be changed if 'change' = true && 'title' && 'values'
-//Parameter name must be also into $mysqlParams array
-//To manualy enter value, 'Choose' must be the last 'values' and 'title' must be 'Size' or 'Seconds' or 'Number'
 $mysqlParamsNotOnOff = array(
 	'basedir' => array(
 		'change' => false,
@@ -556,9 +498,6 @@ $mysqlParamsNotOnOff = array(
 	'secure_file_priv' => array('change' => false,
 	'msg' => "\nsecure_file_priv: LOAD DATA, SELECT ... INTO and LOAD FILE() will only work with files in the specified path.\nIf not set, the default, or set to empty string, the statements will work with any files that can be accessed."),
 );
-
-//MariaDB parameters
-// All parameters must be defined with underscores (_) and not dashes (-)
 $mariadbParams = array (
 	'basedir',
 	'datadir',
@@ -580,10 +519,6 @@ $mariadbParams = array (
 	'skip_grant_tables',
 	'secure_file_priv',
 );
-//MariaDB parameters with values not On or Off cannot be switched on or off
-//Can be changed if 'change' = true && 'title' && 'values'
-//Parameter name must be also into $mariadbParams array
-//To manualy enter value, 'Choose' must be the last 'values' and 'title' must be 'Size' or 'Seconds' or 'Number'
 $mariadbParamsNotOnOff = array(
 	'basedir' => array(
 		'change' => false,
@@ -683,14 +618,6 @@ $mariadbParamsNotOnOff = array(
 		'change' => false,
 		'msg' => "\nsecure_file_priv: LOAD DATA, SELECT ... INTO and LOAD FILE() will only work with files in the specified path.\nIf not set, the default, or set to empty string, the statements will work with any files that can be accessed."),
 );
-
-// Adding parameters to WampServer modifiable
-// by "Settings" sub-menu on right-click Wampmanager icon
-// Needs $w_settings['parameter'] in wamp\lang\modules\settings_english.php
-// #  	At the beginning = Separator only
-// ##   	               = Separator + SubMenu
-// #-                    = Separator no Caption + Submenu
-// ###  	               = Last item in SubMenu
 $wamp_Param = array(
 	'AliasSubmenu',
 	'ShowWWWdirMenu',
@@ -724,12 +651,6 @@ $wamp_Param = array(
 	'LinksOnProjectsHomeByIp',
 	'###LinksChooseIp',
 );
-//Wampserver parameters with values not On or Off cannot be switched on or off
-//or can be switched on or of but with dependance from another parameter
-//Can be changed if 'change' = true && 'title' && 'values'
-//Parameter name must be also into $wamp_Param array
-//dependance is the name of Wampserver parameter that must be 'on' to see the parameter
-//To manualy enter value, 'Choose' must be the last 'values' and 'title' must be 'Size' or 'Seconds' or 'Integer'
 $wampParamsNotOnOff = array(
 	'AutoCleanLogsMax' => array(
 		'change' => true,
@@ -797,8 +718,6 @@ $wampParamsNotOnOff = array(
 		'quoted' => true,
 	),
 );
-
-//Parameter servitude must be off if first parameter is off
 $WampParamServitude = array(
 	'LinksOnProjectsHomePage' => array(
 		'servitude' => 'LinksOnProjectsHomeByIp',
@@ -807,21 +726,12 @@ $WampParamServitude = array(
 		'servitude' => 'LinksChooseIp',
 	),
 );
-
-//PhpMyAdmin-specific parameters in its alias
-// like php_admin_value upload_max_filesize 128M
-//   or php_admin_flag ignore_repeated_errors Off
 $PMA_Params = array(
 	'upload_max_filesize',
   'post_max_size',
   'max_execution_time',
   'max_input_time',
 );
-
-//PhpMyAdmin parameters with values not On or Off cannot be switched on or off
-//Can be changed if 'change' = true and 'title' & 'values' not empty
-//Parameter name must be also into $PMA_Params array
-//To manualy enter value, 'Choose' must be the last 'values' and 'title' must be 'Size' or 'Seconds' or 'Integer'
 $PMA_ParamsNotOnOff = array(
 	'upload_max_filesize' => array(
 		'change' => true,
@@ -846,8 +756,6 @@ $PMA_ParamsNotOnOff = array(
 		'msg' => 'Must have the same value as max_execution_time',
 		),
 );
-
-// Apache modules which should not be disabled
 $apacheModNotDisable = array(
 	'alias_module',
 	'authz_core_module',
@@ -859,8 +767,6 @@ $apacheModNotDisable = array(
 	'php7_module',
 	'php_module',
 	);
-
-// Apache modules not to be unloaded if $virtualHost['index'] is true
 $apacheModuleNotUnload = array(
 	'fcgid_module' => array(
 		'index' => 'ServerNameUseFcgid',
@@ -872,8 +778,6 @@ $apacheModuleNotUnload = array(
 		'index' => 'ServerNameUseHttps',
 	),
 );
-
-// Apache settings
 $apache_Params = array(
 	'AcceptFilter http' => array(
 		'mask' => 'none|connect',
@@ -966,7 +870,7 @@ $AesBigMenu = array(
    ----------
    All indices except Type, Font size, Font color, Background color and WordWrap
        may be variable names into single quotes (not array) like '$w_mysql_mode'
-   Indice 9 — only for Flash — may be the concatenation of the contents of several variables
+   Indice 9 ï¿½ only for Flash ï¿½ may be the concatenation of the contents of several variables
             in which case it must be an array of variable names into single quotes */
 $AesTextMenus = array(
 	array('instructions_for_use','$w_helpUse',1,10,'$000000','$EEEEEE','W+0','PDF','$w_helpUse','files/instructions_english.pdf',22),

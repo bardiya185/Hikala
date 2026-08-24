@@ -17,44 +17,51 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-//
-// $Id: hyperv.js 679 2012-09-04 10:10:11Z namiltd $
-//
-
-/*global $, jQuery, buildBlock, datetime, plugin_translate, genlang */
 
 "use strict";
 
-var hyperv_show = false, hyperv_table;
-
-//appendcss("./plugins/hyperv/css/hyperv.css");
+var hyperv_show = false,
+    hyperv_table;
 
 /**
  * insert content into table
  * @param {jQuery} xml plugin-XML
  */
 function hyperv_populate(xml) {
-    var name = "", status = 0, state = "", hostname = "";
+    var name = "",
+        status = 0,
+        state = "",
+        hostname = "";
 
     hyperv_table.fnClearTable();
 
-    hostname = $("Plugins Plugin_HyperV", xml).attr('Hostname');
+    hostname = $("Plugins Plugin_HyperV", xml).attr("Hostname");
     if (hostname !== undefined) {
-        $('span[class=Hostname_HyperV]').html(hostname);
+        $("span[class=Hostname_HyperV]").html(hostname);
     }
 
-    $("Plugins Plugin_HyperV Machine", xml).each(function hyperv_getprocess(idp) {
-        name = $(this).attr("Name");
-        status = parseInt($(this).attr("State"), 10);
-        if (!isNaN(status) && (status === 2)) {
-            state = "<span style=\"display:none;\">" + status.toString() + "</span><img src=\"./plugins/hyperv/gfx/online.gif\" alt=\"online\" title=\"\" style=\"width:18px;\" />";
-        }
-        else {
-            state = "<span style=\"display:none;\">" + status.toString() + "</span><img src=\"./plugins/hyperv/gfx/offline.gif\" alt=\"offline\" title=\"\" style=\"width:18px;\" />";
-        }
-        hyperv_table.fnAddData(["<span style=\"display:none;\">" + name + "</span>" + name, state]);
-        hyperv_show = true;
-    });
+    $("Plugins Plugin_HyperV Machine", xml).each(
+        function hyperv_getprocess(idp) {
+            name = $(this).attr("Name");
+            status = parseInt($(this).attr("State"), 10);
+            if (!isNaN(status) && status === 2) {
+                state =
+                    '<span style="display:none;">' +
+                    status.toString() +
+                    '</span><img src="./plugins/hyperv/gfx/online.gif" alt="online" title="" style="width:18px;" />';
+            } else {
+                state =
+                    '<span style="display:none;">' +
+                    status.toString() +
+                    '</span><img src="./plugins/hyperv/gfx/offline.gif" alt="offline" title="" style="width:18px;" />';
+            }
+            hyperv_table.fnAddData([
+                '<span style="display:none;">' + name + "</span>" + name,
+                state,
+            ]);
+            hyperv_show = true;
+        },
+    );
 }
 
 /**
@@ -63,8 +70,9 @@ function hyperv_populate(xml) {
 function hyperv_buildTable() {
     var html = "";
 
-    html += "<div style=\"overflow-x:auto;\">\n";
-    html += "  <table id=\"Plugin_HyperVTable\" style=\"border-collapse:collapse;\">\n";
+    html += '<div style="overflow-x:auto;">\n';
+    html +=
+        '  <table id="Plugin_HyperVTable" style="border-collapse:collapse;">\n';
     html += "    <thead>\n";
     html += "      <tr>\n";
     html += "        <th>" + genlang(2, "HyperV") + "</th>\n";
@@ -79,19 +87,22 @@ function hyperv_buildTable() {
     $("#Plugin_HyperV").append(html);
 
     hyperv_table = $("#Plugin_HyperVTable").dataTable({
-        "bPaginate": false,
-        "bLengthChange": false,
-        "bFilter": false,
-        "bSort": true,
-        "bInfo": false,
-        "bProcessing": true,
-        "bAutoWidth": false,
-        "bStateSave": true,
-        "aoColumns": [{
-            "sType": 'span-string'
-        }, {
-            "sType": 'span-number'
-        }]
+        bPaginate: false,
+        bLengthChange: false,
+        bFilter: false,
+        bSort: true,
+        bInfo: false,
+        bProcessing: true,
+        bAutoWidth: false,
+        bStateSave: true,
+        aoColumns: [
+            {
+                sType: "span-string",
+            },
+            {
+                sType: "span-number",
+            },
+        ],
     });
 }
 
@@ -113,7 +124,7 @@ function hyperv_request() {
                 plugin_translate("HyperV");
                 $("#Plugin_HyperV").show();
             }
-        }
+        },
     });
 }
 

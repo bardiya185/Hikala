@@ -121,10 +121,10 @@ class LazyAssertion
     private $currentChain;
     private $errors = [];
 
-    /** @var string The class to use as AssertionChain factory */
+    
     private $assertClass = Assert::class;
 
-    /** @var string|LazyAssertionException The class to use for exceptions */
+    
     private $exceptionClass = LazyAssertionException::class;
 
     /**

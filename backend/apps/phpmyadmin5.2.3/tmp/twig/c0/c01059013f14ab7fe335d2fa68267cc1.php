@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* display/results/table_headers_for_columns.twig */
+
 class __TwigTemplate_96b1b356200fbb0c5d6d180815814fe9 extends Template
 {
     private $source;
@@ -34,39 +34,31 @@ class __TwigTemplate_96b1b356200fbb0c5d6d180815814fe9 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         $context['_parent'] = $context;
         $context['_seq'] = CoreExtension::ensureTraversable(($context["columns"] ?? null));
         foreach ($context['_seq'] as $context["_key"] => $context["column"]) {
-            // line 2
             yield "  <th class=\"draggable position-sticky";
             yield ((CoreExtension::getAttribute($this->env, $this->source, $context["column"], "is_column_numeric", [], "any", false, false, false, 2)) ? (" text-end") : (""));
             yield ((CoreExtension::getAttribute($this->env, $this->source, $context["column"], "is_column_hidden", [], "any", false, false, false, 2)) ? (" hide") : (""));
-            // line 3
             yield ((($context["is_sortable"] ?? null)) ? (" column_heading") : (""));
             yield (((($context["is_sortable"] ?? null) && CoreExtension::getAttribute($this->env, $this->source, $context["column"], "is_browse_marker_enabled", [], "any", false, false, false, 3))) ? (" marker") : (""));
             yield (((($context["is_sortable"] ?? null) && CoreExtension::getAttribute($this->env, $this->source, $context["column"], "is_browse_pointer_enabled", [], "any", false, false, false, 3))) ? (" pointer") : (""));
-            // line 4
             yield ((( !($context["is_sortable"] ?? null) && CoreExtension::getAttribute($this->env, $this->source, $context["column"], "has_condition", [], "any", false, false, false, 4))) ? (" condition") : (""));
             yield "\" data-column=\"";
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["column"], "column_name", [], "any", false, false, false, 4), "html", null, true);
             yield "\">
     ";
-            // line 5
             if (($context["is_sortable"] ?? null)) {
-                // line 6
                 yield "      ";
                 yield CoreExtension::getAttribute($this->env, $this->source, $context["column"], "order_link", [], "any", false, false, false, 6);
                 yield "
     ";
             } else {
-                // line 8
                 yield "      ";
                 yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["column"], "column_name", [], "any", false, false, false, 8), "html", null, true);
                 yield "
     ";
             }
-            // line 10
             yield "    ";
             yield CoreExtension::getAttribute($this->env, $this->source, $context["column"], "comments", [], "any", false, false, false, 10);
             yield "

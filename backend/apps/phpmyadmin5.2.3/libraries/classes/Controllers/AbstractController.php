@@ -15,10 +15,10 @@ use function strlen;
 
 abstract class AbstractController
 {
-    /** @var ResponseRenderer */
+    
     protected $response;
 
-    /** @var Template */
+    
     protected $template;
 
     public function __construct(ResponseRenderer $response, Template $template)

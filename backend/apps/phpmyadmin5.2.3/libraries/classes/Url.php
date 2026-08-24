@@ -28,7 +28,7 @@ use function strtr;
  */
 class Url
 {
-    /** @var string|null */
+    
     private static $inputArgSeparator = null;
 
     /**
@@ -126,7 +126,7 @@ class Url
     {
         $fields = '';
 
-        /* Always include token in plain forms */
+        
         if ($is_token === false && isset($_SESSION[' PMA_token '])) {
             $values['token'] = $_SESSION[' PMA_token '];
         }
@@ -139,9 +139,6 @@ class Url
             if (is_array($value)) {
                 $fields .= self::getHiddenFields($value, $name, true);
             } else {
-                // do not generate an ending "\n" because
-                // Url::getHiddenInputs() is sometimes called
-                // from a JS document.write()
                 $fields .= '<input type="hidden" name="' . htmlspecialchars((string) $name)
                     . '" value="' . htmlspecialchars((string) $value) . '">';
             }
@@ -216,8 +213,6 @@ class Url
     public static function getCommonRaw(array $params = [], $divider = '?', $encrypt = true)
     {
         global $config;
-
-        // avoid overwriting when creating navigation panel links to servers
         if (
             isset($GLOBALS['server'])
             && $GLOBALS['server'] != $GLOBALS['cfg']['ServerDefault']
@@ -226,8 +221,6 @@ class Url
         ) {
             $params['server'] = $GLOBALS['server'];
         }
-
-        // Can be null when the user is missing an extension.
         if ($config !== null && empty($config->getCookie('pma_lang')) && ! empty($GLOBALS['lang'])) {
             $params['lang'] = $GLOBALS['lang'];
         }
@@ -328,17 +321,14 @@ class Url
         if (str_contains($separator, ';')) {
             return self::$inputArgSeparator = ';';
         }
-
-        // uses first character
         return self::$inputArgSeparator = $separator[0];
     }
 
-    /** @return string|false */
+    
     private static function getArgSeparatorValueFromIni()
     {
-        /** @psalm-suppress ArgumentTypeCoercion */
+        
         if (method_exists('PhpMyAdmin\Tests\UrlTest', 'getInputArgSeparator')) {
-            // phpcs:ignore SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFullyQualifiedName
             return \PhpMyAdmin\Tests\UrlTest::getInputArgSeparator();
         }
 

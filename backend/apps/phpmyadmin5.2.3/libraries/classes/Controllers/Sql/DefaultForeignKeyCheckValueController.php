@@ -12,7 +12,7 @@ use PhpMyAdmin\Utils\ForeignKey;
 
 final class DefaultForeignKeyCheckValueController extends AbstractController
 {
-    /** @var CheckUserPrivileges */
+    
     private $checkUserPrivileges;
 
     public function __construct(

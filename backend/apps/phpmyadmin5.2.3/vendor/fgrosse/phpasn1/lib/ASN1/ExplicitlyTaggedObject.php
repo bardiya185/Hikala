@@ -31,7 +31,7 @@ use FG\ASN1\Exception\ParserException;
  */
 class ExplicitlyTaggedObject extends ASNObject
 {
-    /** @var \FG\ASN1\ASNObject[] */
+    
     private $decoratedObjects;
     private $tag;
 
@@ -39,7 +39,7 @@ class ExplicitlyTaggedObject extends ASNObject
      * @param int $tag
      * @param \FG\ASN1\ASNObject $objects,...
      */
-    public function __construct($tag, /* HH_FIXME[4858]: variadic + strict */ ...$objects)
+    public function __construct($tag,  ...$objects)
     {
         $this->tag = $tag;
         $this->decoratedObjects = $objects;

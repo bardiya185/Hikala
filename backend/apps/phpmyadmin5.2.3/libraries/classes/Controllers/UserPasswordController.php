@@ -18,10 +18,10 @@ use function __;
  */
 class UserPasswordController extends AbstractController
 {
-    /** @var UserPassword */
+    
     private $userPassword;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -100,8 +100,6 @@ class UserPasswordController extends AbstractController
          * If the "change password" form hasn't been submitted or the values submitted
          * aren't valid -> displays the form
          */
-
-        // Displays an error message if required
         if (isset($msg)) {
             $this->response->addHTML($msg->getDisplay());
         }

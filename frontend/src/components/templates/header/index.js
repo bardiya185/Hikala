@@ -125,28 +125,27 @@ function Header() {
 
   return (
     <>
-      
-    <header
-      dir="ltr"
-      className="
+      <header
+        dir="ltr"
+        className="
         w-full
         bg-white
         font-sans
         select-none
       "
-    >
-      {/* ==================================================
+      >
+        {/* ==================================================
           TOP BANNER
       ================================================== */}
 
-      <div className="w-full overflow-hidden">
-        <Image
-          src="/icons/1.png"
-          width={1270}
-          height={60}
-          alt="banner"
-          priority
-          className="
+        <div className="w-full overflow-hidden">
+          <Image
+            src="/icons/1.png"
+            width={1270}
+            height={60}
+            alt="banner"
+            priority
+            className="
             block
             w-full
             h-[45px]
@@ -154,15 +153,15 @@ function Header() {
             md:h-[60px]
             object-cover
           "
-        />
-      </div>
+          />
+        </div>
 
-      {/* ==================================================
+        {/* ==================================================
           MAIN HEADER
       ================================================== */}
 
-      <div
-        className="
+        <div
+          className="
           w-full
           px-3
           sm:px-4
@@ -171,9 +170,9 @@ function Header() {
           mt-3
           sm:mt-4
         "
-      >
-        <div
-          className="
+        >
+          <div
+            className="
             flex
             items-center
             justify-between
@@ -184,13 +183,13 @@ function Header() {
 
             w-full
           "
-        >
-          {/* ==============================================
+          >
+            {/* ==============================================
               LOGO + SEARCH
           ============================================== */}
 
-          <div
-            className="
+            <div
+              className="
               flex
               items-center
 
@@ -201,51 +200,49 @@ function Header() {
               flex-1
               min-w-0
             "
-          >
-            {}
+            >
+              {}
 
-            <Link
-              href="/"
-              className="
+              <Link
+                href="/"
+                className="
+              hidden
                 shrink-0
-                flex
+                lg:flex
                 items-center
               "
-            >
-              <Image
-                src="/icons/en-logo.svg"
-                width={195}
-                height={30}
-                alt="logo"
-                priority
-                className="
-                  w-[85px]
-                  sm:w-[120px]
-                  md:w-[155px]
-                  lg:w-[195px]
+              >
+                <Image
+                  src="/icons/en-logo.svg"
+                  width={195}
+                  height={30}
+                  alt="logo"
+                  priority
+                  className="
+                  w-[195px]
                   h-auto
                 "
-              />
-            </Link>
+                />
+              </Link>
 
-            {}
+              {}
 
-            <div
-              className="
+              <div
+                className="
                 flex-1
                 min-w-0
               "
-            >
-              <SearchBar />
+              >
+                <SearchBar />
+              </div>
             </div>
-          </div>
 
-          {/* ==============================================
+            {/* ==============================================
               LOGIN + CART
           ============================================== */}
 
-          <div
-            className="hidden
+            <div
+              className="hidden
               lg:flex
               items-center
 
@@ -254,32 +251,32 @@ function Header() {
 
               shrink-0
             "
-          >
-            {}
+            >
+              {}
 
-            <AuthForm />
+              <AuthForm />
 
-            {}
+              {}
 
-            <div
-              onMouseEnter={() => setIsOpenMiniCart(true)}
-              onMouseLeave={() => setIsOpenMiniCart(false)}
-              className=" hidden
+              <div
+                onMouseEnter={() => setIsOpenMiniCart(true)}
+                onMouseLeave={() => setIsOpenMiniCart(false)}
+                className=" hidden
                 relative
                 lg:flex
                 items-center
                 shrink-0
               "
-            >
-              <Link
-                href="/checkout/cart"
-                className="
+              >
+                <Link
+                  href="/checkout/cart"
+                  className="
                   relative
                   block
                 "
-              >
-                <div
-                  className="
+                >
+                  <div
+                    className="
                     p-1.5
                     sm:p-2
 
@@ -289,9 +286,9 @@ function Header() {
 
                     transition-colors
                   "
-                >
-                  <MdShoppingCartCheckout
-                    className="
+                  >
+                    <MdShoppingCartCheckout
+                      className="
                       w-[21px]
                       h-[21px]
 
@@ -300,13 +297,13 @@ function Header() {
 
                       text-neutral-700
                     "
-                  />
-                </div>
+                    />
+                  </div>
 
-                {}
+                  {}
 
-                <span
-                  className="
+                  <span
+                    className="
                     absolute
 
                     -top-1
@@ -334,34 +331,34 @@ function Header() {
 
                     shadow-sm
                   "
-                >
-                  {totalCount > 99 ? "+99" : totalCount}
-                </span>
-              </Link>
+                  >
+                    {totalCount > 99 ? "+99" : totalCount}
+                  </span>
+                </Link>
 
-              {}
+                {}
 
-              {isOpenMiniCart && (
-                <div
-                  className="
+                {isOpenMiniCart && (
+                  <div
+                    className="
                     hidden
                     sm:block
                   "
-                >
-                  <MiniCart />
-                </div>
-              )}
+                  >
+                    <MiniCart />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* ==================================================
+        {/* ==================================================
           CATEGORY MENU
       ================================================== */}
 
-      <div
-        className="
+        <div
+          className="
           relative
 
           mt-3
@@ -371,15 +368,15 @@ function Header() {
           sm:px-4
           lg:px-6
         "
-        onMouseLeave={scheduleClose}
-      >
-        {}
+          onMouseLeave={scheduleClose}
+        >
+          {}
 
-        <button
-          type="button"
-          onMouseEnter={openMenu}
-          onClick={() => setIsOpen((prev) => !prev)}
-          className="
+          <button
+            type="button"
+            onMouseEnter={openMenu}
+            onClick={() => setIsOpen((prev) => !prev)}
+            className="
           hidden
             lg:flex
             items-center
@@ -395,34 +392,34 @@ function Header() {
 
             transition-colors
           "
-        >
-          <RxHamburgerMenu
-            className="
+          >
+            <RxHamburgerMenu
+              className="
               w-5
               h-5
             "
-          />
+            />
 
-          <span
-            className="
+            <span
+              className="
               text-xs
               sm:text-sm
 
               font-bold
             "
-          >
-            Categories
-          </span>
-        </button>
+            >
+              Categories
+            </span>
+          </button>
 
-        {/* ==================================================
+          {/* ==================================================
             DESKTOP CATEGORY MEGA MENU
         ================================================== */}
 
-        {isOpen && (
-          <div
-            onMouseEnter={clearCloseTimer}
-            className="
+          {isOpen && (
+            <div
+              onMouseEnter={clearCloseTimer}
+              className="
               absolute
 
               top-[calc(100%+4px)]
@@ -449,13 +446,13 @@ function Header() {
               border
               border-neutral-100
             "
-          >
-            {/* ============================================
+            >
+              {/* ============================================
                 MAIN CATEGORIES
             ============================================ */}
 
-            <nav
-              className="
+              <nav
+                className="
                 flex
                 flex-col
 
@@ -473,15 +470,15 @@ function Header() {
 
                 bg-neutral-50
               "
-            >
-              {mainDataArray?.map((c) => {
-                const isActive = activeId === c.id;
+              >
+                {mainDataArray?.map((c) => {
+                  const isActive = activeId === c.id;
 
-                return (
-                  <div
-                    key={c.id}
-                    onMouseEnter={() => setActiveId(c.id)}
-                    className={`
+                  return (
+                    <div
+                      key={c.id}
+                      onMouseEnter={() => setActiveId(c.id)}
+                      className={`
                       flex
                       items-center
                       justify-between
@@ -503,49 +500,49 @@ function Header() {
                           : "text-neutral-900 hover:bg-neutral-100"
                       }
                     `}
-                  >
-                    <div
-                      className="
+                    >
+                      <div
+                        className="
                         flex
                         items-center
                         gap-2
                         min-w-0
                       "
-                    >
-                      <CategoryIcon
-                        iconKey={c.icon_key}
-                        className={`
+                      >
+                        <CategoryIcon
+                          iconKey={c.icon_key}
+                          className={`
                           w-[18px]
                           h-[18px]
                           shrink-0
 
                           ${isActive ? "text-red-600" : "text-neutral-500"}
                         `}
-                      />
+                        />
 
-                      <span className="truncate">{c.name}</span>
-                    </div>
+                        <span className="truncate">{c.name}</span>
+                      </div>
 
-                    <TbChevronRight
-                      className={`
+                      <TbChevronRight
+                        className={`
                         w-3.5
                         h-3.5
                         shrink-0
 
                         ${isActive ? "text-red-500" : "text-neutral-300"}
                       `}
-                    />
-                  </div>
-                );
-              })}
-            </nav>
+                      />
+                    </div>
+                  );
+                })}
+              </nav>
 
-            {/* ============================================
+              {/* ============================================
                 SUB CATEGORIES
             ============================================ */}
 
-            <div
-              className="
+              <div
+                className="
                 flex-1
 
                 overflow-y-auto
@@ -559,10 +556,10 @@ function Header() {
 
                 relative
               "
-            >
-              {isSubLoading ? (
-                <div
-                  className="
+              >
+                {isSubLoading ? (
+                  <div
+                    className="
                     absolute
                     inset-0
 
@@ -572,9 +569,9 @@ function Header() {
 
                     bg-white/60
                   "
-                >
-                  <div
-                    className="
+                  >
+                    <div
+                      className="
                       w-6
                       h-6
 
@@ -586,17 +583,17 @@ function Header() {
 
                       animate-spin
                     "
-                  />
-                </div>
-              ) : (
-                <>
-                  {}
+                    />
+                  </div>
+                ) : (
+                  <>
+                    {}
 
-                  <Link
-                    href={`/search/${
-                      targetCategory?.slug || "all"
-                    }?category_id=${targetCategory?.id || ""}`}
-                    className="
+                    <Link
+                      href={`/search/${
+                        targetCategory?.slug || "all"
+                      }?category_id=${targetCategory?.id || ""}`}
+                      className="
                       flex
                       items-center
                       gap-1
@@ -612,20 +609,20 @@ function Header() {
 
                       hover:underline
                     "
-                  >
-                    All {activeCategory?.name} Products
-                    <TbChevronRight
-                      className="
+                    >
+                      All {activeCategory?.name} Products
+                      <TbChevronRight
+                        className="
                         w-3.5
                         h-3.5
                       "
-                    />
-                  </Link>
+                      />
+                    </Link>
 
-                  {}
+                    {}
 
-                  <div
-                    className="
+                    <div
+                      className="
                       grid
 
                       grid-cols-2
@@ -634,22 +631,22 @@ function Header() {
                       gap-5
                       lg:gap-6
                     "
-                  >
-                    {finalSubList?.map((col, idx) => (
-                      <div
-                        key={col.id || idx}
-                        className="
+                    >
+                      {finalSubList?.map((col, idx) => (
+                        <div
+                          key={col.id || idx}
+                          className="
                             flex
                             flex-col
 
                             min-w-0
                           "
-                      >
-                        <Link
-                          href={`/search/${
-                            col.slug || "category"
-                          }?category_id=${col.id}`}
-                          className="
+                        >
+                          <Link
+                            href={`/search/${
+                              col.slug || "category"
+                            }?category_id=${col.id}`}
+                            className="
                               flex
                               items-center
                               justify-between
@@ -667,21 +664,21 @@ function Header() {
 
                               group
                             "
-                        >
-                          <span
-                            className="
+                          >
+                            <span
+                              className="
                                 truncate
 
                                 group-hover:text-red-600
 
                                 transition-colors
                               "
-                          >
-                            {col.name}
-                          </span>
+                            >
+                              {col.name}
+                            </span>
 
-                          <TbChevronRight
-                            className="
+                            <TbChevronRight
+                              className="
                                 w-3.5
                                 h-3.5
 
@@ -693,17 +690,17 @@ function Header() {
 
                                 transition-colors
                               "
-                          />
-                        </Link>
+                            />
+                          </Link>
 
-                        {(col.children || col.subs || col.leaves || []).map(
-                          (leaf, lIdx) => (
-                            <Link
-                              key={leaf.id || lIdx}
-                              href={`/search/${
-                                leaf.slug || "child"
-                              }?category_id=${leaf.id}`}
-                              className="
+                          {(col.children || col.subs || col.leaves || []).map(
+                            (leaf, lIdx) => (
+                              <Link
+                                key={leaf.id || lIdx}
+                                href={`/search/${
+                                  leaf.slug || "child"
+                                }?category_id=${leaf.id}`}
+                                className="
                                   py-1
 
                                   text-[13px]
@@ -716,27 +713,27 @@ function Header() {
 
                                   truncate
                                 "
-                            >
-                              {leaf.name}
-                            </Link>
-                          ),
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
+                              >
+                                {leaf.name}
+                              </Link>
+                            ),
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* ==================================================
+          {/* ==================================================
             MOBILE CATEGORY MENU
         ================================================== */}
 
-        {isOpen && (
-          <div
-            className="
+          {isOpen && (
+            <div
+              className="
               md:hidden
 
               absolute
@@ -758,21 +755,21 @@ function Header() {
 
               overflow-hidden
             "
-          >
-            <div
-              className="
+            >
+              <div
+                className="
                 max-h-[70vh]
 
                 overflow-y-auto
               "
-            >
-              {mainDataArray?.map((c) => {
-                return (
-                  <Link
-                    key={c.id}
-                    href={`/search/${c.slug}?category_id=${c.id}`}
-                    onClick={() => setIsOpen(false)}
-                    className="
+              >
+                {mainDataArray?.map((c) => {
+                  return (
+                    <Link
+                      key={c.id}
+                      href={`/search/${c.slug}?category_id=${c.id}`}
+                      onClick={() => setIsOpen(false)}
+                      className="
                       flex
                       items-center
                       justify-between
@@ -792,45 +789,48 @@ function Header() {
 
                       active:bg-neutral-100
                     "
-                  >
-                    <div
-                      className="
+                    >
+                      <div
+                        className="
                         flex
                         items-center
                         gap-3
                       "
-                    >
-                      <CategoryIcon
-                        iconKey={c.icon_key}
-                        className="
+                      >
+                        <CategoryIcon
+                          iconKey={c.icon_key}
+                          className="
                           w-5
                           h-5
 
                           text-neutral-500
                         "
-                      />
+                        />
 
-                      <span>{c.name}</span>
-                    </div>
+                        <span>{c.name}</span>
+                      </div>
 
-                    <TbChevronRight
-                      className="
+                      <TbChevronRight
+                        className="
                         w-4
                         h-4
 
                         text-neutral-400
                       "
-                    />
-                  </Link>
-                );
-              })}
+                      />
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-    </header>
+          )}
+        </div>
+      </header>
 
-    <MobileBottomNav totalCount={totalCount} openMenu={()=>setIsOpen(true)}/>
+      <MobileBottomNav
+        totalCount={totalCount}
+        openMenu={() => setIsOpen(true)}
+      />
     </>
   );
 }

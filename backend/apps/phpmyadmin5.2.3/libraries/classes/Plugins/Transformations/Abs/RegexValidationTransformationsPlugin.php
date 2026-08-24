@@ -46,7 +46,6 @@ abstract class RegexValidationTransformationsPlugin extends IOTransformationsPlu
      */
     public function applyTransformation($buffer, array $options = [], ?FieldMetadata $meta = null)
     {
-        // reset properties of object
         $this->reset();
         if (! empty($options[0]) && ! preg_match($options[0], $buffer)) {
             $this->success = false;
@@ -59,7 +58,7 @@ abstract class RegexValidationTransformationsPlugin extends IOTransformationsPlu
         return $buffer;
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

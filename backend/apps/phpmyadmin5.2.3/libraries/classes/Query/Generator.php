@@ -30,7 +30,6 @@ class Generator
         bool $tblIsGroup,
         ?string $tableType
     ): string {
-        // get table information from information_schema
         if ($escapedTableOrTables) {
             if (is_array($escapedTableOrTables)) {
                 $sqlWhereTable = 'AND t.`TABLE_NAME` '
@@ -226,7 +225,6 @@ class Generator
         string $host,
         string $collation
     ): string {
-        // second part of query is for MariaDB that not show roles inside INFORMATION_SCHEMA db
         return 'SELECT 1 FROM `INFORMATION_SCHEMA`.`USER_PRIVILEGES` '
             . "WHERE `PRIVILEGE_TYPE` = 'CREATE USER' AND "
             . "'''" . $user . "''@''" . $host . "''' LIKE `GRANTEE`"
@@ -242,7 +240,6 @@ class Generator
         string $host,
         string $collation
     ): string {
-        // second part of query is for MariaDB that not show roles inside INFORMATION_SCHEMA db
         return 'SELECT 1 FROM ('
             . 'SELECT `GRANTEE`, `IS_GRANTABLE` FROM '
             . '`INFORMATION_SCHEMA`.`COLUMN_PRIVILEGES` UNION '
@@ -324,8 +321,6 @@ class Generator
     ): array {
         $sqlWheres = [];
         $arrayKeys = [];
-
-        // get columns information from information_schema
         if ($escapedDatabase !== null) {
             $sqlWheres[] = '`TABLE_SCHEMA` = \''
                 . $escapedDatabase . '\' ';
@@ -346,9 +341,6 @@ class Generator
         } else {
             $arrayKeys[] = 'COLUMN_NAME';
         }
-
-        // for PMA bc:
-        // `[SCHEMA_FIELD_NAME]` AS `[SHOW_FULL_COLUMNS_FIELD_NAME]`
         $sql = 'SELECT *,'
                     . ' `COLUMN_NAME`       AS `Field`,'
                     . ' `COLUMN_TYPE`       AS `Type`,'

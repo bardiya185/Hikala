@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* file_select_options.twig */
+
 class __TwigTemplate_7586a1ca35d0c76dbdc3c376e57ddb91 extends Template
 {
     private $source;
@@ -34,11 +34,9 @@ class __TwigTemplate_7586a1ca35d0c76dbdc3c376e57ddb91 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         $context['_parent'] = $context;
         $context['_seq'] = CoreExtension::ensureTraversable(($context["filesList"] ?? null));
         foreach ($context['_seq'] as $context["_key"] => $context["file"]) {
-            // line 2
             yield "  <option value=\"";
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($context["file"], "html", null, true);
             yield "\"";
@@ -47,7 +45,6 @@ class __TwigTemplate_7586a1ca35d0c76dbdc3c376e57ddb91 extends Template
             }
             yield ">
     ";
-            // line 3
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($context["file"], "html", null, true);
             yield "
   </option>

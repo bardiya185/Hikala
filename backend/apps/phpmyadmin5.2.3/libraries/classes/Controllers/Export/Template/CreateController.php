@@ -16,10 +16,10 @@ use function is_array;
 
 final class CreateController extends AbstractController
 {
-    /** @var TemplateModel */
+    
     private $model;
 
-    /** @var Relation */
+    
     private $relation;
 
     public function __construct(
@@ -37,13 +37,13 @@ final class CreateController extends AbstractController
     {
         global $cfg;
 
-        /** @var string $exportType */
+        
         $exportType = $request->getParsedBodyParam('exportType', '');
-        /** @var string $templateName */
+        
         $templateName = $request->getParsedBodyParam('templateName', '');
-        /** @var string $templateData */
+        
         $templateData = $request->getParsedBodyParam('templateData', '');
-        /** @var string|null $templateId */
+        
         $templateId = $request->getParsedBodyParam('template_id');
 
         $exportTemplatesFeature = $this->relation->getRelationParameters()->exportTemplatesFeature;

@@ -13,7 +13,7 @@ use function __;
 
 final class TablesController extends AbstractController
 {
-    /** @var ExportController */
+    
     private $exportController;
 
     public function __construct(ResponseRenderer $response, Template $template, ExportController $exportController)

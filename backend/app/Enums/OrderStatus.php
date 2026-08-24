@@ -22,11 +22,6 @@ enum OrderStatus: string
     case CANCELED   = 'canceled';
     case REFUNDED   = 'refunded';
 
-
-    // ================================================================
-    // 🎯 Helper Methods
-    // ================================================================
-
     /**
      * 🏷️ Display label (English)
      */

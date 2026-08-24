@@ -53,7 +53,7 @@ abstract class OptionsPropertyItem extends PropertyItem
         $this->text = $text;
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the name

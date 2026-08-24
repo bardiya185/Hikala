@@ -66,7 +66,7 @@ abstract class Calculator
     final public static function get() : Calculator
     {
         if (self::$instance === null) {
-            /** @psalm-suppress ImpureMethodCall */
+            
             self::$instance = self::detect();
         }
 

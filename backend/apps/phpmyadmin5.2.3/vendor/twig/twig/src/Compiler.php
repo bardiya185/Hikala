@@ -54,7 +54,6 @@ class Compiler
         $this->source = '';
         $this->debugInfo = [];
         $this->sourceOffset = 0;
-        // source code starts at 1 (as we then increment it when we encounter new lines)
         $this->sourceLine = 1;
         $this->indentation = $indentation;
         $this->varNameSalt = 0;
@@ -232,7 +231,6 @@ class Compiler
      */
     public function outdent(int $step = 1)
     {
-        // can't outdent by more steps than the current indentation level
         if ($this->indentation < $step) {
             throw new \LogicException('Unable to call outdent() as the indentation would become negative.');
         }

@@ -16,7 +16,7 @@ use function __;
 
 class SearchController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, string $db, DatabaseInterface $dbi)
@@ -40,8 +40,6 @@ class SearchController extends AbstractController
         if (! $this->hasDatabase()) {
             return;
         }
-
-        // If config variable $cfg['UseDbSearch'] is on false : exit.
         if (! $cfg['UseDbSearch']) {
             Generator::mysqlDie(
                 __('Access denied!'),
@@ -52,11 +50,7 @@ class SearchController extends AbstractController
         }
 
         $urlParams['goto'] = Url::getFromRoute('/database/search');
-
-        // Create a database search instance
         $databaseSearch = new Search($this->dbi, $db, $this->template);
-
-        // Display top links if we are not in an Ajax request
         if (! $this->response->isAjax()) {
             [
                 $tables,
@@ -68,18 +62,12 @@ class SearchController extends AbstractController
                 $pos,
             ] = Util::getDbInfo($db, $sub_part ?? '');
         }
-
-        // Main search form has been submitted, get results
         if (isset($_POST['submit_search'])) {
             $this->response->addHTML($databaseSearch->getSearchResults());
         }
-
-        // If we are in an Ajax request, we need to exit after displaying all the HTML
         if ($this->response->isAjax() && empty($_REQUEST['ajax_page_request'])) {
             return;
         }
-
-        // Display the search form
         $this->response->addHTML($databaseSearch->getMainHtml());
     }
 }

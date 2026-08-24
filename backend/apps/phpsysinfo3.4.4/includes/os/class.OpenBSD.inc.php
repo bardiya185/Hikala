@@ -32,7 +32,6 @@ class OpenBSD extends BSDCommon
     public function __construct($blockname = false)
     {
         parent::__construct($blockname);
-//        $this->setCPURegExp1("/^cpu(.*) (.*) MHz/");
         $this->setCPURegExp2("/(.*),(.*),(.*),(.*),(.*)/");
         $this->setSCSIRegExp1("/^(.*) at scsibus.*: <(.*)> .*/");
         $this->setSCSIRegExp2("/^(sd[0-9]+): (.*)MB,/");
@@ -108,7 +107,6 @@ class OpenBSD extends BSDCommon
                 $dev = new HWDevice();
                 $dev->setName($ar_buf[3]);
                 if (defined('PSI_SHOW_DEVICES_INFOS') && PSI_SHOW_DEVICES_INFOS) {
-                    // now loop again and find the capacity
                     foreach ($this->readdmesg() as $line2) {
                         if (preg_match("/^(".$ar_buf[1]."): (.*), (.*), (.*)MB, .*$/", $line2, $ar_buf_n)) {
                             $dev->setCapacity($ar_buf_n[4] * 1024 * 1024);

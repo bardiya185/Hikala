@@ -29,16 +29,16 @@ use function strlen;
  */
 class CreateController extends AbstractController
 {
-    /** @var Transformations */
+    
     private $transformations;
 
-    /** @var Config */
+    
     private $config;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -66,7 +66,7 @@ class CreateController extends AbstractController
 
         $cfg = $this->config->settings;
 
-        /* Check if database name is empty */
+        
         if (strlen($db) === 0) {
             Generator::mysqlDie(
                 __('The database name is empty!'),
@@ -89,7 +89,6 @@ class CreateController extends AbstractController
         }
 
         if ($this->dbi->getColumns($db, $table)) {
-            // table exists already
             Generator::mysqlDie(
                 sprintf(__('Table %s already exists!'), htmlspecialchars($table)),
                 '',
@@ -108,26 +107,20 @@ class CreateController extends AbstractController
          * The form used to define the structure of the table has been submitted
          */
         if (isset($_POST['do_save_data'])) {
-            // lower_case_table_names=1 `DB` becomes `db`
             if ($this->dbi->getLowerCaseNames() === '1') {
                 $db = mb_strtolower($db);
                 $table = mb_strtolower($table);
             }
 
             $sql_query = $createAddField->getTableCreationQuery($db, $table);
-
-            // If there is a request for SQL previewing.
             if (isset($_POST['preview_sql'])) {
                 Core::previewSQL($sql_query);
 
                 return;
             }
-
-            // Executes the query
             $result = $this->dbi->tryQuery($sql_query);
 
             if ($result) {
-                // Update comment table for mime types [MIME]
                 if (isset($_POST['field_mimetype']) && is_array($_POST['field_mimetype']) && $cfg['BrowseMIME']) {
                     foreach ($_POST['field_mimetype'] as $fieldindex => $mimetype) {
                         if (
@@ -156,8 +149,6 @@ class CreateController extends AbstractController
 
             return;
         }
-
-        // Do not display the table in the header since it hasn't been created yet
         $this->response->getHeader()->getMenu()->setTable('');
 
         $this->addScriptFiles(['vendor/jquery/jquery.uitablefilter.js', 'indexes.js']);

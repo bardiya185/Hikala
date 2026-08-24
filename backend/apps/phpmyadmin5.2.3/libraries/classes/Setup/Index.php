@@ -35,7 +35,6 @@ class Index
                 'notice' => [],
             ];
         } else {
-            // reset message states
             foreach ($_SESSION['messages'] as &$messages) {
                 foreach ($messages as &$msg) {
                     $msg['fresh'] = false;
@@ -113,11 +112,7 @@ class Index
      */
     public static function versionCheck(): void
     {
-        // version check messages should always be visible so let's make
-        // a unique message id each time we run it
         $message_id = uniqid('version_check');
-
-        // Fetch data
         $versionInformation = new VersionInformation();
         $version_data = $versionInformation->getLatestVersion();
 

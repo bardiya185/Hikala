@@ -1,5 +1,5 @@
-/* Bootstrap 4 for IE8 - v4.3.100          */
-/* https://github.com/namiltd/bootstrap-ie */
+
+
 
 .card-group .card,
 .col-1,
@@ -89,7 +89,7 @@ aside,
 }
 .table-responsive {
   min-height: 0%;
-} /* see https://github.com/twbs/bootstrap/issues/14837 */
+} 
 .progress {
   display: block;
 }
@@ -156,7 +156,7 @@ aside,
   margin-left: auto;
   text-align: justify;
 }
- /* see https://stackoverflow.com/questions/6865194/fluid-width-with-equally-spaced-divs */
+ 
 .justify-content-around {
   text-align: justify;
   text-justify: distribute-all-lines;
@@ -170,7 +170,7 @@ aside,
 [class^="justify-content-"] div {
   display: inline-block;
 }
-/** Carousel - Hide indicators and controls as the carousel doesn't work **/
+
 .carousel-indicators,
 .carousel-control-prev,
 .carousel-control-next {

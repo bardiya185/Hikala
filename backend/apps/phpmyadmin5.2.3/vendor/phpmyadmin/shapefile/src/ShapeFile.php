@@ -55,36 +55,36 @@ class ShapeFile
 {
     public const MAGIC = 0x270a;
 
-    /** @var string|null */
+    
     public $fileName;
 
-    /** @var resource|null */
+    
     private $shpFile = null;
-    /** @var resource|null */
+    
     private $shxFile = null;
-    /** @var resource|null */
+    
     private $dbfFile = null;
 
-    /** @var array|null */
+    
     private $dbfHeader;
 
-    /** @var string */
+    
     public $lastError = '';
 
-    /** @var array */
+    
     public $boundingBox = [
         'xmin' => 0.0,
         'ymin' => 0.0,
         'xmax' => 0.0,
         'ymax' => 0.0,
     ];
-    /** @var int */
+    
     private $fileLength = 0;
 
-    /** @var int|false */
+    
     public $shapeType = 0;
 
-    /** @var array */
+    
     public $records = [];
 
     /**
@@ -132,7 +132,7 @@ class ShapeFile
             $this->fileName = $fileName;
             $result = $this->openSHPFile();
         } else {
-            /* We operate on buffer emulated by readSHP / eofSHP */
+            
             $result = true;
         }
 
@@ -385,12 +385,12 @@ class ShapeFile
             return false;
         }
 
-        /* Skip 20 unused bytes */
+        
         $this->readSHP(20);
 
         $this->fileLength = Util::loadData('N', $this->readSHP(4));
 
-        /* We currently ignore version */
+        
         $this->readSHP(4);
 
         $this->shapeType = Util::loadData('V', $this->readSHP(4));
@@ -465,7 +465,7 @@ class ShapeFile
      */
     private function loadRecords(): bool
     {
-        /* Need to start at offset 100 */
+        
         while (! $this->eofSHP()) {
             $record = new ShapeRecord(-1);
             $record->loadFromFile($this, $this->shpFile, $this->dbfFile);
@@ -591,12 +591,12 @@ class ShapeFile
 
         $dbfName = $this->getFilename('.dbf');
 
-        /* Unlink existing file */
+        
         if (file_exists($dbfName)) {
             unlink($dbfName);
         }
 
-        /* Create new file */
+        
         $this->dbfFile = @dbase_create($dbfName, $this->dbfHeader);
         if ($this->dbfFile === false) {
             $this->setError(sprintf('It wasn\'t possible to create the DBase file "%s"', $dbfName));

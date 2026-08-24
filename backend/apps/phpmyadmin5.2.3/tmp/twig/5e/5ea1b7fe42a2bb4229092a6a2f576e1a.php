@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* server/select/server_options.twig */
+
 class __TwigTemplate_e38e15fb8e45c7272d451d92c88eec3a extends Template
 {
     private $source;
@@ -34,26 +34,19 @@ class __TwigTemplate_e38e15fb8e45c7272d451d92c88eec3a extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         $context['_parent'] = $context;
         $context['_seq'] = CoreExtension::ensureTraversable(($context["select"] ?? null));
         foreach ($context['_seq'] as $context["_key"] => $context["server"]) {
-            // line 2
             yield "    <option
         value=\"";
-            // line 3
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["server"], "value", [], "any", false, false, false, 3), "html", null, true);
             yield "\"
         ";
-            // line 4
             if (CoreExtension::getAttribute($this->env, $this->source, $context["server"], "selected", [], "any", false, false, false, 4)) {
                 yield "selected=\"selected\"";
             }
-            // line 5
             yield "    >";
-            // line 6
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["server"], "label", [], "any", false, false, false, 6), "html", null, true);
-            // line 7
             yield "</option>
 ";
         }

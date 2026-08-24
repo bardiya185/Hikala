@@ -13,7 +13,7 @@ use PhpMyAdmin\Template;
 
 final class GetConfigController extends AbstractController
 {
-    /** @var Config */
+    
     private $config;
 
     public function __construct(ResponseRenderer $response, Template $template, Config $config)
@@ -24,7 +24,7 @@ final class GetConfigController extends AbstractController
 
     public function __invoke(ServerRequest $request): void
     {
-        /** @var string|null $key */
+        
         $key = $request->getParsedBodyParam('key');
 
         if (! isset($key)) {

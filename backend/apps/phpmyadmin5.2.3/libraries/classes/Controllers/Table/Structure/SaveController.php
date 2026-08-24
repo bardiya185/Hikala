@@ -30,19 +30,19 @@ use function strlen;
 
 final class SaveController extends AbstractController
 {
-    /** @var Table  The table object */
+    
     private $tableObj;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Transformations */
+    
     private $transformations;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(
@@ -68,7 +68,6 @@ final class SaveController extends AbstractController
     {
         $regenerate = $this->updateColumns();
         if (! $regenerate) {
-            // continue to show the table's structure
             unset($_POST['selected']);
         }
 
@@ -115,12 +114,8 @@ final class SaveController extends AbstractController
                 Util::getValueByKey($_POST, 'field_move_to.' . $i, ''),
                 $columns_with_index
             );
-
-            // find the remembered sort expression
             $sorted_col = $this->tableObj->getUiProp(Table::PROP_SORTED_COLUMN);
-            // if the old column name is part of the remembered sort expression
             if (mb_strpos((string) $sorted_col, Util::backquote($_POST['field_orig'][$i])) !== false) {
-                // delete the whole remembered sort expression
                 $this->tableObj->removeUiProp(Table::PROP_SORTED_COLUMN);
             }
 
@@ -136,7 +131,6 @@ final class SaveController extends AbstractController
         }
 
         if (count($changes) > 0 || isset($_POST['preview_sql'])) {
-            // Builds the primary keys statements and updates the table
             $key_query = '';
             /**
              * this is a little bit more complex
@@ -145,9 +139,6 @@ final class SaveController extends AbstractController
              *  - no other column with A_I
              *  - the column has an index, if not create one
              */
-
-            // To allow replication, we first select the db to use
-            // and then run queries on this db.
             if (! $this->dbi->selectDb($this->db)) {
                 Generator::mysqlDie(
                     $this->dbi->getError(),
@@ -164,8 +155,6 @@ final class SaveController extends AbstractController
             }
 
             $sql_query .= ';';
-
-            // If there is a request for SQL previewing.
             if (isset($_POST['preview_sql'])) {
                 Core::previewSQL(count($changes) > 0 ? $sql_query : '');
 
@@ -177,8 +166,6 @@ final class SaveController extends AbstractController
                 ->getColumnsWithIndex(Index::PRIMARY | Index::UNIQUE | Index::INDEX | Index::SPATIAL | Index::FULLTEXT);
 
             $changedToBlob = [];
-            // While changing the Column Collation
-            // First change to BLOB, MEDIUMBLOB, or LONGBLOB (depending on the original field type)
             for ($i = 0; $i < $field_cnt; $i++) {
                 if (
                     isset($_POST['field_collation'][$i], $_POST['field_collation_orig'][$i])
@@ -213,8 +200,6 @@ final class SaveController extends AbstractController
                     $changedToBlob[$i] = false;
                 }
             }
-
-            // Then make the requested changes
             $result = $this->dbi->tryQuery($sql_query);
 
             if ($result !== false) {
@@ -238,13 +223,8 @@ final class SaveController extends AbstractController
                     Generator::getMessage($message, $sql_query, 'success')
                 );
             } else {
-                // An error happened while inserting/updating a table definition
-
-                // Save the Original Error
                 $orig_error = $this->dbi->getError();
                 $changes_revert = [];
-
-                // Change back to Original Collation and data type
                 for ($i = 0; $i < $field_cnt; $i++) {
                     if (! $changedToBlob[$i]) {
                         continue;
@@ -272,8 +252,6 @@ final class SaveController extends AbstractController
                     . ' ';
                 $revert_query .= implode(', ', $changes_revert) . '';
                 $revert_query .= ';';
-
-                // Column reverted back to original
                 $this->dbi->query($revert_query);
 
                 $this->response->setRequestStatus(false);
@@ -286,8 +264,6 @@ final class SaveController extends AbstractController
                 $regenerate = true;
             }
         }
-
-        // update field names in relation
         if (isset($_POST['field_orig']) && is_array($_POST['field_orig'])) {
             foreach ($_POST['field_orig'] as $fieldindex => $fieldcontent) {
                 if ($_POST['field_name'][$fieldindex] == $fieldcontent) {
@@ -297,8 +273,6 @@ final class SaveController extends AbstractController
                 $this->relation->renameField($this->db, $this->table, $fieldcontent, $_POST['field_name'][$fieldindex]);
             }
         }
-
-        // update mime types
         if (isset($_POST['field_mimetype']) && is_array($_POST['field_mimetype']) && $GLOBALS['cfg']['BrowseMIME']) {
             foreach ($_POST['field_mimetype'] as $fieldindex => $mimetype) {
                 if (! isset($_POST['field_name'][$fieldindex]) || strlen($_POST['field_name'][$fieldindex]) <= 0) {
@@ -328,8 +302,6 @@ final class SaveController extends AbstractController
      */
     private function columnNeedsAlterTable($i): bool
     {
-        // these two fields are checkboxes so might not be part of the
-        // request; therefore we define them to avoid notices below
         if (! isset($_POST['field_null'][$i])) {
             $_POST['field_null'][$i] = 'NO';
         }
@@ -337,8 +309,6 @@ final class SaveController extends AbstractController
         if (! isset($_POST['field_extra'][$i])) {
             $_POST['field_extra'][$i] = '';
         }
-
-        // field_name does not follow the convention (corresponds to field_orig)
         if ($_POST['field_name'][$i] != $_POST['field_orig'][$i]) {
             return true;
         }
@@ -379,8 +349,6 @@ final class SaveController extends AbstractController
             && Util::getValueByKey($GLOBALS, 'is_reload_priv', false)
         ) {
             $this->dbi->selectDb('mysql');
-
-            // For Column specific privileges
             foreach ($adjust_privileges as $oldCol => $newCol) {
                 $this->dbi->query(
                     sprintf(
@@ -395,13 +363,10 @@ final class SaveController extends AbstractController
                         $oldCol
                     )
                 );
-
-                // i.e. if atleast one column privileges adjusted
                 $changed = true;
             }
 
             if ($changed) {
-                // Finally FLUSH the new privileges
                 $this->dbi->query('FLUSH PRIVILEGES;');
             }
         }

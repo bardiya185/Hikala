@@ -47,9 +47,6 @@ abstract class SubstringTransformationsPlugin extends TransformationsPlugin
      */
     public function applyTransformation($buffer, array $options = [], ?FieldMetadata $meta = null)
     {
-        // possibly use a global transform and feed it with special options
-
-        // further operations on $buffer using the $options[] array.
         $cfg = $GLOBALS['cfg'];
         $options = $this->getOptions($options, $cfg['DefaultTransformations']['Substring']);
 
@@ -76,7 +73,7 @@ abstract class SubstringTransformationsPlugin extends TransformationsPlugin
         return htmlspecialchars($newtext);
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

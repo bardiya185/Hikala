@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class TrackingFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $tracking;
 
     public function __construct(DatabaseName $database, TableName $tracking)

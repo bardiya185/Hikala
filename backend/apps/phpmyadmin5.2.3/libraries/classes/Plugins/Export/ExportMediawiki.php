@@ -43,19 +43,11 @@ class ExportMediawiki extends ExportPlugin
         $exportPluginProperties->setExtension('mediawiki');
         $exportPluginProperties->setMimeType('text/plain');
         $exportPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $exportPluginProperties
-        // this will be shown as "Format specific options"
         $exportSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-        // general options main group
         $generalOptions = new OptionsPropertyMainGroup(
             'general_opts',
             __('Dump table')
         );
-
-        // what to dump (structure/data/both)
         $subgroup = new OptionsPropertySubgroup(
             'dump_table',
             __('Dump table')
@@ -70,24 +62,17 @@ class ExportMediawiki extends ExportPlugin
         );
         $subgroup->setSubgroupHeader($leaf);
         $generalOptions->addProperty($subgroup);
-
-        // export table name
         $leaf = new BoolPropertyItem(
             'caption',
             __('Export table names')
         );
         $generalOptions->addProperty($leaf);
-
-        // export table headers
         $leaf = new BoolPropertyItem(
             'headers',
             __('Export table headers')
         );
         $generalOptions->addProperty($leaf);
-        //add the main group to the root group
         $exportSpecificOptions->addProperty($generalOptions);
-
-        // set the options for the export plugin property item
         $exportPluginProperties->setOptions($exportSpecificOptions);
 
         return $exportPluginProperties;
@@ -188,23 +173,15 @@ class ExportMediawiki extends ExportPlugin
                 $columns = $dbi->getColumns($db, $table);
                 $columns = array_values($columns);
                 $row_cnt = count($columns);
-
-                // Print structure comment
                 $output = $this->exportComment(
                     'Table structure for '
                     . Util::backquote($table_alias)
                 );
-
-                // Begin the table construction
                 $output .= '{| class="wikitable" style="text-align:center;"'
                     . $this->exportCRLF();
-
-                // Add the table name
                 if (isset($GLOBALS['mediawiki_caption'])) {
                     $output .= "|+'''" . $table_alias . "'''" . $this->exportCRLF();
                 }
-
-                // Add the table headers
                 if (isset($GLOBALS['mediawiki_headers'])) {
                     $output .= '|- style="background:#ffdead;"' . $this->exportCRLF();
                     $output .= '! style="background:#ffffff" | '
@@ -218,8 +195,6 @@ class ExportMediawiki extends ExportPlugin
                         $output .= ' | ' . $col_as . $this->exportCRLF();
                     }
                 }
-
-                // Add the table structure
                 $output .= '|-' . $this->exportCRLF();
                 $output .= '! Type' . $this->exportCRLF();
                 for ($i = 0; $i < $row_cnt; ++$i) {
@@ -274,36 +249,20 @@ class ExportMediawiki extends ExportPlugin
         $db_alias = $db;
         $table_alias = $table;
         $this->initAlias($aliases, $db_alias, $table_alias);
-
-        // Print data comment
         $output = $this->exportComment(
             $table_alias != ''
                 ? 'Table data for ' . Util::backquote($table_alias)
                 : 'Query results'
         );
-
-        // Begin the table construction
-        // Use the "wikitable" class for style
-        // Use the "sortable"  class for allowing tables to be sorted by column
         $output .= '{| class="wikitable sortable" style="text-align:center;"'
             . $this->exportCRLF();
-
-        // Add the table name
         if (isset($GLOBALS['mediawiki_caption'])) {
             $output .= "|+'''" . $table_alias . "'''" . $this->exportCRLF();
         }
-
-        // Add the table headers
         if (isset($GLOBALS['mediawiki_headers'])) {
-            // Get column names
             $column_names = $dbi->getColumnNames($db, $table);
-
-            // Add column names as table headers
             if ($column_names !== []) {
-                // Use '|-' for separating rows
                 $output .= '|-' . $this->exportCRLF();
-
-                // Use '!' for separating table headers
                 foreach ($column_names as $column) {
                     if (! empty($aliases[$db]['tables'][$table]['columns'][$column])) {
                         $column = $aliases[$db]['tables'][$table]['columns'][$column];
@@ -313,21 +272,15 @@ class ExportMediawiki extends ExportPlugin
                 }
             }
         }
-
-        // Get the table data from the database
         $result = $dbi->query($sqlQuery, DatabaseInterface::CONNECT_USER, DatabaseInterface::QUERY_UNBUFFERED);
         $fields_cnt = $result->numFields();
 
         while ($row = $result->fetchRow()) {
             $output .= '|-' . $this->exportCRLF();
-
-            // Use '|' for separating table columns
             for ($i = 0; $i < $fields_cnt; ++$i) {
                 $output .= ' | ' . $row[$i] . '' . $this->exportCRLF();
             }
         }
-
-        // End table construction
         $output .= '|}' . str_repeat($this->exportCRLF(), 2);
 
         return $this->export->outputHandler($output);
@@ -361,7 +314,6 @@ class ExportMediawiki extends ExportPlugin
      */
     private function exportComment($text = '')
     {
-        // see https://www.mediawiki.org/wiki/Help:Formatting
         $comment = $this->exportCRLF();
         $comment .= '<!--' . $this->exportCRLF();
         $comment .= htmlspecialchars($text) . $this->exportCRLF();
@@ -377,7 +329,6 @@ class ExportMediawiki extends ExportPlugin
      */
     private function exportCRLF()
     {
-        // The CRLF expected by the mediawiki format is "\n"
         return "\n";
     }
 }

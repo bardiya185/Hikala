@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class CentralColumnsFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $centralColumns;
 
     public function __construct(DatabaseName $database, TableName $centralColumns)

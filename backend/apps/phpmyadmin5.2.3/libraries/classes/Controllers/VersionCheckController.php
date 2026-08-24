@@ -17,11 +17,7 @@ class VersionCheckController extends AbstractController
     public function __invoke(): void
     {
         $_GET['ajax_request'] = 'true';
-
-        // Disabling standard response.
         $this->response->disable();
-
-        // Always send the correct headers
         Core::headerJSON();
 
         $versionInformation = new VersionInformation();

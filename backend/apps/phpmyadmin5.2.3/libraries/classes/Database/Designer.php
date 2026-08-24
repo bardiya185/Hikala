@@ -26,13 +26,13 @@ use function str_contains;
  */
 class Designer
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Template */
+    
     public $template;
 
     /**
@@ -130,7 +130,7 @@ class Designer
     {
         $export_list = Plugins::getSchema();
 
-        /* Fail if we didn't find any schema plugin */
+        
         if (empty($export_list)) {
             return Message::error(
                 __('Could not load schema plugins, please check your installation!')

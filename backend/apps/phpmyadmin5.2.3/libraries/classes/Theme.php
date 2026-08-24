@@ -33,28 +33,28 @@ use const PHP_VERSION_ID;
  */
 class Theme
 {
-    /** @var string theme version */
+    
     public $version = '0.0.0.0';
 
-    /** @var string theme name */
+    
     public $name = '';
 
-    /** @var string theme id */
+    
     public $id = '';
 
-    /** @var string theme path */
+    
     public $path = '';
 
-    /** @var string file system theme path */
+    
     private $fsPath = '';
 
-    /** @var string image path as an URL */
+    
     public $imgPath = '';
 
-    /** @var string image path on the file-system */
+    
     public $imgPathFs = '';
 
-    /** @var int last modification time for info file */
+    
     public $mtimeInfo = 0;
 
     /**
@@ -85,13 +85,9 @@ class Theme
         }
 
         $data = json_decode($content, true);
-
-        // Did we get expected data?
         if (! is_array($data)) {
             return false;
         }
-
-        // Check that all required data are there
         $members = [
             'name',
             'version',
@@ -102,8 +98,6 @@ class Theme
                 return false;
             }
         }
-
-        // Version check
         if (! is_array($data['supports'])) {
             return false;
         }
@@ -143,15 +137,12 @@ class Theme
      */
     public function checkImgPath(): bool
     {
-        // try current theme first
         if (is_dir($this->getFsPath() . 'img' . DIRECTORY_SEPARATOR)) {
             $this->setImgPath($this->getPath() . '/img/');
             $this->setImgPathFs($this->getFsPath() . 'img' . DIRECTORY_SEPARATOR);
 
             return true;
         }
-
-        // try fallback theme
         $fallbackFsPathThemeDir = ThemeManager::getThemesFsDir() . ThemeManager::FALLBACK_THEME
                                   . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR;
         if (is_dir($fallbackFsPathThemeDir)) {
@@ -162,8 +153,6 @@ class Theme
 
             return true;
         }
-
-        // we failed
         trigger_error(
             sprintf(
                 __('No valid image path for theme %s found!'),

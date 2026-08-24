@@ -27,30 +27,30 @@ function AmazingSliders({ campaign, products }) {
       style={{ backgroundColor: bgColor }}
     >
       <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 sm:gap-3 lg:gap-4">
-        
-        {/* ================================================== */}
-        {/* 🎯 Campaign Header */}
-        {/* ================================================== */}
+        {}
+        {}
+        {}
         <div className="flex flex-row lg:flex-col items-center justify-between lg:justify-center w-full lg:w-auto text-white px-2 py-2 lg:p-4 lg:min-w-[180px] shrink-0">
-          
-          {/* Icon + Title */}
+          {}
           <div className="flex items-center gap-1.5 sm:gap-2 lg:mb-3">
             {campaign?.icon && (
-              <span className="text-xl sm:text-2xl lg:text-3xl">{campaign.icon}</span>
+              <span className="text-xl sm:text-2xl lg:text-3xl">
+                {campaign.icon}
+              </span>
             )}
             <h2 className="text-xs sm:text-sm md:text-base lg:text-xl font-extrabold uppercase tracking-wide leading-tight">
               {campaign?.name || "Amazing"}
             </h2>
           </div>
 
-          {/* ⏰ Countdown Timer */}
+          {}
           {campaign?.ends_at && (
             <div className="scale-75 sm:scale-90 lg:scale-100 origin-center">
               <CountdownTimer targetDate={campaign.ends_at} />
             </div>
           )}
 
-          {/* 📝 Description (فقط دسکتاپ) */}
+          {}
           {campaign?.description && (
             <p className="hidden lg:block text-white/80 text-xs text-center mt-3 line-clamp-2">
               {campaign.description}
@@ -58,12 +58,11 @@ function AmazingSliders({ campaign, products }) {
           )}
         </div>
 
-        {/* ================================================== */}
-        {/* 📦 Products Slider */}
-        {/* ================================================== */}
+        {}
+        {}
+        {}
         <div className="relative w-full overflow-hidden min-w-0">
-          
-          {/* ⬅️ Previous Button (فقط تبلت+) */}
+          {}
           <button
             onClick={() => handleScroll("prev")}
             className="hidden md:flex absolute left-1 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 w-8 h-8 lg:w-10 lg:h-10 rounded-full shadow-md items-center justify-center transition-all"
@@ -72,7 +71,7 @@ function AmazingSliders({ campaign, products }) {
             ❮
           </button>
 
-          {/* 📜 Scrollable Products */}
+          {}
           <div
             ref={sliderRef}
             className="flex items-stretch gap-2 sm:gap-3 lg:gap-4 overflow-x-auto scrollbar-hide scroll-smooth py-1 px-1"
@@ -83,7 +82,7 @@ function AmazingSliders({ campaign, products }) {
             ))}
           </div>
 
-          {/* ➡️ Next Button (فقط تبلت+) */}
+          {}
           <button
             onClick={() => handleScroll("next")}
             className="hidden md:flex absolute right-1 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 w-8 h-8 lg:w-10 lg:h-10 rounded-full shadow-md items-center justify-center transition-all"
@@ -96,14 +95,8 @@ function AmazingSliders({ campaign, products }) {
     </div>
   );
 }
-
-// ================================================================
-// 🎴 Product Card (کاملاً رسپانسیو - از 320px به بالا)
-// ================================================================
 function ProductCard({ product }) {
-  const productImage =
-    product.images?.[0]?.image_url ||
-    "/icons/product1.webp";
+  const productImage = product.images?.[0]?.image_url || "/icons/product1.webp";
 
   const pricing = product.pricing || {};
   const basePrice = pricing.base_price || 0;
@@ -113,8 +106,7 @@ function ProductCard({ product }) {
 
   return (
     <div className="w-[180px] xs:w-[180px] sm:w-[180px] md:w-[200px] lg:w-[260px] bg-white rounded-lg sm:rounded-xl lg:rounded-2xl p-1.5 sm:p-2 lg:p-4 border border-neutral-300 shadow-sm shrink-0 flex flex-col hover:shadow-md transition-shadow">
-      
-      {/* 🖼️ Product Image */}
+      {}
       <div className="w-full h-[90px] xs:h-[100px] sm:h-[130px] md:h-[150px] lg:h-[180px] relative flex items-center justify-center bg-gray-50 rounded-md sm:rounded-lg lg:rounded-xl overflow-hidden mb-2">
         <Image
           src={productImage}
@@ -126,7 +118,7 @@ function ProductCard({ product }) {
         />
       </div>
 
-      {/* 📝 Product Info */}
+      {}
       <div className="flex flex-col gap-0.5 sm:gap-1 flex-1 min-h-0">
         <h3 className="font-semibold text-gray-800 text-[11px] xs:text-xs sm:text-sm line-clamp-2 leading-tight">
           {product.title}
@@ -136,7 +128,7 @@ function ProductCard({ product }) {
         </p>
       </div>
 
-      {/* 💰 Pricing */}
+      {}
       <div className="mt-1.5 sm:mt-2">
         {hasDiscount ? (
           <>

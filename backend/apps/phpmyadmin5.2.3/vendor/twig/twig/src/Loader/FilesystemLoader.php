@@ -21,7 +21,7 @@ use Twig\Source;
  */
 class FilesystemLoader implements LoaderInterface
 {
-    /** Identifier of the main namespace. */
+    
     public const MAIN_NAMESPACE = '__main__';
 
     protected $paths = [];
@@ -84,7 +84,6 @@ class FilesystemLoader implements LoaderInterface
      */
     public function addPath(string $path, string $namespace = self::MAIN_NAMESPACE): void
     {
-        // invalidate the cache
         $this->cache = $this->errorCache = [];
 
         $checkPath = $this->isAbsolutePath($path) ? $path : $this->rootPath.$path;
@@ -100,7 +99,6 @@ class FilesystemLoader implements LoaderInterface
      */
     public function prependPath(string $path, string $namespace = self::MAIN_NAMESPACE): void
     {
-        // invalidate the cache
         $this->cache = $this->errorCache = [];
 
         $checkPath = $this->isAbsolutePath($path) ? $path : $this->rootPath.$path;
@@ -155,7 +153,6 @@ class FilesystemLoader implements LoaderInterface
 
     public function isFresh(string $name, int $time): bool
     {
-        // false support to be removed in 3.0
         if (null === $path = $this->findTemplate($name)) {
             return false;
         }

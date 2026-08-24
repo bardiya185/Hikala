@@ -20,8 +20,6 @@ return new class extends Migration
                   ->cascadeOnDelete();
 
             $table->timestamps();
-
-            // هر کاربر فقط یک بار می‌تونه یک محصول رو لایک کنه
             $table->unique(['user_id', 'product_id']);
 
             $table->index('user_id');

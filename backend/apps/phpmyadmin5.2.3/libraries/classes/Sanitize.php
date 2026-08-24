@@ -51,7 +51,6 @@ class Sanitize
             './index.php?',
         ];
         $is_setup = self::isSetup();
-        // Adjust path to setup script location
         if ($is_setup) {
             foreach ($valid_starts as $key => $value) {
                 if (substr($value, 0, 2) !== './') {
@@ -102,17 +101,17 @@ class Sanitize
      */
     public static function replaceBBLink(array $found)
     {
-        /* Check for valid link */
+        
         if (! self::checkLink($found[1])) {
             return $found[0];
         }
 
-        /* a-z and _ allowed in target */
+        
         if (! empty($found[3]) && preg_match('/[^a-z_]+/i', $found[3])) {
             return $found[0];
         }
 
-        /* Construct target */
+        
         $target = '';
         if (! empty($found[3])) {
             $target = ' target="' . $found[3] . '"';
@@ -121,7 +120,7 @@ class Sanitize
             }
         }
 
-        /* Construct url */
+        
         if (substr($found[1], 0, 4) === 'http') {
             $url = Core::linkURL($found[1]);
         } else {
@@ -139,18 +138,18 @@ class Sanitize
     public static function replaceDocLink(array $found): string
     {
         if (count($found) >= 4) {
-            /* doc@page@anchor pattern */
+            
             $page = $found[1];
             $anchor = $found[3];
         } else {
-            /* doc@anchor pattern */
+            
             $anchor = $found[1];
             if (str_starts_with($anchor, 'faq')) {
                 $page = 'faq';
             } elseif (str_starts_with($anchor, 'cfg')) {
                 $page = 'config';
             } else {
-                /* Guess */
+                
                 $page = 'setup';
             }
         }
@@ -182,7 +181,7 @@ class Sanitize
             $message = strtr($message, ['<' => '&lt;', '>' => '&gt;']);
         }
 
-        /* Interpret bb code */
+        
         $replace_pairs = [
             '[em]' => '<em>',
             '[/em]' => '</em>',
@@ -199,31 +198,30 @@ class Sanitize
             '[/sup]' => '</sup>',
             '[conferr]' => '<iframe src="show_config_errors.php"><a href='
                 . '"show_config_errors.php">show_config_errors.php</a></iframe>',
-            // used in libraries/Util.php
             '[dochelpicon]' => Html\Generator::getImage('b_help', __('Documentation')),
         ];
 
         $message = strtr($message, $replace_pairs);
 
-        /* Match links in bb code ([a@url@target], where @target is options) */
+        
         $pattern = '/\[a@([^]"@]*)(@([^]"]*))?\]/';
 
-        /* Find and replace all links */
+        
         $message = (string) preg_replace_callback($pattern, static function (array $match) {
             return self::replaceBBLink($match);
         }, $message);
 
-        /* Replace documentation links */
+        
         $message = (string) preg_replace_callback(
             '/\[doc@([a-zA-Z0-9_-]+)(@([a-zA-Z0-9_-]*))?\]/',
-            /** @param string[] $match */
+            
             static function (array $match): string {
                 return self::replaceDocLink($match);
             },
             $message
         );
 
-        /* Possibly escape result */
+        
         if ($escape) {
             $message = htmlspecialchars($message);
         }
@@ -248,9 +246,7 @@ class Sanitize
     public static function sanitizeFilename($filename, $replaceDots = false)
     {
         $pattern = '/[^A-Za-z0-9_';
-        // if we don't have to replace dots
         if (! $replaceDots) {
-            // then add the dot to the list of legit characters
             $pattern .= '.';
         }
 
@@ -275,8 +271,6 @@ class Sanitize
     {
         $a_string = htmlspecialchars((string) $a_string);
         $a_string = self::escapeJsString($a_string);
-        // Needed for inline javascript to prevent some browsers
-        // treating it as a anchor
         $a_string = str_replace('#', '\\#', $a_string);
 
         return $add_backquotes
@@ -376,9 +370,6 @@ class Sanitize
      */
     public static function removeRequestVars(&$allowList): void
     {
-        // do not check only $_REQUEST because it could have been overwritten
-        // and use type casting because the variables could have become
-        // strings
         $keys = array_keys(
             array_merge((array) $_REQUEST, (array) $_GET, (array) $_POST, (array) $_COOKIE)
         );
@@ -388,9 +379,6 @@ class Sanitize
                 unset($_REQUEST[$key], $_GET[$key], $_POST[$key]);
                 continue;
             }
-
-            // allowed stuff could be compromised so escape it
-            // we require it to be a string
             if (isset($_REQUEST[$key]) && ! is_string($_REQUEST[$key])) {
                 unset($_REQUEST[$key]);
             }

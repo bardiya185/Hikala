@@ -67,10 +67,8 @@ final class ForeignKey
         $defaultCheckValue = $dbi->getVariable('FOREIGN_KEY_CHECKS') === 'ON';
         if (isset($_REQUEST['fk_checks'])) {
             if (empty($_REQUEST['fk_checks'])) {
-                // Disable foreign key checks
                 $dbi->setVariable('FOREIGN_KEY_CHECKS', 'OFF');
             } else {
-                // Enable foreign key checks
                 $dbi->setVariable('FOREIGN_KEY_CHECKS', 'ON');
             }
         }

@@ -39,13 +39,13 @@ class Normalization
      */
     private $dbi;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Transformations */
+    
     private $transformations;
 
-    /** @var Template */
+    
     public $template;
 
     /**

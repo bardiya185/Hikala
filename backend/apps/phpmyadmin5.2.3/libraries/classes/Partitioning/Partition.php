@@ -14,9 +14,9 @@ use function array_values;
  */
 class Partition extends SubPartition
 {
-    /** @var string partition description */
+    
     protected $description;
-    /** @var SubPartition[] sub partitions */
+    
     protected $subPartitions = [];
 
     /**
@@ -154,7 +154,7 @@ class Partition extends SubPartition
             );
             if ($result) {
                 $partitionMap = [];
-                /** @var array $row */
+                
                 foreach ($result as $row) {
                     if (empty($row['PARTITION_NAME'])) {
                         continue;

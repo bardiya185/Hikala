@@ -50,7 +50,7 @@ class TemplateParser
         if (is_array($value)) {
             $this->assertTypeId($key, $object);
 
-            /* @var Construct $object */
+            
             foreach ($value as $key => $child) {
                 $this->validate($object->current(), $key, $child);
                 $object->next();

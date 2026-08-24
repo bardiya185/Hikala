@@ -42,21 +42,11 @@ class ExportYaml extends ExportPlugin
         $exportPluginProperties->setMimeType('text/yaml');
         $exportPluginProperties->setForceFile(true);
         $exportPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $exportPluginProperties
-        // this will be shown as "Format specific options"
         $exportSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-        // general options main group
         $generalOptions = new OptionsPropertyMainGroup('general_opts');
-        // create primary items and add them to the group
         $leaf = new HiddenPropertyItem('structure_or_data');
         $generalOptions->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($generalOptions);
-
-        // set the options for the export plugin property item
         $exportPluginProperties->setOptions($exportSpecificOptions);
 
         return $exportPluginProperties;
@@ -156,8 +146,6 @@ class ExportYaml extends ExportPlugin
         $record_cnt = 0;
         while ($record = $result->fetchRow()) {
             $record_cnt++;
-
-            // Output table name as comment if this is the first record of the table
             if ($record_cnt == 1) {
                 $buffer = '# ' . $db_alias . '.' . $table_alias . $crlf;
                 $buffer .= '-' . $crlf;

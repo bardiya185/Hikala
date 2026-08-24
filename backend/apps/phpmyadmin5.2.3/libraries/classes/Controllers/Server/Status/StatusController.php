@@ -20,10 +20,10 @@ use function implode;
  */
 class StatusController extends AbstractController
 {
-    /** @var ReplicationGui */
+    
     private $replicationGui;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -56,9 +56,8 @@ class StatusController extends AbstractController
         $connections = [];
         $replication = '';
         if ($this->data->dataLoaded) {
-            // In some case the data was reported not to exist, check it for all keys
             if (isset($this->data->status['Bytes_received'], $this->data->status['Bytes_sent'])) {
-                /** @var string[] $bytes */
+                
                 $bytes = Util::formatByteDown(
                     $this->data->status['Bytes_received'] + $this->data->status['Bytes_sent'],
                     3,
@@ -111,21 +110,21 @@ class StatusController extends AbstractController
     {
         $hourFactor = 3600 / $this->data->status['Uptime'];
 
-        /** @var string[] $bytesReceived */
+        
         $bytesReceived = Util::formatByteDown($this->data->status['Bytes_received'], 3, 1);
-        /** @var string[] $bytesReceivedPerHour */
+        
         $bytesReceivedPerHour = Util::formatByteDown($this->data->status['Bytes_received'] * $hourFactor, 3, 1);
-        /** @var string[] $bytesSent */
+        
         $bytesSent = Util::formatByteDown($this->data->status['Bytes_sent'], 3, 1);
-        /** @var string[] $bytesSentPerHour */
+        
         $bytesSentPerHour = Util::formatByteDown($this->data->status['Bytes_sent'] * $hourFactor, 3, 1);
-        /** @var string[] $bytesTotal */
+        
         $bytesTotal = Util::formatByteDown(
             $this->data->status['Bytes_received'] + $this->data->status['Bytes_sent'],
             3,
             1
         );
-        /** @var string[] $bytesTotalPerHour */
+        
         $bytesTotalPerHour = Util::formatByteDown(
             ($this->data->status['Bytes_received'] + $this->data->status['Bytes_sent']) * $hourFactor,
             3,

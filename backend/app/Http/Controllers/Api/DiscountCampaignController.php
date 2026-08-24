@@ -22,10 +22,6 @@ class DiscountCampaignController extends Controller
     public function __construct(
         private ProductService $productService
     ) {}
-
-    // ================================================================
-    // 🌐 PUBLIC: List Active Campaigns
-    // ================================================================
     #[OA\Get(
         path: '/api/campaigns',
         operationId: 'campaigns.public.index',
@@ -48,10 +44,6 @@ class DiscountCampaignController extends Controller
             'data' => DiscountCampaignResource::collection($campaigns),
         ]);
     }
-
-    // ================================================================
-    // 🌐 PUBLIC: Show Campaign by Slug
-    // ================================================================
     #[OA\Get(
         path: '/api/campaigns/{slug}',
         operationId: 'campaigns.public.showBySlug',
@@ -82,10 +74,6 @@ class DiscountCampaignController extends Controller
             'data' => new DiscountCampaignResource($campaign),
         ]);
     }
-
-    // ================================================================
-    // 🌐 PUBLIC: Get Products of a Campaign (🔥 جدید)
-    // ================================================================
     #[OA\Get(
         path: '/api/campaigns/{slug}/products',
         operationId: 'campaigns.public.products',
@@ -181,15 +169,10 @@ class DiscountCampaignController extends Controller
     )]
     public function products(Request $request, string $slug)
     {
-        // 🔍 پیدا کردن کمپین
         $campaign = DiscountCampaign::where('slug', $slug)
             ->active()
             ->firstOrFail();
-
-        // 📦 گرفتن محصولات کمپین
         $result = $this->productService->listByCampaign($campaign, $request);
-
-        // ⏰ محاسبه زمان باقی‌مانده
         $timeRemaining = $this->calculateTimeRemaining($campaign);
 
         return response()->json([
@@ -212,10 +195,6 @@ class DiscountCampaignController extends Controller
             'meta' => $result['meta'],
         ]);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: List All Campaigns (with pagination)
-    // ================================================================
     #[OA\Get(
         path: '/api/admin/campaigns',
         operationId: 'campaigns.admin.index',
@@ -261,10 +240,6 @@ class DiscountCampaignController extends Controller
             ],
         ]);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Create Campaign
-    // ================================================================
     #[OA\Post(
         path: '/api/admin/campaigns',
         operationId: 'campaigns.admin.store',
@@ -302,10 +277,6 @@ class DiscountCampaignController extends Controller
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Show Campaign Details
-    // ================================================================
     #[OA\Get(
         path: '/api/admin/campaigns/{campaign}',
         operationId: 'campaigns.admin.show',
@@ -330,10 +301,6 @@ class DiscountCampaignController extends Controller
         $campaign->load(['discounts']);
         return new DiscountCampaignResource($campaign);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Update Campaign
-    // ================================================================
     #[OA\Put(
         path: '/api/admin/campaigns/{campaign}',
         operationId: 'campaigns.admin.update',
@@ -374,10 +341,6 @@ class DiscountCampaignController extends Controller
         $campaign->update($request->validated());
         return new DiscountCampaignResource($campaign);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Delete Campaign
-    // ================================================================
     #[OA\Delete(
         path: '/api/admin/campaigns/{campaign}',
         operationId: 'campaigns.admin.destroy',
@@ -406,10 +369,6 @@ class DiscountCampaignController extends Controller
             'message' => 'Campaign deleted successfully',
         ]);
     }
-
-    // ================================================================
-    // 🛠️ HELPER: Calculate time remaining
-    // ================================================================
     private function calculateTimeRemaining(DiscountCampaign $campaign): ?int
     {
         if (!$campaign->ends_at) {

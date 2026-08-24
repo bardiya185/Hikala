@@ -50,10 +50,10 @@ class Footer
      */
     private $isEnabled;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Template */
+    
     private $template;
 
     /**

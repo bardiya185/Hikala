@@ -11,9 +11,6 @@ use OpenApi\Attributes as OA;
 
 class BannerPositionController extends Controller
 {
-    // ================================================================
-    // 🔒 ADMIN: List All Positions
-    // ================================================================
     #[OA\Get(
         path: '/api/admin/banner-positions',
         tags: ['Banners'],
@@ -45,10 +42,6 @@ class BannerPositionController extends Controller
             'data' => BannerPositionResource::collection($positions),
         ]);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Create Position
-    // ================================================================
     #[OA\Post(
         path: '/api/admin/banner-positions',
         tags: ['Banners'],
@@ -88,10 +81,6 @@ class BannerPositionController extends Controller
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Show Position
-    // ================================================================
     #[OA\Get(
         path: '/api/admin/banner-positions/{position}',
         tags: ['Banners'],
@@ -114,10 +103,6 @@ class BannerPositionController extends Controller
     {
         return new BannerPositionResource($position->load('banners'));
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Update Position
-    // ================================================================
     #[OA\Put(
         path: '/api/admin/banner-positions/{position}',
         tags: ['Banners'],
@@ -162,10 +147,6 @@ class BannerPositionController extends Controller
 
         return new BannerPositionResource($position);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Delete Position
-    // ================================================================
     #[OA\Delete(
         path: '/api/admin/banner-positions/{position}',
         tags: ['Banners'],
@@ -187,7 +168,6 @@ class BannerPositionController extends Controller
     )]
     public function destroy(BannerPosition $position)
     {
-        // بنرها با cascade delete پاک میشن
         $position->delete();
 
         return response()->json([

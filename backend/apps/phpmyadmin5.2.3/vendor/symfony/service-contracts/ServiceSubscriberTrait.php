@@ -22,7 +22,7 @@ use Symfony\Contracts\Service\Attribute\SubscribedService;
  */
 trait ServiceSubscriberTrait
 {
-    /** @var ContainerInterface */
+    
     protected $container;
 
     /**

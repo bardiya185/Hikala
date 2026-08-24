@@ -16,10 +16,10 @@ use function __;
 
 final class AddController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(

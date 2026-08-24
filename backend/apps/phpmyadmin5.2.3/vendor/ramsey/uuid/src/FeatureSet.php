@@ -274,7 +274,7 @@ class FeatureSet
         $this->numberConverter = $this->buildNumberConverter($calculator);
         $this->timeConverter = $this->buildTimeConverter($calculator);
 
-        /** @psalm-suppress RedundantPropertyInitializationCheck */
+        
         if (isset($this->timeProvider)) {
             $this->timeGenerator = $this->buildTimeGenerator($this->timeProvider);
         }
@@ -432,7 +432,7 @@ class FeatureSet
             return new GuidBuilder($this->numberConverter, $this->timeConverter);
         }
 
-        /** @psalm-suppress ImpureArgument */
+        
         return new FallbackBuilder(new BuilderCollection([
             new Rfc4122UuidBuilder($this->numberConverter, $this->timeConverter),
             new NonstandardUuidBuilder($this->numberConverter, $this->timeConverter),

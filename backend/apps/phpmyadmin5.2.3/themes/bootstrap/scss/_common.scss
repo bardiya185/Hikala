@@ -78,7 +78,7 @@ textarea {
   table-layout: fixed;
 }
 
-/* classes */
+
 .clearfloat {
   clear: both;
 }
@@ -167,13 +167,13 @@ tr:last-child td.condition {
   border-width: 0 1px 1px 1px;
 }
 
-/* rtl:begin:remove */
+
 .before-condition {
   // for first th which must have right border set (ltr only)
   border-right: 1px solid $black;
 }
 
-/* rtl:end:remove */
+
 
 /**
  * cells with the value NULL
@@ -991,7 +991,7 @@ select.invalid_value,
 }
 
 #loading_parent {
-  /** Need this parent to properly center the notification division */
+  
   position: relative;
   width: 100%;
 }
@@ -2567,7 +2567,7 @@ body .ui-dialog {
 }
 // end of styles for jQuery-ui to support rtl languages
 
-/* templates/database/multi_table_query */
+
 
 .multi_table_query_form {
   .query-form__tr--hide {

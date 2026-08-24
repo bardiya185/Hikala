@@ -324,7 +324,7 @@ final class BigInteger extends BigNumber
      */
     public static function zero() : BigInteger
     {
-        /** @psalm-suppress ImpureStaticVariable */
+        
         static $zero;
 
         if ($zero === null) {
@@ -343,7 +343,7 @@ final class BigInteger extends BigNumber
      */
     public static function one() : BigInteger
     {
-        /** @psalm-suppress ImpureStaticVariable */
+        
         static $one;
 
         if ($one === null) {
@@ -362,7 +362,7 @@ final class BigInteger extends BigNumber
      */
     public static function ten() : BigInteger
     {
-        /** @psalm-suppress ImpureStaticVariable */
+        
         static $ten;
 
         if ($ten === null) {

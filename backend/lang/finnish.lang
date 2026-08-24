@@ -1,7 +1,5 @@
 <?php
 
-//3.2.10  $file_charset
-
 $file_charset = 'iso-8859-1';
 
 $w_allServicesRunning = 'Kaikki palvelut k?ynniss?';

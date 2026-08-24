@@ -23,10 +23,6 @@ class ProductController extends Controller
         private ProductService $productService,
         private RelatedProductsService $relatedProductsService
     ) {}
-
-    // ================================================================
-    // 📋 INDEX - List Products
-    // ================================================================
     #[OA\Get(
         path: '/api/products',
         operationId: 'products.index',
@@ -149,10 +145,6 @@ class ProductController extends Controller
             'meta' => $result['meta'],
         ]);
     }
-
-    // ================================================================
-    // 👁️ SHOW - Product Details
-    // ================================================================
     #[OA\Get(
         path: '/api/products/{product}',
         operationId: 'products.show',
@@ -173,7 +165,6 @@ class ProductController extends Controller
     )]
     public function show(Product $product)
     {
-        // 🔒 Security: چک کن محصول فعاله
         if (!$product->is_active) {
             abort(404, 'Product not found');
         }
@@ -188,10 +179,6 @@ class ProductController extends Controller
 
         return new ProductResource($product);
     }
-
-    // ================================================================
-    // 🎯 RELATED PRODUCTS
-    // ================================================================
     #[OA\Get(
         path: '/api/products/{product}/related',
         operationId: 'products.related',
@@ -233,10 +220,6 @@ class ProductController extends Controller
             ],
         ]);
     }
-
-    // ================================================================
-    // ✏️ STORE
-    // ================================================================
     #[OA\Post(
         path: '/api/products',
         operationId: 'products.store',
@@ -285,10 +268,6 @@ class ProductController extends Controller
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
-
-    // ================================================================
-    // 🔄 UPDATE
-    // ================================================================
     #[OA\Put(
         path: '/api/products/{product}',
         operationId: 'products.update',
@@ -325,10 +304,6 @@ class ProductController extends Controller
         $product = $this->productService->update($product, $request->validated());
         return new ProductResource($product);
     }
-
-    // ================================================================
-    // 🗑️ DELETE
-    // ================================================================
     #[OA\Delete(
         path: '/api/products/{product}',
         operationId: 'products.destroy',

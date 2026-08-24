@@ -20,13 +20,13 @@ use function in_array;
 
 final class DropTableController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var RelationCleanup */
+    
     private $relationCleanup;
 
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(
@@ -91,8 +91,6 @@ final class DropTableController extends AbstractController
             $sql_query = $sqlQueryViews . ';';
             unset($sqlQueryViews);
         }
-
-        // Unset cache values for tables count, issue #14205
         if (isset($_SESSION['tmpval'])) {
             if (isset($_SESSION['tmpval']['table_limit_offset'])) {
                 unset($_SESSION['tmpval']['table_limit_offset']);

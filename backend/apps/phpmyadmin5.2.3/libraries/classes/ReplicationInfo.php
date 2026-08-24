@@ -12,7 +12,7 @@ use function sprintf;
 
 final class ReplicationInfo
 {
-    /** @var string[] */
+    
     public $primaryVariables = [
         'File',
         'Position',
@@ -20,7 +20,7 @@ final class ReplicationInfo
         'Binlog_Ignore_DB',
     ];
 
-    /** @var string[] */
+    
     public $replicaVariables = [
         'Slave_IO_State',
         'Replica_IO_State',
@@ -74,22 +74,22 @@ final class ReplicationInfo
         'Seconds_Behind_Source',
     ];
 
-    /** @var array */
+    
     private $primaryStatus = [];
 
-    /** @var array */
+    
     private $replicaStatus = [];
 
-    /** @var array */
+    
     private $multiPrimaryStatus = [];
 
-    /** @var array */
+    
     private $primaryInfo = [];
 
-    /** @var array */
+    
     private $replicaInfo = [];
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(DatabaseInterface $dbi)

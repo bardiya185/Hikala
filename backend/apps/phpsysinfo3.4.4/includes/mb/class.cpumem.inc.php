@@ -46,7 +46,6 @@ class CpuMem extends Hwmon
                     $dev = new SensorDevice();
                     $dev->setName("CPU ".($i + 1));
                     $dev->setValue($temp);
-//                    $dev->setMax(70);
                     $this->mbinfo->setMbTemp($dev);
                 }
             }

@@ -15,7 +15,7 @@ class MainForm extends \PhpMyAdmin\Config\Forms\User\MainForm
     public static function getForms()
     {
         $result = parent::getForms();
-        /* Following are not available to user */
+        
         $result['Startup'][] = 'ShowPhpInfo';
         $result['Startup'][] = 'ShowChgPassword';
 

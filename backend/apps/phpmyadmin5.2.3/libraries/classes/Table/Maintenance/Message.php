@@ -11,16 +11,16 @@ use function is_string;
  */
 final class Message
 {
-    /** @var string */
+    
     public $table;
 
-    /** @var string */
+    
     public $operation;
 
-    /** @var string */
+    
     public $type;
 
-    /** @var string */
+    
     public $text;
 
     private function __construct(string $table, string $operation, string $type, string $text)

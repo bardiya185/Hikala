@@ -15,7 +15,7 @@ use function json_encode;
  */
 final class JavaScriptMessagesController
 {
-    /** @var array<string, string> */
+    
     private $messages = [];
 
     public function __construct()
@@ -35,7 +35,7 @@ final class JavaScriptMessagesController
         $ajaxClockSmallGifPath = $theme instanceof Theme ? $theme->getImgPath('ajax_clock_small.gif') : '';
 
         $this->messages = [
-            /* For confirmations */
+            
             'strConfirm' => __('Confirm'),
             'strDoYouReally' => __('Do you really want to execute "%s"?'),
             'strDropDatabaseStrongWarning' => __('You are about to DESTROY a complete database!'),
@@ -93,19 +93,19 @@ final class JavaScriptMessagesController
                 . '<br><br>'
                 . __('Are you sure you wish to change all the column collations and convert the data?'),
 
-            /* For modal dialog buttons */
+            
             'strSaveAndClose' => __('Save & close'),
             'strReset' => __('Reset'),
             'strResetAll' => __('Reset all'),
 
-            /* For indexes */
+            
             'strFormEmpty' => __('Missing value in the form!'),
             'strRadioUnchecked' => __('Select at least one of the options!'),
             'strEnterValidNumber' => __('Please enter a valid number!'),
             'strEnterValidLength' => __('Please enter a valid length!'),
             'strAddIndex' => __('Add index'),
             'strEditIndex' => __('Edit index'),
-            /* l10n: Rename a table Index */
+            
             'strRenameIndex' => __('Rename index'),
             'strAddToIndex' => __('Add %s column(s) to index'),
             'strCreateSingleColumnIndex' => __('Create single-column index'),
@@ -113,21 +113,21 @@ final class JavaScriptMessagesController
             'strCompositeWith' => __('Composite with:'),
             'strMissingColumn' => __('Please select column(s) for the index.'),
 
-            /* For Preview SQL*/
+            
             'strPreviewSQL' => __('Preview SQL'),
 
-            /* For Simulate DML*/
+            
             'strSimulateDML' => __('Simulate query'),
             'strSQLQuery' => __('SQL query:'),
 
-            /* Charts */
-            /* l10n: Default label for the y-Axis of Charts */
+            
+            
             'strYValues' => __('Y values'),
 
-            /* Database multi-table query */
+            
             'strEmptyQuery' => __('Please enter the SQL query first.'),
 
-            /* For server/privileges.js */
+            
             'strHostEmpty' => __('The host name is empty!'),
             'strUserEmpty' => __('The user name is empty!'),
             'strPasswordEmpty' => __('The password is empty!'),
@@ -139,22 +139,22 @@ final class JavaScriptMessagesController
             'strLockAccount' => __('Lock this account.'),
             'strUnlockAccount' => __('Unlock this account.'),
 
-            /* For export.js */
+            
             'strTemplateCreated' => __('Template was created.'),
             'strTemplateLoaded' => __('Template was loaded.'),
             'strTemplateUpdated' => __('Template was updated.'),
             'strTemplateDeleted' => __('Template was deleted.'),
 
-            /* l10n: Other, small valued, queries */
+            
             'strOther' => __('Other'),
-            /* l10n: Thousands separator */
+            
             'strThousandsSeparator' => __(','),
-            /* l10n: Decimal separator */
+            
             'strDecimalSeparator' => __('.'),
 
             'strChartConnectionsTitle' => __('Connections / Processes'),
 
-            /* server status monitor */
+            
             'strIncompatibleMonitorConfig' => __('Local monitor configuration incompatible!'),
             'strIncompatibleMonitorConfigDescription' => __(
                 'The chart arrangement configuration in your browsers local storage is not '
@@ -188,7 +188,7 @@ final class JavaScriptMessagesController
             'strConnections' => __('Connections'),
             'strProcesses' => __('Processes'),
 
-            /* summary row */
+            
             'strB' => __('B'),
             'strKiB' => __('KiB'),
             'strMiB' => __('MiB'),
@@ -198,20 +198,20 @@ final class JavaScriptMessagesController
             'strEiB' => __('EiB'),
             'strNTables' => __('%d table(s)'),
 
-            /* l10n: Questions is the name of a MySQL Status variable */
+            
             'strQuestions' => __('Questions'),
             'strTraffic' => __('Traffic'),
             'strSettings' => __('Settings'),
             'strAddChart' => __('Add chart to grid'),
             'strAddOneSeriesWarning' => __('Please add at least one variable to the series!'),
             'strNone' => __('None'),
-            /* l10n: SQL Query on modal to show exported query */
+            
             'strQuery' => __('SQL Query'),
             'strResumeMonitor' => __('Resume monitor'),
             'strPauseMonitor' => __('Pause monitor'),
             'strStartRefresh' => __('Start auto refresh'),
             'strStopRefresh' => __('Stop auto refresh'),
-            /* Monitor: Instructions Dialog */
+            
             'strBothLogOn' => __('general_log and slow_query_log are enabled.'),
             'strGenLogOn' => __('general_log is enabled.'),
             'strSlowLogOn' => __('slow_query_log is enabled.'),
@@ -227,13 +227,13 @@ final class JavaScriptMessagesController
             'strSettingsAppliedGlobal' => __(
                 'Following settings will be applied globally and reset to default on server restart:'
             ),
-            /* l10n: %s is FILE or TABLE */
+            
             'strSetLogOutput' => __('Set log_output to %s'),
-            /* l10n: Enable in this context means setting a status variable to ON */
+            
             'strEnableVar' => __('Enable %s'),
-            /* l10n: Disable in this context means setting a status variable to OFF */
+            
             'strDisableVar' => __('Disable %s'),
-            /* l10n: %d seconds */
+            
             'setSetLongQueryTime' => __('Set long_query_time to %d seconds.'),
             'strNoSuperUser' => __(
                 'You can\'t change these variables. Please log in as root or contact your database administrator.'
@@ -242,7 +242,7 @@ final class JavaScriptMessagesController
             'strCurrentSettings' => __('Current settings'),
 
             'strChartTitle' => __('Chart title'),
-            /* l10n: As in differential values */
+            
             'strDifferential' => __('Differential'),
             'strDividedBy' => __('Divided by %s'),
             'strUnit' => __('Unit'),
@@ -282,9 +282,9 @@ final class JavaScriptMessagesController
             'strAliasTable' => _pgettext('Alias', 'Table'),
             'strAliasColumn' => _pgettext('Alias', 'Column'),
 
-            /* l10n: A collection of available filters */
+            
             'strFiltersForLogTable' => __('Log table filter options'),
-            /* l10n: Filter as in "Start Filtering" */
+            
             'strFilter' => __('Filter'),
             'strFilterByWordRegexp' => __('Filter queries by word/regexp:'),
             'strIgnoreWhereAndGroup' => __('Group queries, ignoring variable data in WHERE clauses'),
@@ -315,19 +315,19 @@ final class JavaScriptMessagesController
 
             'strAnalyzeQuery' => __('Analyse query'),
 
-            /* For query editor */
+            
             'strFormatting' => __('Formatting SQL…'),
             'strNoParam' => __('No parameters found!'),
 
-            /* For inline query editing */
+            
             'strGo' => __('Go'),
             'strCancel' => __('Cancel'),
 
-            /* For page-related settings */
+            
             'strPageSettings' => __('Page-related settings'),
             'strApply' => __('Apply'),
 
-            /* For Ajax Notifications */
+            
             'strLoading' => __('Loading…'),
             'strAbortedRequest' => __('Request aborted!!'),
             'strProcessingRequest' => __('Processing request'),
@@ -347,19 +347,19 @@ final class JavaScriptMessagesController
             'strOK' => __('OK'),
             'strDismiss' => __('Click to dismiss this notification'),
 
-            /* For database/operations.js */
+            
             'strRenamingDatabases' => __('Renaming databases'),
             'strCopyingDatabase' => __('Copying database'),
             'strChangingCharset' => __('Changing charset'),
             'strNo' => __('No'),
 
-            /* For Foreign key checks */
+            
             'strForeignKeyCheck' => __('Enable foreign key checks'),
 
-            /* For database/structure.js */
+            
             'strErrorRealRowCount' => __('Failed to get real row count.'),
 
-            /* For database/search.js */
+            
             'strSearching' => __('Searching'),
             'strHideSearchResults' => __('Hide search results'),
             'strShowSearchResults' => __('Show search results'),
@@ -367,21 +367,21 @@ final class JavaScriptMessagesController
             'strDeleting' => __('Deleting'),
             'strConfirmDeleteResults' => __('Delete the matches for the %s table?'),
 
-            /* For rte.js */
+            
             'MissingReturn' => __('The definition of a stored function must contain a RETURN statement!'),
             'strExport' => __('Export'),
             'NoExportable' => __('No routine is exportable. Required privileges may be lacking.'),
 
-            /* For ENUM/SET editor*/
+            
             'enum_columnVals' => __('Values for column %s'),
             'enum_newColumnVals' => __('Values for a new column'),
             'enum_hint' => __('Enter each value in a separate field.'),
             'enum_addValue' => __('Add %d value(s)'),
 
-            /* For import.js */
+            
             'strImportCSV' => __('Note: If the file contains multiple tables, they will be combined into one.'),
 
-            /* For sql.js */
+            
             'strHideQueryBox' => __('Hide query box'),
             'strShowQueryBox' => __('Show query box'),
             'strEdit' => __('Edit'),
@@ -395,7 +395,7 @@ final class JavaScriptMessagesController
             ),
             'strBookmarkVariable' => __('Variable %d:'),
 
-            /* For Central list of columns */
+            
             'pickColumn' => __('Pick'),
             'pickColumnTitle' => __('Column selector'),
             'searchList' => __('Search this list'),
@@ -405,7 +405,7 @@ final class JavaScriptMessagesController
             ),
             'seeMore' => __('See more'),
 
-            /* For normalization */
+            
             'strAddPrimaryKey' => __('Add primary key'),
             'strPrimaryKeyAdded' => __('Primary key added.'),
             'strToNextStep' => __('Taking you to next step…'),
@@ -437,20 +437,20 @@ final class JavaScriptMessagesController
             'strSelectedTd' => __('Selected dependencies are as follows:'),
             'strNoTdSelected' => __('No dependencies selected!'),
 
-            /* For server/variables.js */
+            
             'strSave' => __('Save'),
 
-            /* For table/select.js */
+            
             'strHideSearchCriteria' => __('Hide search criteria'),
             'strShowSearchCriteria' => __('Show search criteria'),
             'strColumnMax' => __('Column maximum:'),
             'strColumnMin' => __('Column minimum:'),
 
-            /* For table/find_replace.js */
+            
             'strHideFindNReplaceCriteria' => __('Hide find and replace criteria'),
             'strShowFindNReplaceCriteria' => __('Show find and replace criteria'),
 
-            /* For table/zoom_plot_jqplot.js */
+            
             'strDisplayHelp' => '<ul><li>'
                 . __('Each point represents a data row.')
                 . '</li><li>'
@@ -471,7 +471,7 @@ final class JavaScriptMessagesController
                 . '</strong>',
             'strDataPointContent' => __('Data point content'),
 
-            /* For table/change.js */
+            
             'strIgnore' => __('Ignore'),
             'strCopyToClipboard' => __('Copy to clipboard'),
             'strCopy' => __('Copy'),
@@ -489,30 +489,30 @@ final class JavaScriptMessagesController
             'strYes' => __('Yes'),
             'strCopyEncryptionKey' => __('Do you want to copy encryption key?'),
             'strEncryptionKey' => __('Encryption key'),
-            /* l10n: Tip for HEX conversion of Integers */
+            
             'HexConversionInfo' => __(
                 'The HEX function will treat the integer as a string while calculating the hexadecimal value'
             ),
 
-            /* For Tip to be shown on Time field */
+            
             'strMysqlAllowedValuesTipTime' => __(
                 'MySQL accepts additional values not selectable by the slider;'
                 . ' key in those values directly if desired'
             ),
 
-            /* For Tip to be shown on Date field */
+            
             'strMysqlAllowedValuesTipDate' => __(
                 'MySQL accepts additional values not selectable by the datepicker;'
                 . ' key in those values directly if desired'
             ),
 
-            /* For Lock symbol Tooltip */
+            
             'strLockToolTip' => __(
                 'Indicates that you have made changes to this page;'
                 . ' you will be prompted for confirmation before abandoning changes'
             ),
 
-            /* Designer (js/designer/move.js) */
+            
             'strSelectReferencedKey' => __('Select referenced key'),
             'strSelectForeignKey' => __('Select Foreign Key'),
             'strPleaseSelectPrimaryOrUniqueKey' => __('Please select the primary key or a unique key!'),
@@ -528,7 +528,7 @@ final class JavaScriptMessagesController
             'strSavePageAs' => __('Save page as'),
             'strOpenPage' => __('Open page'),
             'strDeletePage' => __('Delete page'),
-            /* l10n: When the user opens a page saved in the Designer */
+            
             'strSavedPageTableMissing' => __('Some tables saved in this page might have been renamed or deleted.'),
             'strUntitled' => __('Untitled'),
             'strSelectPage' => __('Please select a page to continue'),
@@ -538,12 +538,12 @@ final class JavaScriptMessagesController
             'strExportRelationalSchema' => __('Export relational schema'),
             'strModificationSaved' => __('Modifications have been saved'),
 
-            /* Visual query builder (js/designer/move.js) */
+            
             'strObjectsCreated' => __('%d object(s) created.'),
             'strColumnName' => __('Column name'),
             'strSubmit' => __('Submit'),
 
-            /* For makegrid.js (column reordering, show/hide column, grid editing) */
+            
             'strCellEditHint' => __('Press escape to cancel editing.<br>- Shift+Enter for a newline.'),
             'strSaveCellWarning' => __(
                 'You have edited some data and they have not been saved. Are you sure you want '
@@ -570,7 +570,7 @@ final class JavaScriptMessagesController
             ),
             'strOriginalLength' => __('Original length'),
 
-            /* Drag & Drop sql import messages */
+            
             'dropImportMessageCancel' => __('cancel'),
             'dropImportMessageAborted' => __('Aborted'),
             'dropImportMessageFailed' => __('Failed'),
@@ -578,8 +578,6 @@ final class JavaScriptMessagesController
             'dropImportImportResultHeader' => __('Import status'),
             'dropImportDropFiles' => __('Drop files here'),
             'dropImportSelectDB' => __('Select database first'),
-
-            // this approach does not work when the parameter is changed via user prefs
             'strGridEditFeatureHint' => $cfg['GridEditing'] === 'double-click'
                 ? __('You can also edit most values<br>by double-clicking directly on them.')
                 : ($cfg['GridEditing'] === 'click'
@@ -588,31 +586,31 @@ final class JavaScriptMessagesController
 
             'strGoToLink' => __('Go to link:'),
 
-            /* password generation */
+            
             'strGeneratePassword' => __('Generate password'),
             'strGenerate' => __('Generate'),
             'strChangePassword' => __('Change password'),
 
-            /* navigation tabs */
+            
             'strMore' => __('More'),
 
-            /* navigation panel */
+            
             'strShowPanel' => __('Show panel'),
             'strHidePanel' => __('Hide panel'),
             'linkWithMain' => __('Link with main panel'),
             'unlinkWithMain' => __('Unlink from main panel'),
 
-            /* update */
+            
             'strNewerVersion' => __(
                 'A newer version of phpMyAdmin is available and you should consider upgrading. '
                 . 'The newest version is %s, released on %s.'
             ),
-            /* l10n: Latest available phpMyAdmin version */
+            
             'strLatestAvailable' => __(', latest stable version:'),
             'strUpToDate' => __('up to date'),
             'errorLoadingGitInformation' => __('There was an error in loading the Git information.'),
 
-            /* Error Reporting */
+            
             'strErrorOccurred' => __('A fatal JavaScript error has occurred. Would you like to send an error report?'),
             'strChangeReportSettings' => __('Change report settings'),
             'strShowReportDetails' => __('Show report details'),
@@ -650,8 +648,6 @@ final class JavaScriptMessagesController
             'strCopyColumnFailure' => __('Column name copying to clipboard failed!'),
             'strCopyQueryButtonSuccess' => __('Successfully copied!'),
             'strCopyQueryButtonFailure' => __('Copying failed!'),
-
-            // For console
             'strConsoleRequeryConfirm' => __('Execute this query again?'),
             'strConsoleDeleteBookmarkConfirm' => __('Do you really want to delete this bookmark?'),
             'strConsoleDebugError' => __('Some error occurred while getting SQL debug info.'),
@@ -667,38 +663,31 @@ final class JavaScriptMessagesController
                 . ' cause such a problem, clearing your "Offline Website Data" might help. In Safari,'
                 . ' such problem is commonly caused by "Private Mode Browsing".'
             ),
-            // For modals in /database/structure
             'strCopyTablesTo' => __('Copy tables to'),
             'strAddPrefix' => __('Add table prefix'),
             'strReplacePrefix' => __('Replace table with prefix'),
             'strCopyPrefix' => __('Copy table with prefix'),
 
-            /* For password strength simulation */
+            
             'strExtrWeak' => __('Extremely weak'),
             'strVeryWeak' => __('Very weak'),
             'strWeak' => __('Weak'),
             'strGood' => __('Good'),
             'strStrong' => __('Strong'),
 
-            /* U2F errors */
-            // l10n: error code 5 (from U2F API)
+            
             'strU2FTimeout' => _pgettext('U2F error', 'Timed out waiting for security key activation.'),
-            // l10n: error code 2 (from U2F API)
             'strU2FBadRequest' => _pgettext('U2F error', 'Invalid request sent to security key.'),
-            // l10n: unknown error code (from U2F API)
             'strU2FUnknown' => _pgettext('U2F error', 'Unknown security key error.'),
-            // l10n: error code 3 (from U2F API)
             'strU2FInvalidClient' => _pgettext('U2F error', 'Client does not support security key.'),
-            // l10n: error code 4 (from U2F API) on register
             'strU2FErrorRegister' => _pgettext('U2F error', 'Failed security key activation.'),
-            // l10n: error code 4 (from U2F API) on authanticate
             'strU2FErrorAuthenticate' => _pgettext('U2F error', 'Invalid security key.'),
 
             'webAuthnNotSupported' => __(
                 'WebAuthn is not available. Please use a supported browser in a secure context (HTTPS).'
             ),
 
-            /* Designer */
+            
             'strIndexedDBNotWorking' => __(
                 'You can not open, save or delete your page layout, as IndexedDB is not working'
                 . ' in your browser and your phpMyAdmin configuration storage is not configured for this.'

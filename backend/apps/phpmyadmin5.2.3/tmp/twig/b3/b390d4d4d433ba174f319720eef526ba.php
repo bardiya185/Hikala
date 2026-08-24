@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* database/structure/bulk_action_modal.twig */
+
 class __TwigTemplate_ac38d24ab9f4c000dae5e1d91b1237e0 extends Template
 {
     private $source;
@@ -34,7 +34,6 @@ class __TwigTemplate_ac38d24ab9f4c000dae5e1d91b1237e0 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<div class=\"modal fade\" id=\"bulkActionModal\" data-bs-backdrop=\"static\" data-bs-keyboard=\"false\"
      tabindex=\"-1\" aria-labelledby=\"bulkActionLabel\" aria-hidden=\"true\">
   <div class=\"modal-dialog modal-dialog-centered\">
@@ -43,18 +42,15 @@ class __TwigTemplate_ac38d24ab9f4c000dae5e1d91b1237e0 extends Template
         <h5 class=\"modal-title\" id=\"bulkActionLabel\"></h5>
         <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"";
 yield _gettext("Cancel");
-        // line 7
         yield "\"></button>
       </div>
       <div class=\"modal-body\"></div>
       <div class=\"modal-footer\">
         <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">";
 yield _gettext("Cancel");
-        // line 11
         yield "</button>
         <button type=\"button\" class=\"btn btn-primary\" id=\"bulkActionContinue\">";
 yield _gettext("Continue");
-        // line 12
         yield "</button>
       </div>
     </div>

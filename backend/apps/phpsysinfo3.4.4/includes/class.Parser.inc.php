@@ -138,7 +138,6 @@ class Parser
             if ($get_inodes && PSI_SHOW_INODES) {
                 if (CommonFunctions::executeProgram('df', '-i '.$df_param, $df2, PSI_DEBUG)) {
                     $df2 = preg_split("/\n/", $df2, -1, PREG_SPLIT_NO_EMPTY);
-                    // Store inode use% in an associative array (df_inodes) for later use
                     foreach ($df2 as $df2_line) {
                         if (preg_match("/^(\S+).*\s([0-9]+)%/", $df2_line, $inode_buf)) {
                             $df_inodes[$inode_buf[1]] = $inode_buf[2];

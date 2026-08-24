@@ -139,13 +139,10 @@ class Utilities
     {
         global $cfg;
 
-        /* No sorting when key is not present */
+        
         if (! isset($a[$sortBy], $b[$sortBy])) {
             return 0;
         }
-
-        // produces f.e.:
-        // return -1 * strnatcasecmp($a['SCHEMA_TABLES'], $b['SCHEMA_TABLES'])
         $compare = $cfg['NaturalOrder'] ? strnatcasecmp(
             (string) $a[$sortBy],
             (string) $b[$sortBy]
@@ -182,15 +179,11 @@ class Utilities
         $dbgInfo = [];
 
         if ($result === false && $errorMessage !== null) {
-            // because Utilities::formatError is applied in DbiMysqli
             $dbgInfo['error'] = htmlspecialchars_decode($errorMessage);
         }
 
         $dbgInfo['query'] = $query;
         $dbgInfo['time'] = $time;
-        // Get and slightly format backtrace, this is used
-        // in the javascript console.
-        // Strip call to debugLogQueryIntoSession
         $dbgInfo['trace'] = Error::processBacktrace(
             array_slice(debug_backtrace(), 1)
         );

@@ -12,25 +12,25 @@ namespace PhpMyAdmin\Partitioning;
  */
 class SubPartition
 {
-    /** @var string the database */
+    
     protected $db;
-    /** @var string the table */
+    
     protected $table;
-    /** @var string partition name */
+    
     protected $name;
-    /** @var int ordinal */
+    
     protected $ordinal;
-    /** @var string partition method */
+    
     protected $method;
-    /** @var string partition expression */
+    
     protected $expression;
-    /** @var int no of table rows in the partition */
+    
     protected $rows;
-    /** @var int data length */
+    
     protected $dataLength;
-    /** @var int index length */
+    
     protected $indexLength;
-    /** @var string partition comment */
+    
     protected $comment;
 
     /**

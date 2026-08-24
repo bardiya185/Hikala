@@ -34,17 +34,17 @@ final class ExtensionSet
     private $staging;
     private $parsers;
     private $visitors;
-    /** @var array<string, TwigFilter> */
+    
     private $filters;
-    /** @var array<string, TwigTest> */
+    
     private $tests;
-    /** @var array<string, TwigFunction> */
+    
     private $functions;
-    /** @var array<string, array{precedence: int, class: class-string<AbstractExpression>}> */
+    
     private $unaryOperators;
-    /** @var array<string, array{precedence: int, class?: class-string<AbstractExpression>, associativity: ExpressionParser::OPERATOR_*}> */
+    
     private $binaryOperators;
-    /** @var array<string, mixed> */
+    
     private $globals;
     private $functionCallbacks = [];
     private $filterCallbacks = [];
@@ -429,28 +429,20 @@ final class ExtensionSet
             $this->initExtension($extension);
         }
         $this->initExtension($this->staging);
-        // Done at the end only, so that an exception during initialization does not mark the environment as initialized when catching the exception
         $this->initialized = true;
     }
 
     private function initExtension(ExtensionInterface $extension): void
     {
-        // filters
         foreach ($extension->getFilters() as $filter) {
             $this->filters[$filter->getName()] = $filter;
         }
-
-        // functions
         foreach ($extension->getFunctions() as $function) {
             $this->functions[$function->getName()] = $function;
         }
-
-        // tests
         foreach ($extension->getTests() as $test) {
             $this->tests[$test->getName()] = $test;
         }
-
-        // token parsers
         foreach ($extension->getTokenParsers() as $parser) {
             if (!$parser instanceof TokenParserInterface) {
                 throw new \LogicException('getTokenParsers() must return an array of \Twig\TokenParser\TokenParserInterface.');
@@ -458,13 +450,9 @@ final class ExtensionSet
 
             $this->parsers[$parser->getTag()] = $parser;
         }
-
-        // node visitors
         foreach ($extension->getNodeVisitors() as $visitor) {
             $this->visitors[] = $visitor;
         }
-
-        // operators
         if ($operators = $extension->getOperators()) {
             if (!\is_array($operators)) {
                 throw new \InvalidArgumentException(\sprintf('"%s::getOperators()" must return an array with operators, got "%s".', \get_class($extension), \is_object($operators) ? \get_class($operators) : \gettype($operators).(\is_resource($operators) ? '' : '#'.$operators)));

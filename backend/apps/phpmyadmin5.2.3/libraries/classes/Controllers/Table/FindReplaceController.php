@@ -31,16 +31,16 @@ use function strncasecmp;
  */
 class FindReplaceController extends AbstractController
 {
-    /** @var array */
+    
     private $columnNames;
 
-    /** @var array */
+    
     private $columnTypes;
 
-    /** @var string */
+    
     private $connectionCharSet;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -82,8 +82,6 @@ class FindReplaceController extends AbstractController
         if (isset($_POST['replace'])) {
             $this->replaceAction();
         }
-
-        // Displays the find and replace form
         $this->displaySelectionFormAction();
     }
 
@@ -92,20 +90,15 @@ class FindReplaceController extends AbstractController
      */
     private function loadTableInfo(): void
     {
-        // Gets the list and number of columns
         $columns = $this->dbi->getColumns($this->db, $this->table, true);
 
         foreach ($columns as $row) {
-            // set column name
             $this->columnNames[] = $row['Field'];
 
             $type = (string) $row['Type'];
-            // reformat mysql query output
             if (strncasecmp($type, 'set', 3) == 0 || strncasecmp($type, 'enum', 4) == 0) {
                 $type = str_replace(',', ', ', $type);
             } else {
-                // strip the "BINARY" attribute, except if we find "BINARY(" because
-                // this would be a BINARY or VARBINARY column type
                 if (! preg_match('@BINARY[\(]@i', $type)) {
                     $type = str_ireplace('BINARY', '', $type);
                 }
@@ -218,9 +211,6 @@ class FindReplaceController extends AbstractController
                 . '.' . Util::backquote($this->table)
                 . ' WHERE ' . Util::backquote($column)
                 . " LIKE '%" . $find . "%' COLLATE " . $charSet . '_bin'; // here we
-            // change the collation of the 2nd operand to a case sensitive
-            // binary collation to make sure that the comparison
-            // is case sensitive
             $sql_query .= ' GROUP BY ' . Util::backquote($column)
                 . ' ORDER BY ' . Util::backquote($column) . ' ASC';
 
@@ -264,14 +254,12 @@ class FindReplaceController extends AbstractController
             . ' WHERE ' . Util::backquote($column)
             . " RLIKE '" . $this->dbi->escapeString($find) . "' COLLATE "
             . $charSet . '_bin'; // here we
-        // change the collation of the 2nd operand to a case sensitive
-        // binary collation to make sure that the comparison is case sensitive
         $sql_query .= ' GROUP BY ' . Util::backquote($column)
             . ' ORDER BY ' . Util::backquote($column) . ' ASC';
 
         $result = $this->dbi->fetchResult($sql_query, 0);
 
-        /* Iterate over possible delimiters to get one */
+        
         $delimiters = [
             '/',
             '@',
@@ -344,9 +332,6 @@ class FindReplaceController extends AbstractController
             $sql_query .= ' WHERE ' . Util::backquote($column)
                 . " RLIKE '" . $this->dbi->escapeString($find) . "' COLLATE "
                 . $charSet . '_bin'; // here we
-            // change the collation of the 2nd operand to a case sensitive
-            // binary collation to make sure that the comparison
-            // is case sensitive
         } else {
             $sql_query = 'UPDATE ' . Util::backquote($this->table)
                 . ' SET ' . Util::backquote($column) . ' ='
@@ -356,9 +341,6 @@ class FindReplaceController extends AbstractController
                 . "')"
                 . ' WHERE ' . Util::backquote($column)
                 . " LIKE '%" . $find . "%' COLLATE " . $charSet . '_bin'; // here we
-            // change the collation of the 2nd operand to a case sensitive
-            // binary collation to make sure that the comparison
-            // is case sensitive
         }
 
         $this->dbi->query($sql_query);

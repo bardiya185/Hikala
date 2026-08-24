@@ -36,13 +36,13 @@ use const PNG_ALL_FILTERS;
  */
 class GisVisualization
 {
-    /** @var array   Raw data for the visualization */
+    
     private $data;
 
-    /** @var string */
+    
     private $modifiedSql;
 
-    /** @var array   Set of default settings values are here. */
+    
     private $settings = [
         // Array of colors to be used for GIS visualizations.
         'colors' => [
@@ -93,7 +93,7 @@ class GisVisualization
         'height' => 450,
     ];
 
-    /** @var array   Options that the user has specified. */
+    
     private $userSpecifiedSettings = null;
 
     /**
@@ -373,7 +373,7 @@ class GisVisualization
         }
 
         $scale_data = $this->scaleDataSet($this->data);
-        /** @var ImageWrapper $image */
+        
         $image = $this->prepareDataSet($this->data, $scale_data, 'png', $image);
 
         return $image;

@@ -8,11 +8,11 @@ use PhpMyAdmin\MoTranslator\MoParser;
 
 final class ApcuCacheFactory implements CacheFactoryInterface
 {
-    /** @var int */
+    
     private $ttl;
-    /** @var bool */
+    
     private $reloadOnMiss;
-    /** @var string */
+    
     private $prefix;
 
     public function __construct(int $ttl = 0, bool $reloadOnMiss = true, string $prefix = 'mo_')

@@ -42,9 +42,9 @@ We recommend libraries and frameworks set a Composer version constraint as follo
 ```javascript
 {
     "require": {
-        /* ... */
+        
         "paragonie/sodium_compat": ">= 1"
-        /* ... */
+        
     }
 }
 ```

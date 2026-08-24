@@ -48,7 +48,7 @@ abstract class ParagonIE_Sodium_Core32_Ed25519 extends ParagonIE_Sodium_Core32_C
             throw new RangeException('crypto_sign keypair seed must be 32 bytes long');
         }
 
-        /** @var string $pk */
+        
         $pk = self::publickey_from_secretkey($seed);
         $sk = $seed . $pk;
         return $sk;
@@ -95,7 +95,7 @@ abstract class ParagonIE_Sodium_Core32_Ed25519 extends ParagonIE_Sodium_Core32_C
      */
     public static function publickey_from_secretkey($sk)
     {
-        /** @var string $sk */
+        
         $sk = hash('sha512', self::substr($sk, 0, 32), true);
         $sk[0] = self::intToChr(
             self::chrToInt($sk[0]) & 248
@@ -174,7 +174,7 @@ abstract class ParagonIE_Sodium_Core32_Ed25519 extends ParagonIE_Sodium_Core32_C
      */
     public static function sign($message, $sk)
     {
-        /** @var string $signature */
+        
         $signature = self::sign_detached($message, $sk);
         return $signature . $message;
     }
@@ -190,10 +190,10 @@ abstract class ParagonIE_Sodium_Core32_Ed25519 extends ParagonIE_Sodium_Core32_C
      */
     public static function sign_open($message, $pk)
     {
-        /** @var string $signature */
+        
         $signature = self::substr($message, 0, 64);
 
-        /** @var string $message */
+        
         $message = self::substr($message, 64);
 
         if (self::verify_detached($signature, $message, $pk)) {
@@ -299,16 +299,16 @@ abstract class ParagonIE_Sodium_Core32_Ed25519 extends ParagonIE_Sodium_Core32_C
             throw new SodiumException('All zero public key');
         }
 
-        /** @var bool The original value of ParagonIE_Sodium_Compat::$fastMult */
+        
         $orig = ParagonIE_Sodium_Compat::$fastMult;
 
         // Set ParagonIE_Sodium_Compat::$fastMult to true to speed up verification.
         ParagonIE_Sodium_Compat::$fastMult = true;
 
-        /** @var ParagonIE_Sodium_Core32_Curve25519_Ge_P3 $A */
+        
         $A = self::ge_frombytes_negate_vartime($pk);
 
-        /** @var string $hDigest */
+        
         $hDigest = hash(
             'sha512',
             self::substr($sig, 0, 32) .
@@ -317,17 +317,17 @@ abstract class ParagonIE_Sodium_Core32_Ed25519 extends ParagonIE_Sodium_Core32_C
             true
         );
 
-        /** @var string $h */
+        
         $h = self::sc_reduce($hDigest) . self::substr($hDigest, 32);
 
-        /** @var ParagonIE_Sodium_Core32_Curve25519_Ge_P2 $R */
+        
         $R = self::ge_double_scalarmult_vartime(
             $h,
             $A,
             self::substr($sig, 32)
         );
 
-        /** @var string $rcheck */
+        
         $rcheck = self::ge_tobytes($R);
 
         // Reset ParagonIE_Sodium_Compat::$fastMult to what it was before.
@@ -355,7 +355,7 @@ abstract class ParagonIE_Sodium_Core32_Ed25519 extends ParagonIE_Sodium_Core32_C
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10
         );
-        /** @var array<int, int> $L */
+        
         $c = 0;
         $n = 1;
         $i = 32;
@@ -383,84 +383,84 @@ abstract class ParagonIE_Sodium_Core32_Ed25519 extends ParagonIE_Sodium_Core32_C
     public static function small_order($R)
     {
         static $blocklist = array(
-            /* 0 (order 4) */
+            
             array(
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             ),
-            /* 1 (order 1) */
+            
             array(
                 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
             ),
-            /* 2707385501144840649318225287225658788936804267575313519463743609750303402022 (order 8) */
+            
             array(
                 0x26, 0xe8, 0x95, 0x8f, 0xc2, 0xb2, 0x27, 0xb0,
                 0x45, 0xc3, 0xf4, 0x89, 0xf2, 0xef, 0x98, 0xf0,
                 0xd5, 0xdf, 0xac, 0x05, 0xd3, 0xc6, 0x33, 0x39,
                 0xb1, 0x38, 0x02, 0x88, 0x6d, 0x53, 0xfc, 0x05
             ),
-            /* 55188659117513257062467267217118295137698188065244968500265048394206261417927 (order 8) */
+            
             array(
                 0xc7, 0x17, 0x6a, 0x70, 0x3d, 0x4d, 0xd8, 0x4f,
                 0xba, 0x3c, 0x0b, 0x76, 0x0d, 0x10, 0x67, 0x0f,
                 0x2a, 0x20, 0x53, 0xfa, 0x2c, 0x39, 0xcc, 0xc6,
                 0x4e, 0xc7, 0xfd, 0x77, 0x92, 0xac, 0x03, 0x7a
             ),
-            /* p-1 (order 2) */
+            
             array(
                 0x13, 0xe8, 0x95, 0x8f, 0xc2, 0xb2, 0x27, 0xb0,
                 0x45, 0xc3, 0xf4, 0x89, 0xf2, 0xef, 0x98, 0xf0,
                 0xd5, 0xdf, 0xac, 0x05, 0xd3, 0xc6, 0x33, 0x39,
                 0xb1, 0x38, 0x02, 0x88, 0x6d, 0x53, 0xfc, 0x85
             ),
-            /* p (order 4) */
+            
             array(
                 0xb4, 0x17, 0x6a, 0x70, 0x3d, 0x4d, 0xd8, 0x4f,
                 0xba, 0x3c, 0x0b, 0x76, 0x0d, 0x10, 0x67, 0x0f,
                 0x2a, 0x20, 0x53, 0xfa, 0x2c, 0x39, 0xcc, 0xc6,
                 0x4e, 0xc7, 0xfd, 0x77, 0x92, 0xac, 0x03, 0xfa
             ),
-            /* p+1 (order 1) */
+            
             array(
                 0xec, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f
             ),
-            /* p+2707385501144840649318225287225658788936804267575313519463743609750303402022 (order 8) */
+            
             array(
                 0xed, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f
             ),
-            /* p+55188659117513257062467267217118295137698188065244968500265048394206261417927 (order 8) */
+            
             array(
                 0xee, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f
             ),
-            /* 2p-1 (order 2) */
+            
             array(
                 0xd9, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
             ),
-            /* 2p (order 4) */
+            
             array(
                 0xda, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
             ),
-            /* 2p+1 (order 1) */
+            
             array(
                 0xdb, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
@@ -468,7 +468,7 @@ abstract class ParagonIE_Sodium_Core32_Ed25519 extends ParagonIE_Sodium_Core32_C
                 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
             )
         );
-        /** @var array<int, array<int, int>> $blocklist */
+        
         $countBlocklist = count($blocklist);
 
         for ($i = 0; $i < $countBlocklist; ++$i) {

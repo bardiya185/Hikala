@@ -33,7 +33,7 @@ class FormController extends AbstractController
         }
 
         ob_start();
-        /** @var BaseForm $form */
+        
         $form = new $formClass($this->config);
         FormProcessing::process($form);
         $page = ob_get_clean();

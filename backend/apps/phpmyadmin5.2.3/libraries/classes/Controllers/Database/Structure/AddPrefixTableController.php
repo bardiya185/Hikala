@@ -16,10 +16,10 @@ use function count;
 
 final class AddPrefixTableController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(

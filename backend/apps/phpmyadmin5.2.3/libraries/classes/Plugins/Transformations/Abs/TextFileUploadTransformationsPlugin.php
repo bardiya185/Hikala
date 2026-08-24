@@ -84,7 +84,7 @@ abstract class TextFileUploadTransformationsPlugin extends IOTransformationsPlug
         return $html;
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

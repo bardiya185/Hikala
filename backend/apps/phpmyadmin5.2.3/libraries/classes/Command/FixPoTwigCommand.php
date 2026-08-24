@@ -19,7 +19,7 @@ use const ROOT_PATH;
 
 final class FixPoTwigCommand extends Command
 {
-    /** @var string|null */
+    
     protected static $defaultName = 'fix-po-twig';
 
     private const POT_FILE = ROOT_PATH . 'po/phpmyadmin.pot';
@@ -46,13 +46,13 @@ final class FixPoTwigCommand extends Command
             return Command::FAILURE;
         }
 
-        /* Read pot file */
+        
         $pot = file_get_contents(self::POT_FILE);
         if ($pot === false) {
             return Command::FAILURE;
         }
 
-        /* Do the replacements */
+        
         $pot = preg_replace_callback(
             '@(twig-templates[0-9a-f/]*.php):([0-9]*)@',
             static function (array $matches) use ($replacements): string {

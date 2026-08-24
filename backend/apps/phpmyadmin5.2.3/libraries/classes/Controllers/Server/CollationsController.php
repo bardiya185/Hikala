@@ -18,13 +18,13 @@ use PhpMyAdmin\Url;
  */
 class CollationsController extends AbstractController
 {
-    /** @var array<string, Charset> */
+    
     private $charsets;
 
-    /** @var array<string, array<string, Collation>> */
+    
     private $collations;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     /**

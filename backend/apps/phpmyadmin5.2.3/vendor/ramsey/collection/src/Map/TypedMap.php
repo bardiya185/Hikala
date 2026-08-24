@@ -121,7 +121,7 @@ class TypedMap extends AbstractTypedMap
         $this->keyType = $keyType;
         $this->valueType = $valueType;
 
-        /** @psalm-suppress MixedArgumentTypeCoercion */
+        
         parent::__construct($data);
     }
 

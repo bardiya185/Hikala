@@ -25,8 +25,6 @@ if (
 ) {
     exit;
 }
-
-// phpcs:disable PSR1.Files.SideEffects
 define('AUTOLOAD_FILE', (string) $vendorConfig['autoloadFile']);
 define('TEMP_DIR', (string) $vendorConfig['tempDir']);
 define('CHANGELOG_FILE', (string) $vendorConfig['changeLogFile']);
@@ -48,6 +46,5 @@ define('VERSION_SUFFIX', (string) $vendorConfig['versionSuffix']);
  * @see https://github.com/phpmyadmin/phpmyadmin/issues/16709
  */
 define('K_PATH_IMAGES', ROOT_PATH);
-// phpcs:enable
 
 unset($vendorConfig);

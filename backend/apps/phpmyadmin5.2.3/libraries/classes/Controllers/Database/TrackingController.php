@@ -25,10 +25,10 @@ use function sprintf;
  */
 class TrackingController extends AbstractController
 {
-    /** @var Tracking */
+    
     private $tracking;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -62,8 +62,6 @@ class TrackingController extends AbstractController
 
         $urlParams['goto'] = Url::getFromRoute('/table/tracking');
         $urlParams['back'] = Url::getFromRoute('/database/tracking');
-
-        // Get the database structure
         $sub_part = '_structure';
 
         [
@@ -121,11 +119,7 @@ class TrackingController extends AbstractController
                 )->getDisplay();
             }
         }
-
-        // Get tracked data about the database
         $data = Tracker::getTrackedData($db, '', '1');
-
-        // No tables present and no log exist
         if ($num_tables == 0 && count($data['ddlog']) === 0) {
             echo '<p>' , __('No tables found in database.') , '</p>' , "\n";
 
@@ -140,8 +134,6 @@ class TrackingController extends AbstractController
         }
 
         echo $this->tracking->getHtmlForDbTrackingTables($db, $urlParams, $text_dir);
-
-        // If available print out database log
         if (count($data['ddlog']) <= 0) {
             return;
         }

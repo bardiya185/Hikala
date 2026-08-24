@@ -38,13 +38,13 @@ use const SODIUM_CRYPTO_SECRETBOX_KEYBYTES;
 
 class HomeController extends AbstractController
 {
-    /** @var Config */
+    
     private $config;
 
-    /** @var ThemeManager */
+    
     private $themeManager;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     /**
@@ -75,10 +75,6 @@ class HomeController extends AbstractController
         }
 
         $this->addScriptFiles(['home.js']);
-
-        // This is for $cfg['ShowDatabasesNavigationAsTree'] = false;
-        // See: https://github.com/phpmyadmin/phpmyadmin/issues/16520
-        // The DB is defined here and sent to the JS front-end to refresh the DB tree
         $db = $_POST['db'] ?? '';
         $table = '';
         $show_query = '1';
@@ -213,7 +209,7 @@ class HomeController extends AbstractController
                     . '" data-post="' . Url::getCommon() . '">'
                 );
                 $messageInstance->addParamHtml('</a>');
-                /* Show error if user has configured something, notice elsewhere */
+                
                 if (! empty($cfg['Servers'][$server]['pmadb'])) {
                     $messageInstance->isError(true);
                 }
@@ -318,7 +314,6 @@ class HomeController extends AbstractController
          */
         if (! empty($_SESSION['encryption_key'])) {
             $encryptionKeyLength = 0;
-            // This can happen if the user did use getenv() to set blowfish_secret
             if (is_string($cfg['blowfish_secret'])) {
                 $encryptionKeyLength = mb_strlen($cfg['blowfish_secret'], '8bit');
             }
@@ -384,7 +379,7 @@ class HomeController extends AbstractController
             ];
         }
 
-        /* Missing template cache */
+        
         if ($this->config->getTempDir('twig') === null) {
             $this->errors[] = [
                 'message' => sprintf(
@@ -430,7 +425,7 @@ class HomeController extends AbstractController
             return;
         }
 
-        /** @psalm-suppress MissingFile */
+        
         include ROOT_PATH . 'libraries/language_stats.inc.php';
         /*
          * This message is intentionally not translated, because we're

@@ -21,7 +21,7 @@ use function str_replace;
 
 class QueriesController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, Data $data, DatabaseInterface $dbi)
@@ -62,8 +62,6 @@ class QueriesController extends AbstractController
                 'per_minute' => $totalQueries * 60 / $this->data->status['Uptime'],
                 'per_second' => $totalQueries / $this->data->status['Uptime'],
             ];
-
-            // reverse sort by value to show most used statements first
             arsort($usedQueries);
 
             $chart = [];
@@ -71,12 +69,7 @@ class QueriesController extends AbstractController
             $otherSum = 0;
             $queries = [];
             foreach ($usedQueries as $key => $value) {
-                // For the percentage column, use Questions - Connections, because
-                // the number of connections is not an item of the Query types
-                // but is included in Questions. Then the total of the percentages is 100.
                 $name = str_replace(['Com_', '_'], ['', ' '], $key);
-                // Group together values that make out less than 2% into "Other", but only
-                // if we have more than 6 fractions already
                 if ($value < $querySum * 0.02 && count($chart) > 6) {
                     $otherSum += $value;
                 } else {

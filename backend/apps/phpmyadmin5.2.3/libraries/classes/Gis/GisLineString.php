@@ -22,7 +22,7 @@ use function trim;
  */
 class GisLineString extends GisGeometry
 {
-    /** @var self */
+    
     private static $instance;
 
     /**

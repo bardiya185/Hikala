@@ -40,9 +40,6 @@ class VersionInformation
         if (! $GLOBALS['cfg']['VersionCheck']) {
             return null;
         }
-
-        // Get response text from phpmyadmin.net or from the session
-        // Update cache every 6 hours
         if (
             isset($_SESSION['cache']['version_check'])
             && time() < $_SESSION['cache']['version_check']['timestamp'] + 3600 * 6
@@ -57,10 +54,10 @@ class VersionInformation
         }
 
         $response = $response ?: '{}';
-        /* Parse response */
+        
         $data = json_decode($response);
 
-        /* Basic sanity checking */
+        
         if (! is_object($data) || empty($data->version) || empty($data->releases) || empty($data->date)) {
             return null;
         }
@@ -152,10 +149,8 @@ class VersionInformation
      */
     public function getLatestCompatibleVersion(array $releases)
     {
-        // Maintains the latest compatible version
         $latestRelease = null;
         foreach ($releases as $release) {
-            // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
             $phpVersions = $release->php_versions;
             $phpConditions = explode(',', $phpVersions);
             foreach ($phpConditions as $phpCondition) {
@@ -163,11 +158,7 @@ class VersionInformation
                     continue 2;
                 }
             }
-
-            // We evaluate MySQL version constraint if there are only
-            // one server configured.
             if (count($GLOBALS['cfg']['Servers']) === 1) {
-                // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
                 $mysqlVersions = $release->mysql_versions;
                 $mysqlConditions = explode(',', $mysqlVersions);
                 foreach ($mysqlConditions as $mysqlCondition) {
@@ -176,8 +167,6 @@ class VersionInformation
                     }
                 }
             }
-
-            // To compare the current release with the previous latest release or no release is set
             if ($latestRelease !== null && ! version_compare($latestRelease['version'], $release->version, '<')) {
                 continue;
             }
@@ -187,8 +176,6 @@ class VersionInformation
                 'date' => $release->date,
             ];
         }
-
-        // no compatible version
         return $latestRelease;
     }
 

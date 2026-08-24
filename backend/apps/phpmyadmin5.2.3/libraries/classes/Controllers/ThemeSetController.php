@@ -12,7 +12,7 @@ use PhpMyAdmin\UserPreferences;
 
 final class ThemeSetController extends AbstractController
 {
-    /** @var ThemeManager */
+    
     private $themeManager;
 
     public function __construct(ResponseRenderer $response, Template $template, ThemeManager $themeManager)

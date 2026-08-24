@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* display/results/table_navigation_button.twig */
+
 class __TwigTemplate_2cefe2bc10cecd63b29b72854233ab5f extends Template
 {
     private $source;
@@ -34,40 +34,31 @@ class __TwigTemplate_2cefe2bc10cecd63b29b72854233ab5f extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<td>
     <form action=\"";
-        // line 2
         yield PhpMyAdmin\Url::getFromRoute("/sql");
         yield "\" method=\"post\" ";
         yield ($context["onsubmit"] ?? null);
         yield ">
         ";
-        // line 3
         yield PhpMyAdmin\Url::getHiddenInputs(($context["db"] ?? null), ($context["table"] ?? null));
         yield "
         <input type=\"hidden\" name=\"sql_query\" value=\"";
-        // line 4
         yield ($context["sql_query"] ?? null);
         yield "\">
         <input type=\"hidden\" name=\"pos\" value=\"";
-        // line 5
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["pos"] ?? null), "html", null, true);
         yield "\">
         <input type=\"hidden\" name=\"is_browse_distinct\" value=\"";
-        // line 6
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["is_browse_distinct"] ?? null), "html", null, true);
         yield "\">
         <input type=\"hidden\" name=\"goto\" value=\"";
-        // line 7
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["goto"] ?? null), "html", null, true);
         yield "\">
         ";
-        // line 8
         yield ($context["input_for_real_end"] ?? null);
         yield "
         <input type=\"submit\" name=\"navig\" class=\"btn btn-secondary ajax\" value=\"";
-        // line 9
         yield ($context["caption_output"] ?? null);
         yield "\" title=\"";
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["title"] ?? null), "html", null, true);

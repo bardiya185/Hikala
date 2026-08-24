@@ -19,10 +19,10 @@ use function strlen;
 
 final class UserGroupsFormController extends AbstractController
 {
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(

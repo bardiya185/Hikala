@@ -30,10 +30,10 @@ use function urlencode;
  */
 class UserPreferences
 {
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Template */
+    
     public $template;
 
     public function __construct()
@@ -79,7 +79,6 @@ class UserPreferences
 
         $relationParameters = $this->relation->getRelationParameters();
         if ($relationParameters->userPreferencesFeature === null) {
-            // no pmadb table, use session storage
             if (! isset($_SESSION['userconfig']) || ! is_array($_SESSION['userconfig'])) {
                 $_SESSION['userconfig'] = ['db' => [], 'ts' => time()];
             }
@@ -93,8 +92,6 @@ class UserPreferences
                 'type' => 'session',
             ];
         }
-
-        // load configuration from pmadb
         $query_table = Util::backquote($relationParameters->userPreferencesFeature->database) . '.'
             . Util::backquote($relationParameters->userPreferencesFeature->userConfig);
         $query = 'SELECT `config_data`, UNIX_TIMESTAMP(`timevalue`) ts'
@@ -135,7 +132,6 @@ class UserPreferences
             || $relationParameters->user === null
             || $relationParameters->db === null
         ) {
-            // no pmadb table, use session storage
             $_SESSION['userconfig'] = [
                 'db' => $config_array,
                 'ts' => time(),
@@ -146,8 +142,6 @@ class UserPreferences
 
             return true;
         }
-
-        // save configuration to pmadb
         $query_table = Util::backquote($relationParameters->userPreferencesFeature->database) . '.'
             . Util::backquote($relationParameters->userPreferencesFeature->userConfig);
         $query = 'SELECT `username` FROM ' . $query_table
@@ -223,7 +217,6 @@ class UserPreferences
         $cfg = [];
         $excludeList = array_flip($GLOBALS['cfg']['UserprefsDisallow']);
         $allowList = array_flip(UserFormList::getFields());
-        // allow some additional fields which are custom handled
         $allowList['ThemeDefault'] = true;
         $allowList['lang'] = true;
         $allowList['Server/hide_db'] = true;
@@ -279,7 +272,6 @@ class UserPreferences
         $params = null,
         $hash = null
     ): void {
-        // redirect
         $url_params = ['saved' => 1];
         if (is_array($params)) {
             $url_params = array_merge($params, $url_params);

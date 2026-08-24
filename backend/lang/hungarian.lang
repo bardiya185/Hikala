@@ -1,55 +1,54 @@
 <?php
-//3.2.10  $file_charset
 
 $file_charset = 'iso-8859-2'; //Same as Windows-1250 not used by mb_encoding...
 
-$w_allServicesRunning = 'Minden szolgáltatás fut';
-$w_oneServiceRunning = '%t szolgáltatásból %n fut';
-$w_allServicesStopped = 'A %t szolgáltatásból egy sem fut';
+$w_allServicesRunning = 'Minden szolgï¿½ltatï¿½s fut';
+$w_oneServiceRunning = '%t szolgï¿½ltatï¿½sbï¿½l %n fut';
+$w_allServicesStopped = 'A %t szolgï¿½ltatï¿½sbï¿½l egy sem fut';
 
 $w_serverOffline = 'Szerver Offline';
 $w_serverOnline = 'Szerver Online';
 
-$w_about = '&Névjegy...';
-$w_helpFile = 'Súgó Fájl';
-$w_help = 'Súgó';
-$w_exit = 'Kilépés';
+$w_about = '&Nï¿½vjegy...';
+$w_helpFile = 'Sï¿½gï¿½ Fï¿½jl';
+$w_help = 'Sï¿½gï¿½';
+$w_exit = 'Kilï¿½pï¿½s';
 
 $w_localhost = 'Localhost';
 $w_phpmyadmin = 'phpMyAdmin';
 $w_sqlitemanager = 'SQLiteManager';
-$w_wwwDirectory = 'www könyvtár';
-$w_logFiles = 'Napló fájlok';
-$w_configFiles = 'Konfigurációs fájlok';
+$w_wwwDirectory = 'www kï¿½nyvtï¿½r';
+$w_logFiles = 'Naplï¿½ fï¿½jlok';
+$w_configFiles = 'Konfigurï¿½ciï¿½s fï¿½jlok';
 $w_apacheModules = 'Apache modulok';
-$w_phpSettings = 'PHP beállítások';
-$w_aliasDirectories = 'Alias könyvtárak';
-$w_services = 'Szolgáltatások';
+$w_phpSettings = 'PHP beï¿½llï¿½tï¿½sok';
+$w_aliasDirectories = 'Alias kï¿½nyvtï¿½rak';
+$w_services = 'Szolgï¿½ltatï¿½sok';
 $w_apache = 'Apache';
 $w_mysql = 'MySQL';
-$w_startServices = 'Minden szolgáltatás elindítása';
-$w_stopServices = 'Minden szolgáltatás leállítása';
-$w_restartServices = 'Minden szolgáltatás újraindítása';
-$w_putOnline = 'Online állapotba helyezés';
-$w_putOffline = 'Offline állapotba helyezés';
+$w_startServices = 'Minden szolgï¿½ltatï¿½s elindï¿½tï¿½sa';
+$w_stopServices = 'Minden szolgï¿½ltatï¿½s leï¿½llï¿½tï¿½sa';
+$w_restartServices = 'Minden szolgï¿½ltatï¿½s ï¿½jraindï¿½tï¿½sa';
+$w_putOnline = 'Online ï¿½llapotba helyezï¿½s';
+$w_putOffline = 'Offline ï¿½llapotba helyezï¿½s';
 
 $w_apacheErrorLog = 'Apache error log';
 $w_apacheAccessLog = 'Apache access log';
 $w_phpLog = 'PHP error log';
 $w_mysqlLog = 'MySQL log';
-$w_addAlias = 'Alias hozzáadása';
-$w_refresh = 'Frissítés';
-$w_phpExtensions = 'PHP kiterjesztések';
-$w_addExtension = 'Kiterjesztés hozzáadása';
+$w_addAlias = 'Alias hozzï¿½adï¿½sa';
+$w_refresh = 'Frissï¿½tï¿½s';
+$w_phpExtensions = 'PHP kiterjesztï¿½sek';
+$w_addExtension = 'Kiterjesztï¿½s hozzï¿½adï¿½sa';
 
-$w_startResume = 'Szolgáltatás &Indítása/Újraindítása';
-$w_pauseService = 'Szolgáltatás &szüneteltetése';
-$w_stopService = 'Szolgáltatás &Leállítása';
-$w_restartService = 'Szolgáltatás &Újraindítása';
-$w_testPort80 = '80-as port tesztelése';
-$w_testPort = 'Port tesztelése ';
-$w_installService = 'Szolgáltatás &Telepítése';
-$w_removeService = '&Távoli szolgáltatás';
+$w_startResume = 'Szolgï¿½ltatï¿½s &Indï¿½tï¿½sa/ï¿½jraindï¿½tï¿½sa';
+$w_pauseService = 'Szolgï¿½ltatï¿½s &szï¿½neteltetï¿½se';
+$w_stopService = 'Szolgï¿½ltatï¿½s &Leï¿½llï¿½tï¿½sa';
+$w_restartService = 'Szolgï¿½ltatï¿½s &ï¿½jraindï¿½tï¿½sa';
+$w_testPort80 = '80-as port tesztelï¿½se';
+$w_testPort = 'Port tesztelï¿½se ';
+$w_installService = 'Szolgï¿½ltatï¿½s &Telepï¿½tï¿½se';
+$w_removeService = '&Tï¿½voli szolgï¿½ltatï¿½s';
 $w_mysqlConsole = 'MySQL konzol';
 
 $w_language = 'Nyelv';

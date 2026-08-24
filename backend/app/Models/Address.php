@@ -22,17 +22,11 @@ class Address extends Model
         'longitude',
         'is_default',
     ];
-
-    // ✅ اضافه شد: تبدیل خودکار
     protected $casts = [
         'is_default' => 'boolean',
         'latitude'   => 'float',
         'longitude'  => 'float',
     ];
-
-    // ================================================================
-    // 🔗 Relationships
-    // ================================================================
 
     public function user(): BelongsTo
     {
@@ -48,10 +42,6 @@ class Address extends Model
     {
         return $this->belongsTo(City::class);
     }
-
-    // ================================================================
-    // 🎯 Accessors
-    // ================================================================
 
     /**
      * 📍 Full address as a single string
@@ -77,10 +67,6 @@ class Address extends Model
 
         return implode(', ', array_filter($parts));
     }
-
-    // ================================================================
-    // 🔍 Scopes
-    // ================================================================
 
     /**
      * ⭐ Get only default addresses

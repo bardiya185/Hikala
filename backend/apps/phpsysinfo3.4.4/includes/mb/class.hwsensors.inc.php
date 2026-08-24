@@ -29,7 +29,6 @@ class HWSensors extends Sensors
         parent::__construct();
         if (PSI_OS == 'OpenBSD') {
             $lines = "";
-//            CommonFunctions::executeProgram('sysctl', '-w hw.sensors', $lines);
             CommonFunctions::executeProgram('sysctl', 'hw.sensors', $lines);
             $this->_lines = preg_split("/\n/", $lines, -1, PREG_SPLIT_NO_EMPTY);
         }

@@ -27,7 +27,7 @@ class BinlogController extends AbstractController
      */
     protected $binaryLogs;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, DatabaseInterface $dbi)

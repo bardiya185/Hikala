@@ -1,98 +1,80 @@
 <?php
-// Default English language file for
-// Projects and VirtualHosts sub-menus
-// Settings and Tools right-click sub-menus
-// 3.0.7 add $w_listenForApache - $w_AddListenPort - $w_deleteListenPort - $w_settings['SupportMariaDB']
-// $w_settings['DaredevilOptions']
-// $w_Size - $w_EnterSize - $w_Time - $w_EnterTime - $w_Integer - $w_EnterInteger - $w_add_VirtualHost
-// 3.0.8 $w_settings['SupportMySQL'] - $w_portUsedMaria - $w_testPortMariaUsed
-// 3.0.9 $w_ext_zend
-// 3.1.1 $w_defaultDBMS - $w_invertDefault - $w_changeCLI - $w_misc
 
-// translated by František Bartoš (Bart, admin@bart.cz)
-
-// Projects sub-menu
+// translated by Frantiï¿½ek Bartoï¿½ (Bart, admin@bart.cz)
 $w_projectsSubMenu = 'Projekty';
-// VirtualHosts sub-menu
 $w_virtualHostsSubMenu = 'VirtualHosts';
-$w_add_VirtualHost = 'Pøidat VirtualHost';
+$w_add_VirtualHost = 'Pï¿½idat VirtualHost';
 $w_aliasSubMenu = 'Aliasy';
-$w_portUsed = 'Port použitý službou Apache: ';
-$w_portUsedMysql = 'Port použitý službou MySQL: ';
-$w_portUsedMaria = 'Port použitý službou MariaDB : ';
-$w_testPortUsed = 'Otestovat použitý port: ';
+$w_portUsed = 'Port pouï¿½itï¿½ sluï¿½bou Apache: ';
+$w_portUsedMysql = 'Port pouï¿½itï¿½ sluï¿½bou MySQL: ';
+$w_portUsedMaria = 'Port pouï¿½itï¿½ sluï¿½bou MariaDB : ';
+$w_testPortUsed = 'Otestovat pouï¿½itï¿½ port: ';
 $w_portForApache = 'Port pro Apache';
-$w_listenForApache = 'Nastavit port pro naslouchání Apache';
+$w_listenForApache = 'Nastavit port pro naslouchï¿½nï¿½ Apache';
 $w_portForMysql = 'Port pro MySQL';
 $w_testPortMysql = 'Otestovat port 3306';
-$w_testPortMysqlUsed = 'Otestovat použitý port službou MySQL: ';
-$w_testPortMariaUsed = 'Otestovat použitý port službou MariaDB: ';
-$w_enterPort = 'Zadejte požadované èíslo portu';
-
-// Right-click Settings
-$w_wampSettings = 'Wamp nastavení';
-$w_settings['urlAddLocalhost'] = 'Pøidat adresu localhost do URL projektu';
+$w_testPortMysqlUsed = 'Otestovat pouï¿½itï¿½ port sluï¿½bou MySQL: ';
+$w_testPortMariaUsed = 'Otestovat pouï¿½itï¿½ port sluï¿½bou MariaDB: ';
+$w_enterPort = 'Zadejte poï¿½adovanï¿½ ï¿½ï¿½slo portu';
+$w_wampSettings = 'Wamp nastavenï¿½';
+$w_settings['urlAddLocalhost'] = 'Pï¿½idat adresu localhost do URL projektu';
 $w_settings['VirtualHostSubMenu'] = 'Zobrazit sub-menu VirtualHosts';
 $w_settings['AliasSubmenu'] = 'Zobrazit sub-menu Aliasy';
 $w_settings['ProjectSubMenu'] = 'Zobrazit sub-menu Projekty';
-$w_settings['HomepageAtStartup'] = 'Zobrazit Pøehled pøi startu WampServer';
-$w_settings['MenuItemOnline'] = 'Zobrazit položku v menu: Nastavit Online / Offline';
-$w_settings['ItemServicesNames'] = 'Zobrazit položku v menu: Zmìnit název služeb ve Službách Windows';
+$w_settings['HomepageAtStartup'] = 'Zobrazit Pï¿½ehled pï¿½i startu WampServer';
+$w_settings['MenuItemOnline'] = 'Zobrazit poloï¿½ku v menu: Nastavit Online / Offline';
+$w_settings['ItemServicesNames'] = 'Zobrazit poloï¿½ku v menu: Zmï¿½nit nï¿½zev sluï¿½eb ve Sluï¿½bï¿½ch Windows';
 $w_settings['NotCheckVirtualHost'] = 'Nekontrolovat definice VirtualHost';
-$w_settings['NotCheckDuplicate'] = 'Nekontrolovat duplicitní ServerName';
-$w_settings['VhostAllLocalIp'] = 'Povolit pro VirtualHost i jinou místní IP adresu než 127.*';
+$w_settings['NotCheckDuplicate'] = 'Nekontrolovat duplicitnï¿½ ServerName';
+$w_settings['VhostAllLocalIp'] = 'Povolit pro VirtualHost i jinou mï¿½stnï¿½ IP adresu neï¿½ 127.*';
 $w_settings['SupportMySQL'] = 'Povolit MySQL';
 $w_settings['SupportMariaDB'] = 'Povolit MariaDB';
-$w_settings['DaredevilOptions'] = 'Upozornìní: Riziková nastavení! Pouze pro experty.';
+$w_settings['DaredevilOptions'] = 'Upozornï¿½nï¿½: Rizikovï¿½ nastavenï¿½! Pouze pro experty.';
 $w_settings['ShowphmyadMenu'] = 'Zobrazit v menu PhpMyAdmin';
 $w_settings['ShowadminerMenu'] = 'Zobrazit v menu Adminer';
-$w_settings['mariadbUseConsolePrompt'] = 'Zmìna výchozí pøíkazové konzole Mariadb';
-$w_settings['mysqlUseConsolePrompt'] = 'Zmìna výchozí pøíkazové konzole Mysql';
-$w_settings['NotVerifyPATH'] = 'Neovìøovat CESTU';
-
-// Right-click Tools
-$w_wampTools = 'Nástroje';
-$w_restartDNS = 'Restartovat službu DNS';
+$w_settings['mariadbUseConsolePrompt'] = 'Zmï¿½na vï¿½chozï¿½ pï¿½ï¿½kazovï¿½ konzole Mariadb';
+$w_settings['mysqlUseConsolePrompt'] = 'Zmï¿½na vï¿½chozï¿½ pï¿½ï¿½kazovï¿½ konzole Mysql';
+$w_settings['NotVerifyPATH'] = 'Neovï¿½ï¿½ovat CESTU';
+$w_wampTools = 'Nï¿½stroje';
+$w_restartDNS = 'Restartovat sluï¿½bu DNS';
 $w_testConf = 'Zkontrolovat syntaxi httpd.conf';
-$w_testServices = 'Zkontrolovat stav služeb';
-$w_changeServices = 'Zmìnit název služeb ve Službách Windows';
-$w_enterServiceNameApache = "Zadejte indexové èíslo pro službu Apache. Bude pøidáno do služby 'wampapache'";
-$w_enterServiceNameMysql = "Zadejte indexové èíslo pro službu Mysql. Bude pøidáno do služby 'wampmysqld'";
+$w_testServices = 'Zkontrolovat stav sluï¿½eb';
+$w_changeServices = 'Zmï¿½nit nï¿½zev sluï¿½eb ve Sluï¿½bï¿½ch Windows';
+$w_enterServiceNameApache = "Zadejte indexovï¿½ ï¿½ï¿½slo pro sluï¿½bu Apache. Bude pï¿½idï¿½no do sluï¿½by 'wampapache'";
+$w_enterServiceNameMysql = "Zadejte indexovï¿½ ï¿½ï¿½slo pro sluï¿½bu Mysql. Bude pï¿½idï¿½no do sluï¿½by 'wampmysqld'";
 $w_compilerVersions = 'Zkontrolovat Compiler VC, kompatibilitu a INI soubory';
-$w_UseAlternatePort = 'Použít jiný port než %s';
-$w_AddListenPort = 'Nastavit port pro naslouchání Apache';
-$w_vhostConfig = 'Zobrazit pøezkoumaný VirtualHost provádìný Apache';
-$w_apacheLoadedModules = 'Zobrazit naètené MODULY Apache';
-$w_empty = 'Vyèistit';
-$w_misc = 'Rùzné';
-$w_emptyAll = 'Vyèistit všechny';
-$w_dnsorder = 'Zkontrolovat poøadí DNS záznamù pro vyhledávání';
-$w_deleteVer = 'Odstranit nepoužívané verze';
-$w_deleteListenPort = 'Odstranit port pro naslouchání Apache';
+$w_UseAlternatePort = 'Pouï¿½ï¿½t jinï¿½ port neï¿½ %s';
+$w_AddListenPort = 'Nastavit port pro naslouchï¿½nï¿½ Apache';
+$w_vhostConfig = 'Zobrazit pï¿½ezkoumanï¿½ VirtualHost provï¿½dï¿½nï¿½ Apache';
+$w_apacheLoadedModules = 'Zobrazit naï¿½tenï¿½ MODULY Apache';
+$w_empty = 'Vyï¿½istit';
+$w_misc = 'Rï¿½znï¿½';
+$w_emptyAll = 'Vyï¿½istit vï¿½echny';
+$w_dnsorder = 'Zkontrolovat poï¿½adï¿½ DNS zï¿½znamï¿½ pro vyhledï¿½vï¿½nï¿½';
+$w_deleteVer = 'Odstranit nepouï¿½ï¿½vanï¿½ verze';
+$w_deleteListenPort = 'Odstranit port pro naslouchï¿½nï¿½ Apache';
 $w_delete = 'Odstranit';
-$w_defaultDBMS = 'Výchozí DBMS (Systém øízení báze dat):';
-$w_invertDefault = 'Zmìnit výchozí DBMS ';
-$w_changeCLI = 'Zmìnit verzi PHP CLI';
-$w_reinstallServices = 'Pøeinstalovat všechny služby';
-
-//miscellaneous
-$w_ext_spec = 'Speciální rozšíøení';
-$w_ext_zend = 'Zend rozšíøení';
+$w_defaultDBMS = 'Vï¿½chozï¿½ DBMS (Systï¿½m ï¿½ï¿½zenï¿½ bï¿½ze dat):';
+$w_invertDefault = 'Zmï¿½nit vï¿½chozï¿½ DBMS ';
+$w_changeCLI = 'Zmï¿½nit verzi PHP CLI';
+$w_reinstallServices = 'Pï¿½einstalovat vï¿½echny sluï¿½by';
+$w_ext_spec = 'Speciï¿½lnï¿½ rozï¿½ï¿½ï¿½enï¿½';
+$w_ext_zend = 'Zend rozï¿½ï¿½ï¿½enï¿½';
 $w_phpparam_info = 'Pouze pro informaci';
-$w_ext_nodll = 'Žádný dll soubor';
-$w_ext_noline = "Žádné 'rozšíøení='";
-$w_mod_fixed = "Nezmìnitelný modul";
-$w_no_module = 'Žádný modul';
-$w_no_moduleload = "Žádný 'LoadModule'";
-$w_mysql_none = "žádný";
-$w_mysql_user = "uživatelský mód";
-$w_mysql_default = "pøepnout na výchozí stav";
+$w_ext_nodll = 'ï¿½ï¿½dnï¿½ dll soubor';
+$w_ext_noline = "ï¿½ï¿½dnï¿½ 'rozï¿½ï¿½ï¿½enï¿½='";
+$w_mod_fixed = "Nezmï¿½nitelnï¿½ modul";
+$w_no_module = 'ï¿½ï¿½dnï¿½ modul';
+$w_no_moduleload = "ï¿½ï¿½dnï¿½ 'LoadModule'";
+$w_mysql_none = "ï¿½ï¿½dnï¿½";
+$w_mysql_user = "uï¿½ivatelskï¿½ mï¿½d";
+$w_mysql_default = "pï¿½epnout na vï¿½chozï¿½ stav";
 $w_Size = "Velikost";
-$w_EnterSize = "Zadejte velikost: xxxx ve formátu M pro Mega nebo G pro Giga";
-$w_Time = "Èas";
-$w_EnterTime = "Zadejte èas v sekundách";
-$w_Integer = "Hodnota Integer (celé èíslo)";
-$w_EnterInteger = "Zadejte celé èíslo";
-$w_MysqlMariaUser = "Zadejte platné uživatelské jméno. Pokud si nevíte rady, ponechte výchozí 'root'.";         
+$w_EnterSize = "Zadejte velikost: xxxx ve formï¿½tu M pro Mega nebo G pro Giga";
+$w_Time = "ï¿½as";
+$w_EnterTime = "Zadejte ï¿½as v sekundï¿½ch";
+$w_Integer = "Hodnota Integer (celï¿½ ï¿½ï¿½slo)";
+$w_EnterInteger = "Zadejte celï¿½ ï¿½ï¿½slo";
+$w_MysqlMariaUser = "Zadejte platnï¿½ uï¿½ivatelskï¿½ jmï¿½no. Pokud si nevï¿½te rady, ponechte vï¿½chozï¿½ 'root'.";         
 
 ?>

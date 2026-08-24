@@ -29,52 +29,52 @@ use function sprintf;
  */
 abstract class TableStats
 {
-    /** @var Dia\Dia|Eps\Eps|Pdf\Pdf|Svg\Svg */
+    
     protected $diagram;
 
-    /** @var string */
+    
     protected $db;
 
-    /** @var int */
+    
     protected $pageNumber;
 
-    /** @var string */
+    
     protected $tableName;
 
-    /** @var bool */
+    
     protected $showKeys;
 
-    /** @var bool */
+    
     protected $tableDimension;
 
-    /** @var mixed */
+    
     public $displayfield;
 
-    /** @var array */
+    
     public $fields = [];
 
-    /** @var array */
+    
     public $primary = [];
 
-    /** @var int|float */
+    
     public $x = 0;
 
-    /** @var int|float */
+    
     public $y = 0;
 
-    /** @var int */
+    
     public $width = 0;
 
-    /** @var int */
+    
     public $heightCell = 0;
 
-    /** @var bool */
+    
     protected $offline;
 
-    /** @var Relation */
+    
     protected $relation;
 
-    /** @var Font */
+    
     protected $font;
 
     /**
@@ -110,15 +110,9 @@ abstract class TableStats
 
         $this->relation = new Relation($dbi);
         $this->font = new Font();
-
-        // checks whether the table exists
-        // and loads fields
         $this->validateTableAndLoadFields();
-        // load table coordinates
         $this->loadCoordinates();
-        // loads display field
         $this->loadDisplayField();
-        // loads primary keys
         $this->loadPrimaryKey();
     }
 

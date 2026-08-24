@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class BrowserTransformationFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $columnInfo;
 
     public function __construct(DatabaseName $database, TableName $columnInfo)

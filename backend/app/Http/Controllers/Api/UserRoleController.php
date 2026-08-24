@@ -16,10 +16,6 @@ class UserRoleController extends Controller
     public function __construct(
         private UserRoleService $userRoleService
     ) {}
-
-    // ================================================================
-    // Get User Roles
-    // ================================================================
     #[OA\Get(
         path: '/api/admin/users/{user}/roles',
         tags: ['User Roles'],
@@ -83,10 +79,6 @@ class UserRoleController extends Controller
             ],
         ]);
     }
-
-    // ================================================================
-    // Set Primary Role (replace all)
-    // ================================================================
     #[OA\Put(
         path: '/api/admin/users/{user}/role',
         tags: ['User Roles'],
@@ -162,10 +154,6 @@ class UserRoleController extends Controller
             ],
         ]);
     }
-
-    // ================================================================
-    // Attach Additional Role
-    // ================================================================
     #[OA\Post(
         path: '/api/admin/users/{user}/roles',
         tags: ['User Roles'],
@@ -236,10 +224,6 @@ class UserRoleController extends Controller
             ],
         ]);
     }
-
-    // ================================================================
-    // Remove Role
-    // ================================================================
     #[OA\Delete(
         path: '/api/admin/users/{user}/roles/{role}',
         tags: ['User Roles'],

@@ -85,7 +85,7 @@ final class Template
             throw new \TypeError(sprintf('The template must be a string or a stringable object %s given.', gettype($template)));
         }
 
-        /** @var string $remainder */
+        
         $remainder = preg_replace(self::REGEXP_EXPRESSION_DETECTOR, '', $template);
         if (false !== strpos($remainder, '{') || false !== strpos($remainder, '}')) {
             throw new SyntaxError('The template "'.$template.'" contains invalid expressions.');
@@ -124,7 +124,7 @@ final class Template
     public function expand(VariableBag $variables): string
     {
         $uriString = $this->template;
-        /** @var Expression $expression */
+        
         foreach ($this->expressions as $pattern => $expression) {
             $uriString = str_replace($pattern, $expression->expand($variables), $uriString);
         }

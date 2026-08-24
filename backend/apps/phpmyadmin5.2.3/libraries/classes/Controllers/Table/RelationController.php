@@ -34,10 +34,10 @@ use function usort;
  */
 final class RelationController extends AbstractController
 {
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -81,11 +81,7 @@ final class RelationController extends AbstractController
         if (ForeignKey::isSupported($storageEngine)) {
             $relationsForeign = $this->relation->getForeigners($this->db, $this->table, '', 'foreign');
         }
-
-        // Send table of column names to populate corresponding dropdowns depending
-        // on the current selection
         if (isset($_POST['getDropdownValues']) && $_POST['getDropdownValues'] === 'true') {
-            // if both db and table are selected
             if (isset($_POST['foreignTable'])) {
                 $this->getDropdownValueForTable();
             } else { // if only the db is selected
@@ -96,24 +92,14 @@ final class RelationController extends AbstractController
         }
 
         $this->addScriptFiles(['table/relation.js', 'indexes.js']);
-
-        // Set the database
         $this->dbi->selectDb($this->db);
-
-        // updates for Internal relations
         if (isset($_POST['destination_db']) && $relationParameters->relationFeature !== null) {
             $this->updateForInternalRelation($table, $relationParameters->relationFeature, $relations);
         }
-
-        // updates for foreign keys
         $this->updateForForeignKeys($table, $options, $relationsForeign);
-
-        // Updates for display field
         if ($relationParameters->displayFeature !== null && isset($_POST['display_field'])) {
             $this->updateForDisplayField($table, $relationParameters->displayFeature);
         }
-
-        // If we did an update, refresh our data
         if (isset($_POST['destination_db']) && $relationParameters->relationFeature !== null) {
             $relations = $this->relation->getForeigners($this->db, $this->table, '', 'internal');
         }
@@ -125,9 +111,6 @@ final class RelationController extends AbstractController
         /**
          * Dialog
          */
-        // Now find out the columns of our $table
-        // need to use DatabaseInterface::QUERY_BUFFERED with $this->dbi->numRows()
-        // in mysqli
         $columns = $this->dbi->getColumns($this->db, $this->table);
 
         $column_array = [];
@@ -145,8 +128,6 @@ final class RelationController extends AbstractController
         if ($GLOBALS['cfg']['NaturalOrder']) {
             uksort($column_array, 'strnatcasecmp');
         }
-
-        // common form
         $engine = $this->dbi->getTable($this->db, $this->table)->getStorageEngine();
         $this->render('table/relation/common_form', [
             'is_foreign_key_supported' => ForeignKey::isSupported($engine),
@@ -198,9 +179,6 @@ final class RelationController extends AbstractController
         $multi_edit_columns_name = $_POST['foreign_key_fields_name'] ?? null;
         $preview_sql_data = '';
         $seen_error = false;
-
-        // (for now, one index name only; we keep the definitions if the
-        // foreign db is not the same)
         if (
             isset($_POST['destination_foreign_db'], $_POST['destination_foreign_table'])
             && isset($_POST['destination_foreign_column'])
@@ -223,8 +201,6 @@ final class RelationController extends AbstractController
             );
             $this->response->addHTML($html);
         }
-
-        // If there is a request for SQL previewing.
         if (isset($_POST['preview_sql'])) {
             Core::previewSQL($preview_sql_data);
 
@@ -286,8 +262,6 @@ final class RelationController extends AbstractController
     {
         $foreignTable = $_POST['foreignTable'];
         $table_obj = $this->dbi->getTable($_POST['foreignDb'], $foreignTable);
-        // Since views do not have keys defined on them provide the full list of
-        // columns
         if ($table_obj->isView()) {
             $columnList = $table_obj->getColumns(false, false);
         } else {
@@ -299,8 +273,6 @@ final class RelationController extends AbstractController
         }
 
         $this->response->addJSON('columns', $columnList);
-
-        // @todo should be: $server->db($db)->table($table)->primary()
         $primary = Index::getPrimary($foreignTable, $_POST['foreignDb']);
         if ($primary === false) {
             return;

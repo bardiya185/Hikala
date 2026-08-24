@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* database/structure/table_header.twig */
+
 class __TwigTemplate_540ba0142bf3d88db7c648fcd62b70f3 extends Template
 {
     private $source;
@@ -34,12 +34,10 @@ class __TwigTemplate_540ba0142bf3d88db7c648fcd62b70f3 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<form method=\"post\" action=\"";
         yield PhpMyAdmin\Url::getFromRoute("/database/structure");
         yield "\" name=\"tablesForm\" id=\"tablesForm\">
 ";
-        // line 2
         yield PhpMyAdmin\Url::getHiddenInputs(($context["db"] ?? null));
         yield "
 <div class=\"table-responsive\">
@@ -48,201 +46,144 @@ class __TwigTemplate_540ba0142bf3d88db7c648fcd62b70f3 extends Template
         <tr>
             <th class=\"d-print-none\"></th>
             <th>";
-        // line 8
         yield PhpMyAdmin\Util::sortableTableHeader(_gettext("Table"), "table");
         yield "</th>
             ";
-        // line 9
         if (($context["replication"] ?? null)) {
-            // line 10
             yield "                <th>";
 yield _gettext("Replication");
             yield "</th>
             ";
         }
-        // line 12
         yield "
             ";
-        // line 13
         if (($context["db_is_system_schema"] ?? null)) {
-            // line 14
             yield "                ";
             $context["action_colspan"] = 3;
-            // line 15
             yield "            ";
         } else {
-            // line 16
             yield "                ";
             $context["action_colspan"] = 6;
-            // line 17
             yield "            ";
         }
-        // line 18
         yield "            ";
         if ((($context["num_favorite_tables"] ?? null) > 0)) {
-            // line 19
             yield "                ";
             $context["action_colspan"] = (($context["action_colspan"] ?? null) + 1);
-            // line 20
             yield "            ";
         }
-        // line 21
         yield "            <th colspan=\"";
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["action_colspan"] ?? null), "html", null, true);
         yield "\" class=\"d-print-none\">
                 ";
 yield _gettext("Action");
-        // line 23
         yield "            </th>
             ";
-        // line 25
         yield "            <th>
                 ";
-        // line 26
         yield PhpMyAdmin\Util::sortableTableHeader(_gettext("Rows"), "records", "DESC");
         yield "
                 ";
-        // line 27
         yield PhpMyAdmin\Html\Generator::showHint(PhpMyAdmin\Sanitize::sanitizeMessage(_gettext("May be approximate. Click on the number to get the exact count. See [doc@faq3-11]FAQ 3.11[/doc].")));
         yield "
             </th>
             ";
-        // line 29
         if ( !(($context["properties_num_columns"] ?? null) > 1)) {
-            // line 30
             yield "                <th>";
             yield PhpMyAdmin\Util::sortableTableHeader(_gettext("Type"), "type");
             yield "</th>
                 <th>";
-            // line 31
             yield PhpMyAdmin\Util::sortableTableHeader(_gettext("Collation"), "collation");
             yield "</th>
             ";
         }
-        // line 33
         yield "
             ";
-        // line 34
         if (($context["is_show_stats"] ?? null)) {
-            // line 35
             yield "                ";
-            // line 36
             yield "                <th>";
             yield PhpMyAdmin\Util::sortableTableHeader(_gettext("Size"), "size", "DESC");
             yield "</th>
                 ";
-            // line 38
             yield "                <th>";
             yield PhpMyAdmin\Util::sortableTableHeader(_gettext("Overhead"), "overhead", "DESC");
             yield "</th>
             ";
         }
-        // line 40
         yield "
             ";
-        // line 41
         if (($context["show_charset"] ?? null)) {
-            // line 42
             yield "                <th>";
             yield PhpMyAdmin\Util::sortableTableHeader(_gettext("Charset"), "charset");
             yield "</th>
             ";
         }
-        // line 44
         yield "
             ";
-        // line 45
         if (($context["show_comment"] ?? null)) {
-            // line 46
             yield "                <th>";
             yield PhpMyAdmin\Util::sortableTableHeader(_gettext("Comment"), "comment");
             yield "</th>
             ";
         }
-        // line 48
         yield "
             ";
-        // line 49
         if (($context["show_creation"] ?? null)) {
-            // line 50
             yield "                ";
-            // line 51
             yield "                <th>";
             yield PhpMyAdmin\Util::sortableTableHeader(_gettext("Creation"), "creation", "DESC");
             yield "</th>
             ";
         }
-        // line 53
         yield "
             ";
-        // line 54
         if (($context["show_last_update"] ?? null)) {
-            // line 55
             yield "                ";
-            // line 56
             yield "                <th>";
             yield PhpMyAdmin\Util::sortableTableHeader(_gettext("Last update"), "last_update", "DESC");
             yield "</th>
             ";
         }
-        // line 58
         yield "
             ";
-        // line 59
         if (($context["show_last_check"] ?? null)) {
-            // line 60
             yield "                ";
-            // line 61
             yield "                <th>";
             yield PhpMyAdmin\Util::sortableTableHeader(_gettext("Last check"), "last_check", "DESC");
             yield "</th>
             ";
         }
-        // line 63
         yield "        </tr>
     </thead>
     <tbody>
     ";
-        // line 66
         $context['_parent'] = $context;
         $context['_seq'] = CoreExtension::ensureTraversable(($context["structure_table_rows"] ?? null));
         foreach ($context['_seq'] as $context["_key"] => $context["structure_table_row"]) {
-            // line 67
             yield "        ";
             yield from             $this->loadTemplate("database/structure/structure_table_row.twig", "database/structure/table_header.twig", 67)->unwrap()->yield(CoreExtension::toArray($context["structure_table_row"]));
-            // line 68
             yield "    ";
         }
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['_key'], $context['structure_table_row'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 69
         yield "    </tbody>
     ";
-        // line 70
         if (($context["body_for_table_summary"] ?? null)) {
-            // line 71
             yield "        ";
             yield from             $this->loadTemplate("database/structure/body_for_table_summary.twig", "database/structure/table_header.twig", 71)->unwrap()->yield(CoreExtension::toArray(($context["body_for_table_summary"] ?? null)));
-            // line 72
             yield "    ";
         }
-        // line 73
         yield "</table>
 </div>
 ";
-        // line 75
         if (($context["check_all_tables"] ?? null)) {
-            // line 76
             yield "  ";
             yield from             $this->loadTemplate("database/structure/check_all_tables.twig", "database/structure/table_header.twig", 76)->unwrap()->yield(CoreExtension::toArray(($context["check_all_tables"] ?? null)));
         }
-        // line 78
         yield "</form>
 ";
-        // line 79
         if (($context["check_all_tables"] ?? null)) {
-            // line 80
             yield "  ";
             yield from             $this->loadTemplate("database/structure/bulk_action_modal.twig", "database/structure/table_header.twig", 80)->unwrap()->yield(CoreExtension::toArray(($context["check_all_tables"] ?? null)));
         }

@@ -22,7 +22,7 @@ use Symfony\Component\Process\Exception\RuntimeException;
  */
 class InputStream implements \IteratorAggregate
 {
-    /** @var callable|null */
+    
     private $onEmpty = null;
     private $input = [];
     private $open = true;

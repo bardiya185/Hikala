@@ -2,17 +2,14 @@ import Stories from "@/components/templates/digikalstories";
 import TopBanner from "@/components/banner/Banner";
 import AmazingSliders from "@/components/organisms/AmazingSliders";
 import CardShop from "@/components/templates/cardStore";
-
-// ================================================================
-// 🎯 Fetch Flash Sale Campaign + Products
-// ================================================================
+import Categories from "@/components/home/Categories";
 async function getFlashSaleCampaign() {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/campaigns/flash-sale/products`,
       {
         next: { revalidate: 60 },
-      }
+      },
     );
 
     if (!res.ok) return null;
@@ -23,18 +20,11 @@ async function getFlashSaleCampaign() {
     return null;
   }
 }
-
-// ================================================================
-// 🖼️ Fetch Banners
-// ================================================================
 async function getBanners() {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/banners`,
-      {
-        next: { revalidate: 300 },
-      }
-    );
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/banners`, {
+      next: { revalidate: 300 },
+    });
 
     if (!res.ok) return null;
 
@@ -44,10 +34,6 @@ async function getBanners() {
     return null;
   }
 }
-
-// ================================================================
-// 🏠 Home Page
-// ================================================================
 export default async function Home() {
   const [flashSaleData, bannerData] = await Promise.all([
     getFlashSaleCampaign(),
@@ -55,20 +41,20 @@ export default async function Home() {
   ]);
 
   const middleSection = bannerData?.data?.find(
-    (item) => item.key === "home_middle_4"
+    (item) => item.key === "home_middle_4",
   );
 
   return (
     <main className="w-full overflow-x-hidden">
-      {/* Stories */}
-      {/* <Stories /> */}
+      {}
+      {}
 
-      {/* Top Banner */}
+      {}
       <section className="w-full">
         <TopBanner data={bannerData} />
       </section>
 
-      {/* Main Content */}
+      {}
       <div
         className="
           container
@@ -82,7 +68,7 @@ export default async function Home() {
           2xl:px-12
         "
       >
-        {/* ⚡ Flash Sale Section */}
+        {}
         {flashSaleData && (
           <section className="w-full">
             <AmazingSliders
@@ -92,10 +78,15 @@ export default async function Home() {
           </section>
         )}
 
-        {/* 🖼️ Middle Banners */}
+        {}
         <section className="w-full">
           <CardShop data={middleSection} />
         </section>
+
+        <section className="w-full">
+          <Categories />
+        </section>
+        
       </div>
     </main>
   );

@@ -21,7 +21,7 @@ use function str_contains;
  */
 class CheckUserPrivileges
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     /**
@@ -92,9 +92,6 @@ class CheckUserPrivileges
         string $showGrantsDbName,
         string $showGrantsTableName
     ): void {
-        // '... ALL PRIVILEGES ON *.* ...' OR '... ALL PRIVILEGES ON `mysql`.* ..'
-        // OR
-        // SELECT, INSERT, UPDATE, DELETE .... ON *.* OR `mysql`.*
         if (
             $showGrantsString !== 'ALL'
             && $showGrantsString !== 'ALL PRIVILEGES'
@@ -113,9 +110,6 @@ class CheckUserPrivileges
                 $GLOBALS['is_reload_priv'] = true;
             }
         }
-
-        // check for specific tables in `mysql` db
-        // Ex. '... ALL PRIVILEGES on `mysql`.`columns_priv` .. '
         if ($showGrantsDbName !== 'mysql') {
             return;
         }
@@ -175,8 +169,6 @@ class CheckUserPrivileges
 
             return;
         }
-
-        // defaults
         $GLOBALS['is_create_db_priv'] = false;
         $GLOBALS['is_reload_priv'] = false;
         $GLOBALS['db_to_create'] = '';
@@ -214,8 +206,6 @@ class CheckUserPrivileges
             if (str_contains($showGrantsString, 'RELOAD')) {
                 $GLOBALS['is_reload_priv'] = true;
             }
-
-            // check for the required privileges for adjust
             $this->checkRequiredPrivilegesForAdjust($showGrantsString, $showGrantsDbName, $showGrantsTableName);
 
             /**
@@ -232,27 +222,19 @@ class CheckUserPrivileges
             }
 
             if ($showGrantsDbName === '*') {
-                // a global CREATE privilege
                 $GLOBALS['is_create_db_priv'] = true;
                 $GLOBALS['is_reload_priv'] = true;
                 $GLOBALS['db_to_create'] = '';
                 $GLOBALS['dbs_where_create_table_allowed'][] = '*';
-                // @todo we should not break here, cause GRANT ALL *.*
-                // could be revoked by a later rule like GRANT SELECT ON db.*
                 break;
             }
-
-            // this array may contain wildcards
             $GLOBALS['dbs_where_create_table_allowed'][] = $showGrantsDbName;
 
             $dbNameToTest = Util::backquote($showGrantsDbName);
 
             if ($GLOBALS['is_create_db_priv']) {
-                // no need for any more tests if we already know this
                 continue;
             }
-
-            // does this db exist?
             if (
                 (! preg_match('/' . $re0 . '%|_/', $showGrantsDbName)
                 || preg_match('/\\\\%|\\\\_/', $showGrantsDbName))
@@ -280,12 +262,7 @@ class CheckUserPrivileges
              * @todo collect $GLOBALS['db_to_create'] into an array,
              * to display a drop-down in the "Create database" dialog
              */
-            // we don't break, we want all possible databases
-            //break;
         }
-
-        // must also cacheUnset() them in
-        // PhpMyAdmin\Plugins\Auth\AuthenticationCookie
         SessionCache::set('is_create_db_priv', $GLOBALS['is_create_db_priv']);
         SessionCache::set('is_reload_priv', $GLOBALS['is_reload_priv']);
         SessionCache::set('db_to_create', $GLOBALS['db_to_create']);
@@ -309,8 +286,6 @@ class CheckUserPrivileges
         if (! empty($current)) {
             [$username] = $current;
         }
-
-        // If MySQL is started with --skip-grant-tables
         if ($username === '') {
             $GLOBALS['is_create_db_priv'] = true;
             $GLOBALS['is_reload_priv'] = true;

@@ -17,7 +17,7 @@ use Exception;
 
 abstract class AbstractTime extends ASNObject
 {
-    /** @var DateTime */
+    
     protected $value;
 
     public function __construct($dateTime = null, $dateTimeZone = 'UTC')

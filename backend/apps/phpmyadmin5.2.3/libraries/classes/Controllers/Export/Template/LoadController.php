@@ -14,10 +14,10 @@ use PhpMyAdmin\Template;
 
 final class LoadController extends AbstractController
 {
-    /** @var TemplateModel */
+    
     private $model;
 
-    /** @var Relation */
+    
     private $relation;
 
     public function __construct(

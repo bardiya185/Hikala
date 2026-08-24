@@ -18,17 +18,8 @@ return new class extends Migration
             $table->string('slug')->unique();
         
             $table->string('type')->default('select');
-            // text
-            // number
-            // boolean
-            // select
-            // multiselect
         
             $table->string('unit')->nullable();
-            // GB
-            // inch
-            // kg
-            // mAh
         
             $table->boolean('is_filterable')->default(true);
         

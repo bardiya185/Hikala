@@ -46,34 +46,34 @@ final class Export
      */
     public $as_separate_files;
 
-    /** @var bool */
+    
     public $asfile;
 
-    /** @var string */
+    
     public $charset;
 
-    /** @var bool */
+    
     public $onserver;
 
-    /** @var bool */
+    
     public $onserver_overwrite;
 
-    /** @var bool */
+    
     public $quick_export_onserver;
 
-    /** @var bool */
+    
     public $quick_export_onserver_overwrite;
 
-    /** @var bool */
+    
     public $remember_file_template;
 
-    /** @var string */
+    
     public $file_template_table;
 
-    /** @var string */
+    
     public $file_template_database;
 
-    /** @var string */
+    
     public $file_template_server;
 
     /**
@@ -88,10 +88,10 @@ final class Export
      */
     public $codegen_format;
 
-    /** @var bool */
+    
     public $ods_columns;
 
-    /** @var string */
+    
     public $ods_null;
 
     /**
@@ -100,19 +100,19 @@ final class Export
      */
     public $odt_structure_or_data;
 
-    /** @var bool */
+    
     public $odt_columns;
 
-    /** @var bool */
+    
     public $odt_relation;
 
-    /** @var bool */
+    
     public $odt_comments;
 
-    /** @var bool */
+    
     public $odt_mime;
 
-    /** @var string */
+    
     public $odt_null;
 
     /**
@@ -121,10 +121,10 @@ final class Export
      */
     public $htmlword_structure_or_data;
 
-    /** @var bool */
+    
     public $htmlword_columns;
 
-    /** @var string */
+    
     public $htmlword_null;
 
     /**
@@ -133,13 +133,13 @@ final class Export
      */
     public $texytext_structure_or_data;
 
-    /** @var bool */
+    
     public $texytext_columns;
 
-    /** @var string */
+    
     public $texytext_null;
 
-    /** @var bool */
+    
     public $csv_columns;
 
     /**
@@ -148,28 +148,28 @@ final class Export
      */
     public $csv_structure_or_data;
 
-    /** @var string */
+    
     public $csv_null;
 
-    /** @var string */
+    
     public $csv_separator;
 
-    /** @var string */
+    
     public $csv_enclosed;
 
-    /** @var string */
+    
     public $csv_escaped;
 
-    /** @var string */
+    
     public $csv_terminated;
 
-    /** @var bool */
+    
     public $csv_removeCRLF;
 
-    /** @var bool */
+    
     public $excel_columns;
 
-    /** @var string */
+    
     public $excel_null;
 
     /**
@@ -178,7 +178,7 @@ final class Export
      */
     public $excel_edition;
 
-    /** @var bool */
+    
     public $excel_removeCRLF;
 
     /**
@@ -193,40 +193,40 @@ final class Export
      */
     public $latex_structure_or_data;
 
-    /** @var bool */
+    
     public $latex_columns;
 
-    /** @var bool */
+    
     public $latex_relation;
 
-    /** @var bool */
+    
     public $latex_comments;
 
-    /** @var bool */
+    
     public $latex_mime;
 
-    /** @var string */
+    
     public $latex_null;
 
-    /** @var bool */
+    
     public $latex_caption;
 
-    /** @var string */
+    
     public $latex_structure_caption;
 
-    /** @var string */
+    
     public $latex_structure_continued_caption;
 
-    /** @var string */
+    
     public $latex_data_caption;
 
-    /** @var string */
+    
     public $latex_data_continued_caption;
 
-    /** @var string */
+    
     public $latex_data_label;
 
-    /** @var string */
+    
     public $latex_structure_label;
 
     /**
@@ -235,10 +235,10 @@ final class Export
      */
     public $mediawiki_structure_or_data;
 
-    /** @var bool */
+    
     public $mediawiki_caption;
 
-    /** @var bool */
+    
     public $mediawiki_headers;
 
     /**
@@ -265,10 +265,10 @@ final class Export
      */
     public $json_structure_or_data;
 
-    /** @var bool */
+    
     public $json_pretty_print;
 
-    /** @var bool */
+    
     public $json_unicode;
 
     /**
@@ -290,25 +290,25 @@ final class Export
      */
     public $sql_include_comments;
 
-    /** @var bool */
+    
     public $sql_disable_fk;
 
-    /** @var bool */
+    
     public $sql_views_as_tables;
 
-    /** @var bool */
+    
     public $sql_metadata;
 
-    /** @var bool */
+    
     public $sql_use_transaction;
 
-    /** @var bool */
+    
     public $sql_create_database;
 
-    /** @var bool */
+    
     public $sql_drop_database;
 
-    /** @var bool */
+    
     public $sql_drop_table;
 
     /**
@@ -319,43 +319,43 @@ final class Export
      */
     public $sql_if_not_exists;
 
-    /** @var bool */
+    
     public $sql_view_current_user;
 
-    /** @var bool */
+    
     public $sql_or_replace_view;
 
-    /** @var bool */
+    
     public $sql_procedure_function;
 
-    /** @var bool */
+    
     public $sql_create_table;
 
-    /** @var bool */
+    
     public $sql_create_view;
 
-    /** @var bool */
+    
     public $sql_create_trigger;
 
-    /** @var bool */
+    
     public $sql_auto_increment;
 
-    /** @var bool */
+    
     public $sql_backquotes;
 
-    /** @var bool */
+    
     public $sql_dates;
 
-    /** @var bool */
+    
     public $sql_relation;
 
-    /** @var bool */
+    
     public $sql_truncate;
 
-    /** @var bool */
+    
     public $sql_delayed;
 
-    /** @var bool */
+    
     public $sql_ignore;
 
     /**
@@ -365,7 +365,7 @@ final class Export
      */
     public $sql_utc_time;
 
-    /** @var bool */
+    
     public $sql_hex_for_binary;
 
     /**
@@ -380,7 +380,7 @@ final class Export
      */
     public $sql_max_query_size;
 
-    /** @var bool */
+    
     public $sql_mime;
 
     /**
@@ -398,7 +398,7 @@ final class Export
      */
     public $sql_insert_syntax;
 
-    /** @var string */
+    
     public $pdf_report_title;
 
     /**
@@ -469,7 +469,7 @@ final class Export
      */
     public $yaml_structure_or_data;
 
-    /** @var bool */
+    
     public $remove_definer_from_definitions;
 
     /**

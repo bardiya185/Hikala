@@ -46,7 +46,7 @@ class ExportLatex extends ExportPlugin
      */
     protected function init(): void
     {
-        /* Messages used in default captions */
+        
         $GLOBALS['strLatexContent'] = __('Content of table @TABLE@');
         $GLOBALS['strLatexContinued'] = __('(continued)');
         $GLOBALS['strLatexStructure'] = __('Structure of table @TABLE@');
@@ -65,29 +65,18 @@ class ExportLatex extends ExportPlugin
         $exportPluginProperties->setExtension('tex');
         $exportPluginProperties->setMimeType('application/x-tex');
         $exportPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $exportPluginProperties
-        // this will be shown as "Format specific options"
         $exportSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-        // general options main group
         $generalOptions = new OptionsPropertyMainGroup('general_opts');
-        // create primary items and add them to the group
         $leaf = new BoolPropertyItem(
             'caption',
             __('Include table caption')
         );
         $generalOptions->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($generalOptions);
-
-        // what to dump (structure/data/both) main group
         $dumpWhat = new OptionsPropertyMainGroup(
             'dump_what',
             __('Dump table')
         );
-        // create primary items and add them to the group
         $leaf = new RadioPropertyItem('structure_or_data');
         $leaf->setValues(
             [
@@ -97,17 +86,13 @@ class ExportLatex extends ExportPlugin
             ]
         );
         $dumpWhat->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($dumpWhat);
-
-        // structure options main group
         if (! $hide_structure) {
             $structureOptions = new OptionsPropertyMainGroup(
                 'structure',
                 __('Object creation options')
             );
             $structureOptions->setForce('data');
-            // create primary items and add them to the group
             $leaf = new TextPropertyItem(
                 'structure_caption',
                 __('Table caption:')
@@ -147,18 +132,13 @@ class ExportLatex extends ExportPlugin
                 );
                 $structureOptions->addProperty($leaf);
             }
-
-            // add the main group to the root group
             $exportSpecificOptions->addProperty($structureOptions);
         }
-
-        // data options main group
         $dataOptions = new OptionsPropertyMainGroup(
             'data',
             __('Data dump options')
         );
         $dataOptions->setForce('structure');
-        // create primary items and add them to the group
         $leaf = new BoolPropertyItem(
             'columns',
             __('Put columns names in the first row:')
@@ -187,10 +167,7 @@ class ExportLatex extends ExportPlugin
             __('Replace NULL with:')
         );
         $dataOptions->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($dataOptions);
-
-        // set the options for the export plugin property item
         $exportPluginProperties->setOptions($exportSpecificOptions);
 
         return $exportPluginProperties;
@@ -347,8 +324,6 @@ class ExportLatex extends ExportPlugin
         if (! $this->export->outputHandler($buffer)) {
             return false;
         }
-
-        // show column names
         if (isset($GLOBALS['latex_columns'])) {
             $buffer = '\\hline ';
             for ($i = 0; $i < $columns_cnt; $i++) {
@@ -391,11 +366,8 @@ class ExportLatex extends ExportPlugin
                 return false;
             }
         }
-
-        // print the whole table
         while ($record = $result->fetchAssoc()) {
             $buffer = '';
-            // print each row
             for ($i = 0; $i < $columns_cnt; $i++) {
                 if ($record[$columns[$i]] !== null && isset($record[$columns[$i]])) {
                     $column_value = self::texEscape(
@@ -404,8 +376,6 @@ class ExportLatex extends ExportPlugin
                 } else {
                     $column_value = $GLOBALS['latex_null'];
                 }
-
-                // last column ... no need for & character
                 if ($i == $columns_cnt - 1) {
                     $buffer .= $column_value;
                 } else {
@@ -485,7 +455,7 @@ class ExportLatex extends ExportPlugin
 
         $relationParameters = $this->relation->getRelationParameters();
 
-        /* We do not export triggers */
+        
         if ($exportMode === 'triggers') {
             return true;
         }
@@ -507,8 +477,6 @@ class ExportLatex extends ExportPlugin
          * Gets fields properties
          */
         $dbi->selectDb($db);
-
-        // Check if we can use Relations
         [$res_rel, $have_rel] = $this->relation->getRelationsAndStatus(
             $do_relation && $relationParameters->relationFeature !== null,
             $db,
@@ -556,8 +524,6 @@ class ExportLatex extends ExportPlugin
             $header .= ' & \\multicolumn{1}{|c|}{\\textbf{MIME}}';
             $mime_map = $this->transformations->getMime($db, $table, true);
         }
-
-        // Table caption for first page and label
         if (isset($GLOBALS['latex_caption'])) {
             $buffer .= ' \\caption{'
                 . Util::expandUserString(
@@ -585,7 +551,6 @@ class ExportLatex extends ExportPlugin
 
         $buffer .= $header . ' \\\\ \\hline \\hline' . $crlf
             . '\\endfirsthead' . $crlf;
-        // Table caption on next pages
         if (isset($GLOBALS['latex_caption'])) {
             $buffer .= ' \\caption{'
                 . Util::expandUserString(

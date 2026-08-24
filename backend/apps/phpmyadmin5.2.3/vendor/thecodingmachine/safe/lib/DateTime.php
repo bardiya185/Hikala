@@ -7,10 +7,9 @@ use DateTimeInterface;
 use DateTimeZone;
 use Safe\Exceptions\DatetimeException;
 
-/** this class implements a safe version of the Datetime class */
+
 class DateTime extends \DateTime
 {
-    //switch from regular datetime to safe version
     private static function createFromRegular(\DateTime $datetime): self
     {
         return new self($datetime->format('Y-m-d H:i:s.u'), $datetime->getTimezone());
@@ -39,7 +38,7 @@ class DateTime extends \DateTime
      */
     public function diff($datetime2, $absolute = false): DateInterval
     {
-        /** @var \DateInterval|false $result */
+        
         $result = parent::diff($datetime2, $absolute);
         if ($result === false) {
             throw DatetimeException::createFromPhpError();
@@ -54,7 +53,7 @@ class DateTime extends \DateTime
      */
     public function modify($modify): self
     {
-        /** @var DateTime|false $result */
+        
         $result = parent::modify($modify);
         if ($result === false) {
             throw DatetimeException::createFromPhpError();
@@ -71,7 +70,7 @@ class DateTime extends \DateTime
      */
     public function setDate($year, $month, $day): self
     {
-        /** @var DateTime|false $result */
+        
         $result = parent::setDate($year, $month, $day);
         if ($result === false) {
             throw DatetimeException::createFromPhpError();

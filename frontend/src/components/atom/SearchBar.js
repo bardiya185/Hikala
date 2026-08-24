@@ -2,12 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Search,
-  Loader2,
-  X,
-  Smartphone,
-} from "lucide-react";
+import { Search, Loader2, X, Smartphone } from "lucide-react";
 
 import { useDebounce } from "@/core/hooks/useDebounce";
 import { useSearchProducts } from "@/core/services/queries";
@@ -19,6 +14,8 @@ import {
   isCategoryMatch,
   getUniqueCategories,
 } from "@/core/utils/searchHelper";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function SearchBar() {
   const [query, setQuery] = useState("");
@@ -30,80 +27,46 @@ export default function SearchBar() {
 
   const debouncedQuery = useDebounce(query, 100);
 
-  const {
-    data,
-    isFetching,
-  } = useSearchProducts(debouncedQuery);
+  const { data, isFetching } = useSearchProducts(debouncedQuery);
 
   const results = data?.data || [];
 
   const categories = getUniqueCategories(results);
-
-  // =========================
-  // Click outside
-  // =========================
   useEffect(() => {
     function handleClickOutside(event) {
-      if (
-        wrapperRef.current &&
-        !wrapperRef.current.contains(event.target)
-      ) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
         setIsOpen(false);
       }
     }
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+const handleSelectProduct = (product) => {
+  setIsOpen(false);
 
-  // =========================
-  // Select product
-  // =========================
-  const handleSelectProduct = (title) => {
-    setIsOpen(false);
-
-    const keyword = getSearchKeyword(title);
-
-    router.push(
-      `/search?q=${encodeURIComponent(keyword)}`
-    );
-  };
-
-  // =========================
-  // Select category
-  // =========================
+  router.push(`/product/${product.id}`);
+};
   const handleSelectCategory = (category) => {
+
+     console.log("SELECTED CATEGORY:", category);
+  console.log("CATEGORY SLUG:", category?.slug);
+  console.log("CATEGORY ID:", category?.id);
     setIsOpen(false);
 
-    router.push(
-      `/search/${category.slug}?category_id=${category.id}`
-    );
+    router.push(`/search/${category?.slug}?category_id=${category.id}`);
   };
-
-  // =========================
-  // Enter
-  // =========================
   const handleKeyDown = (e) => {
-    if (
-      e.key === "Enter" &&
-      query.trim().length >= MIN_SEARCH_LENGTH
-    ) {
+    if (e.key === "Enter" && query.trim().length >= MIN_SEARCH_LENGTH) {
       handleSelectProduct(query.trim());
     }
   };
 
   const showDropdown =
-    isOpen &&
-    debouncedQuery.trim().length >= MIN_SEARCH_LENGTH;
+    isOpen && debouncedQuery.trim().length >= MIN_SEARCH_LENGTH;
 
   return (
     <div
@@ -114,7 +77,7 @@ export default function SearchBar() {
         min-w-0
       "
     >
-      {/* Search input */}
+      {}
       <div className="relative w-full">
         <Search
           size={18}
@@ -169,8 +132,37 @@ export default function SearchBar() {
             transition-all
           "
         />
+        <Link
+    href="/"
+    className="
+      absolute
 
-        {/* Clear button */}
+      right-3
+      top-1/2
+      -translate-y-1/2
+
+      lg:hidden
+
+      flex
+      items-center
+
+      z-10
+    "
+  >
+    <Image
+      src="/icons/en-logo.svg"
+      width={100}
+      height={30}
+      alt="Digikala"
+      className="
+        w-[80px]
+        sm:w-[90px]
+        h-auto
+      "
+    />
+  </Link>
+
+        {}
         {query && (
           <button
             type="button"
@@ -232,7 +224,7 @@ export default function SearchBar() {
             shadow-xl
           "
         >
-          {/* Loading */}
+          {}
           {isFetching ? (
             <div
               className="
@@ -245,11 +237,7 @@ export default function SearchBar() {
                 text-sm
               "
             >
-              <Loader2
-                size={16}
-                className="animate-spin"
-              />
-
+              <Loader2 size={16} className="animate-spin" />
               Searching...
             </div>
           ) : results.length > 0 ? (
@@ -274,16 +262,13 @@ export default function SearchBar() {
 
                   <div className="flex flex-wrap gap-1.5">
                     {categories.map((cat) => {
-                      const isMatch =
-                        isCategoryMatch(cat.name);
+                      const isMatch = isCategoryMatch(cat.name);
 
                       return (
                         <button
                           type="button"
                           key={cat.id}
-                          onClick={() =>
-                            handleSelectCategory(cat)
-                          }
+                          onClick={() => handleSelectCategory(cat)}
                           className={`
                             text-xs
                             font-medium
@@ -327,18 +312,13 @@ export default function SearchBar() {
                 </p>
 
                 {results.map((product) => {
-                  const variant =
-                    getDisplayPrice(product);
+                  const variant = getDisplayPrice(product);
 
                   return (
                     <button
                       type="button"
                       key={product.id}
-                      onClick={() =>
-                        handleSelectProduct(
-                          product.title
-                        )
-                      }
+                      onClick={() => handleSelectProduct(product)}
                       className="
                         w-full
                         flex
@@ -355,7 +335,7 @@ export default function SearchBar() {
                         text-left
                       "
                     >
-                      {/* Product image */}
+                      {}
                       <div
                         className="
                           w-9
@@ -368,13 +348,10 @@ export default function SearchBar() {
                           shrink-0
                         "
                       >
-                        <Smartphone
-                          size={18}
-                          className="text-neutral-400"
-                        />
+                        <Smartphone size={18} className="text-neutral-400" />
                       </div>
 
-                      {/* Product title */}
+                      {}
                       <div className="flex-1 min-w-0">
                         <p
                           className="
@@ -387,7 +364,7 @@ export default function SearchBar() {
                         </p>
                       </div>
 
-                      {/* Price */}
+                      {}
                       {variant && (
                         <span
                           className="

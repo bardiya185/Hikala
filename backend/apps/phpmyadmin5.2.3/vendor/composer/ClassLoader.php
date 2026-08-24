@@ -42,10 +42,10 @@ namespace Composer\Autoload;
  */
 class ClassLoader
 {
-    /** @var \Closure(string):void */
+    
     private static $includeFile;
 
-    /** @var string|null */
+    
     private $vendorDir;
 
     // PSR-4
@@ -76,7 +76,7 @@ class ClassLoader
      */
     private $fallbackDirsPsr0 = array();
 
-    /** @var bool */
+    
     private $useIncludePath = false;
 
     /**
@@ -84,7 +84,7 @@ class ClassLoader
      */
     private $classMap = array();
 
-    /** @var bool */
+    
     private $classMapAuthoritative = false;
 
     /**
@@ -92,7 +92,7 @@ class ClassLoader
      */
     private $missingClasses = array();
 
-    /** @var string|null */
+    
     private $apcuPrefix;
 
     /**

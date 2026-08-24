@@ -21,10 +21,10 @@ use function trim;
 
 class WriteGitRevisionCommand extends Command
 {
-    /** @var string */
+    
     protected static $defaultName = 'write-revision-info';
 
-    /** @var string */
+    
     private static $generatedClassTemplate = <<<'PHP'
 <?php
 
@@ -78,9 +78,9 @@ PHP;
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var string $commitUrlFormat */
+        
         $commitUrlFormat = $input->getOption('remote-commit-url');
-        /** @var string $branchUrlFormat */
+        
         $branchUrlFormat = $input->getOption('remote-branch-url');
 
         $generatedClass = $this->getRevisionInfo($commitUrlFormat, $branchUrlFormat);
@@ -146,7 +146,7 @@ PHP;
 
     protected function gitCli(string $command): ?string
     {
-        /** @psalm-suppress ForbiddenCode */
+        
         $output = shell_exec('git ' . $command);
 
         return is_string($output) ? $output : null;

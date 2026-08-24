@@ -100,8 +100,6 @@ class Apcupsd extends UPS
         foreach ($this->_output as $ups) {
 
             $dev = new UPSDevice();
-
-            // General info
             if (preg_match('/^UPSNAME\s*:\s*(.*)$/m', $ups, $data)) {
                 $dev->setName(trim($data[1]));
             }
@@ -128,7 +126,6 @@ class Apcupsd extends UPS
                     $dev->setTemperatur($temperatur);
                 }
             }
-            // Outages
             if (preg_match('/^NUMXFERS\s*:\s*(.*)$/m', $ups, $data)) {
                 $dev->setOutages(trim($data[1]));
             }
@@ -138,7 +135,6 @@ class Apcupsd extends UPS
             if (preg_match('/^XOFFBATT\s*:\s*(.*)$/m', $ups, $data)) {
                 $dev->setLastOutageFinish(trim($data[1]));
             }
-            // Line
             if (preg_match('/^LINEV\s*:\s*(\d*\.\d*)(.*)$/m', $ups, $data)) {
                 $dev->setLineVoltage(trim($data[1]));
             }
@@ -148,7 +144,6 @@ class Apcupsd extends UPS
             if (preg_match('/^LOADPCT\s*:\s*(\d*\.\d*)(.*)$/m', $ups, $data)) {
                 $dev->setLoad(trim($data[1]));
             }
-            // Battery
             if (preg_match('/^BATTDATE\s*:\s*(.*)$/m', $ups, $data)) {
                 $dev->setBatteryDate(trim($data[1]));
             }

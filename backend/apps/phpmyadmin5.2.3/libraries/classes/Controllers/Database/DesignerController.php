@@ -18,10 +18,10 @@ use function sprintf;
 
 class DesignerController extends AbstractController
 {
-    /** @var Designer */
+    
     private $databaseDesigner;
 
-    /** @var DesignerCommon */
+    
     private $designerCommon;
 
     public function __construct(
@@ -88,7 +88,7 @@ class DesignerController extends AbstractController
                     $this->response->addJSON(
                         'message',
                         sprintf(
-                            /* l10n: The user tries to save a page with an existing name in Designer */
+                            
                             __('There already exists a page named "%s" please rename it to something else.'),
                             htmlspecialchars($_POST['selected_value'])
                         )

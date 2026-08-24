@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ContainerParametersResourceChecker implements ResourceCheckerInterface
 {
-    /** @var ContainerInterface */
+    
     private $container;
 
     public function __construct(ContainerInterface $container)

@@ -26,10 +26,10 @@ use function urldecode;
  */
 class Operations
 {
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     /**
@@ -517,7 +517,7 @@ class Operations
             ],
         ];
 
-        /** @var Innodb $innodbEnginePlugin */
+        
         $innodbEnginePlugin = StorageEngine::getEngine('Innodb');
         $innodbPluginVersion = $innodbEnginePlugin->getInnodbPluginVersion();
         $innodb_file_format = '';

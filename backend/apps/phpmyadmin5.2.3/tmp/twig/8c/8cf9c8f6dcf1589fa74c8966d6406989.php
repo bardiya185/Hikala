@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* database/structure/index.twig */
+
 class __TwigTemplate_c994c11beb1ec238bd713b28ac5cf440 extends Template
 {
     private $source;
@@ -34,21 +34,17 @@ class __TwigTemplate_c994c11beb1ec238bd713b28ac5cf440 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         $context['_parent'] = $context;
         $context['_seq'] = CoreExtension::ensureTraversable($this->env->getRuntime('PhpMyAdmin\FlashMessages')->getMessages());
         foreach ($context['_seq'] as $context["flash_key"] => $context["flash_messages"]) {
-            // line 2
             yield "  ";
             $context['_parent'] = $context;
             $context['_seq'] = CoreExtension::ensureTraversable($context["flash_messages"]);
             foreach ($context['_seq'] as $context["_key"] => $context["flash_message"]) {
-                // line 3
                 yield "    <div class=\"alert alert-";
                 yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($context["flash_key"], "html", null, true);
                 yield "\" role=\"alert\">
       ";
-                // line 4
                 yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($context["flash_message"], "html", null, true);
                 yield "
     </div>
@@ -61,58 +57,45 @@ class __TwigTemplate_c994c11beb1ec238bd713b28ac5cf440 extends Template
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_iterated'], $context['flash_key'], $context['flash_messages'], $context['_parent'], $context['loop']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 8
         yield "
 ";
-        // line 9
         if (($context["has_tables"] ?? null)) {
-            // line 10
             yield "  <div id=\"tableslistcontainer\">
     ";
-            // line 11
             yield ($context["list_navigator_html"] ?? null);
             yield "
 
     ";
-            // line 13
             yield ($context["table_list_html"] ?? null);
             yield "
 
     ";
-            // line 15
             yield ($context["list_navigator_html"] ?? null);
             yield "
   </div>
   <hr>
   <p class=\"d-print-none\">
     <button type=\"button\" class=\"btn btn-link p-0 jsPrintButton\">";
-            // line 19
             yield PhpMyAdmin\Html\Generator::getIcon("b_print", _gettext("Print"), true);
             yield "</button>
     <a href=\"";
-            // line 20
             yield PhpMyAdmin\Url::getFromRoute("/database/data-dictionary", ["db" => ($context["database"] ?? null), "goto" => PhpMyAdmin\Url::getFromRoute("/database/structure")]);
             yield "\">
       ";
-            // line 21
             yield PhpMyAdmin\Html\Generator::getIcon("b_tblanalyse", _gettext("Data dictionary"), true);
             yield "
     </a>
   </p>
 ";
         } else {
-            // line 25
             yield "  ";
             yield $this->env->getFilter('notice')->getCallable()(_gettext("No tables found in database."));
             yield "
 ";
         }
-        // line 27
         yield "
 ";
-        // line 28
         if ( !($context["is_system_schema"] ?? null)) {
-            // line 29
             yield "  ";
             yield ($context["create_table_html"] ?? null);
             yield "

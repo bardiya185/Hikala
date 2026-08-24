@@ -142,3 +142,19 @@ export const useRemoveCartItem = () => {
 
   return useMutation({ mutationFn, onSuccess });
 };
+
+
+export const useCreateProductReview = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (reviewData) =>
+      api.post("/api/reviews", reviewData),
+
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments", variables.product_id],
+      });
+    },
+  });
+};

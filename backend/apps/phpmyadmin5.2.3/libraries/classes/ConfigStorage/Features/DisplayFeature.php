@@ -12,13 +12,13 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class DisplayFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $relation;
 
-    /** @var TableName */
+    
     public $tableInfo;
 
     public function __construct(DatabaseName $database, TableName $relation, TableName $tableInfo)

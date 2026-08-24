@@ -699,7 +699,7 @@ interface DbalInterface
      */
     public function getVersionComment(): string;
 
-    /** Whether connection is MySQL */
+    
     public function isMySql(): bool;
 
     /**

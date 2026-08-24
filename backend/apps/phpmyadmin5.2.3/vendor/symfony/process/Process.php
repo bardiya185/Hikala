@@ -76,7 +76,7 @@ class Process implements \IteratorAggregate
     private $options = ['suppress_errors' => true, 'bypass_shell' => true];
 
     private $useFileHandles = false;
-    /** @var PipesInterface */
+    
     private $processPipes;
 
     private $latestSignal;

@@ -29,10 +29,10 @@ use function sprintf;
  */
 class TableStatsPdf extends TableStats
 {
-    /** @var int */
+    
     public $height;
 
-    /** @var string */
+    
     private $ff = PdfLib::PMA_PDF_FONT;
 
     /**

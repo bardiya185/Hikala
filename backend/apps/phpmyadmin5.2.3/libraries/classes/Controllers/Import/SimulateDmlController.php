@@ -24,10 +24,10 @@ use function count;
 
 final class SimulateDmlController extends AbstractController
 {
-    /** @var SimulateDml */
+    
     private $simulateDml;
 
-    /** @var string */
+    
     private $error = '';
     /**
      * @var list<array<mixed>>
@@ -50,7 +50,7 @@ final class SimulateDmlController extends AbstractController
 
     public function __invoke(): void
     {
-        /** @var string $sqlDelimiter */
+        
         $sqlDelimiter = $_POST['sql_delimiter'];
 
         $parser = $this->createParser($GLOBALS['sql_query'], $sqlDelimiter);
@@ -96,8 +96,6 @@ final class SimulateDmlController extends AbstractController
                 $this->error = __('Only single-table UPDATE and DELETE queries can be simulated.');
                 break;
             }
-
-            // Get the matched rows for the query.
             $result = $this->simulateDml->getMatchedRows($parser, $statement);
             $this->error = $this->simulateDml->getError();
 

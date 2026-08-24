@@ -10,12 +10,10 @@
         $isList = Str::endsWith($type, '[]');
         $fullName = str_replace('[]', '.0', $fullName ?? $name);
         $baseType = $isList ? substr($type, 0, -2) : $type;
-        // Ignore the first '[]': the frontend will take care of it
         while (\Str::endsWith($baseType, '[]')) {
             $fullName .= '.0';
             $baseType = substr($baseType, 0, -2);
         }
-        // When the body is an array, the item names will be ".0.thing"
         $fullName = ltrim($fullName, '.');
         $inputType = match($baseType) {
             'number', 'integer' => 'number',

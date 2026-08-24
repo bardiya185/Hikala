@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class ExportTemplatesFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $exportTemplates;
 
     public function __construct(DatabaseName $database, TableName $exportTemplates)

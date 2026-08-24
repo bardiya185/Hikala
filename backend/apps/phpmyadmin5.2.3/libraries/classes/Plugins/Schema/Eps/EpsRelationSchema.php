@@ -30,13 +30,13 @@ use function sprintf;
  */
 class EpsRelationSchema extends ExportRelationSchema
 {
-    /** @var TableStatsEps[] */
+    
     private $tables = [];
 
-    /** @var RelationStatsEps[] Relations */
+    
     private $relations = [];
 
-    /** @var int */
+    
     private $tablewidth = 0;
 
     /**

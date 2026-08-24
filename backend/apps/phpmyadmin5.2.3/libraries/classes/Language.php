@@ -21,19 +21,19 @@ use function strcmp;
  */
 class Language
 {
-    /** @var string */
+    
     protected $code;
 
-    /** @var string */
+    
     protected $name;
 
-    /** @var string */
+    
     protected $native;
 
-    /** @var string */
+    
     protected $regex;
 
-    /** @var string */
+    
     protected $mysql;
 
     /**
@@ -174,24 +174,21 @@ class Language
     public function activate(): void
     {
         $GLOBALS['lang'] = $this->code;
-
-        // Set locale
         _setlocale(0, $this->code);
         _bindtextdomain('phpmyadmin', LOCALE_PATH);
         _textdomain('phpmyadmin');
-        // Set PHP locale as well
         if (function_exists('setlocale')) {
             setlocale(0, $this->code);
         }
 
-        /* Text direction for language */
+        
         if ($this->isRTL()) {
             $GLOBALS['text_dir'] = 'rtl';
         } else {
             $GLOBALS['text_dir'] = 'ltr';
         }
 
-        /* Show possible warnings from langauge selection */
+        
         LanguageManager::getInstance()->showWarnings();
     }
 }

@@ -40,8 +40,6 @@ abstract class ImageLinkTransformationsPlugin extends TransformationsPlugin
      */
     public function applyTransformation($buffer, array $options = [], ?FieldMetadata $meta = null)
     {
-        // must disable the page loader, see
-        // https://wiki.phpmyadmin.net/pma/Page_loader#Bypassing_the_page_loader
         $link = '<a class="disableAjax" target="_blank" rel="noopener noreferrer" href="';
         $link .= Url::getFromRoute('/transformation/wrapper', $options['wrapper_params']);
         $link .= '" alt="[' . htmlspecialchars($buffer);
@@ -50,7 +48,7 @@ abstract class ImageLinkTransformationsPlugin extends TransformationsPlugin
         return $link;
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

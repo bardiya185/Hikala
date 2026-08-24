@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* modals/preview_sql_modal.twig */
+
 class __TwigTemplate_78aea472623d0012138740b2d05c3d96 extends Template
 {
     private $source;
@@ -34,25 +34,21 @@ class __TwigTemplate_78aea472623d0012138740b2d05c3d96 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<div class=\"modal fade\" id=\"previewSqlModal\" tabindex=\"-1\" aria-labelledby=\"previewSqlModalLabel\" aria-hidden=\"true\">
   <div class=\"modal-dialog\">
     <div class=\"modal-content\">
       <div class=\"modal-header\">
         <h5 class=\"modal-title\" id=\"previewSqlModalLabel\">";
 yield _gettext("Loading");
-        // line 5
         yield "</h5>
         <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"";
 yield _gettext("Close");
-        // line 6
         yield "\"></button>
       </div>
       <div class=\"modal-body\"></div>
       <div class=\"modal-footer\">
         <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">";
 yield _gettext("Close");
-        // line 10
         yield "</button>
       </div>
     </div>

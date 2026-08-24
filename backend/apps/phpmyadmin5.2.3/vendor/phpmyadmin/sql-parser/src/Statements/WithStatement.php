@@ -57,7 +57,7 @@ final class WithStatement extends Statement
         ],
     ];
 
-    /** @var WithKeyword[] */
+    
     public $withers = [];
 
     /**

@@ -1,16 +1,4 @@
 <?php
-// Romanian language file for Index page
-// Translated by Ciprian Murariu <ciprianmp[at]yahoo[dot]com>
-// 3.1.4 - txtTLDdev
-// 3.2.0 - txtProjects
-// 3.2.1 - defaultDBMS - HelpMySQLMariaDB
-// 3.2.5 - documentation-of added for languages requiring it
-// for English is identical to documentation
-// 3.2.6 - txtNoHosts
-// 3.2.8 - phpNotExists - txtProjectsLink -	phpExtensions - phpVersionsUse
-// 3.3.0 - txtPathNoSlash
-// 3.3.2 - txtSlashEnd
-// 3.3.7 - apacheLoadedModules
 
 $langues = array(
 	'langue' => 'Română',

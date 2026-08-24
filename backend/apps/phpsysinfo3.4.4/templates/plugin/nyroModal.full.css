@@ -83,7 +83,7 @@ div#nyroModalFull div#nyroModalWrapper a.nyroModalPrev, div#nyroModalFull div#ny
 	cursor: pointer;
 	text-indent: -9999em;
 	background: left 20% no-repeat;
-	background-image: url(data:image/gif;base64,AAAA); /* Trick IE6 */
+	background-image: url(data:image/gif;base64,AAAA); 
 }
 div#nyroModalFull div#nyroModalWrapper div.wrapperSwf a.nyroModalPrev, div#nyroModalFull div#nyroModalWrapper div.wrapperSwf a.nyroModalNext, div#nyroModalFull div#nyroModalWrapper div.wrapper a.nyroModalPrev, div#nyroModalFull div#nyroModalWrapper div.wrapper a.nyroModalNext {
 	height: 60%;

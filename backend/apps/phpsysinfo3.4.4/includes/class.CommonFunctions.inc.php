@@ -101,8 +101,6 @@ class CommonFunctions
             array_push($arrPath, $path_parts['dirname']);
             $strProgram = $path_parts['basename'];
         }
-
-        //add some default paths if we still have no paths here
         if (empty($arrPath) && (PSI_OS != 'WINNT')) {
             if (PSI_OS == 'Android') {
                 array_push($arrPath, '/system/bin');
@@ -129,7 +127,6 @@ class CommonFunctions
         }
 
         foreach ($arrPath as $strPath) {
-            // Path with and without trailing slash
             if (PSI_OS == 'WINNT') {
                 $strPath = rtrim($strPath, "\\");
                 $strPathS = $strPath."\\";
@@ -285,7 +282,6 @@ class CommonFunctions
         }
 
         $strArgs = $strArguments;
-        // see if we've gotten a | or &, if we have we need to do path checking on the cmd
         if ($strArgs) {
             $arrArgs = preg_split('/ /', $strArgs, -1, PREG_SPLIT_NO_EMPTY);
             for ($i = 0, $cnt_args = count($arrArgs); $i < $cnt_args; $i++) {
@@ -356,8 +352,6 @@ class CommonFunctions
                 fclose($pipes[0]);
                 fclose($pipes[1]);
                 fclose($pipes[2]);
-                // It is important that you close any pipes before calling
-                // proc_close in order to avoid a deadlock
                 if ($te) {
                     proc_terminate($process); // proc_close tends to hang if the process is timing out
                     $return_value = 0;
@@ -743,9 +737,6 @@ class CommonFunctions
                 break;
             } elseif ($n === 0) {
                 error_log('stream_select: timeout expired !');
-//                if ($separator !== '') {
-//                    fwrite($pipes[0], "q");
-//                }
                 $te = true;
                 break;
             }
@@ -757,12 +748,9 @@ class CommonFunctions
                     $err .= fread($r, 4096);
                 }
             }
-//            if (($separator !== '') && preg_match('/'.$separator.'[^'.$separator.']+'.$separator.'/', $out)) {
             if (($separator !== '') && preg_match('/'.$separator.'[\s\S]+'.$separator.'/', $out)) {
                 fwrite($pipes[0], "quit\n");
                 $separator = ''; //only one time
-              //  $te = true;
-              //  break;
             }
         }
 
@@ -818,7 +806,6 @@ class CommonFunctions
                 'Xen' => 'xen', // Xen hypervisor
                 'Bochs' => 'bochs', // Bochs
                 'Parallels' => 'parallels', // Parallels
-                // https://wiki.freebsd.org/bhyve
                 'BHYVE' => 'bhyve', // bhyve
                 'Hyper-V' => 'microsoft', // Hyper-V
                 'Apple Virtualization' => 'apple', // Apple Virtualization.framework guests

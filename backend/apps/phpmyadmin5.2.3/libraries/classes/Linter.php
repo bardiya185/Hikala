@@ -35,24 +35,8 @@ class Linter
     public static function getLines($str)
     {
         if ((! ($str instanceof UtfString)) && defined('USE_UTF_STRINGS') && USE_UTF_STRINGS) {
-            // If the lexer uses UtfString for processing then the position will
-            // represent the position of the character and not the position of
-            // the byte.
             $str = new UtfString($str);
         }
-
-        // The reason for using the strlen is that the length
-        // required is the length in bytes, not characters.
-        //
-        // Given the following string: `????+`, where `?` represents a
-        // multi-byte character (lets assume that every `?` is a 2-byte
-        // character) and `+` is a newline, the first value of `$i` is `0`
-        // and the last one is `4` (because there are 5 characters). Bytes
-        // `$str[0]` and `$str[1]` are the first character, `$str[2]` and
-        // `$str[3]` are the second one and `$str[4]` is going to be the
-        // first byte of the third character. The fourth and the last one
-        // (which is actually a new line) aren't going to be processed at
-        // all.
         $len = $str instanceof UtfString ?
             $str->length() : strlen($str);
 
@@ -112,7 +96,6 @@ class Linter
      */
     public static function lint($query)
     {
-        // Disabling lint for huge queries to save some resources.
         if (mb_strlen($query) > 10000) {
             return [
                 [
@@ -153,19 +136,12 @@ class Linter
          * only the absolute position of the character in string.
          */
         $lines = static::getLines($query);
-
-        // Building the response.
         foreach ($errors as $error) {
-            // Starting position of the string that caused the error.
             [$fromLine, $fromColumn] = static::findLineNumberAndColumn($lines, $error[3]);
-
-            // Ending position of the string that caused the error.
             [$toLine, $toColumn] = static::findLineNumberAndColumn(
                 $lines,
                 $error[3] + mb_strlen((string) $error[2])
             );
-
-            // Building the response.
             $response[] = [
                 'message' => sprintf(
                     __('%1$s (near <code>%2$s</code>)'),
@@ -179,8 +155,6 @@ class Linter
                 'severity' => 'error',
             ];
         }
-
-        // Sending back the answer.
         return $response;
     }
 }

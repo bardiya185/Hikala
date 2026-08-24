@@ -1,14 +1,4 @@
 <?php
-//3.1.1 - NotwwwDir
-//3.1.3 - VirtualHostPortNone
-//3.1.4 - txtTLDdev
-//3.1.9 - VirtualHostName modified - Accept diacritical characters (IDN)
-//3.2.6 - HoweverWamp
-//3.2.8 - phpNotExists - VirtualHostPhpFCGI - modifyForm - modifyVhost - modAliasForm
-//      - modifyAlias - StartAlias - ModifiedAlias - NoModifyAlias - HoweverAlias
-//  modified: VirtualHostPort (%s replaced by below ) - Start - VirtualCreated - However - HoweverWamp
-//  array $langues_help added.
-//3.3.0 - Modification of lines FcgidInitialEnv
 
 $langues = array(
 	'langue' => 'Български',

@@ -51,15 +51,8 @@ class ImportSql extends ImportPlugin
             foreach ($compats as $val) {
                 $values[$val] = $val;
             }
-
-            // create the root group that will be the options field for
-            // $importPluginProperties
-            // this will be shown as "Format specific options"
             $importSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-            // general options main group
             $generalOptions = new OptionsPropertyMainGroup('general_opts');
-            // create primary items and add them to the group
             $leaf = new SelectPropertyItem(
                 'compatibility',
                 __('SQL compatibility mode:')
@@ -84,10 +77,7 @@ class ImportSql extends ImportPlugin
                 ]
             );
             $generalOptions->addProperty($leaf);
-
-            // add the main group to the root group
             $importSpecificOptions->addProperty($generalOptions);
-            // set the options for the import plugin property item
             $importPluginProperties->setOptions($importSpecificOptions);
         }
 
@@ -102,8 +92,6 @@ class ImportSql extends ImportPlugin
     public function doImport(?File $importHandle = null, array &$sql_data = []): void
     {
         global $error, $timeout_passed, $dbi;
-
-        // Handle compatibility options.
         $this->setSQLMode($dbi, $_REQUEST);
 
         $bq = new BufferedQuery();
@@ -119,39 +107,23 @@ class ImportSql extends ImportPlugin
         $GLOBALS['finished'] = false;
 
         while (! $error && (! $timeout_passed)) {
-            // Getting the first statement, the remaining data and the last
-            // delimiter.
             $statement = $bq->extract();
-
-            // If there is no full statement, we are looking for more data.
             if (empty($statement)) {
-                // Importing new data.
                 $newData = $this->import->getNextChunk($importHandle);
-
-                // Subtract data we didn't handle yet and stop processing.
                 if ($newData === false) {
                     $GLOBALS['offset'] -= mb_strlen($bq->query);
                     break;
                 }
-
-                // Checking if the input buffer has finished.
                 if ($newData === true) {
                     $GLOBALS['finished'] = true;
                     break;
                 }
-
-                // Convert CR (but not CRLF) to LF otherwise all queries may
-                // not get executed on some platforms.
                 $bq->query .= preg_replace("/\r($|[^\n])/", "\n$1", $newData);
 
                 continue;
             }
-
-            // Executing the query.
             $this->import->runQuery($statement, $statement, $sql_data);
         }
-
-        // Extracting remaining statements.
         while (! $error && ! $timeout_passed && ! empty($bq->query)) {
             $statement = $bq->extract(true);
             if (empty($statement)) {
@@ -164,8 +136,6 @@ class ImportSql extends ImportPlugin
         if ($GLOBALS['error']) {
             return;
         }
-
-        // Finishing.
         $this->import->runQuery('', '', $sql_data);
     }
 

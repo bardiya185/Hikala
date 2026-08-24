@@ -105,7 +105,6 @@ class BAT extends PSI_Plugin
                             case 8: $techn = 'Li-poly';
                             }
                         }
-                        // sometimes Chemistry from Win32_Battery returns 2 but Win32_PortableBattery returns e.g. 6
                         if ((($techn == '') || ($techn == 'Unknown')) && isset($bufferWPB[$bi]['Chemistry'])) {
                             switch ($bufferWPB[$bi]['Chemistry']) {
                             case 1: $techn = 'Other'; break;
@@ -449,7 +448,7 @@ class BAT extends PSI_Plugin
                         $bat['remaining_capacity'] = ($data[1]/1000);
                     }
 
-                /* auxiary */
+                
                 } elseif (preg_match('/^POWER_SUPPLY_ENERGY_FULL_DESIGN=(.*)$/', $roworig, $data)) {
                     $bat['design_capacity'] = ($data[1]/1000);
                     if ($data[1]>=1000000000) { // µWh or nWh detection
@@ -499,7 +498,7 @@ class BAT extends PSI_Plugin
                          && preg_match('/^POWER_SUPPLY_SERIAL_NUMBER=(.*)$/', $roworig, $data)) {
                     $bat['serialnumber'] = $data[1];
 
-                /* Darwin */
+                
                 } elseif (preg_match('/^"MaxCapacity"\s*=\s*(.*)$/', $roworig, $data)) {
                     $bat['full_capacity'] = $data[1];
                 } elseif (preg_match('/^"CurrentCapacity"\s*=\s*(.*)$/', $roworig, $data)) {
@@ -520,7 +519,7 @@ class BAT extends PSI_Plugin
                          && preg_match('/^"BatterySerialNumber"\s*=\s*\"?([^\"]*)\"?$/', $roworig, $data)) {
                     $bat['serialnumber'] = $data[1];
 
-                /* auxiary */
+                
                 } elseif (preg_match('/^"FullyCharged"\s*=\s*Yes$/', $roworig, $data)) {
                     $bat['charging_state_f'] = true;
                 } elseif (preg_match('/^"IsCharging"\s*=\s*Yes$/', $roworig, $data)) {
@@ -528,7 +527,7 @@ class BAT extends PSI_Plugin
                 } elseif (preg_match('/^"ExternalConnected"\s*=\s*Yes$/', $roworig, $data)) {
                     $bat['charging_state_e'] = true;
 
-                /* FreeBSD */
+                
                 } elseif (preg_match('/^Type:\s*(.*)$/', $roworig, $data)) {
                     $bat['battery_type'] = $data[1];
                 } elseif (preg_match('/^State:\s*(.*)$/', $roworig, $data)) {
@@ -548,7 +547,7 @@ class BAT extends PSI_Plugin
                 } elseif (preg_match('/^Remaining capacity:\s*(.*)%$/', $roworig, $data)) {
                     $bat['capacity'] = $data[1];
 
-                /* OpenBSD */
+                
                 } elseif (preg_match('/^hw.sensors.acpibat0.volt0=(.*) VDC \(voltage\)$/', $roworig, $data)) {
                     $bat['design_voltage'] = 1000*$data[1];
                 } elseif (preg_match('/^hw.sensors.acpibat0.volt1=(.*) VDC \(current voltage\)$/', $roworig, $data)) {

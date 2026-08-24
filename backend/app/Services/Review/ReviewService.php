@@ -11,9 +11,6 @@ use Illuminate\Http\Request;
 
 class ReviewService
 {
-    // ================================================================
-    // Get Approved Reviews for a Product
-    // ================================================================
     public function getProductReviews(Product $product, Request $request): array
     {
         $query = $product->reviews()
@@ -35,8 +32,6 @@ class ReviewService
 
         $perPage = min((int) $request->get('per_page', 10), 50);
         $reviews = $query->paginate($perPage);
-
-        // Load user reactions if authenticated
         $user = $request->user();
         if ($user) {
             $this->loadUserReactions($reviews, $user);
@@ -49,10 +44,6 @@ class ReviewService
             'rating_summary' => $ratingSummary,
         ];
     }
-
-    // ================================================================
-    // Store Review
-    // ================================================================
     public function store(User $user, array $data): Review
     {
         $this->ensureUserHasNotReviewed($user, $data['product_id']);
@@ -74,10 +65,6 @@ class ReviewService
 
         return $review;
     }
-
-    // ================================================================
-    // Update Review
-    // ================================================================
     public function update(Review $review, User $user, array $data): Review
     {
         $this->ensureOwnership($review, $user);
@@ -100,10 +87,6 @@ class ReviewService
 
         return $review;
     }
-
-    // ================================================================
-    // Delete Review
-    // ================================================================
     public function delete(Review $review, User $user): void
     {
         $this->ensureOwnership($review, $user);
@@ -117,20 +100,12 @@ class ReviewService
             $this->updateProductRating($productId);
         }
     }
-
-    // ================================================================
-    // Get User's Review for a Product
-    // ================================================================
     public function getUserReview(User $user, Product $product): ?Review
     {
         return Review::where('user_id', $user->id)
             ->where('product_id', $product->id)
             ->first();
     }
-
-    // ================================================================
-    // Approve Review (Admin)
-    // ================================================================
     public function approve(Review $review): Review
     {
         $review->update(['status' => 'approved']);
@@ -138,10 +113,6 @@ class ReviewService
 
         return $review->load('user');
     }
-
-    // ================================================================
-    // Reject Review (Admin)
-    // ================================================================
     public function reject(Review $review): Review
     {
         $review->update(['status' => 'rejected']);
@@ -149,10 +120,6 @@ class ReviewService
 
         return $review->load('user');
     }
-
-    // ================================================================
-    // Admin: List All Reviews
-    // ================================================================
     public function getAdminReviews(Request $request): LengthAwarePaginator
     {
         $query = Review::with(['user', 'product'])
@@ -171,10 +138,6 @@ class ReviewService
 
         return $query->paginate($perPage);
     }
-
-    // ================================================================
-    // Private Helpers
-    // ================================================================
 
     private function ensureUserHasNotReviewed(User $user, int $productId): void
     {

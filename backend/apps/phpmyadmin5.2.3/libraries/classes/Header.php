@@ -91,10 +91,10 @@ class Header
      */
     private $headerIsSent;
 
-    /** @var UserPreferences */
+    
     private $userPreferences;
 
-    /** @var Template */
+    
     private $template;
 
     /**
@@ -487,7 +487,7 @@ class Header
     {
         $headers = [];
 
-        /* Prevent against ClickJacking by disabling framing */
+        
         if (strtolower((string) $GLOBALS['cfg']['AllowThirdPartyFraming']) === 'sameorigin') {
             $headers['X-Frame-Options'] = 'SAMEORIGIN';
         } elseif ($GLOBALS['cfg']['AllowThirdPartyFraming'] !== true) {

@@ -325,9 +325,9 @@ code {
 	margin-bottom: 18px;
 }
 
-/* @end */
 
-/* @group Glyphs */
+
+
 
 #glyph_chart div{
 	background-color: #d9f3ff;
@@ -361,9 +361,9 @@ code {
 #glyphs h1 {
 	font-family: Arial, sans-serif;
 }
-/* @end */
 
-/* @group Installing */
+
+
 
 #installing {
 	font: 13px Arial, sans-serif;
@@ -383,7 +383,7 @@ code {
 	margin-top: 18px;
 }
 
-/* @end */
+
 
 #rendering h1 {
 	font-family: Arial, sans-serif;

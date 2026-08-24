@@ -22,16 +22,16 @@ use function mb_substr;
  */
 class BrowseForeigners
 {
-    /** @var int */
+    
     private $limitChars;
-    /** @var int */
+    
     private $maxRows;
-    /** @var int */
+    
     private $repeatCells;
-    /** @var bool */
+    
     private $showAll;
 
-    /** @var Template */
+    
     public $template;
 
     /**
@@ -75,8 +75,6 @@ class BrowseForeigners
 
         $horizontalCount++;
         $output = '';
-
-        // whether the key name corresponds to the selected value in the form
         $rightKeynameIsSelected = false;
         $leftKeynameIsSelected = false;
 
@@ -84,17 +82,11 @@ class BrowseForeigners
             $output .= $header;
             $horizontalCount = 0;
         }
-
-        // key names and descriptions for the left section,
-        // sorted by key names
         $leftKeyname = $keys[$indexByKeyname];
         [
             $leftDescription,
             $leftDescriptionTitle,
         ] = $this->getDescriptionAndTitle($descriptions[$indexByKeyname]);
-
-        // key names and descriptions for the right section,
-        // sorted by descriptions
         $rightKeyname = $keys[$indexByDescription];
         [
             $rightDescription,

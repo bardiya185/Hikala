@@ -28,22 +28,22 @@ class Advisor
     private const GENERIC_RULES_FILE = 'libraries/advisory_rules_generic.php';
     private const BEFORE_MYSQL80003_RULES_FILE = 'libraries/advisory_rules_mysql_before80003.php';
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var array */
+    
     private $variables;
 
-    /** @var array */
+    
     private $globals;
 
-    /** @var array */
+    
     private $rules;
 
-    /** @var array */
+    
     private $runResult;
 
-    /** @var ExpressionLanguage */
+    
     private $expression;
 
     /**
@@ -148,8 +148,6 @@ class Advisor
                 if (! isset($this->runResult['fired'])) {
                     return 0;
                 }
-
-                // Did matching rule fire?
                 foreach ($this->runResult['fired'] as $rule) {
                     if ($rule['id'] == $value) {
                         return '1';
@@ -159,7 +157,7 @@ class Advisor
                 return '0';
             }
         );
-        /* Some global variables for advisor */
+        
         $this->globals = [
             'PMA_MYSQL_INT_VERSION' => $this->dbi->getVersion(),
             'IS_MARIADB' => $this->dbi->isMariaDB(),
@@ -334,9 +332,6 @@ class Advisor
 
             $rule['justification'] = vsprintf($rule['justification'], $params);
         }
-
-        // Replaces {server_variable} with 'server_variable'
-        // linking to /server/variables
         $rule['recommendation'] = preg_replace_callback(
             '/\{([a-z_0-9]+)\}/Ui',
             function (array $matches) {
@@ -351,8 +346,6 @@ class Advisor
             },
             $rule['issue']
         );
-
-        // Replaces external Links with Core::linkURL() generated links
         $rule['recommendation'] = preg_replace_callback(
             '#href=("|\')(https?://[^"\']+)\1#i',
             function (array $matches) {
@@ -397,8 +390,6 @@ class Advisor
     private function evaluateRuleExpression(string $expression)
     {
         $variables = array_merge($this->variables, $this->globals);
-
-        // Set default values for missing InnoDB variables when InnoDB is disabled
         if (! isset($variables['innodb_buffer_pool_size'])) {
             $variables['innodb_buffer_pool_size'] = 0;
         }

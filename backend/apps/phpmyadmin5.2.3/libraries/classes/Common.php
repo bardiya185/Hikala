@@ -94,16 +94,16 @@ final class Common
 
         $containerBuilder = Core::getContainerBuilder();
 
-        /** @var ErrorHandler $errorHandler */
+        
         $errorHandler = $containerBuilder->get('error_handler');
 
         self::checkRequiredPhpExtensions();
         self::configurePhpSettings();
         self::cleanupPathInfo();
 
-        /* parsing configuration file                  LABEL_parsing_config_file      */
+        
 
-        /** @var bool $isConfigLoading Indication for the error handler */
+        
         $isConfigLoading = false;
 
         register_shutdown_function([Config::class, 'fatalErrorHandler']);
@@ -157,7 +157,7 @@ final class Common
         //$_REQUEST['server']; // checked later in this file
         //$_REQUEST['lang'];   // checked by LABEL_loading_language_file
 
-        /* loading language file                       LABEL_loading_language_file    */
+        
 
         /**
          * lang detection is done here
@@ -175,7 +175,7 @@ final class Common
         self::checkServerConfiguration();
         self::checkRequest();
 
-        /* setup servers                                       LABEL_setup_servers    */
+        
 
         $config->checkServers();
 
@@ -191,11 +191,11 @@ final class Common
 
         $cfg = $config->settings;
 
-        /* setup themes                                          LABEL_theme_setup    */
+        
 
         $theme = ThemeManager::initializeTheme();
 
-        /** @var DatabaseInterface $dbi */
+        
         $dbi = null;
 
         if (isset($isMinimumCommon)) {
@@ -225,7 +225,7 @@ final class Common
             $auth_plugin = Plugins::getAuthPlugin();
             $auth_plugin->authenticate();
 
-            /* Enable LOAD DATA LOCAL INFILE for LDI plugin */
+            
             if ($route === '/import' && ($_POST['format'] ?? '') === 'ldi') {
                 // Switch this before the DB connection is done
                 // phpcs:disable PSR1.Files.SideEffects
@@ -239,7 +239,7 @@ final class Common
 
             $auth_plugin->checkTwoFactor();
 
-            /* Log success */
+            
             Logging::logUser($cfg['Server']['user']);
 
             if ($dbi->getVersion() < $cfg['MysqlMinVersion']['internal']) {
@@ -290,14 +290,14 @@ final class Common
 
         $containerBuilder->set('theme_manager', ThemeManager::getInstance());
 
-        /* Tell tracker that it can actually work */
+        
         Tracker::enable();
 
         if (empty($server) || ! isset($cfg['ZeroConf']) || $cfg['ZeroConf'] !== true) {
             return;
         }
 
-        /** @var Relation $relation */
+        
         $relation = $containerBuilder->get('relation');
         $dbi->postConnectControl($relation);
     }

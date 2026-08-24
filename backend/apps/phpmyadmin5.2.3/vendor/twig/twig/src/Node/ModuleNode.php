@@ -46,14 +46,10 @@ final class ModuleNode extends Node
         if (null !== $parent) {
             $nodes['parent'] = $parent;
         }
-
-        // embedded templates are set as attributes so that they are only visited once by the visitors
         parent::__construct($nodes, [
             'index' => null,
             'embedded_templates' => $embeddedTemplates,
         ], 1);
-
-        // populate the template name of all node children
         $this->setSourceContext($source);
     }
 
@@ -157,8 +153,7 @@ final class ModuleNode extends Node
             ;
         }
         $compiler
-            // if the template name contains */, add a blank to avoid a PHP parse error
-            ->write('/* '.str_replace('*/', '* /', $this->getSourceContext()->getName())." */\n")
+            ->write('', '* /', $this->getSourceContext()->getName())." */\n")
             ->write('class '.$compiler->getEnvironment()->getTemplateClass($this->getSourceContext()->getName(), $this->getAttribute('index')))
             ->raw(" extends Template\n")
             ->write("{\n")
@@ -177,15 +172,12 @@ final class ModuleNode extends Node
             ->write("parent::__construct(\$env);\n\n")
             ->write("\$this->source = \$this->getSourceContext();\n\n")
         ;
-
-        // parent
         if (!$this->hasNode('parent')) {
             $compiler->write("\$this->parent = false;\n\n");
         }
 
         $countTraits = \count($this->getNode('traits'));
         if ($countTraits) {
-            // traits
             foreach ($this->getNode('traits') as $i => $trait) {
                 $node = $trait->getNode('template');
 
@@ -270,8 +262,6 @@ final class ModuleNode extends Node
                 ->write("\$this->blocks = [\n")
             ;
         }
-
-        // blocks
         $compiler
             ->indent()
         ;
@@ -382,13 +372,6 @@ final class ModuleNode extends Node
 
     protected function compileIsTraitable(Compiler $compiler)
     {
-        // A template can be used as a trait if:
-        //   * it has no parent
-        //   * it has no macros
-        //   * it has no body
-        //
-        // Put another way, a template can be used as a trait if it
-        // only contains blocks and use statements.
         $traitable = !$this->hasNode('parent') && 0 === \count($this->getNode('macros'));
         if ($traitable) {
             if ($this->getNode('body') instanceof BodyNode) {

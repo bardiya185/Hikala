@@ -9,14 +9,11 @@ class ProductVariantService
 {
     public function create(array $data): Product
     {
-        // اگر slug داده نشده، از title بساز
         if (!isset($data['slug']) && isset($data['title'])) {
             $data['slug'] = Str::slug($data['title']);
         }
 
         $product = Product::create($data);
-
-        // اگر categories داده شده، ارتباط برقرار کن
         if (isset($data['categories']) && is_array($data['categories'])) {
             $product->categories()->sync($data['categories']);
         }
@@ -26,14 +23,11 @@ class ProductVariantService
 
     public function update(Product $product, array $data): Product
     {
-        // اگر title تغییر کرده و slug داده نشده، slug رو آپدیت کن
         if (isset($data['title']) && !isset($data['slug'])) {
             $data['slug'] = Str::slug($data['title']);
         }
 
         $product->update($data);
-
-        // اگر categories داده شده، آپدیت کن
         if (isset($data['categories']) && is_array($data['categories'])) {
             $product->categories()->sync($data['categories']);
         }

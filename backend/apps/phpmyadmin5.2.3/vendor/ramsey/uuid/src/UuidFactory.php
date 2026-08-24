@@ -95,7 +95,7 @@ class UuidFactory implements UuidFactoryInterface
      */
     private $validator;
 
-    /** @var bool whether the feature set was provided from outside, or we can operate under "default" assumptions */
+    
     private $isDefaultFeatureSet;
 
     /**
@@ -400,15 +400,9 @@ class UuidFactory implements UuidFactoryInterface
     {
         $nodeHex = $node ? $node->toString() : null;
         $bytes = $this->timeGenerator->generate($nodeHex, $clockSeq);
-
-        // Rearrange the bytes, according to the UUID version 6 specification.
         $v6 = $bytes[6] . $bytes[7] . $bytes[4] . $bytes[5]
             . $bytes[0] . $bytes[1] . $bytes[2] . $bytes[3];
         $v6 = bin2hex($v6);
-
-        // Drop the first four bits, while adding an empty four bits for the
-        // version field. This allows us to reconstruct the correct time from
-        // the bytes of this UUID.
         $v6Bytes = hex2bin(substr($v6, 1, 12) . '0' . substr($v6, -3));
         $v6Bytes .= substr($bytes, 8);
 
@@ -471,12 +465,12 @@ class UuidFactory implements UuidFactoryInterface
      */
     private function uuidFromBytesAndVersion(string $bytes, int $version): UuidInterface
     {
-        /** @var array $unpackedTime */
+        
         $unpackedTime = unpack('n*', substr($bytes, 6, 2));
         $timeHi = (int) $unpackedTime[1];
         $timeHiAndVersion = pack('n*', BinaryUtils::applyVersion($timeHi, $version));
 
-        /** @var array $unpackedClockSeq */
+        
         $unpackedClockSeq = unpack('n*', substr($bytes, 8, 2));
         $clockSeqHi = (int) $unpackedClockSeq[1];
         $clockSeqHiAndReserved = pack('n*', BinaryUtils::applyVariant($clockSeqHi));

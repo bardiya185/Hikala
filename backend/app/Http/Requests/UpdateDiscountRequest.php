@@ -99,9 +99,6 @@ class UpdateDiscountRequest extends FormRequest
                 'boolean',
             ],
 
-
-            // Discountable relations
-
             'discountable_type' => [
                 'sometimes',
                 Rule::in([
