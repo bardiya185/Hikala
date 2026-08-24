@@ -167,14 +167,14 @@ class Raid extends PSI_Plugin
                         snmp_set_oid_output_format(SNMP_OID_OUTPUT_NUMERIC);
                         foreach ($devices as $device) {
                             if (! PSI_DEBUG) {
-                                restore_error_handler(); /* default error handler */
+                                restore_error_handler(); 
                                 $old_err_rep = error_reporting();
-                                error_reporting(E_ERROR); /* fatal errors only */
+                                error_reporting(E_ERROR); 
                             }
                             $bufferarr=snmprealwalk($device, "public", ".1.3.6.1.4.1.674.10892.5.5.1.20", 1000000 * PSI_SNMP_TIMEOUT_INT, PSI_SNMP_RETRY_INT);
                             if (! PSI_DEBUG) {
-                                error_reporting($old_err_rep); /* restore error level */
-                                set_error_handler('errorHandlerPsi'); /* restore error handler */
+                                error_reporting($old_err_rep); 
+                                set_error_handler('errorHandlerPsi'); 
                             }
                             if (! empty($bufferarr)) {
                                 $buffer="";
@@ -231,7 +231,6 @@ class Raid extends PSI_Plugin
     {
         $raiddata = preg_split("/\r?\n/", $buffer, -1, PREG_SPLIT_NO_EMPTY);
         if (!empty($raiddata)) {
-            // get the supported types
             $supported = '';
             if (preg_match('/^[a-zA-Z]+ :( \[[a-z0-9]+\])+/', $raiddata[0], $res)) {
                 $parts = preg_split("/ : /", $res[0]);
@@ -239,7 +238,6 @@ class Raid extends PSI_Plugin
                     $supported = preg_replace('/[\[\]]/', '', trim($parts[1]));
                 }
             }
-            // get disks
             if (preg_match("/^read_ahead/", $raiddata[1])) {
                 $count = 2;
             } else {
@@ -257,14 +255,12 @@ class Raid extends PSI_Plugin
                         if (isset($details[2]) && strstr($details[1], '(auto-read-only)')) {
                             $this->_result['mdstat'][$dev]['level'] = $details[2];
                             $this->_result['mdstat'][$dev]['status'] = $details[0]." ".$details[1];
-                            //$this->_result['mdstat'][$dev]['items'][0]['name'] = $dev." ".$details[2];
                             $this->_result['mdstat'][$dev]['items'][0]['name'] = $details[2];
                             $this->_result['mdstat'][$dev]['items'][0]['status'] = "W";
                             $i = 3;
                         } else {
                             $this->_result['mdstat'][$dev]['level'] = $details[1];
                             $this->_result['mdstat'][$dev]['status'] = $details[0];
-                            //$this->_result['mdstat'][$dev]['items'][0]['name'] = $dev." ".$details[1];
                             $this->_result['mdstat'][$dev]['items'][0]['name'] = $details[1];
                             $this->_result['mdstat'][$dev]['items'][0]['status'] = "ok";
                             $i = 2;
@@ -471,7 +467,6 @@ class Raid extends PSI_Plugin
                         }
                         if (preg_match('/^type\s*:\s*(.*)/m', $block, $type)) {
                             $this->_result['dmraid'][$group]['level'] = trim($type[1]);
-                            //$this->_result['dmraid'][$group]['items'][0]['name'] .= " ".trim($type[1]);
                             $this->_result['dmraid'][$group]['items'][0]['name'] = trim($type[1]);
                         }
                         if (preg_match('/^status\s*:\s*(.*)/m', $block, $status)) {
@@ -1249,15 +1244,12 @@ class Raid extends PSI_Plugin
                         $shift = false;
                     }
                     foreach ($this->_result['zpool'][$group]['items'] as $id=>$data) {
-                        // reindex
                         if ($shift) {
                             $this->_result['zpool'][$group]['items'][$id]['parentid']++;
                         }
                         if ($data['parentid']<0) {
                             $this->_result['zpool'][$group]['items'][$id]['parentid'] = 0;
                         }
-
-                         // name append
                         if (isset($data['name2'])) {
                             if (($data['name2']==="cache") || ($data['name2']==="logs")) {
                                 $this->_result['zpool'][$group]['items'][$id]['name'] = trim($data['name2']." ".$data['name']);
@@ -1266,8 +1258,6 @@ class Raid extends PSI_Plugin
                             }
                             unset($this->_result['zpool'][$group]['items'][$id]['name2']);
                         }
-
-                        // status and info normalize
                         if (isset($data['status'])) {
                                 switch ($data['status']) {
                                 case 'AVAIL':
@@ -1352,8 +1342,6 @@ class Raid extends PSI_Plugin
 
                 } elseif (preg_match('/^\.1\.3\.6\.1\.4\.1\.674\.10892\.5\.5\.1\.20\.130\.15\.1\.4\.(.*) = INTEGER:\s(.*)/', $line, $data)) {
                     $snmptableb[$data[1]]['batteryState']=$data[2];
-//                } elseif (preg_match('/^\.1\.3\.6\.1\.4\.1\.674\.10892\.5\.5\.1\.20\.130\.15\.1\.6\.(.*) = INTEGER:\s(.*)/', $line, $data)) {
-//                    $snmptableb[$data[1]]['batteryComponentStatus']=$data[2];
                 } elseif (preg_match('/^\.1\.3\.6\.1\.4\.1\.674\.10892\.5\.5\.1\.20\.130\.15\.1\.20\.(.*) = STRING:\s(.*)/', $line, $data)) {
                     $snmptableb[$data[1]]['batteryFQDD']=trim($data[2], "\"");
 
@@ -1371,10 +1359,6 @@ class Raid extends PSI_Plugin
                     $snmptablep[$data[1]]['physicalDiskCapacityInMB']=$data[2];
                 } elseif (preg_match('/^\.1\.3\.6\.1\.4\.1\.674\.10892\.5\.5\.1\.20\.130\.4\.1\.21\.(.*) = INTEGER:\s(.*)/', $line, $data)) {
                     $snmptablep[$data[1]]['physicalDiskBusType']=$data[2];
-//                } elseif (preg_match('/^\.1\.3\.6\.1\.4\.1\.674\.10892\.5\.5\.1\.20\.130\.4\.1\.22\.(.*) = INTEGER:\s(.*)/', $line, $data)) {
-//                    $snmptablep[$data[1]]['physicalDiskSpareState']=$data[2];
-//                } elseif (preg_match('/^\.1\.3\.6\.1\.4\.1\.674\.10892\.5\.5\.1\.20\.130\.4\.1\.24\.(.*) = INTEGER:\s(.*)/', $line, $data)) {
-//                    $snmptablep[$data[1]]['physicalDiskComponentStatus']=$data[2];
                 } elseif (preg_match('/^\.1\.3\.6\.1\.4\.1\.674\.10892\.5\.5\.1\.20\.130\.4\.1\.50\.(.*) = INTEGER:\s(.*)/', $line, $data)) {
                     $snmptablep[$data[1]]['physicalDiskOperationalState']=$data[2];
                 } elseif (preg_match('/^\.1\.3\.6\.1\.4\.1\.674\.10892\.5\.5\.1\.20\.130\.4\.1\.51\.(.*) = INTEGER:\s(.*)/', $line, $data)) {
@@ -1396,8 +1380,6 @@ class Raid extends PSI_Plugin
                     $snmptablev[$data[1]]['virtualDiskLayout']=$data[2];
                 } elseif (preg_match('/^\.1\.3\.6\.1\.4\.1\.674\.10892\.5\.5\.1\.20\.140\.1\.1\.14\.(.*) = INTEGER:\s(.*)/', $line, $data)) {
                     $snmptablev[$data[1]]['virtualDiskStripeSize']=$data[2];
-//                } elseif (preg_match('/^\.1\.3\.6\.1\.4\.1\.674\.10892\.5\.5\.1\.20\.140\.1\.1\.20\.(.*) = INTEGER:\s(.*)/', $line, $data)) {
-//                    $snmptablev[$data[1]]['virtualDiskComponentStatus']=$data[2];
                 } elseif (preg_match('/^\.1\.3\.6\.1\.4\.1\.674\.10892\.5\.5\.1\.20\.140\.1\.1\.23\.(.*) = INTEGER:\s(.*)/', $line, $data)) {
                     $snmptablev[$data[1]]['virtualDiskBadBlocksDetected']=$data[2];
                 } elseif (preg_match('/^\.1\.3\.6\.1\.4\.1\.674\.10892\.5\.5\.1\.20\.140\.1\.1\.26\.(.*) = INTEGER:\s(.*)/', $line, $data)) {
@@ -1535,9 +1517,6 @@ class Raid extends PSI_Plugin
                             }
                             if (isset($raid_physical['physicalDiskBusType'])) {
                                 switch ($raid_physical['physicalDiskBusType']) {
-//                              case 1:
-//                                  $this->_result['idrac'][$devname]['items'][$raid_physical['physicalDiskName']]['bus'] = "unknown";
-//                                  break;
                                 case 2:
                                     $this->_result['idrac'][$devname]['items'][$raid_physical['physicalDiskName']]['bus'] = "SCSI";
                                     break;
@@ -1718,7 +1697,6 @@ class Raid extends PSI_Plugin
                         if (isset($raid_virtual['virtualDiskOperationalState'])) {
                             switch ($raid_virtual['virtualDiskOperationalState']) {
                             case 1:
-                                //$this->_result['idrac'][$devname]['action']['name'] = "notApplicable";
                                 break;
                             case 2:
                                 $this->_result['idrac'][$devname]['action']['name'] = "reconstructing";
@@ -1941,7 +1919,6 @@ class Raid extends PSI_Plugin
                                 }
                             }
                             if (isset($controller["VD".$dg." Properties"]["Active Operations"]) && preg_match("/^(.+) \((\d+)%\)/", $controller["VD".$dg." Properties"]["Active Operations"], $progarr)) {
-                                //$this->_result[$prog][$uname]['items'][$pname]['status'] = "W";
                                 $this->_result[$prog][$uname]['action']['name'] = trim($progarr[1]);
                                 $this->_result[$prog][$uname]['action']['percent'] = trim($progarr[2]);
                             }
@@ -2108,7 +2085,7 @@ class Raid extends PSI_Plugin
                                 }
                             }
                         } elseif (($dg >= 0) && isset($topol["Row"]) && ($topol["Row"] !== '-')
-                           /*&& isset($topol["DID"]) && ($topol["DID"] !== '-'))*/) {
+                           ) {
                             $uname = 'c'.$cnr.'u'.$dg;
                             $this->_result[$prog][$uname]['items'][$topol["DID"]]['parentid'] = 1;
                             $this->_result[$prog][$uname]['items'][$topol["DID"]]['name'] = $uname.'p'.($topol["Row"]);
@@ -2447,7 +2424,7 @@ class Raid extends PSI_Plugin
                 } else {
                     if (is_array($this->_filecontent[$item])) {
                         foreach ($this->_filecontent[$item] as $device=>$buffer) if (($buffer = trim($buffer)) != "") {
-                            $this->execute_idrac($buffer, /*'idrac-'.*/$device);
+                            $this->execute_idrac($buffer, $device);
                         }
                     }
                 }
@@ -2523,14 +2500,9 @@ class Raid extends PSI_Plugin
                         if (isset($disk['name'])) {
                             $disktemp = $disks->addChild("Item");
                             $disktemp->addAttribute("Name", $disk['name']);
-                            // if (isset($disk['raid_index'])) $disktemp->addAttribute("Index", $disk['raid_index']);
                             if (isset($disk['parentid'])) $disktemp->addAttribute("ParentID", $disk['parentid']);
                             if (isset($disk['type'])) $disktemp->addAttribute("Type", $disk['type']);
-                            // if (in_array(strtolower($device["status"]), array('ok', 'optimal', 'active', 'online', 'degraded'))) {
                             if (isset($disk['status'])) $disktemp->addAttribute("Status", $disk['status']);
-                            //} else {
-                            //    $disktemp->addAttribute("Status", "W");
-                            //}
                             if (isset($disk['info'])) $disktemp->addAttribute("Info", $disk['info']);
                             if (defined('PSI_SHOW_DEVICES_INFOS') && PSI_SHOW_DEVICES_INFOS) {
                                 if (isset($disk['bus'])) $disktemp->addAttribute("Bus", $disk['bus']);

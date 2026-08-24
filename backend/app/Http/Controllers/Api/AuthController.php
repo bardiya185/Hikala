@@ -64,7 +64,6 @@ class AuthController extends Controller
     )]
     public function refreshToken(Request $request)
     {
-        // Try to get refresh token from cookie first, then from request body
         $refreshToken = $request->cookie('refresh_token') ?? $request->refresh_token;
         
         if (!$refreshToken) {
@@ -74,8 +73,6 @@ class AuthController extends Controller
         }
 
         $fingerprint = $this->generateFingerprint($request);
-        
-        // Get all active tokens and check each one
         $tokens = RefreshToken::where('expires_at', '>', now())
             ->get();
         
@@ -103,11 +100,7 @@ class AuthController extends Controller
                 'message' => 'User not found.',
             ], Response::HTTP_NOT_FOUND);
         }
-
-        // Update last used timestamp
         $validToken->update(['last_used_at' => now()]);
-
-        // Create new Access Token
         $accessToken = $user->createToken('access_token')->plainTextToken;
 
         return response()->json([
@@ -162,9 +155,6 @@ class AuthController extends Controller
             'code'       => $code,
             'expires_at' => now()->addMinutes(2),
         ]);
-
-        // TODO: Send SMS with code
-        // sendSms($request->mobile, $code);
 
         return response()->json([
             'message' => 'Verification code sent successfully.',
@@ -224,8 +214,6 @@ class AuthController extends Controller
                 ['mobile' => $request->mobile],
                 ['name' => null]
             );
-
-            // Limit active tokens to prevent abuse
             $this->limitActiveTokens($user, 5);
 
             $accessToken = $user->createToken('access_token')->plainTextToken;
@@ -248,8 +236,6 @@ class AuthController extends Controller
                 'user'          => new UserResource($user),
             ];
         });
-
-        // Store refresh token in HttpOnly secure cookie
         $cookie = Cookie::make(
             'refresh_token',
             $responseData['refresh_token'],
@@ -281,16 +267,10 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $user = $request->user();
-        
-        // Delete current access token
         if ($user->currentAccessToken()) {
             $user->currentAccessToken()->delete();
         }
-
-        // Delete all refresh tokens for this user
         RefreshToken::where('user_id', $user->id)->delete();
-
-        // Clear refresh token cookie
         $cookie = Cookie::forget('refresh_token');
 
         return response()->json([

@@ -26,19 +26,19 @@ use function trim;
  */
 class Triggers
 {
-    /** @var array<int, string> */
+    
     private $time = ['BEFORE', 'AFTER'];
 
-    /** @var array<int, string> */
+    
     private $event = ['INSERT', 'UPDATE', 'DELETE'];
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var Template */
+    
     private $template;
 
-    /** @var ResponseRenderer */
+    
     private $response;
 
     /**
@@ -102,12 +102,8 @@ class Triggers
             $sql_query = '';
 
             $item_query = $this->getQueryFromRequest();
-
-            // set by getQueryFromRequest()
             if (! count($errors)) {
-                // Execute the created query
                 if (! empty($_POST['editor_process_edit'])) {
-                    // Backup the old trigger, in case something goes wrong
                     $trigger = $this->getDataFromName($_POST['item_original_name']);
                     $create_item = $trigger['create'];
                     $drop_item = $trigger['drop'] . ';';
@@ -128,8 +124,6 @@ class Triggers
                             )
                             . '<br>'
                             . __('MySQL said: ') . $this->dbi->getError();
-                            // We dropped the old item, but were unable to create the
-                            // new one. Try to restore the backup query.
                             $result = $this->dbi->tryQuery($create_item);
 
                             if (! $result) {
@@ -146,7 +140,6 @@ class Triggers
                         }
                     }
                 } else {
-                    // 'Add a new item' mode
                     $result = $this->dbi->tryQuery($item_query);
                     if (! $result) {
                         $errors[] = sprintf(
@@ -250,7 +243,6 @@ class Triggers
         $mode = '';
         $item = null;
         $title = '';
-        // Get the data for the form (if any)
         if (! empty($_REQUEST['add_item'])) {
             $title = __('Add trigger');
             $item = $this->getDataFromRequest();
@@ -426,11 +418,6 @@ class Triggers
      */
     private function checkResult($createStatement, array $errors)
     {
-        // OMG, this is really bad! We dropped the query,
-        // failed to create a new one
-        // and now even the backup query does not execute!
-        // This should not happen, but we better handle
-        // this just in case.
         $errors[] = __('Sorry, we failed to restore the dropped trigger.') . '<br>'
             . __('The backed up query was:')
             . '"' . htmlspecialchars($createStatement) . '"<br>'

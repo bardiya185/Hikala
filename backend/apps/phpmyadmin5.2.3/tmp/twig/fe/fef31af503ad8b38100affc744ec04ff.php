@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* list_navigator.twig */
+
 class __TwigTemplate_9025260da388efe73709212f37864a37 extends Template
 {
     private $source;
@@ -34,27 +34,19 @@ class __TwigTemplate_9025260da388efe73709212f37864a37 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         if ((($context["max_count"] ?? null) < ($context["count"] ?? null))) {
-            // line 2
             yield "<div class=\"";
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(Twig\Extension\CoreExtension::join(($context["classes"] ?? null), " "), "html", null, true);
             yield "\">
   ";
-            // line 3
             if ((($context["frame"] ?? null) != "frame_navigation")) {
-                // line 4
                 yield "    ";
 yield _gettext("Page number:");
-                // line 5
                 yield "  ";
             }
-            // line 6
             yield "
   ";
-            // line 7
             if ((($context["position"] ?? null) > 0)) {
-                // line 8
                 yield "    <a href=\"";
                 yield ($context["script"] ?? null);
                 yield "\" data-post=\"";
@@ -65,25 +57,18 @@ yield _gettext("Page number:");
 yield _pgettext("First page", "Begin");
                 yield "\">
       ";
-                // line 9
                 if (PhpMyAdmin\Util::showIcons("TableNavigationLinksMode")) {
-                    // line 10
                     yield "        &lt;&lt;
       ";
                 }
-                // line 12
                 yield "      ";
                 if (PhpMyAdmin\Util::showText("TableNavigationLinksMode")) {
-                    // line 13
                     yield "        ";
 yield _pgettext("First page", "Begin");
-                    // line 14
                     yield "      ";
                 }
-                // line 15
                 yield "    </a>
     <a href=\"";
-                // line 16
                 yield ($context["script"] ?? null);
                 yield "\" data-post=\"";
                 yield PhpMyAdmin\Url::getCommon(Twig\Extension\CoreExtension::merge(($context["url_params"] ?? null), [($context["param_name"] ?? null) => (($context["position"] ?? null) - ($context["max_count"] ?? null))]), "", false);
@@ -93,46 +78,34 @@ yield _pgettext("First page", "Begin");
 yield _pgettext("Previous page", "Previous");
                 yield "\">
       ";
-                // line 17
                 if (PhpMyAdmin\Util::showIcons("TableNavigationLinksMode")) {
-                    // line 18
                     yield "        &lt;
       ";
                 }
-                // line 20
                 yield "      ";
                 if (PhpMyAdmin\Util::showText("TableNavigationLinksMode")) {
-                    // line 21
                     yield "        ";
 yield _pgettext("Previous page", "Previous");
-                    // line 22
                     yield "      ";
                 }
-                // line 23
                 yield "    </a>
   ";
             }
-            // line 25
             yield "
   <form action=\"";
-            // line 26
             yield ($context["script"] ?? null);
             yield "\" method=\"post\">
     ";
-            // line 27
             yield PhpMyAdmin\Url::getHiddenInputs(($context["url_params"] ?? null));
             yield "
 
     ";
-            // line 29
             yield ($context["page_selector"] ?? null);
             yield "
   </form>
 
   ";
-            // line 32
             if (((($context["position"] ?? null) + ($context["max_count"] ?? null)) < ($context["count"] ?? null))) {
-                // line 33
                 yield "    <a href=\"";
                 yield ($context["script"] ?? null);
                 yield "\" data-post=\"";
@@ -143,27 +116,19 @@ yield _pgettext("Previous page", "Previous");
 yield _pgettext("Next page", "Next");
                 yield "\">
       ";
-                // line 34
                 if (PhpMyAdmin\Util::showText("TableNavigationLinksMode")) {
-                    // line 35
                     yield "        ";
 yield _pgettext("Next page", "Next");
-                    // line 36
                     yield "      ";
                 }
-                // line 37
                 yield "      ";
                 if (PhpMyAdmin\Util::showIcons("TableNavigationLinksMode")) {
-                    // line 38
                     yield "        &gt;
       ";
                 }
-                // line 40
                 yield "    </a>
     ";
-                // line 41
                 $context["last_pos"] = ((int) floor((($context["count"] ?? null) / ($context["max_count"] ?? null))) * ($context["max_count"] ?? null));
-                // line 42
                 yield "    <a href=\"";
                 yield ($context["script"] ?? null);
                 yield "\" data-post=\"";
@@ -174,26 +139,19 @@ yield _pgettext("Next page", "Next");
 yield _pgettext("Last page", "End");
                 yield "\">
       ";
-                // line 43
                 if (PhpMyAdmin\Util::showText("TableNavigationLinksMode")) {
-                    // line 44
                     yield "        ";
 yield _pgettext("Last page", "End");
-                    // line 45
                     yield "      ";
                 }
-                // line 46
                 yield "      ";
                 if (PhpMyAdmin\Util::showIcons("TableNavigationLinksMode")) {
-                    // line 47
                     yield "        &gt;&gt;
       ";
                 }
-                // line 49
                 yield "    </a>
   ";
             }
-            // line 51
             yield "</div>
 ";
         }

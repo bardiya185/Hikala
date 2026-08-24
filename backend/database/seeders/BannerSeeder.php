@@ -18,11 +18,7 @@ class BannerSeeder extends Seeder
             $this->command->warn('⚠️ Position not found!');
             return;
         }
-
-        // پاک کردن قبلی‌ها
         Banner::where('banner_position_id', $middle4->id)->delete();
-
-        // ✅ ساخت پوشه اگه وجود نداره
         if (!Storage::disk('public')->exists('banners')) {
             Storage::disk('public')->makeDirectory('banners');
         }

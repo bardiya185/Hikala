@@ -253,11 +253,7 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         Assertion::isInstanceOf($trustPath, CertificateTrustPath::class, 'Invalid trust path');
 
         $certificates = $trustPath->getCertificates();
-
-        // Check certificate CA chain and returns the Attestation Certificate
         $this->checkCertificate($certificates[0], $authenticatorData);
-
-        // Get the COSE algorithm identifier and the corresponding OpenSSL one
         $coseAlgorithmIdentifier = (int) $attestationStatement->get('alg');
         $opensslAlgorithmIdentifier = Algorithms::getOpensslAlgorithmFor($coseAlgorithmIdentifier);
 
@@ -270,14 +266,8 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
     {
         $parsed = openssl_x509_parse($attestnCert);
         Assertion::isArray($parsed, 'Invalid certificate');
-
-        //Check version
         Assertion::false(!isset($parsed['version']) || 2 !== $parsed['version'], 'Invalid certificate version');
-
-        //Check subject field is empty
         Assertion::false(!isset($parsed['subject']) || !is_array($parsed['subject']) || 0 !== count($parsed['subject']), 'Invalid certificate name. The Subject should be empty');
-
-        // Check period of validity
         Assertion::keyExists($parsed, 'validFrom_time_t', 'Invalid certificate start date.');
         Assertion::integer($parsed['validFrom_time_t'], 'Invalid certificate start date.');
         $startDate = (new DateTimeImmutable())->setTimestamp($parsed['validFrom_time_t']);
@@ -287,18 +277,10 @@ final class TPMAttestationStatementSupport implements AttestationStatementSuppor
         Assertion::integer($parsed['validTo_time_t'], 'Invalid certificate end date.');
         $endDate = (new DateTimeImmutable())->setTimestamp($parsed['validTo_time_t']);
         Assertion::true($endDate > new DateTimeImmutable(), 'Invalid certificate end date.');
-
-        //Check extensions
         Assertion::false(!isset($parsed['extensions']) || !is_array($parsed['extensions']), 'Certificate extensions are missing');
-
-        //Check subjectAltName
         Assertion::false(!isset($parsed['extensions']['subjectAltName']), 'The "subjectAltName" is missing');
-
-        //Check extendedKeyUsage
         Assertion::false(!isset($parsed['extensions']['extendedKeyUsage']), 'The "subjectAltName" is missing');
         Assertion::eq($parsed['extensions']['extendedKeyUsage'], '2.23.133.8.3', 'The "extendedKeyUsage" is invalid');
-
-        // id-fido-gen-ce-aaguid OID check
         Assertion::false(in_array('1.3.6.1.4.1.45724.1.1.4', $parsed['extensions'], true) && !hash_equals($authenticatorData->getAttestedCredentialData()->getAaguid()->getBytes(), $parsed['extensions']['1.3.6.1.4.1.45724.1.1.4']), 'The value of the "aaguid" does not match with the certificate');
     }
 

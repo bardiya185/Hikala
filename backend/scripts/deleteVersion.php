@@ -27,7 +27,6 @@ else {
 	exit();
 }
 if(file_exists($delDir) && is_dir($delDir)) {
-	//exec("rd /s /q {$delDir}");
 	if(rrmdir($delDir) === false)
 		error_log("Folder ".$delDir." not deleted");
 }

@@ -68,7 +68,6 @@ final class DeprecationCollector
             try {
                 $this->twig->parse($this->twig->tokenize(new Source($contents, $name)));
             } catch (SyntaxError $e) {
-                // ignore templates containing syntax errors
             }
         }
 

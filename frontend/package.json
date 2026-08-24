@@ -23,6 +23,7 @@
     "lucide-react": "^1.24.0",
     "next": "15.5.19",
     "nextjs-toploader": "^3.9.17",
+    "rc-slider": "^11.1.9",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hot-toast": "^2.6.0",

@@ -45,8 +45,6 @@ class ArrayExpression extends AbstractExpression
     public function hasElement(AbstractExpression $key): bool
     {
         foreach ($this->getKeyValuePairs() as $pair) {
-            // we compare the string representation of the keys
-            // to avoid comparing the line numbers which are not relevant here.
             if ((string) $key === (string) $pair['key']) {
                 return true;
             }

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Trash2, Minus, Plus } from "lucide-react";
@@ -81,7 +80,7 @@ export default function CartItem({
           Product Information
       ========================== */}
       <div className="flex-1 min-w-0 flex flex-col justify-between gap-4">
-        {/* Product title */}
+        {}
         <div>
           <h3
             className="
@@ -97,9 +96,9 @@ export default function CartItem({
           </h3>
         </div>
 
-        {/* Product details */}
+        {}
         <div className="flex flex-col gap-2 text-xs text-gray-600">
-          {/* Color */}
+          {}
           <div className="flex items-center gap-2">
             <span
               className="
@@ -114,12 +113,10 @@ export default function CartItem({
               "
             />
 
-            <span className="text-gray-600">
-              Product variant
-            </span>
+            <span className="text-gray-600">Product variant</span>
           </div>
 
-          {/* Warranty */}
+          {}
           <div className="flex items-start gap-2">
             <svg
               className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5"
@@ -135,9 +132,7 @@ export default function CartItem({
               />
             </svg>
 
-            <span>
-              18-Month Sadrtel Official Warranty
-            </span>
+            <span>18-Month Sadrtel Official Warranty</span>
           </div>
         </div>
 
@@ -157,7 +152,7 @@ export default function CartItem({
             mt-1
           "
         >
-          {/* Quantity */}
+          {}
           <div
             className="
               flex
@@ -241,7 +236,7 @@ export default function CartItem({
             </button>
           </div>
 
-          {/* Remove */}
+          {}
           <button
             type="button"
             onClick={onRemove}
@@ -283,7 +278,7 @@ export default function CartItem({
           border-gray-100
         "
       >
-        {/* Price */}
+        {}
         <div className="text-left sm:text-right">
           <span
             className="
@@ -294,12 +289,10 @@ export default function CartItem({
               text-green-500
               whitespace-nowrap
             "
-          >
-            
-          </span>
+          ></span>
         </div>
 
-        {/* Stock warning */}
+        {}
         {variant?.stock <= 3 && variant?.stock > 0 && (
           <div
             className="
@@ -335,4 +328,3 @@ export default function CartItem({
     </div>
   );
 }
-

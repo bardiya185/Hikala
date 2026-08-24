@@ -286,7 +286,7 @@ class ParagonIE_Sodium_Core_AES extends ParagonIE_Sodium_Core_Util
             $skey[($i << 1)] = $tmp & self::U32_MAX;
             $skey[($i << 1) + 1] = $tmp & self::U32_MAX;
             if (++$j === $nk) {
-                /** @psalm-suppress LoopInvalidation */
+                
                 $j = 0;
                 ++$k;
             }

@@ -24,16 +24,12 @@ use function sort;
 use function sprintf;
 use function str_replace;
 use function strtotime;
-
-// phpcs:disable PSR1.Files.SideEffects
 /**
  * block attempts to directly run this script
  */
 if (getcwd() == __DIR__) {
     die('Attack stopped');
 }
-
-// phpcs:enable
 
 /**
  * Pdf Relation Schema Class
@@ -48,55 +44,55 @@ if (getcwd() == __DIR__) {
  */
 class PdfRelationSchema extends ExportRelationSchema
 {
-    /** @var bool */
+    
     private $showGrid = false;
 
-    /** @var bool */
+    
     private $withDoc = false;
 
-    /** @var string */
+    
     private $tableOrder = '';
 
-    /** @var TableStatsPdf[] */
+    
     private $tables = [];
 
-    /** @var string */
+    
     private $ff = PdfLib::PMA_PDF_FONT;
 
-    /** @var int|float */
+    
     private $xMax = 0;
 
-    /** @var int|float */
+    
     private $yMax = 0;
 
-    /** @var float|int */
+    
     private $scale;
 
-    /** @var int|float */
+    
     private $xMin = 100000;
 
-    /** @var int|float */
+    
     private $yMin = 100000;
 
-    /** @var int */
+    
     private $topMargin = 10;
 
-    /** @var int */
+    
     private $bottomMargin = 10;
 
-    /** @var int */
+    
     private $leftMargin = 10;
 
-    /** @var int */
+    
     private $rightMargin = 10;
 
-    /** @var int */
+    
     private $tablewidth = 0;
 
-    /** @var RelationStatsPdf[] */
+    
     protected $relations = [];
 
-    /** @var Transformations */
+    
     private $transformations;
 
     /**
@@ -117,8 +113,6 @@ class PdfRelationSchema extends ExportRelationSchema
         $this->setTableOrder($_REQUEST['pdf_table_order']);
         $this->setOrientation((string) $_REQUEST['pdf_orientation']);
         $this->setPaper((string) $_REQUEST['pdf_paper']);
-
-        // Initializes a new document
         parent::__construct(
             $db,
             new Pdf(
@@ -166,7 +160,7 @@ class PdfRelationSchema extends ExportRelationSchema
             $this->bottomMargin = 28;
         }
 
-        /* snip */
+        
         foreach ($alltables as $table) {
             if (! isset($this->tables[$table])) {
                 $this->tables[$table] = new TableStatsPdf(
@@ -188,8 +182,6 @@ class PdfRelationSchema extends ExportRelationSchema
 
             $this->setMinMax($this->tables[$table]);
         }
-
-        // Defines the scale factor
         $innerWidth = $this->diagram->getPageWidth() - $this->rightMargin
             - $this->leftMargin;
         $innerHeight = $this->diagram->getPageHeight() - $this->topMargin
@@ -202,7 +194,6 @@ class PdfRelationSchema extends ExportRelationSchema
         ) / 100;
 
         $this->diagram->setScale($this->scale, $this->xMin, $this->yMin, $this->leftMargin, $this->topMargin);
-        // Builds and save the PDF document
         $this->diagram->setLineWidthScale(0.1);
 
         if ($this->showGrid) {
@@ -211,9 +202,6 @@ class PdfRelationSchema extends ExportRelationSchema
         }
 
         $this->diagram->setFontSizeScale(14);
-        // previous logic was checking master tables and foreign tables
-        // but I think that looping on every table of the pdf page as a master
-        // and finding its foreigns is OK (then we can support innodb)
         $seen_a_relation = false;
         foreach ($alltables as $one_table) {
             $exist_rel = $this->relation->getForeigners($this->db, $one_table, '', 'both');
@@ -223,10 +211,6 @@ class PdfRelationSchema extends ExportRelationSchema
 
             $seen_a_relation = true;
             foreach ($exist_rel as $master_field => $rel) {
-                // put the foreign table on the schema only if selected
-                // by the user
-                // (do not use array_search() because we would have to
-                // to do a === false and this is not PHP3 compatible)
                 if ($master_field !== 'foreign_keys_data') {
                     if (in_array($rel['foreign_table'], $alltables)) {
                         $this->addRelation($one_table, $master_field, $rel['foreign_table'], $rel['foreign_field']);
@@ -409,7 +393,6 @@ class PdfRelationSchema extends ExportRelationSchema
 
         $this->diagram->setMargins(0, 0);
         $this->diagram->setDrawColor(200, 200, 200);
-        // Draws horizontal lines
         $innerHeight = $this->diagram->getPageHeight() - $topSpace - $bottomSpace;
         for ($l = 0, $size = intval($innerHeight / $gridSize); $l <= $size; $l++) {
             $this->diagram->line(
@@ -418,7 +401,6 @@ class PdfRelationSchema extends ExportRelationSchema
                 $this->diagram->getPageWidth(),
                 $l * $gridSize + $topSpace
             );
-            // Avoid duplicates
             if ($l <= 0 || $l > intval(($innerHeight - $labelHeight) / $gridSize)) {
                 continue;
             }
@@ -431,8 +413,6 @@ class PdfRelationSchema extends ExportRelationSchema
             );
             $this->diagram->Cell($labelWidth, $labelHeight, ' ' . $label);
         }
-
-        // Draws vertical lines
         for ($j = 0, $size = intval($this->diagram->getPageWidth() / $gridSize); $j <= $size; $j++) {
             $this->diagram->line(
                 $j * $gridSize,
@@ -480,8 +460,6 @@ class PdfRelationSchema extends ExportRelationSchema
     public function dataDictionaryDoc(array $alltables): void
     {
         global $dbi;
-
-        // TOC
         $this->diagram->AddPage($this->orientation);
         $this->diagram->Cell(0, 9, __('Table of contents'), 1, 0, 'C');
         $this->diagram->Ln(15);
@@ -489,7 +467,6 @@ class PdfRelationSchema extends ExportRelationSchema
         foreach ($alltables as $table) {
             $this->diagram->customLinks['doc'][$table]['-'] = $this->diagram->AddLink();
             $this->diagram->setX(10);
-            // $this->diagram->Ln(1);
             $this->diagram->Cell(
                 0,
                 6,
@@ -511,7 +488,6 @@ class PdfRelationSchema extends ExportRelationSchema
                 false,
                 $this->diagram->customLinks['doc'][$table]['-']
             );
-            // $this->diagram->Ln(1);
             $fields = $dbi->getColumns($this->db, $table);
             foreach ($fields as $row) {
                 $this->diagram->setX(20);
@@ -603,9 +579,6 @@ class PdfRelationSchema extends ExportRelationSchema
              * Gets fields properties
              */
             $columns = $dbi->getColumns($this->db, $table);
-
-            // Find which tables are related with the current one and write it in
-            // an array
             $res_rel = $this->relation->getForeigners($this->db, $table);
 
             /**
@@ -675,7 +648,6 @@ class PdfRelationSchema extends ExportRelationSchema
                 if ($this->paper === 'A4') {
                     $comments_width = 67;
                 } else {
-                    // this is really intended for 'letter'
                     /**
                      * @todo find optimal width for all formats
                      */
@@ -723,7 +695,6 @@ class PdfRelationSchema extends ExportRelationSchema
                 }
 
                 $field_name = $row['Field'];
-                // $this->diagram->Ln();
                 $this->diagram->customLinks['RT'][$table][$field_name] = $this->diagram->AddLink();
                 $this->diagram->Bookmark($field_name, 1, -1);
                 $this->diagram->setLink($this->diagram->customLinks['doc'][$table][$field_name], -1);

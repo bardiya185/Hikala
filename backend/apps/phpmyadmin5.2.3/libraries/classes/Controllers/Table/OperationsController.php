@@ -34,16 +34,16 @@ use function urldecode;
 
 class OperationsController extends AbstractController
 {
-    /** @var Operations */
+    
     private $operations;
 
-    /** @var CheckUserPrivileges */
+    
     private $checkUserPrivileges;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -72,8 +72,6 @@ class OperationsController extends AbstractController
         global $notNull, $comment, $errorUrl, $cfg;
 
         $this->checkUserPrivileges->getPrivileges();
-
-        // lower_case_table_names=1 `DB` becomes `db`
         $lowerCaseNames = $this->dbi->getLowerCaseNames() === '1';
 
         if ($lowerCaseNames) {
@@ -119,14 +117,7 @@ class OperationsController extends AbstractController
         $row_format = $pma_table->getRowFormat();
         $auto_increment = $pma_table->getAutoIncrement();
         $create_options = $pma_table->getCreateOptions();
-
-        // set initial value of these variables, based on the current table engine
         if ($pma_table->isEngine('ARIA')) {
-            // the value for transactional can be implicit
-            // (no create option found, in this case it means 1)
-            // or explicit (option found with a value of 0 or 1)
-            // ($create_options['transactional'] may have been set by Table class,
-            // from the $create_options)
             $create_options['transactional'] = ($create_options['transactional'] ?? '') == '0'
                 ? '0'
                 : '1';
@@ -172,12 +163,9 @@ class OperationsController extends AbstractController
             $warning_messages = [];
 
             if (isset($_POST['new_name'])) {
-                // lower_case_table_names=1 `DB` becomes `db`
                 if ($lowerCaseNames) {
                     $_POST['new_name'] = mb_strtolower($_POST['new_name']);
                 }
-
-                // Get original names before rename operation
                 $oldTable = $pma_table->getName();
                 $oldDb = $pma_table->getDbName();
 
@@ -190,8 +178,6 @@ class OperationsController extends AbstractController
                             $_POST['new_name']
                         );
                     }
-
-                    // Reselect the original DB
                     $db = $oldDb;
                     $this->dbi->selectDb($oldDb);
                     $_message .= $pma_table->getLastMessage();
@@ -288,8 +274,6 @@ class OperationsController extends AbstractController
         }
 
         if ($reread_info) {
-            // to avoid showing the old value (for example the AUTO_INCREMENT) after
-            // a change, clear the cache
             $this->dbi->getCache()->clearTableCache();
             $this->dbi->selectDb($db);
             $GLOBALS['showtable'] = $pma_table->getStatusInfo(null, true);
@@ -378,9 +362,6 @@ class OperationsController extends AbstractController
         $columns = $this->dbi->getColumns($db, $table);
 
         $hideOrderTable = false;
-        // `ALTER TABLE ORDER BY` does not make sense for InnoDB tables that contain
-        // a user-defined clustered index (PRIMARY KEY or NOT NULL UNIQUE index).
-        // InnoDB always orders table rows according to such an index if one is present.
         if ($tbl_storage_engine === 'INNODB') {
             $indexes = Index::getFromTable($table, $db);
             foreach ($indexes as $name => $idx) {
@@ -411,14 +392,11 @@ class OperationsController extends AbstractController
         $comment = '';
         if (mb_strstr((string) $show_comment, '; InnoDB free') === false) {
             if (mb_strstr((string) $show_comment, 'InnoDB free') === false) {
-                // only user entered comment
                 $comment = (string) $show_comment;
             } else {
-                // here we have just InnoDB generated part
                 $comment = '';
             }
         } else {
-            // remove InnoDB comment from end, just the minimal part (*? is non greedy)
             $comment = preg_replace('@; InnoDB free:.*?$@', '', (string) $show_comment);
         }
 

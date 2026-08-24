@@ -21979,7 +21979,7 @@ class TCPDF {
 	public function commitTransaction() {
 		if (isset($this->objcopy)) {
 			$this->objcopy->_destroy(true, true);
-			/* The unique file_id should not be used during cleanup again */
+			
 			$this->objcopy->file_id = NULL;
 			unset($this->objcopy);
 		}

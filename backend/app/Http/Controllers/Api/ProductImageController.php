@@ -21,10 +21,6 @@ class ProductImageController extends Controller
     public function __construct(
         private ProductImageService $service
     ) {}
-
-    // ================================================================
-    // 1. Get all images of a product
-    // ================================================================
     #[OA\Get(
         path: "/api/products/{product}/images",
         tags: ["Product Images"],
@@ -59,10 +55,6 @@ class ProductImageController extends Controller
             'data' => ProductImageResource::collection($images)
         ]);
     }
-
-    // ================================================================
-    // 2. Upload a new image
-    // ================================================================
     #[OA\Post(
         path: "/api/products/{product}/images",
         tags: ["Product Images"],
@@ -145,10 +137,6 @@ class ProductImageController extends Controller
             ->response()
             ->setStatusCode(201);
     }
-
-    // ================================================================
-    // 3. Delete an image
-    // ================================================================
     #[OA\Delete(
         path: "/api/products/{product}/images/{image}",
         tags: ["Product Images"],
@@ -190,7 +178,6 @@ class ProductImageController extends Controller
     )]
     public function destroy(Product $product, ProductImage $image): JsonResponse
     {
-        // Ensure image belongs to product
         if ($image->product_id !== $product->id) {
             return response()->json([
                 'success' => false,
@@ -205,10 +192,6 @@ class ProductImageController extends Controller
             'message' => 'Image deleted successfully.'
         ]);
     }
-
-    // ================================================================
-    // 4. Set an image as main
-    // ================================================================
     #[OA\Put(
         path: "/api/products/{product}/images/{image}/main",
         tags: ["Product Images"],
@@ -250,7 +233,6 @@ class ProductImageController extends Controller
     )]
     public function setMain(Product $product, ProductImage $image): JsonResponse
     {
-        // Ensure image belongs to product
         if ($image->product_id !== $product->id) {
             return response()->json([
                 'success' => false,
@@ -267,10 +249,6 @@ class ProductImageController extends Controller
             'data' => new ProductImageResource($image)
         ]);
     }
-
-    // ================================================================
-    // 5. Reorder images
-    // ================================================================
     #[OA\Put(
         path: "/api/products/{product}/images/reorder",
         tags: ["Product Images"],
@@ -324,8 +302,6 @@ class ProductImageController extends Controller
             'order' => 'required|array',
             'order.*' => 'exists:product_images,id',
         ]);
-
-        // Ensure all images belong to the product
         $imageIds = ProductImage::where('product_id', $product->id)
             ->pluck('id')
             ->toArray();

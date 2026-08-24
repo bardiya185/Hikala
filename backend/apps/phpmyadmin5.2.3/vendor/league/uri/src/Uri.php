@@ -611,7 +611,7 @@ final class Uri implements UriInterface
                 return $uri;
             }
 
-            /** @var UriInterface $uri */
+            
             $uri = UriResolver::resolve($uri, $uri->withFragment(null)->withQuery(null)->withPath(''));
 
             return $uri;
@@ -625,7 +625,7 @@ final class Uri implements UriInterface
             throw new SyntaxError(sprintf('the base URI `%s` must be absolute', (string) $base_uri));
         }
 
-        /** @var UriInterface $uri */
+        
         $uri = UriResolver::resolve($uri, $base_uri);
 
         return $uri;
@@ -932,7 +932,7 @@ final class Uri implements UriInterface
     {
         $server += ['IIS_WasUrlRewritten' => null, 'UNENCODED_URL' => '', 'PHP_SELF' => '', 'QUERY_STRING' => null];
         if ('1' === $server['IIS_WasUrlRewritten'] && '' !== $server['UNENCODED_URL']) {
-            /** @var array{0:?string, 1:?string} $retval */
+            
             $retval = explode('?', $server['UNENCODED_URL'], 2) + [1 => null];
 
             return $retval;

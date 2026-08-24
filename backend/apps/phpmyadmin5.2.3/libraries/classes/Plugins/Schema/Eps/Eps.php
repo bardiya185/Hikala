@@ -20,13 +20,13 @@ use function strlen;
  */
 class Eps
 {
-    /** @var string */
+    
     public $font = 'Arial';
 
-    /** @var int */
+    
     public $fontSize = 12;
 
-    /** @var string */
+    
     public $stringCommands;
 
     /**
@@ -241,9 +241,6 @@ class Eps
      */
     public function showOutput($fileName): void
     {
-        // if(ob_get_clean()){
-        //ob_end_clean();
-        //}
         $output = $this->stringCommands;
         ResponseRenderer::getInstance()
             ->disable();

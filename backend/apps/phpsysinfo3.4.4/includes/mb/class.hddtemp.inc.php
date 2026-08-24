@@ -27,9 +27,7 @@ class HDDTemp extends Sensors
         if ((PSI_OS == 'Linux') && (!defined('PSI_EMU_HOSTNAME') || defined('PSI_EMU_PORT'))) switch (defined('PSI_SENSOR_HDDTEMP_ACCESS')?strtolower(PSI_SENSOR_HDDTEMP_ACCESS):'command') {
         case 'tcp':
             $lines = '';
-            // Timo van Roermund: connect to the hddtemp daemon, use a 5 second timeout.
             $fp = @fsockopen(defined('PSI_EMU_HOSTNAME')?PSI_EMU_HOSTNAME:'localhost', 7634, $errno, $errstr, 5);
-            // if connected, read the output of the hddtemp daemon
             if ($fp) {
                 while (!feof($fp)) {
                     $lines .= fread($fp, 1024);
@@ -91,18 +89,15 @@ class HDDTemp extends Sensors
         default:
             $this->error->addConfigError("temperature()", "[sensor_hddtemp] ACCESS");
         }
-        // Timo van Roermund: parse the info from the hddtemp daemon.
         foreach ($ar_buf as $line) {
             $data = array();
             if (preg_match("/\|(.*)\|(.*)\|(.*)\|(.*)\|/", $line, $data)) {
                 if (trim($data[3]) != "ERR") {
-                    // get the info we need
                     $dev = new SensorDevice();
                     $dev->setName($data[1] . ' (' . (strpos($data[2], "  ")?substr($data[2], 0, strpos($data[2], "  ")):$data[2]) . ')');
                     if (is_numeric($data[3])) {
                         $dev->setValue($data[3]);
                     }
-//                    $dev->setMax(60);
                     $this->mbinfo->setMbTemp($dev);
                 }
             }

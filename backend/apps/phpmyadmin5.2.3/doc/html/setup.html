@@ -610,7 +610,7 @@ configuration file:</p>
 <p>You can also use it to define server configuration instead of using the
 environment variables listed in <a class="reference internal" href="#docker-vars"><span class="std std-ref">Docker environment variables</span></a>:</p>
 <div class="highlight-php notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;?</span><span class="nx">php</span>
-<span class="cm">/* Override Servers array */</span>
+<span class="cm"></span>
 <span class="nv">$cfg</span><span class="p">[</span><span class="s1">&#39;Servers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
     <span class="mi">1</span> <span class="o">=&gt;</span> <span class="p">[</span>
         <span class="s1">&#39;auth_type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;cookie&#39;</span><span class="p">,</span>
@@ -1206,36 +1206,36 @@ the login process.</p></li>
 
 <span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
 
-<span class="cm">/* Use cookies for session */</span>
+<span class="cm"></span>
 <span class="nb">ini_set</span><span class="p">(</span><span class="s1">&#39;session.use_cookies&#39;</span><span class="p">,</span> <span class="s1">&#39;true&#39;</span><span class="p">);</span>
-<span class="cm">/* Change this to true if using phpMyAdmin over https */</span>
+<span class="cm"></span>
 <span class="nv">$secure_cookie</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
-<span class="cm">/* Need to have cookie visible from parent directory */</span>
+<span class="cm"></span>
 <span class="nb">session_set_cookie_params</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nv">$secure_cookie</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
-<span class="cm">/* Create signon session */</span>
+<span class="cm"></span>
 <span class="nv">$session_name</span> <span class="o">=</span> <span class="s1">&#39;SignonSession&#39;</span><span class="p">;</span>
 <span class="nb">session_name</span><span class="p">(</span><span class="nv">$session_name</span><span class="p">);</span>
 <span class="c1">// Uncomment and change the following line to match your $cfg[&#39;SessionSavePath&#39;]</span>
 <span class="c1">//session_save_path(&#39;/foobar&#39;);</span>
 <span class="o">@</span><span class="nb">session_start</span><span class="p">();</span>
 
-<span class="cm">/* Was data posted? */</span>
+<span class="cm"></span>
 <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]))</span> <span class="p">{</span>
-    <span class="cm">/* Store there credentials */</span>
+    <span class="cm"></span>
     <span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;PMA_single_signon_user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">];</span>
     <span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;PMA_single_signon_password&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;password&#39;</span><span class="p">];</span>
     <span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;PMA_single_signon_host&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;host&#39;</span><span class="p">];</span>
     <span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;PMA_single_signon_port&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;port&#39;</span><span class="p">];</span>
-    <span class="cm">/* Update another field of server configuration */</span>
+    <span class="cm"></span>
     <span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;PMA_single_signon_cfgupdate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;verbose&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Signon test&#39;</span><span class="p">];</span>
     <span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;PMA_single_signon_HMAC_secret&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="s1">&#39;sha1&#39;</span><span class="p">,</span> <span class="nb">uniqid</span><span class="p">(</span><span class="nb">strval</span><span class="p">(</span><span class="nb">random_int</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">mt_getrandmax</span><span class="p">())),</span> <span class="k">true</span><span class="p">));</span>
     <span class="nv">$id</span> <span class="o">=</span> <span class="nb">session_id</span><span class="p">();</span>
-    <span class="cm">/* Close that session */</span>
+    <span class="cm"></span>
     <span class="o">@</span><span class="nb">session_write_close</span><span class="p">();</span>
-    <span class="cm">/* Redirect to phpMyAdmin (should use absolute URL here!) */</span>
+    <span class="cm"></span>
     <span class="nb">header</span><span class="p">(</span><span class="s1">&#39;Location: ../index.php&#39;</span><span class="p">);</span>
 <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-    <span class="cm">/* Show simple form */</span>
+    <span class="cm"></span>
     <span class="nb">header</span><span class="p">(</span><span class="s1">&#39;Content-Type: text/html; charset=utf-8&#39;</span><span class="p">);</span>
 
     <span class="k">echo</span> <span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&#39;</span> <span class="o">.</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">;</span>
@@ -1291,7 +1291,7 @@ in <code class="file docutils literal notranslate"><span class="pre">examples/op
     <span class="k">exit</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="cm">/* Change this to true if using phpMyAdmin over https */</span>
+<span class="cm"></span>
 <span class="nv">$secure_cookie</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
 
 <span class="sd">/**</span>
@@ -1351,9 +1351,9 @@ in <code class="file docutils literal notranslate"><span class="pre">examples/op
 
 <span class="c1">// phpcs:enable</span>
 
-<span class="cm">/* Need to have cookie visible from parent directory */</span>
+<span class="cm"></span>
 <span class="nb">session_set_cookie_params</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nv">$secure_cookie</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
-<span class="cm">/* Create signon session */</span>
+<span class="cm"></span>
 <span class="nv">$session_name</span> <span class="o">=</span> <span class="s1">&#39;SignonSession&#39;</span><span class="p">;</span>
 <span class="nb">session_name</span><span class="p">(</span><span class="nv">$session_name</span><span class="p">);</span>
 <span class="o">@</span><span class="nb">session_start</span><span class="p">();</span>
@@ -1374,9 +1374,9 @@ in <code class="file docutils literal notranslate"><span class="pre">examples/op
 
 <span class="nv">$returnTo</span> <span class="o">.=</span> <span class="s1">&#39;openid.php&#39;</span><span class="p">;</span>
 
-<span class="cm">/* Display form */</span>
+<span class="cm"></span>
 <span class="k">if</span> <span class="p">((</span><span class="o">!</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$_POST</span><span class="p">))</span> <span class="o">||</span> <span class="nb">isset</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;phpMyAdmin&#39;</span><span class="p">]))</span> <span class="p">{</span>
-    <span class="cm">/* Show simple form */</span>
+    <span class="cm"></span>
     <span class="nv">$content</span> <span class="o">=</span> <span class="s1">&#39;&lt;form action=&quot;openid.php&quot; method=&quot;post&quot;&gt;</span>
 <span class="s1">OpenID: &lt;input type=&quot;text&quot; name=&quot;identifier&quot;&gt;&lt;br&gt;</span>
 <span class="s1">&lt;input type=&quot;submit&quot; name=&quot;start&quot;&gt;</span>
@@ -1385,7 +1385,7 @@ in <code class="file docutils literal notranslate"><span class="pre">examples/op
     <span class="k">exit</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="cm">/* Grab identifier */</span>
+<span class="cm"></span>
 <span class="nv">$identifier</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
 <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;identifier&#39;</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nb">is_string</span><span class="p">(</span><span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;identifier&#39;</span><span class="p">]))</span> <span class="p">{</span>
     <span class="nv">$identifier</span> <span class="o">=</span> <span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;identifier&#39;</span><span class="p">];</span>
@@ -1393,14 +1393,14 @@ in <code class="file docutils literal notranslate"><span class="pre">examples/op
     <span class="nv">$identifier</span> <span class="o">=</span> <span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;identifier&#39;</span><span class="p">];</span>
 <span class="p">}</span>
 
-<span class="cm">/* Create OpenID object */</span>
+<span class="cm"></span>
 <span class="k">try</span> <span class="p">{</span>
     <span class="nv">$o</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OpenID_RelyingParty</span><span class="p">(</span><span class="nv">$returnTo</span><span class="p">,</span> <span class="nv">$realm</span><span class="p">,</span> <span class="nv">$identifier</span><span class="p">);</span>
 <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">Throwable</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">Die_error</span><span class="p">(</span><span class="nv">$e</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="cm">/* Redirect to OpenID provider */</span>
+<span class="cm"></span>
 <span class="k">if</span> <span class="p">(</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]))</span> <span class="p">{</span>
     <span class="k">try</span> <span class="p">{</span>
         <span class="nv">$authRequest</span> <span class="o">=</span> <span class="nv">$o</span><span class="o">-&gt;</span><span class="na">prepare</span><span class="p">();</span>
@@ -1414,7 +1414,7 @@ in <code class="file docutils literal notranslate"><span class="pre">examples/op
     <span class="k">exit</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="cm">/* Grab query string */</span>
+<span class="cm"></span>
 <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$_POST</span><span class="p">))</span> <span class="p">{</span>
     <span class="p">[,</span> <span class="nv">$queryString</span><span class="p">]</span> <span class="o">=</span> <span class="nb">explode</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;REQUEST_URI&#39;</span><span class="p">]);</span>
 <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
@@ -1422,7 +1422,7 @@ in <code class="file docutils literal notranslate"><span class="pre">examples/op
     <span class="nv">$queryString</span> <span class="o">=</span> <span class="nb">file_get_contents</span><span class="p">(</span><span class="s1">&#39;php://input&#39;</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="cm">/* Check reply */</span>
+<span class="cm"></span>
 <span class="k">try</span> <span class="p">{</span>
     <span class="nv">$message</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">OpenID_Message</span><span class="p">(</span><span class="nv">$queryString</span><span class="p">,</span> <span class="nx">OpenID_Message</span><span class="o">::</span><span class="na">FORMAT_HTTP</span><span class="p">);</span>
 <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">Throwable</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
@@ -1440,7 +1440,7 @@ in <code class="file docutils literal notranslate"><span class="pre">examples/op
 <span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;PMA_single_signon_password&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$AUTH_MAP</span><span class="p">[</span><span class="nv">$id</span><span class="p">][</span><span class="s1">&#39;password&#39;</span><span class="p">];</span>
 <span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;PMA_single_signon_HMAC_secret&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">(</span><span class="s1">&#39;sha1&#39;</span><span class="p">,</span> <span class="nb">uniqid</span><span class="p">(</span><span class="nb">strval</span><span class="p">(</span><span class="nb">random_int</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">mt_getrandmax</span><span class="p">())),</span> <span class="k">true</span><span class="p">));</span>
 <span class="nb">session_write_close</span><span class="p">();</span>
-<span class="cm">/* Redirect to phpMyAdmin (should use absolute URL here!) */</span>
+<span class="cm"></span>
 <span class="nb">header</span><span class="p">(</span><span class="s1">&#39;Location: ../index.php&#39;</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -1472,7 +1472,7 @@ in <code class="file docutils literal notranslate"><span class="pre">examples/si
 <span class="sd"> */</span>
 <span class="k">function</span> <span class="nf">get_login_credentials</span><span class="p">(</span><span class="nv">$user</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="cm">/* Optionally we can use passed username */</span>
+    <span class="cm"></span>
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="k">empty</span><span class="p">(</span><span class="nv">$user</span><span class="p">))</span> <span class="p">{</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="nv">$user</span><span class="p">,</span>
@@ -1480,7 +1480,7 @@ in <code class="file docutils literal notranslate"><span class="pre">examples/si
         <span class="p">];</span>
     <span class="p">}</span>
 
-    <span class="cm">/* Here we would retrieve the credentials */</span>
+    <span class="cm"></span>
     <span class="k">return</span> <span class="p">[</span>
         <span class="s1">&#39;root&#39;</span><span class="p">,</span>
         <span class="s1">&#39;&#39;</span><span class="p">,</span>

@@ -17,17 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-//
-// $Id: quotas.js 661 2012-08-27 11:26:39Z namiltd $
-//
-
-/*global $, jQuery, buildBlock, datetime, plugin_translate, genlang, formatBytes, createBar */
 
 "use strict";
 
-var quotas_show = false, quotas_table;
-
-//appendcss("./plugins/Quotas/css/Quotas.css");
+var quotas_show = false,
+    quotas_table;
 
 /**
  * insert content into table
@@ -38,13 +32,21 @@ function quotas_populate(xml) {
 
     quotas_table.fnClearTable();
 
-    hostname = $("Plugins Plugin_Quotas", xml).attr('Hostname');
+    hostname = $("Plugins Plugin_Quotas", xml).attr("Hostname");
     if (hostname !== undefined) {
-        $('span[class=Hostname_Quotas]').html(hostname);
+        $("span[class=Hostname_Quotas]").html(hostname);
     }
 
     $("Plugins Plugin_Quotas Quota", xml).each(function quotas_getquota(id) {
-        var user = "", bused = 0, bsoft = 0, bhard = 0, bpuse = 0, fpuse = 0, fused = 0, fsoft = 0, fhard = 0;
+        var user = "",
+            bused = 0,
+            bsoft = 0,
+            bhard = 0,
+            bpuse = 0,
+            fpuse = 0,
+            fused = 0,
+            fsoft = 0,
+            fhard = 0;
         user = $(this).attr("User");
         bused = parseInt($(this).attr("ByteUsed"), 10);
         bsoft = parseInt($(this).attr("ByteSoft"), 10);
@@ -55,7 +57,32 @@ function quotas_populate(xml) {
         fhard = parseInt($(this).attr("FileHard"), 10);
         fpuse = parseInt($(this).attr("FilePercentUsed"), 10);
 
-        quotas_table.fnAddData(["<span style=\"display:none;\">" + user + "</span>" + user, "<span style=\"display:none;\">" + bused + "</span>" + formatBytes(bused, xml), "<span style=\"display:none;\">" + bsoft + "</span>" + formatBytes(bsoft, xml), "<span style=\"display:none;\">" + bhard + "</span>" + formatBytes(bhard, xml), "<span style=\"display:none;\">" + bpuse + "</span>" + createBar(bpuse), "<span style=\"display:none;\">" + fused + "</span>" + fused, "<span style=\"display:none;\">" + fsoft + "</span>" + fsoft, "<span style=\"display:none;\">" + fhard + "</span>" + fhard, "<span style=\"display:none;\">" + fpuse + "</span>" + createBar(fpuse)]);
+        quotas_table.fnAddData([
+            '<span style="display:none;">' + user + "</span>" + user,
+            '<span style="display:none;">' +
+                bused +
+                "</span>" +
+                formatBytes(bused, xml),
+            '<span style="display:none;">' +
+                bsoft +
+                "</span>" +
+                formatBytes(bsoft, xml),
+            '<span style="display:none;">' +
+                bhard +
+                "</span>" +
+                formatBytes(bhard, xml),
+            '<span style="display:none;">' +
+                bpuse +
+                "</span>" +
+                createBar(bpuse),
+            '<span style="display:none;">' + fused + "</span>" + fused,
+            '<span style="display:none;">' + fsoft + "</span>" + fsoft,
+            '<span style="display:none;">' + fhard + "</span>" + fhard,
+            '<span style="display:none;">' +
+                fpuse +
+                "</span>" +
+                createBar(fpuse),
+        ]);
         quotas_show = true;
     });
 }
@@ -66,18 +93,19 @@ function quotas_populate(xml) {
 function quotas_buildTable() {
     var html = "";
 
-    html += "<div style=\"overflow-x:auto;\">\n";
-    html += "  <table id=\"Plugin_QuotasTable\" style=\"border-collapse:collapse;\">\n";
+    html += '<div style="overflow-x:auto;">\n';
+    html +=
+        '  <table id="Plugin_QuotasTable" style="border-collapse:collapse;">\n';
     html += "    <thead>\n";
     html += "      <tr>\n";
     html += "        <th>" + genlang(2, "Quotas") + "</th>\n";
-    html += "        <th class=\"right\">" + genlang(3, "Quotas") + "</th>\n";
-    html += "        <th class=\"right\">" + genlang(4, "Quotas") + "</th>\n";
-    html += "        <th class=\"right\">" + genlang(5, "Quotas") + "</th>\n";
+    html += '        <th class="right">' + genlang(3, "Quotas") + "</th>\n";
+    html += '        <th class="right">' + genlang(4, "Quotas") + "</th>\n";
+    html += '        <th class="right">' + genlang(5, "Quotas") + "</th>\n";
     html += "        <th>" + genlang(6, "Quotas") + "</th>\n";
-    html += "        <th class=\"right\">" + genlang(7, "Quotas") + "</th>\n";
-    html += "        <th class=\"right\">" + genlang(8, "Quotas") + "</th>\n";
-    html += "        <th class=\"right\">" + genlang(9, "Quotas") + "</th>\n";
+    html += '        <th class="right">' + genlang(7, "Quotas") + "</th>\n";
+    html += '        <th class="right">' + genlang(8, "Quotas") + "</th>\n";
+    html += '        <th class="right">' + genlang(9, "Quotas") + "</th>\n";
     html += "        <th>" + genlang(10, "Quotas") + "</th>\n";
     html += "      </tr>\n";
     html += "    </thead>\n";
@@ -89,33 +117,43 @@ function quotas_buildTable() {
     $("#Plugin_Quotas").append(html);
 
     quotas_table = $("#Plugin_QuotasTable").dataTable({
-        "bPaginate": false,
-        "bLengthChange": false,
-        "bFilter": false,
-        "bSort": true,
-        "bInfo": false,
-        "bProcessing": true,
-        "bAutoWidth": false,
-        "bStateSave": true,
-        "aoColumns": [{
-            "sType": 'span-string'
-        }, {
-            "sType": 'span-number'
-        }, {
-            "sType": 'span-number'
-        }, {
-            "sType": 'span-number'
-        }, {
-            "sType": 'span-number'
-        }, {
-            "sType": 'span-number'
-        }, {
-            "sType": 'span-number'
-        }, {
-            "sType": 'span-number'
-        }, {
-            "sType": 'span-number'
-        }]
+        bPaginate: false,
+        bLengthChange: false,
+        bFilter: false,
+        bSort: true,
+        bInfo: false,
+        bProcessing: true,
+        bAutoWidth: false,
+        bStateSave: true,
+        aoColumns: [
+            {
+                sType: "span-string",
+            },
+            {
+                sType: "span-number",
+            },
+            {
+                sType: "span-number",
+            },
+            {
+                sType: "span-number",
+            },
+            {
+                sType: "span-number",
+            },
+            {
+                sType: "span-number",
+            },
+            {
+                sType: "span-number",
+            },
+            {
+                sType: "span-number",
+            },
+            {
+                sType: "span-number",
+            },
+        ],
     });
 }
 
@@ -137,7 +175,7 @@ function quotas_request() {
                 plugin_translate("Quotas");
                 $("#Plugin_Quotas").show();
             }
-        }
+        },
     });
 }
 

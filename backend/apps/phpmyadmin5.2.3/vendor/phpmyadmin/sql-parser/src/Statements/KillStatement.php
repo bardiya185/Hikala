@@ -57,7 +57,7 @@ class KillStatement extends Statement
      */
     public $parenthesisUsed = false;
 
-    /** @throws ParserException */
+    
     public function parse(Parser $parser, TokensList $list): void
     {
         /**

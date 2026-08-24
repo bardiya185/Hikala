@@ -27,10 +27,10 @@ use function strpos;
  */
 class ChangeController extends AbstractController
 {
-    /** @var InsertEdit */
+    
     private $insertEdit;
 
-    /** @var Relation */
+    
     private $relation;
 
     public function __construct(
@@ -80,7 +80,6 @@ class ChangeController extends AbstractController
             $found_unique_key,
             $after_insert,
         ] = $this->insertEdit->determineInsertOrEdit($where_clause ?? null, $db, $table);
-        // Increase number of rows if unsaved rows are more
         if (! empty($unsaved_values) && count($rows) < count($unsaved_values)) {
             $rows = array_fill(0, count($unsaved_values), false);
         }
@@ -91,7 +90,6 @@ class ChangeController extends AbstractController
          */
         if (empty($GLOBALS['goto'])) {
             if (strlen($table) > 0) {
-                // avoid a problem (see bug #2202709)
                 $GLOBALS['goto'] = Url::getFromRoute('/table/sql');
             } else {
                 $GLOBALS['goto'] = Url::getFromRoute('/database/sql');
@@ -137,11 +135,7 @@ class ChangeController extends AbstractController
         }
 
         $table_columns = $this->insertEdit->getTableColumns($db, $table);
-
-        // retrieve keys into foreign fields, if any
         $foreigners = $this->relation->getForeigners($db, $table);
-
-        // Retrieve form parameters for insert/edit form
         $_form_params = $this->insertEdit->getFormParametersForInsertForm(
             $db,
             $table,
@@ -153,14 +147,9 @@ class ChangeController extends AbstractController
         /**
          * Displays the form
          */
-        // autocomplete feature of IE kills the "onchange" event handler and it
-        //        must be replaced by the "onpropertychange" one in this case
         $chg_evt_handler = 'onchange';
-        // Had to put the URI because when hosted on an https server,
-        // some browsers send wrongly this form to the http server.
 
         $html_output = '';
-        // Set if we passed the first timestamp field
         $timestamp_seen = false;
         $columns_cnt = count($table_columns);
 
@@ -180,16 +169,10 @@ class ChangeController extends AbstractController
                 break;
             }
         }
-
-        //Insert/Edit form
-        //If table has blob fields we have to disable ajax.
         $isUpload = $GLOBALS['config']->get('enable_upload');
         $html_output .= $this->insertEdit->getHtmlForInsertEditFormHeader($has_blob_field, $isUpload);
 
         $html_output .= Url::getHiddenInputs($_form_params);
-
-        // user can toggle the display of Function column and column types
-        // (currently does not work for multi-edits)
         if (! $cfg['ShowFunctionFields'] || ! $cfg['ShowFieldTypesInDataEditView']) {
             $html_output .= __('Show');
         }
@@ -275,10 +258,8 @@ class ChangeController extends AbstractController
         $html_output .= '</form>';
 
         $html_output .= $this->insertEdit->getHtmlForGisEditor();
-        // end Insert/Edit form
 
         if ($insert_mode) {
-            //Continue insertion form
             $html_output .= $this->insertEdit->getContinueInsertionForm($table, $db, $where_clause_array, $errorUrl);
         }
 

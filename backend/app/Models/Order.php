@@ -45,19 +45,14 @@ class Order extends Model
     ];
 
     protected $casts = [
-        // ✅ Enum casting (خودکار تبدیل می‌کنه)
         'status' => OrderStatus::class,
         'payment_status' => PaymentStatus::class,
         'payment_method' => PaymentMethod::class,
-        
-        // 💰 Money casting
         'subtotal' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'coupon_amount' => 'decimal:2',
         'shipping_cost' => 'decimal:2',
         'total_amount' => 'decimal:2',
-        
-        // ⏰ Timestamps
         'paid_at' => 'datetime',
         'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',
@@ -70,10 +65,6 @@ class Order extends Model
         'estimated_delivery_to' => 'datetime',
         'shipping_carrier' => ShippingCarrier::class,
     ];
-
-    // ================================================================
-    // 🔗 Relationships
-    // ================================================================
 
     public function user(): BelongsTo
     {
@@ -100,10 +91,6 @@ class Order extends Model
         return $this->hasMany(OrderStatusHistory::class)
                     ->orderBy('created_at', 'asc');
     }
-
-    // ================================================================
-    // 🎯 Accessors
-    // ================================================================
 
     /**
      * 🏷️ Formatted order number
@@ -137,10 +124,6 @@ class Order extends Model
         return $this->items->sum('quantity');
     }
 
-    // ================================================================
-    // ✅ Helper Methods
-    // ================================================================
-
     /**
      * ❌ Can this order be canceled?
      */
@@ -172,10 +155,6 @@ class Order extends Model
     {
         return $this->status->isPaid();
     }
-
-    // ================================================================
-    // 🔍 Scopes
-    // ================================================================
 
     public function scopeForUser($query, int $userId)
     {

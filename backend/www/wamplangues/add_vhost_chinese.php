@@ -1,8 +1,4 @@
 <?php
-//3.1.1 - NotwwwDir
-//3.1.3 - VirtualHostPortNone
-//3.1.4 - txtTLDdev
-//3.1.9 - VirtualHostName modified - Accept diacritical characters (IDN)
 $langues = array(
     'langue' => '简体中文',
     'locale' => 'chinese',

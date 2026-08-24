@@ -68,7 +68,6 @@ if($_SERVER['argv'][1] == 'phpmyadmin') {
 			if(file_exists($file)) {
 				$count = 0;
 				$contents = file_get_contents_dos($file);
-				// $cfg['Servers'][$i]['AllowNoPassword'] = true;
 				if($_SERVER['argv'][4] == 'nopassword') {
 					$newvalue = 'false;';
 				}

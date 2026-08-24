@@ -50,22 +50,22 @@ use function ucwords;
  */
 class Sql
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var RelationCleanup */
+    
     private $relationCleanup;
 
-    /** @var Transformations */
+    
     private $transformations;
 
-    /** @var Operations */
+    
     private $operations;
 
-    /** @var Template */
+    
     private $template;
 
     public function __construct(
@@ -101,30 +101,22 @@ class Sql
         $tableObject = new Table($table, $db);
 
         if (empty($analyzedSqlResults['order'])) {
-            // Retrieving the name of the column we should sort after.
             $sortCol = $tableObject->getUiProp(Table::PROP_SORTED_COLUMN);
             if (empty($sortCol)) {
                 return;
             }
-
-            // Remove the name of the table from the retrieved field name.
             $sortCol = str_replace(
                 Util::backquote($table) . '.',
                 '',
                 $sortCol
             );
-
-            // Create the new query.
             $fullSqlQuery = Query::replaceClause(
                 $analyzedSqlResults['statement'],
                 $analyzedSqlResults['parser']->list,
                 'ORDER BY ' . $sortCol
             );
-
-            // TODO: Avoid reparsing the query.
             $analyzedSqlResults = Query::getAll($fullSqlQuery);
         } else {
-            // Store the remembered table into session.
             $tableObject->setUiProp(
                 Table::PROP_SORTED_COLUMN,
                 Query::getClause(
@@ -243,8 +235,6 @@ class Sql
         $foreignData = $this->relation->getForeignData($foreigners, $column, false, '', '');
 
         if ($foreignData['disp_row'] == null) {
-            //Handle the case when number of values
-            //is more than $cfg['ForeignKeyMaxLimit']
             $urlParams = [
                 'db' => $db,
                 'table' => $table,
@@ -269,7 +259,7 @@ class Sql
         return $dropdown;
     }
 
-    /** @return array<string, int|array> */
+    
     private function getDetailedProfilingStats(array $profilingResults): array
     {
         $profiling = [
@@ -379,9 +369,6 @@ class Sql
      */
     private function isAppendLimitClause(array $analyzedSqlResults): bool
     {
-        // Assigning LIMIT clause to an syntactically-wrong query
-        // is not needed. Also we would want to show the true query
-        // and the true error message to the query executor
 
         return (isset($analyzedSqlResults['parser'])
             && count($analyzedSqlResults['parser']->errors) === 0)
@@ -588,8 +575,6 @@ class Sql
             'bkm_sql_query' => $sqlQueryForBookmark,
             'bkm_label' => $bookmarkLabel,
         ];
-
-        // Should we replace bookmark?
         if ($bookmarkReplace && $bookmarkFeature !== null) {
             $bookmarks = Bookmark::getList($bookmarkFeature, $this->dbi, $GLOBALS['cfg']['Server']['user'], $db);
             foreach ($bookmarks as $bookmark) {
@@ -651,8 +636,6 @@ class Sql
         }
 
         $currentDb = $this->dbi->fetchValue('SELECT DATABASE()');
-
-        // $current_db is false, except when a USE statement was sent
         return ($currentDb != false) && ($db !== $currentDb);
     }
 
@@ -702,33 +685,17 @@ class Sql
         string $table,
         array $analyzedSqlResults
     ) {
-        /* Shortcut for not analyzed/empty query */
+        
         if ($analyzedSqlResults === []) {
             return 0;
         }
 
         if (! $this->isAppendLimitClause($analyzedSqlResults)) {
-            // if we did not append a limit, set this to get a correct
-            // "Showing rows..." message
-            // $_SESSION['tmpval']['max_rows'] = 'all';
             $unlimNumRows = $numRows;
         } elseif ($_SESSION['tmpval']['max_rows'] > $numRows) {
-            // When user has not defined a limit in query and total rows in
-            // result are less than max_rows to display, there is no need
-            // to count total rows for that query again
             $unlimNumRows = $_SESSION['tmpval']['pos'] + $numRows;
         } elseif ($analyzedSqlResults['querytype'] === 'SELECT' || $analyzedSqlResults['is_subquery']) {
-            //    c o u n t    q u e r y
-
-            // If we are "just browsing", there is only one table (and no join),
-            // and no WHERE clause (or just 'WHERE 1 '),
-            // we do a quick count (which uses MaxExactCount) because
-            // SQL_CALC_FOUND_ROWS is not quick on large InnoDB tables
-
-            // However, do not count again if we did it previously
-            // due to $find_real_end == true
             if ($justBrowsing) {
-                // Get row count (is approximate for InnoDB)
                 $unlimNumRows = $this->dbi->getTable($db, $table)->countRecords();
                 /**
                  * @todo Can we know at this point that this is InnoDB,
@@ -736,8 +703,6 @@ class Sql
                  *       an exact count)?
                  */
                 if ($unlimNumRows < $GLOBALS['cfg']['MaxExactCount']) {
-                    // Get the exact count if approximate count
-                    // is less than MaxExactCount
                     /**
                      * @todo In countRecords(), MaxExactCount is also verified,
                      *       so can we avoid checking it twice?
@@ -746,14 +711,14 @@ class Sql
                         ->countRecords(true);
                 }
             } else {
-                /** @var SelectStatement $statement */
+                
                 $statement = $analyzedSqlResults['statement'];
 
                 assert($statement->options !== null);
-                /** @var int|null $noCacheIndex */
+                
                 $noCacheIndex = array_find_key(
                     $statement->options->options,
-                    /** @param mixed $value */
+                    
                     static function ($value): bool {
                         return is_string($value) && strtoupper($value) === 'SQL_NO_CACHE';
                     }
@@ -767,18 +732,13 @@ class Sql
 
                 if ($changeOrder || $changeLimit || $changeExpression || $noCacheIndex !== null) {
                     $statement = clone $statement;
-                    // Remove SQL_NO_CACHE from subquery because it is not valid sql
                     if ($noCacheIndex !== null) {
                         assert($statement->options !== null);
                         $statement->options = clone $statement->options;
                         unset($statement->options->options[$noCacheIndex]);
                     }
                 }
-
-                // Remove ORDER BY to decrease unnecessary sorting time
                 $statement->order = null;
-
-                // Removes LIMIT clause that might have been added
                 $statement->limit = null;
 
                 if ($changeExpression) {
@@ -832,8 +792,6 @@ class Sql
     ): array {
         $response = ResponseRenderer::getInstance();
         $response->getHeader()->getMenu()->setTable($table ?? '');
-
-        // Only if we ask to see the php code
         if (isset($GLOBALS['show_as_php'])) {
             $result = null;
             $numRows = 0;
@@ -843,7 +801,6 @@ class Sql
             Profiling::enable($this->dbi);
 
             if (! defined('TESTSUITE')) {
-                // close session in case the query takes too long
                 session_write_close();
             }
 
@@ -851,20 +808,14 @@ class Sql
             $GLOBALS['querytime'] = $this->dbi->lastQueryExecutionTime;
 
             if (! defined('TESTSUITE')) {
-                // reopen session but prevent PHP from sending the session cookie again
                 session_start(['use_cookies' => false]);
             }
-
-            // Displays an error message if required and stop parsing the script
             $error = $this->dbi->getError();
             if ($error && $GLOBALS['cfg']['IgnoreMultiSubmitErrors']) {
                 $extraData['error'] = $error;
             } elseif ($error) {
                 $this->handleQueryExecuteError($isGotoFile, $error, $fullSqlQuery);
             }
-
-            // If there are no errors and bookmarklabel was given,
-            // store the query as a bookmark
             if (! empty($_POST['bkm_label']) && $sqlQueryForBookmark) {
                 $bookmarkFeature = $this->relation->getRelationParameters()->bookmarkFeature;
                 $this->storeTheQueryAsBookmark(
@@ -876,10 +827,6 @@ class Sql
                     isset($_POST['bkm_replace'])
                 );
             }
-
-            // Gets the number of rows affected/returned
-            // (This must be done immediately after the query because
-            // mysql_affected_rows() reports about the last query done)
             $numRows = $this->getNumberOfRowsAffectedOrChanged($analyzedSqlResults['is_affected'], $result);
 
             $profilingResults = Profiling::getInformation($this->dbi);
@@ -894,7 +841,6 @@ class Sql
                 isset($_POST['dropped_column'])
                 && $db !== '' && $table !== null && $table !== ''
             ) {
-                // to refresh the list of indexes (Ajax mode)
 
                 $indexes = Index::getFromTable($table, $db);
                 $indexesDuplicates = Index::findDuplicates($table, $db);
@@ -960,8 +906,6 @@ class Sql
             $message = Message::getMessageForDeletedRows($numRows);
         } elseif ($analyzedSqlResults['is_insert']) {
             if ($analyzedSqlResults['querytype'] === 'REPLACE') {
-                // For REPLACE we get DELETED + INSERTED row count,
-                // so we have to call it affected
                 $message = Message::getMessageForAffectedRows($numRows);
             } else {
                 $message = Message::getMessageForInsertedRows($numRows);
@@ -969,32 +913,19 @@ class Sql
 
             $insertId = $this->dbi->insertId();
             if ($insertId !== 0) {
-                // insert_id is id of FIRST record inserted in one insert,
-                // so if we inserted multiple rows, we had to increment this
                 $message->addText('[br]');
-                // need to use a temporary because the Message class
-                // currently supports adding parameters only to the first
-                // message
                 $inserted = Message::notice(__('Inserted row id: %1$d'));
                 $inserted->addParam($insertId + $numRows - 1);
                 $message->addMessage($inserted);
             }
         } elseif ($analyzedSqlResults['is_affected']) {
             $message = Message::getMessageForAffectedRows($numRows);
-
-            // Ok, here is an explanation for the !$is_select.
-            // The form generated by PhpMyAdmin\SqlQueryForm
-            // and /database/sql has many submit buttons
-            // on the same form, and some confusion arises from the
-            // fact that $message_to_show is sent for every case.
-            // The $message_to_show containing a success message and sent with
-            // the form should not have priority over errors
         } elseif ($messageToShow && $analyzedSqlResults['querytype'] !== 'SELECT') {
             $message = Message::rawSuccess(htmlspecialchars($messageToShow));
         } elseif (! empty($GLOBALS['show_as_php'])) {
             $message = Message::success(__('Showing as PHP code'));
         } elseif (isset($GLOBALS['show_as_php'])) {
-            /* User disable showing as PHP, query is only displayed */
+            
             $message = Message::notice(__('Showing SQL query'));
         } else {
             $message = Message::success(
@@ -1009,8 +940,6 @@ class Sql
             $queryTime->addParam($GLOBALS['querytime']);
             $message->addMessage($queryTime);
         }
-
-        // In case of ROLLBACK, notify the user.
         if (isset($_POST['rollback_query'])) {
             $message->addText(__('[ROLLBACK occurred.]'));
         }
@@ -1077,8 +1006,6 @@ class Sql
             $extraData['reload'] = 1;
             $extraData['db'] = $GLOBALS['db'];
         }
-
-        // For ajax requests add message and sql_query as JSON
         if (empty($_REQUEST['ajax_page_request'])) {
             $extraData['message'] = $message;
             if ($GLOBALS['cfg']['ShowSQL']) {
@@ -1433,21 +1360,14 @@ class Sql
         ?string $completeQuery
     ): string {
         global $showtable;
-
-        // If we are retrieving the full value of a truncated field or the original
-        // value of a transformed field, show it here
         if (isset($_POST['grid_edit']) && $_POST['grid_edit'] == true && is_object($result)) {
             $this->getResponseForGridEdit($result);
             exit;
         }
-
-        // Gets the list of fields properties
         $fieldsMeta = [];
         if ($result !== null && ! is_bool($result)) {
             $fieldsMeta = $this->dbi->getFieldsMeta($result);
         }
-
-        // Should be initialized these parameters before parsing
         if (! is_array($showtable)) {
             $showtable = null;
         }
@@ -1457,12 +1377,6 @@ class Sql
         $scripts = $header->getScripts();
 
         $justOneTable = $this->resultSetHasJustOneTable($fieldsMeta);
-
-        // hide edit and delete links:
-        // - for information_schema
-        // - if the result set does not contain all the columns of a unique key
-        //   (unless this is an updatable view)
-        // - if the SELECT query contains a join or a subquery
 
         $updatableView = false;
 
@@ -1530,8 +1444,6 @@ class Sql
             $scripts->addFile('makegrid.js');
             $scripts->addFile('sql.js');
             unset($GLOBALS['message']);
-            //we don't need to buffer the output in getMessage here.
-            //set a global variable and check against it in the function
             $GLOBALS['buffer_message'] = false;
         }
 
@@ -1629,7 +1541,6 @@ class Sql
         $completeQuery
     ): string {
         if ($analyzedSqlResults == null) {
-            // Parse and analyze the query
             [
                 $analyzedSqlResults,
                 $db,
@@ -1693,14 +1604,7 @@ class Sql
         $sqlQuery,
         ?string $completeQuery
     ): string {
-        // Handle disable/enable foreign key checks
         $defaultFkCheck = ForeignKey::handleDisableCheckInit();
-
-        // Handle remembered sorting order, only for single table query.
-        // Handling is not required when it's a union query
-        // (the parser never sets the 'union' key to 0).
-        // Handling is also not required if we came from the "Sort by key"
-        // drop-down.
         if (
             $analyzedSqlResults !== []
             && $this->isRememberSortingOrder($analyzedSqlResults)
@@ -1723,11 +1627,7 @@ class Sql
             $sqlQuery
         );
         $displayResultsObject->setConfigParamsForDisplayTable($analyzedSqlResults);
-
-        // assign default full_sql_query
         $fullSqlQuery = $sqlQuery;
-
-        // Do append a "LIMIT" clause?
         if ($this->isAppendLimitClause($analyzedSqlResults)) {
             $fullSqlQuery = $this->getSqlWithLimitClause($analyzedSqlResults);
         }
@@ -1753,8 +1653,6 @@ class Sql
         );
 
         $warningMessages = $this->operations->getWarningMessagesArray();
-
-        // No rows returned -> move back to the calling page
         if (($numRows == 0 && $unlimNumRows == 0) || $analyzedSqlResults['is_affected']) {
             $htmlOutput = $this->getQueryResponseForNoResultsReturned(
                 $analyzedSqlResults,
@@ -1770,7 +1668,6 @@ class Sql
                 $completeQuery
             );
         } else {
-            // At least one row is returned -> displays a table with results
             $htmlOutput = $this->getQueryResponseForResultsReturned(
                 $result,
                 $analyzedSqlResults,
@@ -1787,8 +1684,6 @@ class Sql
                 $completeQuery
             );
         }
-
-        // Handle disable/enable foreign key checks
         ForeignKey::handleDisableCheckCleanup($defaultFkCheck);
 
         foreach ($warningMessages as $warning) {
@@ -1831,7 +1726,6 @@ class Sql
 
         $tableObject = new Table($table, $db);
         $unlimNumRows = $tableObject->countRecords(true);
-        //If position is higher than number of rows
         if ($unlimNumRows <= $pos && $pos != 0) {
             $pos = $this->getStartPosToDisplayRow($unlimNumRows);
         }

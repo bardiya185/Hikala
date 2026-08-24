@@ -24,13 +24,13 @@ use function is_string;
 
 final class DestroyController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var Transformations */
+    
     private $transformations;
 
-    /** @var RelationCleanup */
+    
     private $relationCleanup;
 
     public function __construct(

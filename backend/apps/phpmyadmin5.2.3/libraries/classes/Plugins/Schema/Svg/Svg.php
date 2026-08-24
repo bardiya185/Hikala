@@ -24,16 +24,16 @@ use function strlen;
  */
 class Svg extends XMLWriter
 {
-    /** @var string */
+    
     public $title = '';
 
-    /** @var string */
+    
     public $author = 'phpMyAdmin';
 
-    /** @var string */
+    
     public $font = 'Arial';
 
-    /** @var int */
+    
     public $fontSize = 12;
 
     /**
@@ -185,7 +185,6 @@ class Svg extends XMLWriter
      */
     public function showOutput($fileName): void
     {
-        //ob_get_clean();
         $output = $this->flush();
         ResponseRenderer::getInstance()->disable();
         Core::downloadHeader(

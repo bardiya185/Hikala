@@ -11,18 +11,12 @@ class CartItemResource extends JsonResource
         return [
             'id' => $this->id,
             'quantity' => $this->quantity,
-            
-            // قیمت‌ها
             'base_price' => (float) $this->base_price,
             'final_price' => (float) $this->final_price,
             'discount_amount' => (float) $this->discount_amount,
             'discount_percent' => $this->discount_percent,
-            
-            // جمع
             'subtotal' => (float) $this->subtotal,
             'total' => (float) $this->total,
-            
-            // اطلاعات محصول
             'variant' => [
                 'id' => $this->variant->id,
                 'sku' => $this->variant->sku,

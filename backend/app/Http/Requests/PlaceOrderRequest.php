@@ -22,8 +22,6 @@ class PlaceOrderRequest extends FormRequest
             'payment_method' => ['required', Rule::in(PaymentMethod::values())],
             'shipping_method' => ['nullable', Rule::in(ShippingMethod::values())],
             'customer_note' => 'nullable|string|max:1000',
-            
-            // ✅ زمان تحویل مورد نظر
             'preferred_delivery_date' => 'nullable|date|after_or_equal:today',
             'preferred_delivery_time_slot' => [
                 'nullable',

@@ -33,7 +33,7 @@ use function substr;
  */
 class CreateController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, DatabaseInterface $dbi)
@@ -75,8 +75,6 @@ class CreateController extends AbstractController
             'DEFINER',
             'INVOKER',
         ];
-
-        // View name is a compulsory field
         if (isset($_POST['view']['name']) && empty($_POST['view']['name'])) {
             $message = Message::error(__('View name can not be empty!'));
             $this->response->addJSON('message', $message);
@@ -154,8 +152,6 @@ class CreateController extends AbstractController
 
                 return;
             }
-
-            // If different column names defined for VIEW
             $view_columns = [];
             if (isset($_POST['view']['column_names']) && $_POST['view']['column_names'] !== '') {
                 $view_columns = explode(',', $_POST['view']['column_names']);
@@ -167,15 +163,12 @@ class CreateController extends AbstractController
             $pma_transformation_data = $systemDb->getExistingTransformationData($db);
 
             if ($pma_transformation_data !== false) {
-                // SQL for store new transformation details of VIEW
                 $new_transformations_sql = $systemDb->getNewTransformationDataSql(
                     $pma_transformation_data,
                     $column_map,
                     $_POST['view']['name'],
                     $db
                 );
-
-                // Store new transformations
                 if ($new_transformations_sql != '') {
                     $this->dbi->tryQuery($new_transformations_sql);
                 }
@@ -185,7 +178,7 @@ class CreateController extends AbstractController
 
             if (! isset($_POST['ajax_dialog'])) {
                 $message = Message::success();
-                /** @var StructureController $controller */
+                
                 $controller = $containerBuilder->get(StructureController::class);
                 $controller();
             } else {
@@ -203,8 +196,6 @@ class CreateController extends AbstractController
         }
 
         $sql_query = ! empty($_POST['sql_query']) ? $_POST['sql_query'] : '';
-
-        // prefill values if not already filled from former submission
         $view = [
             'operation' => 'create',
             'or_replace' => '',
@@ -216,8 +207,6 @@ class CreateController extends AbstractController
             'as' => $sql_query,
             'with' => '',
         ];
-
-        // Used to prefill the fields when editing a view
         if (isset($_GET['db'], $_GET['table'])) {
             $item = $this->dbi->fetchSingleRow(
                 sprintf(
@@ -232,8 +221,6 @@ class CreateController extends AbstractController
             );
             $createView = $this->dbi->getTable($_GET['db'], $_GET['table'])
                 ->showCreate();
-
-            // CREATE ALGORITHM=<ALGORITHM> DE...
             $parts = explode(' ', substr($createView, 17));
             $item['ALGORITHM'] = $parts[0];
 
@@ -244,8 +231,6 @@ class CreateController extends AbstractController
             $view['as'] = $item['VIEW_DEFINITION'];
             $view['with'] = $item['CHECK_OPTION'];
             $view['algorithm'] = $item['ALGORITHM'];
-
-            // MySQL 8.0+ - issue #16194
             if (empty($view['as']) && is_string($createView)) {
                 $parser = new Parser($createView);
                 /**

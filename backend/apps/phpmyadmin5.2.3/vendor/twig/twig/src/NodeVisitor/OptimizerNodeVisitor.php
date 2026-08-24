@@ -158,40 +158,26 @@ final class OptimizerNodeVisitor implements NodeVisitorInterface
     private function enterOptimizeFor(Node $node): void
     {
         if ($node instanceof ForNode) {
-            // disable the loop variable by default
             $node->setAttribute('with_loop', false);
             array_unshift($this->loops, $node);
             array_unshift($this->loopsTargets, $node->getNode('value_target')->getAttribute('name'));
             array_unshift($this->loopsTargets, $node->getNode('key_target')->getAttribute('name'));
         } elseif (!$this->loops) {
-            // we are outside a loop
             return;
         }
-
-        // when do we need to add the loop variable back?
-
-        // the loop variable is referenced for the current loop
         elseif ($node instanceof NameExpression && 'loop' === $node->getAttribute('name')) {
             $node->setAttribute('always_defined', true);
             $this->addLoopToCurrent();
         }
-
-        // optimize access to loop targets
         elseif ($node instanceof NameExpression && \in_array($node->getAttribute('name'), $this->loopsTargets)) {
             $node->setAttribute('always_defined', true);
         }
-
-        // block reference
         elseif ($node instanceof BlockReferenceNode || $node instanceof BlockReferenceExpression) {
             $this->addLoopToCurrent();
         }
-
-        // include without the only attribute
         elseif ($node instanceof IncludeNode && !$node->getAttribute('only')) {
             $this->addLoopToAll();
         }
-
-        // include function without the with_context=false parameter
         elseif ($node instanceof FunctionExpression
             && 'include' === $node->getAttribute('name')
             && (!$node->getNode('arguments')->hasNode('with_context')
@@ -200,8 +186,6 @@ final class OptimizerNodeVisitor implements NodeVisitorInterface
         ) {
             $this->addLoopToAll();
         }
-
-        // the loop variable is referenced via an attribute
         elseif ($node instanceof GetAttrExpression
             && (!$node->getNode('attribute') instanceof ConstantExpression
                 || 'parent' === $node->getNode('attribute')->getAttribute('value')

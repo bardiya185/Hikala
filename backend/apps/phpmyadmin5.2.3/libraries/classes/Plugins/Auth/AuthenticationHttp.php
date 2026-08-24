@@ -75,7 +75,7 @@ class AuthenticationHttp extends AuthenticationPlugin
         $response->header('WWW-Authenticate: Basic realm="' . $realm_message . '"');
         $response->setHttpResponseCode(401);
 
-        /* HTML header */
+        
         $footer = $response->getFooter();
         $footer->setMinimal();
         $header = $response->getHeader();

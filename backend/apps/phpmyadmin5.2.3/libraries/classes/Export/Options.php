@@ -24,10 +24,10 @@ use function urldecode;
 
 final class Options
 {
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var TemplateModel */
+    
     private $templateModel;
 
     public function __construct(Relation $relation, TemplateModel $templateModel)
@@ -56,7 +56,7 @@ final class Options
      */
     public function getDatabasesForSelectOptions($tmpSelect = '')
     {
-        /** @var array|string|null $dbSelect */
+        
         $dbSelect = $_POST['db_select'] ?? null;
 
         // Check if the selected databases are defined in $_POST

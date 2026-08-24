@@ -30,16 +30,16 @@ use function strlen;
  */
 class AddFieldController extends AbstractController
 {
-    /** @var Transformations */
+    
     private $transformations;
 
-    /** @var Config */
+    
     private $config;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -65,8 +65,6 @@ class AddFieldController extends AbstractController
         global $num_fields, $regenerate, $result, $db, $table;
 
         $this->addScriptFiles(['table/structure.js']);
-
-        // Check parameters
         Util::checkParameters(['db', 'table']);
 
         $cfg = $this->config->settings;
@@ -78,8 +76,6 @@ class AddFieldController extends AbstractController
             'db' => $db,
             'table' => $table,
         ]);
-
-        // check number of fields to be created
         if (isset($_POST['submit_num_fields'])) {
             if (isset($_POST['orig_after_field'])) {
                 $_POST['after_field'] = $_POST['orig_after_field'];
@@ -101,15 +97,11 @@ class AddFieldController extends AbstractController
         }
 
         if (isset($_POST['do_save_data'])) {
-            // avoid an incorrect calling of PMA_updateColumns() via
-            // /table/structure below
             unset($_POST['do_save_data']);
 
             $createAddField = new CreateAddField($this->dbi);
 
             $sql_query = $createAddField->getColumnCreationQuery($table);
-
-            // If there is a request for SQL previewing.
             if (isset($_POST['preview_sql'])) {
                 Core::previewSQL($sql_query);
 
@@ -125,8 +117,6 @@ class AddFieldController extends AbstractController
 
                 return;
             }
-
-            // Update comment table for mime types [MIME]
             if (isset($_POST['field_mimetype']) && is_array($_POST['field_mimetype']) && $cfg['BrowseMIME']) {
                 foreach ($_POST['field_mimetype'] as $fieldindex => $mimetype) {
                     if (! isset($_POST['field_name'][$fieldindex]) || strlen($_POST['field_name'][$fieldindex]) <= 0) {
@@ -145,8 +135,6 @@ class AddFieldController extends AbstractController
                     );
                 }
             }
-
-            // Go back to the structure sub-page
             $message = Message::success(
                 __('Table %1$s has been altered successfully.')
             );
@@ -155,8 +143,6 @@ class AddFieldController extends AbstractController
                 'message',
                 Generator::getMessage($message, $sql_query, 'success')
             );
-
-            // Give an URL to call and use to appends the structure after the success message
             $this->response->addJSON(
                 'structure_refresh_route',
                 Url::getFromRoute('/table/structure', [

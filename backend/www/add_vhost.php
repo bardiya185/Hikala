@@ -10,14 +10,6 @@ $c_PortToUse = $c_UsedPort;
 $styleOpaNoClickMod = $styleNoDisplay = $serialModify = '';
 $VhostToMod = $AliasToMod = array();
 $VhostToModify = $AliasToModify = false;
-
-//** Based on an idea by Panagiotis E. Papazoglou
-//General scrolling (on or off) is controlled by Wampserver parameter 'ScrollListsHomePage'
-// via Right-Click -> Wamp Settings -> Allow scrolling of lists on home page
-//To allow or not the individual scrolling of the lists Alias and VirtualHost
-//   'scroll' true or false to do the scroll or not
-//   'lines'  minimum number of lines to do the scroll
-// Do not change anything other than the values assigned to 'scroll' and 'lines'
 $Scroll_List = array(
 	'alias'    => array('scroll' => true,'lines' => 15,'name' => 'AliasListScroller',   'nbname' => 'nbAliasLines'),
 	'vhosts'   => array('scroll' => true,'lines' => 15,'name' => 'VhostsListScroller',  'nbname' => 'nbVhostLines'),
@@ -26,8 +18,6 @@ foreach($Scroll_List as $key => $value) {
 	${$value['name']} = '';
 	${$value['nbname']} = 0;
 }
-
-//***** Language *****
 $langue = $wampConf['language'];
 $i_langues = glob('wamplangues/add_vhost_*.php');
 $languages = array();
@@ -37,7 +27,6 @@ foreach ($i_langues as $value) {
 $langueget = (!empty($_GET['lang']) ? strip_tags(trim($_GET['lang'])) : '');
 if(in_array($langueget,$languages))
 	$langue = $langueget;
-// Search for the different languages available
 $langueswitcher = '<form method="get" style="display:inline-block;margin-left:10px;"><select name="lang" id="langues" onchange="this.form.submit();">'."\n";
 $selected = false;
 foreach ($languages as $i_langue) {
@@ -61,23 +50,15 @@ if(file_exists('wamplangues/help_'.$langue.'.php')) {
 	include 'wamplangues/help_'.$langue.'.php';
 	$langues = array_merge($langue_temp, $langues);
 }
-
-//***** End of languages *****
-
-// Automatic error correction?
 $automatique = (isset($_POST['correct']) ? true : false);
 
 $message_ok = '';
 $message = array();
 $errors = $errors_auto = $vhost_created = $alias_created = false;
 $sub_menu_on = true;
-
-//***** Alias values *****
 $noDBMS = false; //Only to avoid error
 $aliasContents = $AliasModify = '';
-// Get Alias, PhpMyAdmin, Adminer & PhpSysInfo versions and parameters
 GetAliasVersions();
-// Create alias menu
 if(is_dir($aliasDir)) {
 	$handle=opendir($aliasDir);
 	while (false !== ($file = readdir($handle))) {
@@ -99,14 +80,9 @@ if(is_dir($aliasDir)) {
 }
 if(empty($aliasContents))
 	$aliasContents = "<li class='phpmynot'>".$langues['txtNoAlias']."</li>\n";
-//***** End of Alias *****
 
-/* Some tests about httpd-vhosts.conf file */
+
 $virtualHost = check_virtualhost();
-//***** End for VirtualHost
-
-//***** Items for form *****
-//***** VirtualHost port form
 $listenPort = listen_ports($c_apacheConfFile);
 $w_VirtualPortForm = '';
 $authorizedPorts = array();
@@ -134,27 +110,17 @@ else {
 		<label>{$langues['VirtualHostPortNone']}<code class="option"><i>{$langues['Optional']}</i></code></label><br><br>
 EOF;
 }
-//***** End VirtualHost port form
-//***** VirtualHost IP form
 $w_VirtualIPForm = <<< EOF
 		<label>{$langues['VirtualHostIP']}<code class="option"><i>{$langues['Optional']}</i></code></label><br>
 			<input class='optional' type="text" name="vh_ip"/><br>
 EOF;
-//***** End of VirtualHost IP form
-//********************************
-
-//********************************
-//***** See or not see forms *****
-//To not see form to suppress VirtualHost
 $seeVhostDelete = (isset($_POST['seedelete']) && strip_tags(trim($_POST['seedelete'])) == 'afficher') ? true : false;
-//To not see form to modify VirtualHost
 $seeVhostModify = (isset($_POST['seemodify']) && strip_tags(trim($_POST['seemodify'])) == 'afficher') ? true : false;
-//To not see form to modify Alias
 $seeAliasModify = (isset($_POST['seealiasmod']) && strip_tags(trim($_POST['seealiasmod'])) == 'afficher') ? true : false;
 $styleOpaNoClick = ($seeVhostDelete || $seeVhostModify || $seeAliasModify) ? " style='opacity:0.45;pointer-events:none;'" : '';
 $aliasDisplay = ($seeVhostDelete || $seeVhostModify || $seeAliasModify) ? " style='display:none;'" : '';
 
-/* If form suppress VirtualHost submitted */
+
 if(isset($_POST['vhostdelete'])
 	&& isset ($_SESSION['passdel'])
 	&& isset($_POST['checkdelete'])
@@ -173,7 +139,6 @@ if(isset($_POST['vhostdelete'])
 			}
 			$p_value = preg_quote($value);
 			if(in_array($value, $virtualHost['ServerName'])) {
-				//Extract <VirtualHost... </VirtualHost>
 				$mask = "{
 				<VirtualHost                         # beginning of VirtualHost
 				[^<]*(?:<(?!/VirtualHost)[^<]*)*     # avoid premature end
@@ -201,7 +166,6 @@ if(isset($_POST['vhostdelete'])
 					}
 				}
 				if($replaceVhosts) {
-					//Suppress ServerName into hosts file
 					$count = $count1 = 0;
 					$myHostsContents = preg_replace("~^([0-9\.:]+\s+".$p_value."\r?\n?)~mi",'',$myHostsContents,-1, $count);
 					$myHostsContents = str_ireplace($value,'',$myHostsContents,$count1);
@@ -210,7 +174,6 @@ if(isset($_POST['vhostdelete'])
 					}
 				}
 				if($replaceVhostSsl) {
-					//Suppress ServerName certificats into Certs/Server and Certs/Site
 					$files_to_delete = array(
 						$c_installDir.'/bin/Certs/Server/'.$value.'p7b',
 						$c_installDir.'/bin/Certs/Site/'.$value.'crt',
@@ -230,16 +193,13 @@ if(isset($_POST['vhostdelete'])
 		} //End for b1
 
 		if($replaceVhosts) {
-			//Cleaning of httpd-vhosts.conf file
 			$myVhostsContents = clean_file_contents($myVhostsContents."\r\n#\r\n",array(1,0),false,true,true,$c_apacheVhostConfFile);
 		}
 		if($replaceHosts) {
-			//error_log("replaceHosts = true");
 			if($wampConf['BackupHosts'] == 'on') {
 				@copy($c_hostsFile,$c_hostsFile."_wampsave.".$next_hosts_save);
 				$next_hosts_save++;
 			}
-			//Cleaning of hosts file
 			$myHostsContents = clean_file_contents($myHostsContents,array(2,0),true);
 			$fp = fopen($c_hostsFile, 'r+b');
 			if(flock($fp, LOCK_EX)) { // acquire an exclusive lock
@@ -258,7 +218,7 @@ if(isset($_POST['vhostdelete'])
 	}
 }
 
-/* If form modify VirtualHost submitted */
+
 if(isset($_POST['vhostmodify'])
 	&& isset ($_SESSION['passmodify'])
 	&& isset($_POST['checkmodify'])
@@ -268,7 +228,6 @@ if(isset($_POST['vhostmodify'])
 		$myVhostsContents = file_get_contents($c_apacheVhostConfFile);
 		$VhostToModify = false;
 		if(in_array($VhostToMod['name'], $virtualHost['ServerName'])) {
-			//Extract <VirtualHost... </VirtualHost>
 			$p_value = preg_quote($VhostToMod['name']);
 			$mask = "{
 				<VirtualHost                         # beginning of VirtualHost
@@ -278,30 +237,23 @@ if(isset($_POST['vhostmodify'])
 				</VirtualHost>\s*\n                  # end of VirtualHost
 				}isx";
 			if(preg_match($mask,$myVhostsContents,$matches) === 1){
-				//$matches[0] = complete <VirtualHost ...</VirtulaHost> structure
 				$VhostToModify = true;
 				$VhostToMod['original'] = $matches[0];
-				//Does this VirtualHost use FCGI mode?
 				$VhostToMod['fcgi'] = '';
 				if($virtualHost['ServerNameFcgid'][$VhostToMod['name']] && $virtualHost['ServerNameFcgidPHPOK'][$VhostToMod['name']]) {
 					$VhostToMod['fcgi'] = $virtualHost['ServerNameFcgidPHP'][$VhostToMod['name']];
 				}
-				//What is the directory of this VirtualHost?
-				//<Directory "G:/www/faq-fra/">
 				$VhostToMod['directory'] = '';
 				if(preg_match('~^[ \t]*<Directory.*"(.*)">.*\r?$~mi',$VhostToMod['original'],$matches) === 1) {
 					$VhostToMod['directory'] = $matches[1];
 				}
-				//Does this VirtualHost use https ?
 				if(in_array($VhostToMod['name'], $virtualHost['ServerNameHttps'])) {
 					$httpdsslFileContents = file_get_contents($c_apacheConfDir.'/extra/httpd-ssl.conf');
-					//Extract Define SERVERNAMEVHOSTSSL ServerName </VirtualHost>
 					$mask = "~^Define SERVERNAMEVHOSTSSL {$p_value}.*?</VirtualHost>\r?$~mis";
 					if(preg_match($mask,$httpdsslFileContents,$matches) === 1) {
 						$VhostToMod['originalhttps'] = $matches[0];
 					}
 				}
-				//error_log("VhostToMod=\n".print_r($VhostToMod,true));
 				$serialModify = json_encode($VhostToMod);
 				unset($myVhostsContents,$httpdsslFileContents);
 			}
@@ -310,7 +262,7 @@ if(isset($_POST['vhostmodify'])
 	}
 }
 
-/* If form modify Alias submitted */
+
 if(isset($_POST['aliasmodify'])
 	&& isset ($_SESSION['aliaspassmodify'])
 	&& isset($_POST['aliascheckmodify'])
@@ -321,13 +273,10 @@ if(isset($_POST['aliasmodify'])
 			$path_tmp = $Alias_Contents[$AliasToMod['name']]['aliaspath'];
 			$original_tmp = file_get_contents($path_tmp);
 			$AliasToModify = true;
-			//Does this Alias use FCGI mode?
 			$AliasToMod['fcgi'] = '';
 			if($Alias_Contents[$AliasToMod['name']]['fcgid'] && $Alias_Contents[$AliasToMod['name']]['fcgidPHPOK']) {
 					$AliasToMod['fcgi'] = $Alias_Contents[$AliasToMod['name']]['fcgidPHP'];
 			}
-			//What is the directory of this Alias?
-			//<Directory "G:/www/faq-fra/">
 			$AliasToMod['directory'] = '';
 			if(preg_match('~^[ \t]*<Directory.*"(.*)">.*\r?$~mi',$original_tmp,$matches) === 1) {
 				$AliasToMod['directory'] = $matches[1];
@@ -338,8 +287,6 @@ if(isset($_POST['aliasmodify'])
 		else exit;
 	}
 }
-
-//***** Is form add or modify Vhost or Alias submitted ? ******
 if(isset($_POST['submit'])
 	&& $errors === false
 	&& isset($_SESSION['passadd'])
@@ -347,7 +294,6 @@ if(isset($_POST['submit'])
 	&& strip_tags(trim($_POST['checkadd'])) == $_SESSION['passadd']
 	&& isset($_POST['addmodify'])) {
 	if(strip_tags(trim($_POST['addmodify'])) == 'modify') { //Modify VirtualHost
-		//Modify VirtualHost - add FCGI mode - change FCGI PHP version - Suppress FCGI mode
 		$VhostModified = $VhostHttpsModified = false;
 		$vh_name = strip_tags(trim($_POST['vh_name']));
 		if(!array_key_exists($vh_name,$virtualHost['ServerName'])) exit;
@@ -358,15 +304,9 @@ if(isset($_POST['submit'])
 			$vh_fcgi_php = strip_tags(trim($_POST['vh_fcgi_php']));
 		}
 		$VhostToMod = json_decode($_POST['modifycontent'],true);
-		//error_log("vh_name=".$vh_name." - fcgi=".$vh_fcgi_php);
-		//error_log("VhostToMod=\n".print_r($VhostToMod,true));
 		if(!empty($vh_fcgi_php)) {
-			//Asked for FCGI mode
 			if(!empty($VhostToMod['fcgi'])) {
-				//Is alredy FCGI
 				if($VhostToMod['fcgi'] != $vh_fcgi_php) {
-					//Change FCGI PHP version
-					//Get line Define FCGIPHPVERSION "x.y.z"
 					if(preg_match('~^\s*Define\s+FCGIPHPVERSION\s+"([0-9.]+)"\r?$~mi',$VhostToMod['original'],$matches) === 1){
 						if($matches[1] == $VhostToMod['fcgi']) {
 							$count = $counts = 0;
@@ -380,9 +320,7 @@ if(isset($_POST['submit'])
 							}
 						}
 					}
-					//Change FCGI PHP version in HTTPS
 					if(!empty($VhostToMod['originalhttps'])) {
-						//Get line Define FCGIPHPVERSION "x.y.z"
 						if(preg_match('~^\s*Define\s+FCGIPHPVERSION\s+"([0-9.]+)"\r?$~mi',$VhostToMod['originalhttps'],$matches) === 1){
 							if($matches[1] == $VhostToMod['fcgi']) {
 								$count = $counts = 0;
@@ -400,7 +338,6 @@ if(isset($_POST['submit'])
 				}
 			}
 			else {
-				//Is not FCGI - Mode FCGI to add
 				if(preg_match('~^\s*\</VirtualHost\>\r?$~mi',$VhostToMod['original'],$matches) === 1) {
 					$httpd_vhosts_fcgi = <<< EOFFCGIPHP
   <IfModule fcgid_module>
@@ -432,9 +369,7 @@ EOFFCGIPHP;
 			}
 		}
 		else {
-			//FCGI mode not wanted
 			if(!empty($VhostToMod['fcgi'])) {
-				//To suppress FCGI mode
 				if(preg_match('~^[ \t]*\<IfModule fcgid_module\>.*\</IfModule\>\r?$~ism',$VhostToMod['original'],$matches) === 1) {
 					$VhostToMod['new'] = str_replace($matches[0],'',$VhostToMod['original'],$count);
 					if($count > 0 ) {
@@ -494,12 +429,8 @@ EOFFCGIPHP;
 			$vh_fcgi_php = strip_tags(trim($_POST['vh_fcgi_php']));
 		}
 		if(!empty($vh_fcgi_php)) {
-			//Asked for FCGI mode
 			if(!empty($AliasToMod['fcgi'])) {
-				//Is alredy FCGI
 				if($AliasToMod['fcgi'] != $vh_fcgi_php) {
-					//Change FCGI PHP version
-					//Get line Define FCGIPHPVERSION "x.y.z"
 					if(preg_match('~^[ \t]*Define FCGIPHPVERSION "([0-9.]+)"\r$~mi',$AliasToMod['original'],$matches) === 1){
 						if($matches[1] == $AliasToMod['fcgi']) {
 							$count = $counts = 0;
@@ -517,7 +448,6 @@ EOFFCGIPHP;
 				}//End change FCGI PHP version
 			}
 			else {
-				//Is not FCGI - Mode FCGI to add
 				$firstPart = <<< EOF
 <IfModule fcgid_module>
   Define FCGIPHPVERSION "{$vh_fcgi_php}"
@@ -544,11 +474,8 @@ EOF;
 			}//End add FCGI mode
 		}
 		else {
-			//FCGI mode not wanted
 			if(!empty($AliasToMod['fcgi'])) {
-				//To suppress FCGI mode
 				$count = 0;
-				//Search for first <IfModule...
 				$p_value = preg_quote($AliasToMod['fcgi']);
 				$mask = "{
 				\<IfModule\s+fcgid_module            # beginning
@@ -558,14 +485,11 @@ EOF;
 				\</IfModule\>\s*\n                   # end
 				}isx";
 				if(preg_match($mask,$AliasToMod['original'],$matches) === 1) {
-					//error_log("matches1=\n".print_r($matches,true));
 					$AliasToMod['new'] = str_ireplace($matches[0],'',$AliasToMod['original'],$count);
 					if($count > 0) {
 						$count =0;
-						//Search for second <IfModule...
 						$mask = "~^[\t ]*\<IfModule\s+fcgid_module.*FcgidWrapper.*\</IfModule\>\r?$~mis";
 						if(preg_match($mask,$AliasToMod['new'],$matches) === 1) {
-							//error_log("matches2=\n".print_r($matches,true));
 							$AliasToMod['new'] = str_ireplace($matches[0],'',$AliasToMod['new'],$count);
 							if($count > 0) $AliasModified = true;
 						}
@@ -574,7 +498,6 @@ EOF;
 			}//End of suppress FCGI
 		}
 		if($AliasModified) {
-			//Clean new Alias and write it
 			$AliasToMod['new'] = clean_file_contents($AliasToMod['new']."\r\n#\r\n",array(1,0),false, true);
 			if(write_file($AliasToMod['path'],$AliasToMod['new'])) {
 				$message_ok = '<p class="ok">'.sprintf($langues['ModifiedAlias'],$AliasToMod['name']).'</p>';
@@ -588,9 +511,6 @@ EOF;
 		}
 	}//End Alias modify procedure
 	elseif(strip_tags(trim($_POST['addmodify'])) == 'add') { //Add VirtualHost
-		//***** Create Vhost submitted
-		// Escape any backslashes used in the path to the file
-		//$c_apacheVhostConfFile = str_replace('\\', '\\\\', $c_apacheVhostConfFile);
 		$vh_name = strip_tags(trim($_POST['vh_name']));
 		$vh_ip = (isset($_POST['vh_ip'])) ? strip_tags(trim($_POST['vh_ip'])) : '';
 		$vh_port = '';
@@ -607,7 +527,6 @@ EOF;
 		if(substr($vh_folder,-1) == "/")
 			$vh_folder = substr($vh_folder,0,-1);
 		$vh_folder = mb_strtolower($vh_folder);
-		//3.0.6 - Check / at first character
 		if(substr($vh_folder,0,1) == "/" && substr($vh_folder,0,2) != "//")
 			$vh_folder = "/".$vh_folder;
 
@@ -615,14 +534,12 @@ EOF;
 			$message[] = '<p class="warning">'.sprintf($langues['NoFirst'],$c_apacheVhostConfFile).'</p>';
 			$errors = true;
 		}
-		/* Validity of the domain name */
+		
 		clearstatcache();
-		//Check if IDN is needed
 		$vh_nameIDN = idn_to_ascii($vh_name,IDNA_DEFAULT,INTL_IDNA_VARIANT_UTS46);
 		if($vh_nameIDN !== $vh_name)
 			$vh_name = $vh_nameIDN;
 		$regexIDNA = '#^([\w-]+://?|www[\.])?xn--[a-z0-9]+[a-z0-9\-\.]*[a-z0-9]+(\.[a-z]{2,7})?$#';
-		// Not IDNA  /^[A-Za-z]+([-.](?![-.])|[A-Za-z0-9]){1,60}[A-Za-z0-9]$/
 		$regexServerName = 	'/^
 			(?=.*[A-Za-z]) # at least one letter somewhere
 			[A-Za-z0-9]+ 	 # letter or number in first place
@@ -666,7 +583,6 @@ EOF;
 			$message[] = '<p class="warning">'.sprintf($langues['VirtualIpAlreadyUsed'],$vh_ip).'</p>';
 			$errors = true;
 			}
-			// Validité IP locale
 			elseif(check_IP_local($vh_ip) === false) {
 				$message[] = '<p class="warning">'.sprintf($langues['LocalIpInvalid'],$vh_ip).'</p>';
 				$errors = true;
@@ -693,7 +609,7 @@ EOF;
 			}
 		}
 		if($errors === false) {
-			/* Preparation of files content */
+			
 			$httpd_vhosts_fcgi = '';
 			if($vh_fcgi_on) {
 				$httpd_vhosts_fcgi = <<< EOFFCGIPHP
@@ -730,7 +646,7 @@ EOFNEWVHOST;
 ::1	{$vh_name}
 
 EOFHOSTS;
-			/* Opening the files to add the lines */
+			
 			if($wampConf['BackupHosts'] == 'on') {
 				@copy($c_hostsFile,$c_hostsFile."_wampsave.".$next_hosts_save);
 				$next_hosts_save++;
@@ -742,24 +658,17 @@ EOFHOSTS;
 			if(fwrite($fp2, $hosts_add) !== false) $fp2w = true;
 			fclose($fp1);
 			fclose($fp2);
-			//Clean httpd-vhosts.conf file
 			$myVhostsContents = file_get_contents($c_apacheVhostConfFile);
 			$myVhostsContents = clean_file_contents($myVhostsContents."\r\n#\r\n",array(1,0),false, true, true, $c_apacheVhostConfFile);
 
 			if($fp1w === true && $fp2w === true) {
 				if("Possible" === true) { // It is not possible — for the moment — to do that from php WEB
-				// Restart DNS
 				$command = 'CMD /D /C ipconfig /flushdns';
 				$output = shell_exec($command);
-				// Apache Graceful Restart
 				$command = 'CMD /D /C '.str_replace('/','\\',$c_apacheExe).' -n '.$c_apacheService.' -k restart';
 				$output .= shell_exec($command);
 				$command = 'CMD /D /C START /D '.str_replace('/','\\',$c_installDir).'\scripts /WAIT /B '.str_replace('/','\\',$c_phpExe).' -f refresh.php';
-				//error_log("command=\n".$command);
 				$output = shell_exec($command);
-				//error_log("output=\n".$output);
-
-				// Message to Refresh Wampmanager to update menu's
 				$message_ok = '<p class="ok">'.sprintf($langues['VirtualCreated'],$vh_name).'</p>';
 				$message_ok .= '<p class="ok_plus">'.$langues['HoweverWamp'].'</p>';
 				$vhost_created = true;
@@ -777,16 +686,10 @@ EOFHOSTS;
 		}
 	}//End VirtulHost create procedure
 }//End forms modify and create
-
-//***** FCGI select PHP version form *****
-//*****  Modal Dialog FCGI mode help *****
 $w_FcgiPhpVersionForm = $ModalDialogs = $ModalFCGILink = '';
-	//**** Modal Dialogs *****
-	//See mode FCGI
 	$message_modal = str_replace('  ','&nbsp;&nbsp;',$langues['fcgi_mode_help']);
 	$message_modal = str_replace('<code>',"<code class='normal'>",$message_modal);
 	$message_modal = nl2br($message_modal);
-	//Dialog modal help FCGI
 	$divHelpFCGI = <<< EOF
 <div id="helpfcgi" class="modalOtoArial">
 	<div>
@@ -799,7 +702,6 @@ $w_FcgiPhpVersionForm = $ModalDialogs = $ModalFCGILink = '';
 EOF;
 	$ModalFCGILink .= "<a href='#helpfcgi'><small style='color:#777;'>".$langues['fcgi_mode_link']."</small></a>";
 	$ModalDialogs .= $divHelpFCGI;
-	//***** End of Modal Dialogs *****
 $StyleNoFcgi = $FcgiModNotLoaded = '';
 if(!isset($c_ApacheDefine['PHPROOT'])) {
 	$StyleNoFcgi = " style='opacity:0.6;pointer-events:none;'";
@@ -820,9 +722,6 @@ foreach($phpVersionList as $php_FCGI) {
 }
 $w_FcgiPhpVersionForm .= "</select><br>";
 $w_FcgiPhpVersionForm .= $FcgiModNotLoaded;
-//***** End FCGI select PHP form
-
-//***** Show VirtualHost list *****
 $VhostDefine = $VhostDelete = $VhostModify = "";
 if($virtualHost['nb_Server'] > 0) {
 	$i = 0;
@@ -872,9 +771,6 @@ if($virtualHost['nb_Server'] > 0) {
 		$i++;
 	}
 }
-//***** End Show VirtualHost list *****
-
-//***** Is Include conf/extra/httpd-vhosts.conf not commented # *****
 if($virtualHost['include_vhosts'] === false && $errors === false) {
 	if($automatique === true) {
 		$httpConfFileContents = file_get_contents($c_apacheConfFile);
@@ -890,7 +786,6 @@ if($virtualHost['include_vhosts'] === false && $errors === false) {
 		$errors_auto = true;
 	}
 }
-//***** Does conf/extra/httpd-vhosts.conf file exist ?
 if($virtualHost['vhosts_exist'] === false && $errors === false) {
 	if($automatique === true) {
 		$fp = fopen($c_apacheVhostConfFile,'wb');
@@ -903,7 +798,6 @@ if($virtualHost['vhosts_exist'] === false && $errors === false) {
 		$errors_auto = true;
 	}
 }
-//***** Is conf/extra/httpd-vhosts.conf file clean ?
 if(in_array("dummy", $virtualHost['ServerNameValid'], true) !== false && $errors === false) {
 	if($automatique === true) {
 		$fp = fopen($c_apacheVhostConfFile,'wb');
@@ -916,7 +810,6 @@ if(in_array("dummy", $virtualHost['ServerNameValid'], true) !== false && $errors
 		$errors_auto = true;
 	}
 }
-//***** Does VirtualHost localhost exist ?
 if(empty($virtualHost['FirstServerName']) && $errors === false) {
 	if($automatique === true) {
 		$virtual_localhost = <<< EOFLOCAL
@@ -946,8 +839,6 @@ EOFLOCAL;
 		$errors_auto = true;
 	}
 }
-
-// To scroll Alias and VirtualHost list display
 if($wampConf['ScrollListsHomePage'] == 'on') {
 	foreach($Scroll_List as $value) {
 		if($value['scroll'] && ${$value['nbname']} > $value['lines']) {
@@ -1110,7 +1001,6 @@ EOPAGEB;
 	}
 	else {
 	$_SESSION['passadd'] = mt_rand(100000001,mt_getrandmax());
-	//Check if VirtualHost to modify
 	$styleOpaNoClickMod = ($VhostToModify === true || $AliasToModify === true) ? " style='opacity:0.75;pointer-events:none;'" : '';
 	$styleNoDisplay = ($VhostToModify === true || $AliasToModify === true) ? " style='display:none;pointer-events:none;'" : '';
 	$valueHostName = '';

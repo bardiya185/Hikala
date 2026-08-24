@@ -15,10 +15,10 @@ use function __;
 
 final class CentralColumnsRemoveController extends AbstractController
 {
-    /** @var CentralColumns */
+    
     private $centralColumns;
 
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(

@@ -13,7 +13,7 @@ use function is_array;
 
 final class ChangeRowsController extends AbstractController
 {
-    /** @var ChangeController */
+    
     private $changeController;
 
     public function __construct(
@@ -37,11 +37,6 @@ final class ChangeRowsController extends AbstractController
 
             return;
         }
-
-        // As we got the rows to be edited from the
-        // 'rows_to_delete' checkbox, we use the index of it as the
-        // indicating WHERE clause. Then we build the array which is used
-        // for the /table/change script.
         $where_clause = [];
         if (isset($_POST['rows_to_delete']) && is_array($_POST['rows_to_delete'])) {
             foreach ($_POST['rows_to_delete'] as $i_where_clause) {

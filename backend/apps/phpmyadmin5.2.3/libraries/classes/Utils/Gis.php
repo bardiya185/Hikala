@@ -23,8 +23,6 @@ final class Gis
     public static function convertToWellKnownText($data, $includeSRID = false): string
     {
         global $dbi;
-
-        // Convert to WKT format
         $hex = bin2hex($data);
         $spatialAsText = 'ASTEXT';
         $spatialSrid = 'SRID';
@@ -135,8 +133,6 @@ final class Gis
         if ($display) {
             $funcs[] = ['display' => ' '];
         }
-
-        // Unary functions common to all geometry types
         $funcs['Dimension'] = [
             'params' => 1,
             'type' => 'int',
@@ -169,12 +165,8 @@ final class Gis
 
         $spatialPrefix = '';
         if ($dbi->getVersion() >= 50601) {
-            // If MySQL version is greater than or equal 5.6.1,
-            // use the ST_ prefix.
             $spatialPrefix = 'ST_';
         }
-
-        // Unary functions that are specific to each geometry type
         if ($geomType === 'point') {
             $funcs[$spatialPrefix . 'X'] = [
                 'params' => 1,
@@ -236,18 +228,13 @@ final class Gis
                 'params' => 1,
                 'type' => 'point',
             ];
-            // Not yet implemented in MySQL
-            //$funcs['PointOnSurface'] = array('params' => 1, 'type' => 'point');
         } elseif ($geomType === 'geometrycollection') {
             $funcs['NumGeometries'] = [
                 'params' => 1,
                 'type' => 'int',
             ];
         }
-
-        // If we are asked for binary functions as well
         if ($binary) {
-            // section separator
             if ($display) {
                 $funcs[] = ['display' => '--------'];
             }
@@ -288,8 +275,6 @@ final class Gis
             if ($display) {
                 $funcs[] = ['display' => '--------'];
             }
-
-            // Minimum bounding rectangle functions
             $funcs['MBRContains'] = [
                 'params' => 2,
                 'type' => 'int',

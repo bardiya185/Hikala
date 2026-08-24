@@ -42,25 +42,25 @@ use function str_contains;
  */
 class StructureController extends AbstractController
 {
-    /** @var Table  The table object */
+    
     protected $tableObj;
 
-    /** @var CreateAddField */
+    
     private $createAddField;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Transformations */
+    
     private $transformations;
 
-    /** @var RelationCleanup */
+    
     private $relationCleanup;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var FlashMessages */
+    
     private $flash;
 
     public function __construct(
@@ -159,8 +159,6 @@ class StructureController extends AbstractController
         bool $isSystemSchema
     ) {
         global $route, $tbl_is_view, $tbl_storage_engine;
-
-        // prepare comments
         $comments_map = [];
         $mime_map = [];
 
@@ -177,18 +175,10 @@ class StructureController extends AbstractController
         /**
          * Displays Space usage and row statistics
          */
-        // BEGIN - Calc Table Space
-        // Get valid statistics whatever is the table type
         if ($GLOBALS['cfg']['ShowStats']) {
-            //get table stats in HTML format
             $tablestats = $this->getTableStats($isSystemSchema);
-            //returning the response in JSON format to be used by Ajax
             $this->response->addJSON('tableStat', $tablestats);
         }
-
-        // END - Calc Table Space
-
-        // logic removed from Template
         $rownum = 0;
         $columns_list = [];
         $attributes = [];
@@ -310,8 +300,6 @@ class StructureController extends AbstractController
             && $showtable['Type'] === 'InnoDB');
 
         $mergetable = $this->tableObj->isMerge();
-
-        // this is to display for example 261.2 MiB instead of 268k KiB
         $max_digits = 3;
         $decimals = 1;
         [$data_size, $data_unit] = Util::formatByteDown($showtable['Data_length'], $max_digits, $decimals);
@@ -355,7 +343,7 @@ class StructureController extends AbstractController
             );
         }
 
-        /** @var Innodb $innodbEnginePlugin */
+        
         $innodbEnginePlugin = StorageEngine::getEngine('Innodb');
         $innodb_file_per_table = $innodbEnginePlugin->supportsFilePerTable();
 

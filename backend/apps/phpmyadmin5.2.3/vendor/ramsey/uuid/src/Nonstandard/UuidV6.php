@@ -107,7 +107,7 @@ final class UuidV6 extends Uuid implements UuidInterface
             . '1' . substr($hex, 0, 3)
             . substr($hex, 16);
 
-        /** @var LazyUuidFromString $uuid */
+        
         $uuid = Uuid::fromBytes((string) hex2bin($hex));
 
         return $uuid->toUuidV1();
@@ -125,7 +125,7 @@ final class UuidV6 extends Uuid implements UuidInterface
             . '6' . substr($hex, 5, 3)
             . substr($hex, 16);
 
-        /** @var LazyUuidFromString $uuid */
+        
         $uuid = Uuid::fromBytes((string) hex2bin($hex));
 
         return $uuid->toUuidV6();

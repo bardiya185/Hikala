@@ -20,10 +20,10 @@ use function mb_strtolower;
  */
 class PrivilegesController extends AbstractController
 {
-    /** @var Privileges */
+    
     private $privileges;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(

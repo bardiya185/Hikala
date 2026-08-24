@@ -126,7 +126,7 @@ class Plugins
 
         $plugins = [];
 
-        /** @var SplFileInfo $fileInfo */
+        
         foreach ($files as $fileInfo) {
             if (! $fileInfo->isReadable() || ! $fileInfo->isFile() || $fileInfo->getExtension() !== 'php') {
                 continue;
@@ -176,7 +176,6 @@ class Plugins
      */
     public static function checkboxCheck($section, $opt)
     {
-        // If the form is being repopulated using $_GET data, that is priority
         if (
             isset($_GET[$opt])
             || ! isset($_GET['repopulate'])
@@ -202,7 +201,6 @@ class Plugins
     public static function getDefault($section, $opt)
     {
         if (isset($_GET[$opt])) {
-            // If the form is being repopulated using $_GET data, that is priority
             return htmlspecialchars($_GET[$opt]);
         }
 
@@ -215,7 +213,7 @@ class Plugins
         }
 
         $matches = [];
-        /* Possibly replace localised texts */
+        
         if (! preg_match_all('/(str[A-Z][A-Za-z0-9]*)/', (string) $GLOBALS['cfg'][$section][$opt], $matches)) {
             return htmlspecialchars((string) $GLOBALS['cfg'][$section][$opt]);
         }
@@ -276,11 +274,9 @@ class Plugins
 
         $properties = null;
         if (! $is_subgroup) {
-            // for subgroup headers
             if (mb_strpos(get_class($propertyGroup), 'PropertyItem')) {
                 $properties = [$propertyGroup];
             } else {
-                // for main groups
                 $ret .= '<div id="' . $plugin_name . '_' . $propertyGroup->getName() . '">';
 
                 $text = null;
@@ -306,14 +302,11 @@ class Plugins
 
         $property_class = null;
         if (isset($properties)) {
-            /** @var OptionsPropertySubgroup $propertyItem */
+            
             foreach ($properties as $propertyItem) {
                 $property_class = get_class($propertyItem);
-                // if the property is a subgroup, we deal with it recursively
                 if (mb_strpos($property_class, 'Subgroup')) {
-                    // for subgroups
-                    // each subgroup can have a header, which may also be a form element
-                    /** @var OptionsPropertyItem|null $subgroup_header */
+                    
                     $subgroup_header = $propertyItem->getSubgroupHeader();
                     if ($subgroup_header !== null) {
                         $ret .= self::getOneOption($section, $plugin_name, $subgroup_header);
@@ -329,17 +322,13 @@ class Plugins
                     $ret .= self::getOneOption($section, $plugin_name, $propertyItem, true);
                     continue;
                 }
-
-                // single property item
                 $ret .= self::getHtmlForProperty($section, $plugin_name, $propertyItem);
             }
         }
 
         if ($is_subgroup) {
-            // end subgroup
             $ret .= '</ul></li>';
         } elseif ($not_subgroup_header) {
-            // end main group
             $ret .= '</ul></div>';
         }
 
@@ -355,8 +344,6 @@ class Plugins
                 }
             }
         }
-
-        // Close the list element after $doc link is displayed
         if ($property_class !== null) {
             if (
                 $property_class == BoolPropertyItem::class
@@ -404,7 +391,6 @@ class Plugins
                 );
 
                 if ($propertyItem->getForce() != null) {
-                    // Same code is also few lines lower, update both if needed
                     $ret .= ' onclick="if (!this.checked &amp;&amp; '
                         . '(!document.getElementById(\'checkbox_' . $plugin_name
                         . '_' . $propertyItem->getForce() . '\') '
@@ -553,7 +539,6 @@ class Plugins
     public static function getOptions($section, array $list)
     {
         $ret = '';
-        // Options for plugins that support them
         foreach ($list as $plugin) {
             $properties = $plugin->getProperties();
             $text = null;
@@ -572,7 +557,6 @@ class Plugins
             $no_options = true;
             if ($options !== null && count($options) > 0) {
                 foreach ($options->getProperties() as $propertyMainGroup) {
-                    // check for hidden properties
                     $no_options = true;
                     foreach ($propertyMainGroup->getProperties() as $propertyItem) {
                         if (strcmp(HiddenPropertyItem::class, get_class($propertyItem))) {
@@ -599,7 +583,7 @@ class Plugins
     {
         global $cfg;
 
-        /** @psalm-var class-string $class */
+        
         $class = 'PhpMyAdmin\\Plugins\\Auth\\Authentication' . ucfirst(strtolower($cfg['Server']['auth_type']));
 
         if (! class_exists($class)) {
@@ -609,7 +593,7 @@ class Plugins
             );
         }
 
-        /** @var AuthenticationPlugin $plugin */
+        
         $plugin = new $class();
 
         return $plugin;

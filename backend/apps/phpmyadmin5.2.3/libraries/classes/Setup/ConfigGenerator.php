@@ -46,8 +46,6 @@ class ConfigGenerator
             ? "\r\n"
             : "\n";
         $conf = $cf->getConfig();
-
-        // header
         $ret = '<?php' . $crlf
             . '/**' . $crlf
             . ' * Generated configuration file' . $crlf
@@ -56,14 +54,10 @@ class ConfigGenerator
                 . ' setup script' . $crlf
             . ' * Date: ' . gmdate(DATE_RFC1123) . $crlf
             . ' */' . $crlf . $crlf;
-
-        //servers
         if (! empty($conf['Servers'])) {
             $ret .= self::getServerPart($cf, $crlf, $conf['Servers']);
             unset($conf['Servers']);
         }
-
-        // other settings
         $persistKeys = $cf->getPersistKeysMap();
 
         foreach ($conf as $k => $v) {
@@ -75,8 +69,6 @@ class ConfigGenerator
 
             unset($persistKeys[$k]);
         }
-
-        // keep 1d array keys which are present in $persist_keys (config.values.php)
         foreach (array_keys($persistKeys) as $k) {
             if (str_contains($k, '/')) {
                 continue;
@@ -118,7 +110,6 @@ class ConfigGenerator
         }
 
         $ret = '';
-        // string keys: $cfg[key][subkey] = value
         foreach ($var_value as $k => $v) {
             $k = preg_replace('/[^A-Za-z0-9_]/', '_', $k);
             $ret .= "\$cfg['" . $var_name . "']['" . $k . "'] = "
@@ -161,11 +152,8 @@ class ConfigGenerator
 
         $ret = '[';
         if (count($retv) <= 4) {
-            // up to 4 values - one line
             return $ret . implode(', ', $retv) . ']';
         }
-
-        // more than 4 values - value per line
         $imax = count($retv);
         for ($i = 0; $i < $imax; $i++) {
             $ret .= ($i > 0 ? ',' : '') . $crlf . '    ' . $retv[$i];
@@ -189,7 +177,7 @@ class ConfigGenerator
             return null;
         }
 
-        $ret = '/* Servers configuration */' . $crlf . '$i = 0;' . $crlf . $crlf;
+        $ret = '' . $crlf . '$i = 0;' . $crlf . $crlf;
         foreach ($servers as $id => $server) {
             $ret .= '/* Server: '
                 . strtr($cf->getServerName($id) . ' [' . $id . '] ', '*/', '-')
@@ -207,7 +195,7 @@ class ConfigGenerator
             $ret .= $crlf;
         }
 
-        $ret .= '/* End of servers configuration */' . $crlf . $crlf;
+        $ret .= '' . $crlf . $crlf;
 
         return $ret;
     }

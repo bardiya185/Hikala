@@ -48,43 +48,43 @@ use function urlencode;
  */
 class StructureController extends AbstractController
 {
-    /** @var int Number of tables */
+    
     protected $numTables;
 
-    /** @var int Current position in the list */
+    
     protected $position;
 
-    /** @var bool DB is information_schema */
+    
     protected $dbIsSystemSchema;
 
-    /** @var int Number of tables */
+    
     protected $totalNumTables;
 
-    /** @var array Tables in the database */
+    
     protected $tables;
 
-    /** @var bool whether stats show or not */
+    
     protected $isShowStats;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Replication */
+    
     private $replication;
 
-    /** @var RelationCleanup */
+    
     private $relationCleanup;
 
-    /** @var Operations */
+    
     private $operations;
 
-    /** @var ReplicationInfo */
+    
     private $replicationInfo;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var FlashMessages */
+    
     private $flash;
 
     public function __construct(
@@ -152,13 +152,7 @@ class StructureController extends AbstractController
         }
 
         $this->addScriptFiles(['database/structure.js', 'table/change.js']);
-
-        // Gets the database structure
         $this->getDatabaseInfo('_structure');
-
-        // Checks if there are any tables to be shown on current page.
-        // If there are no tables, the user is redirected to the last page
-        // having any.
         if ($this->totalNumTables > 0 && $this->position > $this->totalNumTables) {
             $this->redirect('/database/structure', [
                 'db' => $this->db,
@@ -223,8 +217,6 @@ class StructureController extends AbstractController
     protected function displayTableList($replicaInfo): string
     {
         $html = '';
-
-        // filtering
         $html .= $this->template->render('filter', ['filter_value' => '']);
 
         $i = $sumEntries = 0;
@@ -244,19 +236,15 @@ class StructureController extends AbstractController
         $structureTableRows = [];
         $trackedTables = Tracker::getTrackedTables($GLOBALS['db']);
         foreach ($this->tables as $currentTable) {
-            // Get valid statistics whatever is the table type
 
             $dropQuery = '';
             $dropMessage = '';
             $overhead = '';
             $inputClass = ['checkall'];
-
-            // Sets parameters for links
             $tableUrlParams = [
                 'db' => $this->db,
                 'table' => $currentTable['TABLE_NAME'],
             ];
-            // do not list the previous table's size info for a view
 
             [
                 $currentTable,
@@ -554,14 +542,7 @@ class StructureController extends AbstractController
     ): array {
         $approxRows = false;
         $showSuperscript = '';
-
-        // there is a null value in the ENGINE
-        // - when the table needs to be repaired, or
-        // - when it's a view
-        //  so ensure that we'll display "in use" below for a table
-        //  that needs to be repaired
         if (isset($currentTable['TABLE_ROWS']) && ($currentTable['ENGINE'] != null || $tableIsView)) {
-            // InnoDB/TokuDB table: we did not get an accurate row count
             $approxRows = ! $tableIsView
                 && in_array($currentTable['ENGINE'], ['CSV', 'InnoDB', 'TokuDB'])
                 && ! $currentTable['COUNTED'];
@@ -610,8 +591,6 @@ class StructureController extends AbstractController
             $ignored = (is_string($searchTable) && strlen($searchTable) > 0)
                 || (is_string($searchDb) && strlen($searchDb) > 0)
                 || $this->hasTable($replicaInfo['Wild_Ignore_Table'], $table);
-
-            // Only set do = true if table is not ignored
             if (! $ignored) {
                 $do = (is_string($searchDoDBInTruename) && strlen($searchDoDBInTruename) > 0)
                     || (is_string($searchDoDBInDB) && strlen($searchDoDBInDB) > 0)
@@ -690,8 +669,6 @@ class StructureController extends AbstractController
         $tableIsView = false;
 
         switch ($currentTable['ENGINE']) {
-            // MyISAM, ISAM or Heap table: Row count, data size and index size
-            // are accurate; data size is accurate for ARCHIVE
             case 'MyISAM':
             case 'ISAM':
             case 'HEAP':
@@ -721,9 +698,6 @@ class StructureController extends AbstractController
             case 'PBMS':
             case 'TokuDB':
             case 'ROCKSDB':
-                // InnoDB table: Row count is not accurate but data and index sizes are.
-                // PBMS table in Drizzle: TABLE_ROWS is taken from table cache,
-                // so it may be unavailable
                 [$currentTable, $formattedSize, $unit, $sumSize] = $this->getValuesForInnodbTable(
                     $currentTable,
                     $sumSize
@@ -735,29 +709,20 @@ class StructureController extends AbstractController
                     $sumSize
                 );
                 break;
-            // Mysql 5.0.x (and lower) uses MRG_MyISAM
-            // and MySQL 5.1.x (and higher) uses MRG_MYISAM
-            // Both are aliases for MERGE
             case 'MRG_MyISAM':
             case 'MRG_MYISAM':
             case 'MERGE':
             case 'BerkeleyDB':
-                // Merge or BerkleyDB table: Only row count is accurate.
                 if ($this->isShowStats) {
                     $formattedSize = ' - ';
                     $unit = '';
                 }
 
                 break;
-            // for a view, the ENGINE is sometimes reported as null,
-            // or on some servers it's reported as "SYSTEM VIEW"
             case null:
             case 'SYSTEM VIEW':
-                // possibly a view, do nothing
                 break;
             case 'Mroonga':
-                // The idea is to show the size only if Mroonga is available,
-                // in other case the old unknown message will appear
                 if (StorageEngine::hasMroongaEngine()) {
                     [$currentTable, $formattedSize, $unit, $sumSize] = $this->getValuesForMroongaTable(
                         $currentTable,
@@ -765,9 +730,7 @@ class StructureController extends AbstractController
                     );
                     break;
                 }
-                // no break, go to default case
             default:
-                // Unknown table type.
                 if ($this->isShowStats) {
                     $formattedSize = __('unknown');
                     $unit = '';
@@ -775,7 +738,6 @@ class StructureController extends AbstractController
         }
 
         if ($currentTable['TABLE_TYPE'] === 'VIEW' || $currentTable['TABLE_TYPE'] === 'SYSTEM VIEW') {
-            // countRecords() takes care of $cfg['MaxExactCountViews']
             $currentTable['TABLE_ROWS'] = $this->dbi
                 ->getTable($this->db, $currentTable['TABLE_NAME'])
                 ->countRecords(true);
@@ -823,7 +785,7 @@ class StructureController extends AbstractController
         }
 
         if ($this->isShowStats) {
-            /** @var int $tblsize */
+            
             $tblsize = $currentTable['Data_length']
                 + $currentTable['Index_length'];
             $sumSize += $tblsize;
@@ -877,7 +839,7 @@ class StructureController extends AbstractController
         }
 
         if ($this->isShowStats) {
-            /** @var int $tblsize */
+            
             $tblsize = $currentTable['Data_length']
                 + $currentTable['Index_length'];
             $sumSize += $tblsize;
@@ -918,35 +880,25 @@ class StructureController extends AbstractController
         }
 
         if ($this->isShowStats) {
-            // Only count columns that have double quotes
             $columnCount = (int) $this->dbi->fetchValue(
                 'SELECT COUNT(COLUMN_NAME) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = \''
                 . $this->dbi->escapeString($this->db) . '\' AND TABLE_NAME = \''
                 . $this->dbi->escapeString($currentTable['TABLE_NAME']) . '\' AND NUMERIC_SCALE IS NULL;'
             );
-
-            // Get column names
             $columnNames = $this->dbi->fetchValue(
                 'SELECT GROUP_CONCAT(COLUMN_NAME) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = \''
                 . $this->dbi->escapeString($this->db) . '\' AND TABLE_NAME = \''
                 . $this->dbi->escapeString($currentTable['TABLE_NAME']) . '\';'
             );
-
-            // 10Mb buffer for CONCAT_WS
-            // not sure if is needed
             $this->dbi->query('SET SESSION group_concat_max_len = 10 * 1024 * 1024');
-
-            // Calculate data length
             $dataLength = (int) $this->dbi->fetchValue('
                 SELECT SUM(CHAR_LENGTH(REPLACE(REPLACE(REPLACE(
                     CONCAT_WS(\',\', ' . $columnNames . '),
                     UNHEX(\'0A\'), \'nn\'), UNHEX(\'22\'), \'nn\'), UNHEX(\'5C\'), \'nn\'
                 ))) FROM ' . Util::backquote($this->db) . '.' . Util::backquote($currentTable['TABLE_NAME']));
-
-            // Calculate quotes length
             $quotesLength = $currentTable['TABLE_ROWS'] * $columnCount * 2;
 
-            /** @var int $tblsize */
+            
             $tblsize = $dataLength + $quotesLength + $currentTable['TABLE_ROWS'];
 
             $sumSize += $tblsize;
@@ -972,7 +924,7 @@ class StructureController extends AbstractController
         $unit = '';
 
         if ($this->isShowStats) {
-            /** @var int $tblsize */
+            
             $tblsize = $currentTable['Data_length'] + $currentTable['Index_length'];
             $sumSize += $tblsize;
             [$formattedSize, $unit] = Util::formatByteDown($tblsize, 3, ($tblsize > 0 ? 1 : 0));

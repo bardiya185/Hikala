@@ -4,13 +4,13 @@ namespace CodeLts\U2F\U2FServer;
 
 class Registration
 {
-    /** @var string The key handle of the registered authenticator */
+    
     protected $keyHandle;
-    /** @var string The public key of the registered authenticator */
+    
     protected $publicKey;
-    /** @var string The attestation certificate of the registered authenticator */
+    
     protected $certificate;
-    /** @var int The counter associated with this registration */
+    
     protected $counter = -1;
 
     /**

@@ -73,8 +73,6 @@ final class ECSignature
         if (self::ASN1_SEQUENCE !== self::readAsn1Content($message, $position, self::BYTE_SIZE)) {
             throw new InvalidArgumentException('Invalid data. Should start with a sequence.');
         }
-
-        // @phpstan-ignore-next-line
         if (self::ASN1_LENGTH_2BYTES === self::readAsn1Content($message, $position, self::BYTE_SIZE)) {
             $position += self::BYTE_SIZE;
         }

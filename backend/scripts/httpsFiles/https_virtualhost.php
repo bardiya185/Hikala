@@ -1,5 +1,4 @@
 <?php
-//Wampserver https ready - Contents of one https VirtualHost
 $https_virtualhost_fgci = <<<'EOF'
   <IfModule fcgid_module>
     Define FCGIPHPVERSION "VERSIONPHPFCGI"

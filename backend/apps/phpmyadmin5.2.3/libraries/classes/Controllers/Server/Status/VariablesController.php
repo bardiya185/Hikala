@@ -21,7 +21,7 @@ use function str_contains;
 
 class VariablesController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, Data $data, DatabaseInterface $dbi)
@@ -100,9 +100,6 @@ class VariablesController extends AbstractController
                     'description' => $descriptions[$name] ?? '',
                     'description_doc' => [],
                 ];
-
-                // Fields containing % are calculated,
-                // they can not be described in MySQL documentation
                 if (! str_contains($name, '%')) {
                     $variables[$name]['doc'] = Generator::linkToVarDocumentation(
                         $name,
@@ -166,10 +163,7 @@ class VariablesController extends AbstractController
      */
     private function getAlerts(): array
     {
-        // name => max value before alert
         return [
-            // lower is better
-            // variable => max value
             'Aborted_clients' => 0,
             'Aborted_connects' => 0,
 
@@ -201,25 +195,14 @@ class VariablesController extends AbstractController
                     ? $this->data->status['Qcache_total_blocks'] / 5
                     : 0,
             'Slow_launch_threads' => 0,
-
-            // depends on Key_read_requests
-            // normally lower then 1:0.01
             'Key_reads' => isset($this->data->status['Key_read_requests'])
                 ? 0.01 * $this->data->status['Key_read_requests'] : 0,
-            // depends on Key_write_requests
-            // normally nearly 1:1
             'Key_writes' => isset($this->data->status['Key_write_requests'])
                 ? 0.9 * $this->data->status['Key_write_requests'] : 0,
 
             'Key_buffer_fraction' => 0.5,
-
-            // alert if more than 95% of thread cache is in use
             'Threads_cached' => isset($this->data->variables['thread_cache_size'])
                 ? 0.95 * $this->data->variables['thread_cache_size'] : 0,
-
-            // higher is better
-            // variable => min value
-            //'Handler read key' => '> ',
         ];
     }
 

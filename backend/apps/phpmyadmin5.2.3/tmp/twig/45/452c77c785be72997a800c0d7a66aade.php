@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* recent_favorite_table_no_tables.twig */
+
 class __TwigTemplate_cfcf33a8803a6d6e06adcac1e42a0911 extends Template
 {
     private $source;
@@ -34,24 +34,17 @@ class __TwigTemplate_cfcf33a8803a6d6e06adcac1e42a0911 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<li class=\"warp_link\">
     ";
-        // line 2
         if (($context["is_recent"] ?? null)) {
-            // line 3
             yield "        ";
 yield _gettext("There are no recent tables.");
-            // line 4
             yield "    ";
         } else {
-            // line 5
             yield "        ";
 yield _gettext("There are no favorite tables.");
-            // line 6
             yield "    ";
         }
-        // line 7
         yield "</li>
 ";
         return; yield '';

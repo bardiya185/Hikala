@@ -111,7 +111,7 @@ final class Time implements TypeInterface
      */
     public function unserialize($serialized): void
     {
-        /** @var stdClass $time */
+        
         $time = json_decode($serialized);
 
         if (!isset($time->seconds) || !isset($time->microseconds)) {
@@ -128,11 +128,9 @@ final class Time implements TypeInterface
      */
     public function __unserialize(array $data): void
     {
-        // @codeCoverageIgnoreStart
         if (!isset($data['seconds']) || !isset($data['microseconds'])) {
             throw new ValueError(sprintf('%s(): Argument #1 ($data) is invalid', __METHOD__));
         }
-        // @codeCoverageIgnoreEnd
 
         $this->__construct($data['seconds'], $data['microseconds']);
     }

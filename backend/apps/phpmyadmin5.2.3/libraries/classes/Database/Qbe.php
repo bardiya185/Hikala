@@ -208,13 +208,13 @@ class Qbe
      */
     private $currentSearch = null;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     public $dbi;
 
-    /** @var Template */
+    
     public $template;
 
     /**
@@ -241,7 +241,6 @@ class Qbe
         $this->template = $template;
 
         $this->loadCriterias();
-        // Sets criteria parameters
         $this->setSearchParams();
         $this->setCriteriaTablesAndColumns();
     }
@@ -294,7 +293,6 @@ class Qbe
         $this->criteriaRowDelete = $_POST['criteriaRowDelete'] ?? array_fill(0, $criteriaColumnCount, '');
         $this->criteriaAndOrRow = $_POST['criteriaAndOrRow'] ?? array_fill(0, $criteriaColumnCount, '');
         $this->criteriaAndOrColumn = $_POST['criteriaAndOrColumn'] ?? array_fill(0, $criteriaColumnCount, '');
-        // sets minimum width
         $this->formColumnWidth = 12;
         $this->formColumns = [];
         $this->formSorts = [];
@@ -309,7 +307,6 @@ class Qbe
      */
     private function setCriteriaTablesAndColumns(): void
     {
-        // The tables list sent by a previously submitted form
         if (isset($_POST['TableList']) && is_array($_POST['TableList'])) {
             foreach ($_POST['TableList'] as $eachTable) {
                 $this->criteriaTables[$eachTable] = ' selected="selected"';
@@ -322,8 +319,6 @@ class Qbe
             echo Message::error(__('No tables found in database.'))->getDisplay();
             exit;
         }
-
-        // The tables list gets from MySQL
         foreach ($allTables->fetchAllColumn() as $table) {
             $columns = $this->dbi->getColumns($this->db, $table);
 
@@ -332,8 +327,6 @@ class Qbe
             } else {
                 $this->criteriaTables[$table] = ' selected="selected"';
             }
-
-            // The fields list per selected tables
             if ($this->criteriaTables[$table] !== ' selected="selected"') {
                 continue;
             }
@@ -344,15 +337,12 @@ class Qbe
                 $eachColumn = $eachTable . '.'
                     . Util::backquote($eachColumn['Field']);
                 $this->columnNames[] = $eachColumn;
-                // increase the width if necessary
                 $this->formColumnWidth = max(
                     mb_strlen($eachColumn),
                     $this->formColumnWidth
                 );
             }
         }
-
-        // sets the largest width found
         $this->realwidth = $this->formColumnWidth . 'ex';
     }
 
@@ -548,9 +538,6 @@ class Qbe
             ) {
                 continue;
             }
-
-            // If they have chosen all fields using the * selector,
-            // then sorting is not available, Fix for Bug #570698
             if (
                 isset($_POST['criteriaSort'][$colInd], $_POST['criteriaColumn'][$colInd])
                 && mb_substr($_POST['criteriaColumn'][$colInd], -2) === '.*'
@@ -1009,8 +996,6 @@ class Qbe
         if ($criteriaCount > 1) {
             $whereClause = '(' . $whereClause . ')';
         }
-
-        // OR rows ${'cur' . $or}[$column_index]
         if (! isset($this->formAndOrRows)) {
             $this->formAndOrRows = [];
         }
@@ -1071,20 +1056,14 @@ class Qbe
     {
         $orderByClause = '';
         $orderByClauses = [];
-
-        // Create copy of instance variables
         $columns = $this->formColumns;
         $sort = $this->formSorts;
         $sortOrder = $this->formSortOrders;
         if (! empty($sortOrder) && count($sortOrder) == count($sort) && count($sortOrder) == count($columns)) {
-            // Sort all three arrays based on sort order
             array_multisort($sortOrder, $sort, $columns);
         }
 
         for ($columnIndex = 0; $columnIndex < $this->criteriaColumnCount; $columnIndex++) {
-            // if all columns are chosen with * selector,
-            // then sorting isn't available
-            // Fix for Bug #570698
             if (empty($columns[$columnIndex]) && empty($sort[$columnIndex])) {
                 continue;
             }
@@ -1170,8 +1149,6 @@ class Qbe
         array $whereClauseColumns
     ) {
         $this->dbi->selectDb($this->db);
-
-        // Get unique columns and index columns
         $indexes = $this->getIndexes($searchTables, $searchColumns, $whereClauseColumns);
         $uniqueColumns = $indexes['unique'];
         $indexColumns = $indexes['index'];
@@ -1182,11 +1159,6 @@ class Qbe
             $uniqueColumns,
             $indexColumns
         );
-
-        // If we came up with $unique_columns (very good) or $index_columns (still
-        // good) as $candidate_columns we want to check if we have any 'Y' there
-        // (that would mean that they were also found in the whereclauses
-        // which would be great). if yes, we take only those
         if ($needSort != 1) {
             return $candidateColumns;
         }
@@ -1205,10 +1177,8 @@ class Qbe
 
         if (count($veryGood) > 0) {
             $candidateColumns = $veryGood;
-            // Candidates restricted in index+where
         } else {
             $candidateColumns = $stillGood;
-            // None of the candidates where in a where-clause
         }
 
         return $candidateColumns;
@@ -1231,20 +1201,9 @@ class Qbe
         array $whereClauseTables
     ) {
         if (count($whereClauseTables) === 1) {
-            // If there is exactly one column that has a decent where-clause
-            // we will just use this
             return key($whereClauseTables);
         }
-
-        // Now let's find out which of the tables has an index
-        // (When the control user is the same as the normal user
-        // because they are using one of their databases as pmadb,
-        // the last db selected is not always the one where we need to work)
         $candidateColumns = $this->getLeftJoinColumnCandidates($searchTables, $searchColumns, $whereClauseColumns);
-
-        // Generally, we need to display all the rows of foreign (referenced)
-        // table, whether they have any matching row in child table or not.
-        // So we select candidate tables which are foreign tables.
         $foreignTables = [];
         foreach ($candidateColumns as $oneTable) {
             $foreigners = $this->relation->getForeigners($this->db, $oneTable);
@@ -1270,18 +1229,9 @@ class Qbe
         if (count($foreignTables)) {
             $candidateColumns = $foreignTables;
         }
-
-        // If our array of candidates has more than one member we'll just
-        // find the smallest table.
-        // Of course the actual query would be faster if we check for
-        // the Criteria which gives the smallest result set in its table,
-        // but it would take too much time to check this
         if (! (count($candidateColumns) > 1)) {
-            // Only one single candidate
             return reset($candidateColumns);
         }
-
-        // Of course we only want to check each table once
         $checkedTables = $candidateColumns;
         $tsize = [];
         $maxsize = -1;
@@ -1300,8 +1250,6 @@ class Qbe
             $maxsize = $tsize[$table];
             $result = $table;
         }
-
-        // Return largest table
         return $result;
     }
 
@@ -1314,8 +1262,6 @@ class Qbe
     {
         $whereClauseColumns = [];
         $whereClauseTables = [];
-
-        // Now we need all tables that we have in the where clause
         for ($columnIndex = 0, $nb = count($this->criteria); $columnIndex < $nb; $columnIndex++) {
             $currentTable = explode('.', $_POST['criteriaColumn'][$columnIndex]);
             if (empty($currentTable[0]) || empty($currentTable[1])) {
@@ -1325,8 +1271,6 @@ class Qbe
             $table = str_replace('`', '', $currentTable[0]);
             $column = str_replace('`', '', $currentTable[1]);
             $column = $table . '.' . $column;
-            // Now we know that our array has the same numbers as $criteria
-            // we can check which of our columns has a where clause
             if (empty($this->criteria[$columnIndex])) {
                 continue;
             }
@@ -1361,11 +1305,7 @@ class Qbe
         if (empty($formColumns)) {
             return $fromClause;
         }
-
-        // Initialize some variables
         $searchTables = $searchColumns = [];
-
-        // We only start this if we have fields, otherwise it would be dumb
         foreach ($formColumns as $value) {
             $parts = explode('.', $value);
             if (empty($parts[0]) || empty($parts[1])) {
@@ -1376,14 +1316,8 @@ class Qbe
             $searchTables[$table] = $table;
             $searchColumns[] = $table . '.' . str_replace('`', '', $parts[1]);
         }
-
-        // Create LEFT JOINS out of Relations
         $fromClause = $this->getJoinForFromClause($searchTables, $searchColumns);
-
-        // In case relations are not defined, just generate the FROM clause
-        // from the list of tables, however we don't generate any JOIN
         if (empty($fromClause)) {
-            // Create cartesian product
             $fromClause = implode(
                 ', ',
                 array_map([Util::class, 'backquote'], $searchTables)
@@ -1403,48 +1337,26 @@ class Qbe
      */
     private function getJoinForFromClause(array $searchTables, array $searchColumns)
     {
-        // $relations[master_table][foreign_table] => clause
         $relations = [];
-
-        // Fill $relations with inter table relationship data
         foreach ($searchTables as $oneTable) {
             $this->loadRelationsForTable($relations, $oneTable);
         }
-
-        // Get tables and columns with valid where clauses
         $validWhereClauses = $this->getWhereClauseTablesAndColumns();
         $whereClauseTables = $validWhereClauses['where_clause_tables'];
         $whereClauseColumns = $validWhereClauses['where_clause_columns'];
-
-        // Get master table
         $master = $this->getMasterTable($searchTables, $searchColumns, $whereClauseColumns, $whereClauseTables);
-
-        // Will include master tables and all tables that can be combined into
-        // a cluster by their relation
         $finalized = [];
         if (strlen((string) $master) > 0) {
-            // Add master tables
             $finalized[$master] = '';
         }
-
-        // Fill the $finalized array with JOIN clauses for each table
         $this->fillJoinClauses($finalized, $relations, $searchTables);
-
-        // JOIN clause
         $join = '';
-
-        // Tables that can not be combined with the table cluster
-        // which includes master table
         $unfinalized = array_diff($searchTables, array_keys($finalized));
         if (count($unfinalized) > 0) {
-            // We need to look for intermediary tables to JOIN unfinalized tables
-            // Heuristic to chose intermediary tables is to look for tables
-            // having relationships with unfinalized tables
             foreach ($unfinalized as $oneTable) {
                 $references = $this->relation->getChildReferences($this->db, $oneTable);
                 foreach ($references as $columnReferences) {
                     foreach ($columnReferences as $reference) {
-                        // Only from this schema
                         if ($reference['table_schema'] != $this->db) {
                             continue;
                         }
@@ -1452,28 +1364,19 @@ class Qbe
                         $table = $reference['table_name'];
 
                         $this->loadRelationsForTable($relations, $table);
-
-                        // Make copies
                         $tempFinalized = $finalized;
                         $tempSearchTables = $searchTables;
                         $tempSearchTables[] = $table;
-
-                        // Try joining with the added table
                         $this->fillJoinClauses($tempFinalized, $relations, $tempSearchTables);
 
                         $tempUnfinalized = array_diff(
                             $tempSearchTables,
                             array_keys($tempFinalized)
                         );
-                        // Take greedy approach.
-                        // If the unfinalized count drops we keep the new table
-                        // and switch temporary varibles with the original ones
                         if (count($tempUnfinalized) < count($unfinalized)) {
                             $finalized = $tempFinalized;
                             $searchTables = $tempSearchTables;
                         }
-
-                        // We are done if no unfinalized tables anymore
                         if (count($tempUnfinalized) === 0) {
                             break 3;
                         }
@@ -1482,9 +1385,7 @@ class Qbe
             }
 
             $unfinalized = array_diff($searchTables, array_keys($finalized));
-            // If there are still unfinalized tables
             if (count($unfinalized) > 0) {
-                // Add these tables as cartesian product before joined tables
                 $join .= implode(
                     ', ',
                     array_map([Util::class, 'backquote'], $unfinalized)
@@ -1493,7 +1394,6 @@ class Qbe
         }
 
         $first = true;
-        // Add joined tables
         foreach ($finalized as $table => $clause) {
             if ($first) {
                 if (! empty($join)) {
@@ -1522,19 +1422,15 @@ class Qbe
 
         $foreigners = $this->relation->getForeigners($GLOBALS['db'], $oneTable);
         foreach ($foreigners as $field => $foreigner) {
-            // Foreign keys data
             if ($field === 'foreign_keys_data') {
                 foreach ($foreigner as $oneKey) {
                     $clauses = [];
-                    // There may be multiple column relations
                     foreach ($oneKey['index_list'] as $index => $oneField) {
                         $clauses[] = Util::backquote($oneTable) . '.'
                             . Util::backquote($oneField) . ' = '
                             . Util::backquote($oneKey['ref_table_name']) . '.'
                             . Util::backquote($oneKey['ref_index_list'][$index]);
                     }
-
-                    // Combine multiple column relations with AND
                     $relations[$oneTable][$oneKey['ref_table_name']] = implode(' AND ', $clauses);
                 }
             } else { // Internal relations
@@ -1575,15 +1471,11 @@ class Qbe
                     if (! $added) {
                         continue;
                     }
-
-                    // We are done if all tables are in $finalized
                     if (count($finalized) == count($searchTables)) {
                         return;
                     }
                 }
             }
-
-            // If no new tables were added during this iteration, break;
             if (! $added) {
                 return;
             }
@@ -1600,17 +1492,12 @@ class Qbe
     private function getSQLQuery(array $formColumns)
     {
         $sqlQuery = '';
-        // get SELECT clause
         $sqlQuery .= $this->getSelectClause();
-        // get FROM clause
         $fromClause = $this->getFromClause($formColumns);
         if ($fromClause !== '') {
             $sqlQuery .= 'FROM ' . $fromClause . "\n";
         }
-
-        // get WHERE clause
         $sqlQuery .= $this->getWhereClause();
-        // get ORDER BY clause
         $sqlQuery .= $this->getOrderByClause();
 
         return $sqlQuery;
@@ -1716,7 +1603,6 @@ class Qbe
      */
     private function initializeCriteriasCount(): int
     {
-        // sets column count
         $criteriaColumnCount = isset($_POST['criteriaColumnCount']) && is_numeric($_POST['criteriaColumnCount'])
             ? (int) $_POST['criteriaColumnCount']
             : 3;
@@ -1724,8 +1610,6 @@ class Qbe
             ? (int) $_POST['criteriaColumnAdd']
             : 0;
         $this->criteriaColumnCount = max($criteriaColumnCount + $criteriaColumnAdd, 0);
-
-        // sets row count
         $rows = isset($_POST['rows']) && is_numeric($_POST['rows']) ? (int) $_POST['rows'] : 0;
         $criteriaRowAdd = isset($_POST['criteriaRowAdd']) && is_numeric($_POST['criteriaRowAdd'])
             ? (int) $_POST['criteriaRowAdd']
@@ -1754,7 +1638,6 @@ class Qbe
         ?array $uniqueColumns,
         ?array $indexColumns
     ) {
-        // now we want to find the best.
         if (isset($uniqueColumns) && count($uniqueColumns) > 0) {
             $candidateColumns = $uniqueColumns;
             $needSort = 1;

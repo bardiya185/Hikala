@@ -71,7 +71,7 @@ class ImportXml extends ImportPlugin
         while (! $finished && ! $error && ! $timeout_passed) {
             $data = $this->import->getNextChunk($importHandle);
             if ($data === false) {
-                /* subtract data we didn't handle yet and stop processing */
+                
                 $GLOBALS['offset'] -= strlen($buffer);
                 break;
             }
@@ -80,7 +80,7 @@ class ImportXml extends ImportPlugin
                 continue;
             }
 
-            /* Append new data to buffer */
+            
             $buffer .= $data;
         }
 
@@ -88,7 +88,6 @@ class ImportXml extends ImportPlugin
          * Disable loading of external XML entities for PHP versions below 8.0.
          */
         if (PHP_VERSION_ID < 80000) {
-            // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated
             libxml_disable_entity_loader();
         }
 
@@ -196,8 +195,6 @@ class ImportXml extends ImportPlugin
 
             foreach ($struct as $val1) {
                 foreach ($val1 as $val2) {
-                    // Need to select the correct database for the creation of
-                    // tables, views, triggers, etc.
                     /**
                      * @todo    Generating a USE here blocks importing of a table
                      *          into another database.
@@ -236,7 +233,7 @@ class ImportXml extends ImportPlugin
              * Process all database content
              */
             foreach ($xml as $v1) {
-                /** @psalm-suppress PossiblyNullReference */
+                
                 $tbl_attr = $v1->attributes();
 
                 $isInTables = false;
@@ -253,7 +250,7 @@ class ImportXml extends ImportPlugin
                 }
 
                 foreach ($v1 as $v2) {
-                    /** @psalm-suppress PossiblyNullReference */
+                    
                     $row_attr = $v2->attributes();
                     if (! in_array((string) $row_attr['name'], $tempRow)) {
                         $tempRow[] = (string) $row_attr['name'];
@@ -337,25 +334,25 @@ class ImportXml extends ImportPlugin
          * array $options = an associative array of options
          */
 
-        /* Set database name to the currently selected one, if applicable */
+        
         if (strlen((string) $db)) {
-            /* Override the database name in the XML file, if one is selected */
+            
             $db_name = $db;
             $options = ['create_db' => false];
         } else {
-            /* Set database collation/charset */
+            
             $options = [
                 'db_collation' => $collation,
                 'db_charset' => $charset,
             ];
         }
 
-        /* Created and execute necessary SQL statements from data */
+        
         $this->import->buildSql($db_name, $tables, $analyses, $create, $options, $sql_data);
 
         unset($analyses, $tables, $create);
 
-        /* Commit any possible data in buffers */
+        
         $this->import->runQuery('', '', $sql_data);
     }
 }

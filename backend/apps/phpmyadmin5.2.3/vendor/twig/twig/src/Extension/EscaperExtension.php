@@ -106,8 +106,6 @@ final class EscaperExtension extends AbstractExtension
      */
     public function getDefaultStrategy(string $name)
     {
-        // disable string callables to avoid calling a function named html or js,
-        // or any other upcoming escaping strategy
         if (!\is_string($this->defaultStrategy) && false !== $this->defaultStrategy) {
             return \call_user_func($this->defaultStrategy, $name);
         }

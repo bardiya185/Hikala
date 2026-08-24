@@ -63,7 +63,7 @@ abstract class Hex implements EncoderInterface
         $hex = '';
         $len = Binary::safeStrlen($binString);
         for ($i = 0; $i < $len; ++$i) {
-            /** @var array<int, int> $chunk */
+            
             $chunk = unpack('C', $binString[$i]);
             $c = $chunk[1] & 0xf;
             $b = $chunk[1] >> 4;
@@ -93,7 +93,7 @@ abstract class Hex implements EncoderInterface
         $len = Binary::safeStrlen($binString);
 
         for ($i = 0; $i < $len; ++$i) {
-            /** @var array<int, int> $chunk */
+            
             $chunk = unpack('C', $binString[$i]);
             $c = $chunk[1] & 0xf;
             $b = $chunk[1] >> 4;
@@ -144,7 +144,7 @@ abstract class Hex implements EncoderInterface
             }
         }
 
-        /** @var array<int, int> $chunk */
+        
         $chunk = unpack('C*', $encodedString);
         while ($hex_pos < $hex_len) {
             ++$hex_pos;

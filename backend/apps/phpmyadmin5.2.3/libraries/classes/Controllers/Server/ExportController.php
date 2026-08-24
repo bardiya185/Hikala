@@ -19,10 +19,10 @@ use function array_merge;
 
 final class ExportController extends AbstractController
 {
-    /** @var Options */
+    
     private $export;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, Options $export, DatabaseInterface $dbi)

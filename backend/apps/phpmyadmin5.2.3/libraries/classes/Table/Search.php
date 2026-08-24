@@ -23,7 +23,7 @@ use function trim;
 
 final class Search
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(DatabaseInterface $dbi)
@@ -39,16 +39,10 @@ final class Search
     public function buildSqlQuery(): string
     {
         $sql_query = 'SELECT ';
-
-        // If only distinct values are needed
         $is_distinct = isset($_POST['distinct']) ? 'true' : 'false';
         if ($is_distinct === 'true') {
             $sql_query .= 'DISTINCT ';
         }
-
-        // if all column names were selected to display, we do a 'SELECT *'
-        // (more efficient and this helps prevent a problem in IE
-        // if one of the rows is edited and we come back to the Select results)
         if (isset($_POST['zoom_submit']) || ! empty($_POST['displayAllColumns'])) {
             $sql_query .= '*';
         } else {
@@ -65,8 +59,6 @@ final class Search
             . Util::backquote($_POST['table']);
         $whereClause = $this->generateWhereClause();
         $sql_query .= $whereClause;
-
-        // if the search results are to be ordered
         if (isset($_POST['orderByColumn']) && $_POST['orderByColumn'] !== '--nil--') {
             $sql_query .= ' ORDER BY '
                 . Util::backquote($_POST['orderByColumn'])
@@ -86,9 +78,6 @@ final class Search
         if (isset($_POST['customWhereClause']) && trim($_POST['customWhereClause']) != '') {
             return ' WHERE ' . $_POST['customWhereClause'];
         }
-
-        // If there are no search criteria set or no unary criteria operators,
-        // return
         if (
             ! isset($_POST['criteriaColumnOperators'])
             || (
@@ -99,8 +88,6 @@ final class Search
         ) {
             return '';
         }
-
-        // else continue to form the where clause from column criteria values
         $fullWhereClause = [];
         foreach ($_POST['criteriaColumnOperators'] as $column_index => $operator) {
             $unaryFlag = $this->dbi->types->isUnaryOperator($operator);
@@ -149,7 +136,6 @@ final class Search
         $unaryFlag,
         $geom_func = null
     ): string {
-        // If geometry function is set
         if (! empty($geom_func)) {
             return $this->getGeomWhereClause($criteriaValues, $names, $func_type, $types, $geom_func);
         }
@@ -162,10 +148,6 @@ final class Search
             $where = $backquoted_name;
             $where .= $this->getEnumWhereClause($criteriaValues, $func_type);
         } elseif ($criteriaValues != '') {
-            // For these types we quote the value. Even if it's another type
-            // (like INT), for a LIKE we always quote the value. MySQL converts
-            // strings to numbers and numbers to strings as necessary
-            // during the comparison
             if (
                 preg_match('@char|binary|blob|text|set|date|time|year|uuid@i', $types)
                 || mb_strpos(' ' . $func_type, 'LIKE')
@@ -174,8 +156,6 @@ final class Search
             } else {
                 $quot = '';
             }
-
-            // LIKE %...%
             if ($func_type === 'LIKE %...%') {
                 $func_type = 'LIKE';
                 $criteriaValues = '%' . $criteriaValues . '%';
@@ -202,16 +182,11 @@ final class Search
             }
 
             $func_type = str_replace(' (...)', '', $func_type);
-
-            //Don't explode if this is already an array
-            //(Case for (NOT) IN/BETWEEN.)
             if (is_array($criteriaValues)) {
                 $values = $criteriaValues;
             } else {
                 $values = explode(',', $criteriaValues);
             }
-
-            // quote values one by one
             $emptyKey = false;
             foreach ($values as $key => &$value) {
                 if ($value === '') {
@@ -278,33 +253,23 @@ final class Search
             'IsClosed' => 1,
         ];
         $where = '';
-
-        // Get details about the geometry functions
         $geom_funcs = Gis::getFunctions($types, true, false);
-
-        // If the function takes multiple parameters
         if (str_contains($func_type, 'IS NULL') || str_contains($func_type, 'IS NOT NULL')) {
             return Util::backquote($names) . ' ' . $func_type;
         }
 
         if ($geom_funcs[$geom_func]['params'] > 1) {
-            // create gis data from the criteria input
             $gis_data = Gis::createData($criteriaValues, $this->dbi->getVersion());
 
             return $geom_func . '(' . Util::backquote($names)
                 . ', ' . $gis_data . ')';
         }
-
-        // New output type is the output type of the function being applied
         $type = $geom_funcs[$geom_func]['type'];
         $geom_function_applied = $geom_func
             . '(' . Util::backquote($names) . ')';
-
-        // If the where clause is something like 'IsEmpty(`spatial_col_name`)'
         if (isset($geom_unary_functions[$geom_func]) && trim($criteriaValues) == '') {
             $where = $geom_function_applied;
         } elseif (in_array($type, Gis::getDataTypes()) && ! empty($criteriaValues)) {
-            // create gis data from the criteria input
             $gis_data = Gis::createData($criteriaValues, $this->dbi->getVersion());
             $where = $geom_function_applied . ' ' . $func_type . ' ' . $gis_data;
         } elseif (strlen($criteriaValues) > 0) {

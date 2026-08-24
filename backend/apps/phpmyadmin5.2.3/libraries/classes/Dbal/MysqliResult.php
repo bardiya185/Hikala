@@ -53,7 +53,7 @@ final class MysqliResult implements ResultInterface
         }
 
         $this->result->data_seek(0);
-        /** @var array<string, string|null> $row */
+        
         foreach ($this->result as $row) {
             yield $row;
         }
@@ -119,11 +119,7 @@ final class MysqliResult implements ResultInterface
         if (! $this->result) {
             return [];
         }
-
-        // This function should return all rows, not only the remaining rows
         $this->result->data_seek(0);
-
-        // Pre PHP 8.1 when compiled against libmysql doesn't support fetch_all
         if (method_exists($this->result, 'fetch_all')) {
             return $this->result->fetch_all(MYSQLI_ASSOC);
         }
@@ -146,11 +142,7 @@ final class MysqliResult implements ResultInterface
         if (! $this->result) {
             return [];
         }
-
-        // This function should return all rows, not only the remaining rows
         $this->result->data_seek(0);
-
-        // Pre PHP 8.1 when compiled against libmysql doesn't support fetch_all
         if (method_exists($this->result, 'fetch_all')) {
             return array_column($this->result->fetch_all(), 0);
         }
@@ -178,11 +170,7 @@ final class MysqliResult implements ResultInterface
         }
 
         Assert::greaterThanEq($this->result->field_count, 2);
-
-        // This function should return all rows, not only the remaining rows
         $this->result->data_seek(0);
-
-        // Pre PHP 8.1 when compiled against libmysql doesn't support fetch_all
         if (method_exists($this->result, 'fetch_all')) {
             return array_column($this->result->fetch_all(), 1, 0);
         }
@@ -268,7 +256,7 @@ final class MysqliResult implements ResultInterface
             return [];
         }
 
-        /** @var list<string> $column */
+        
         $column = array_column($this->result->fetch_fields(), 'name');
 
         return $column;

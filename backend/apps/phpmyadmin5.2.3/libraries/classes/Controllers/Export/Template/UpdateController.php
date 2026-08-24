@@ -14,10 +14,10 @@ use PhpMyAdmin\Template;
 
 final class UpdateController extends AbstractController
 {
-    /** @var TemplateModel */
+    
     private $model;
 
-    /** @var Relation */
+    
     private $relation;
 
     public function __construct(
@@ -36,7 +36,7 @@ final class UpdateController extends AbstractController
         global $cfg;
 
         $templateId = (int) $request->getParsedBodyParam('templateId');
-        /** @var string $templateData */
+        
         $templateData = $request->getParsedBodyParam('templateData', '');
 
         $exportTemplatesFeature = $this->relation->getRelationParameters()->exportTemplatesFeature;

@@ -277,7 +277,7 @@ class Formatter
             'function',
         ];
 
-        /* Sanitize the array so that we do not have to care later */
+        
         foreach ($newFormats as $j => $new) {
             foreach ($integers as $name) {
                 if (isset($new[$name])) {
@@ -296,7 +296,7 @@ class Formatter
             }
         }
 
-        /* Process changes to existing formats */
+        
         foreach ($formats as $i => $original) {
             foreach ($newFormats as $j => $new) {
                 if ($new['type'] !== $original['type'] || $original['flags'] !== $new['flags']) {
@@ -308,7 +308,7 @@ class Formatter
             }
         }
 
-        /* Add not already handled formats */
+        
         foreach ($newFormats as $j => $new) {
             if (in_array($j, $added)) {
                 continue;

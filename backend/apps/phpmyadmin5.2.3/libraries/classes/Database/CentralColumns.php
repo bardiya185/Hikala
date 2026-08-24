@@ -66,10 +66,10 @@ class CentralColumns
      */
     private $disableIs;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Template */
+    
     public $template;
 
     /**
@@ -138,7 +138,6 @@ class CentralColumns
         $pmadb = $cfgCentralColumns['db'];
         $this->dbi->selectDb($pmadb, DatabaseInterface::CONNECT_CONTROL);
         $central_list_table = $cfgCentralColumns['table'];
-        //get current values of $db from central column list
         if ($num == 0) {
             $query = 'SELECT * FROM ' . Util::backquote($central_list_table) . ' '
                 . 'WHERE db_name = \'' . $this->dbi->escapeString($db) . '\';';
@@ -491,8 +490,6 @@ class CentralColumns
             $this->dbi->selectDb($db);
             foreach ($has_list as $column) {
                 $column_status = $this->relation->checkChildForeignReferences($db, $table, $column['col_name']);
-                //column definition can only be changed if
-                //it is not referenced by another column
                 if (! $column_status['isEditable']) {
                     continue;
                 }
@@ -717,8 +714,6 @@ class CentralColumns
 
         $defaultValue = '';
         $typeUpper = mb_strtoupper((string) $row['col_type']);
-
-        // For a TIMESTAMP, do not show the string "CURRENT_TIMESTAMP" as a default value
         if (isset($meta['DefaultValue'])) {
             $defaultValue = $meta['DefaultValue'];
 
@@ -872,7 +867,6 @@ class CentralColumns
         $pmadb = $cfgCentralColumns['db'];
         $this->dbi->selectDb($pmadb, DatabaseInterface::CONNECT_CONTROL);
         $central_list_table = $cfgCentralColumns['table'];
-        //get current values of $db from central column list
         $query = 'SELECT COUNT(db_name) FROM ' . Util::backquote($central_list_table) . ' '
             . 'WHERE db_name = \'' . $this->dbi->escapeString($db) . '\'' .
             ($num === 0 ? '' : 'LIMIT ' . $from . ', ' . $num) . ';';
@@ -893,8 +887,6 @@ class CentralColumns
         $existingColumns = $this->getFromTable($db, $table);
         $this->dbi->selectDb($db);
         $columnNames = $this->dbi->getColumnNames($db, $table);
-
-        // returns a list of column names less the ones from $existingColumns
         return array_values(array_diff($columnNames, $existingColumns));
     }
 
@@ -947,8 +939,6 @@ class CentralColumns
             }
 
             $types_upper[$row_num] = mb_strtoupper((string) $row['col_type']);
-
-            // For a TIMESTAMP, do not show the string "CURRENT_TIMESTAMP" as a default value
             $defaultValues[$row_num] = '';
             if (isset($rows_meta[$row_num]['DefaultValue'])) {
                 $defaultValues[$row_num] = $rows_meta[$row_num]['DefaultValue'];

@@ -12,7 +12,7 @@ use PhpMyAdmin\Util;
  */
 class SchemaExportController
 {
-    /** @var Export */
+    
     private $export;
 
     public function __construct(Export $export)

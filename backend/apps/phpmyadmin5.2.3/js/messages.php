@@ -6,7 +6,7 @@ use PhpMyAdmin\Common;
 use PhpMyAdmin\Controllers\JavaScriptMessagesController;
 use PhpMyAdmin\OutputBuffering;
 
-/** @psalm-suppress InvalidGlobal */
+
 global $containerBuilder;
 
 if (! defined('ROOT_PATH')) {
@@ -62,6 +62,6 @@ register_shutdown_function(static function (): void {
     echo OutputBuffering::getInstance()->getContents();
 });
 
-/** @var JavaScriptMessagesController $controller */
+
 $controller = $containerBuilder->get(JavaScriptMessagesController::class);
 $controller();

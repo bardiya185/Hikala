@@ -16,10 +16,10 @@ use function count;
 
 final class CopyTableController extends AbstractController
 {
-    /** @var Operations */
+    
     private $operations;
 
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(

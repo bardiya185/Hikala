@@ -137,7 +137,6 @@ class SlimData extends stdClass implements JsonSerializable
                             $entry->t = $this->types['AURORA-MYSQL'];
                         }
                         if (isset($entry->t)) {// If has no valid type, skip.
-                            //Do not allow other urls.
                             $keyIndex = array_search($kbd->getUrl(), $this->urls);
                             if ($keyIndex === false) {
                                 $this->urls[] = $kbd->getUrl();

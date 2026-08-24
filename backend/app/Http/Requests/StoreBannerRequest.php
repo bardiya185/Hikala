@@ -53,8 +53,6 @@ class StoreBannerRequest extends FormRequest
             'background_color.regex' => 'کد رنگ باید مثل #FFFFFF باشد',
         ];
     }
-
-    // 🔥 اعتبارسنجی سفارشی: چک کن linkable وجود داره
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {

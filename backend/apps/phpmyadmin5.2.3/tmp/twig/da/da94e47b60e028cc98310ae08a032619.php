@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* database/structure/collation_definition.twig */
+
 class __TwigTemplate_04bd937be62a8b2733322fed7da8347a extends Template
 {
     private $source;
@@ -34,7 +34,6 @@ class __TwigTemplate_04bd937be62a8b2733322fed7da8347a extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<dfn title=\"";
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["valueTitle"] ?? null), "html", null, true);
         yield "\">";

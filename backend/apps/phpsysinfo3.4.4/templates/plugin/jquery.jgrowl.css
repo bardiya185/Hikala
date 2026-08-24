@@ -6,7 +6,7 @@ div.jGrowl {
 	font-size: 			12px;
 }
 
-/** Special IE6 Style Positioning **/
+
 div.ie6 {
 	position: 			absolute;
 }
@@ -39,7 +39,7 @@ div.ie6.center {
 	width: 				100%;
 }
 
-/** Normal Style Positions **/
+
 div.jGrowl {
 	position:			absolute;
 }
@@ -74,7 +74,7 @@ div.jGrowl.center {
 	left: 				25%;
 }
 
-/** Cross Browser Styling **/
+
 div.center div.jGrowl-notification, div.center div.jGrowl-closer {
 	margin-left: 		auto;
 	margin-right: 		auto;
@@ -124,7 +124,7 @@ div.jGrowl div.jGrowl-closer {
 	text-align: 			center;
 }
 
-/** Hide jGrowl when printing **/
+
 @media print {
 	div.jGrowl {
 		display: 			none;

@@ -28,16 +28,16 @@ use function trim;
  */
 class Events
 {
-    /** @var array<string, array<int, string>> */
+    
     private $status = [
         'query' => ['ENABLE', 'DISABLE', 'DISABLE ON SLAVE'],
         'display' => ['ENABLED', 'DISABLED', 'SLAVESIDE_DISABLED'],
     ];
 
-    /** @var array<int, string> */
+    
     private $type = ['RECURRING', 'ONE TIME'];
 
-    /** @var array<int, string> */
+    
     private $interval = [
         'YEAR',
         'QUARTER',
@@ -56,13 +56,13 @@ class Events
         'MINUTE_SECOND',
     ];
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var Template */
+    
     private $template;
 
-    /** @var ResponseRenderer */
+    
     private $response;
 
     /**
@@ -88,12 +88,8 @@ class Events
             $sql_query = '';
 
             $item_query = $this->getQueryFromRequest();
-
-            // set by getQueryFromRequest()
             if (! count($errors)) {
-                // Execute the created query
                 if (! empty($_POST['editor_process_edit'])) {
-                    // Backup the old trigger, in case something goes wrong
                     $create_item = $this->dbi->getDefinition($db, 'EVENT', $_POST['item_original_name']);
                     $drop_item = 'DROP EVENT IF EXISTS '
                         . Util::backquote($_POST['item_original_name'])
@@ -115,8 +111,6 @@ class Events
                             )
                             . '<br>'
                             . __('MySQL said: ') . $this->dbi->getError();
-                            // We dropped the old item, but were unable to create
-                            // the new one. Try to restore the backup query
                             $result = $this->dbi->tryQuery($create_item);
                             if (! $result) {
                                 $errors = $this->checkResult($create_item, $errors);
@@ -132,7 +126,6 @@ class Events
                         }
                     }
                 } else {
-                    // 'Add a new item' mode
                     $result = $this->dbi->tryQuery($item_query);
                     if (! $result) {
                         $errors[] = sprintf(
@@ -224,8 +217,6 @@ class Events
         ) {
             return;
         }
-
-        // FIXME: this must be simpler than that
         $operation = '';
         $title = '';
         $item = null;
@@ -233,8 +224,6 @@ class Events
         if (! empty($_POST['item_changetype'])) {
             $operation = 'change';
         }
-
-        // Get the data for the form (if any)
         if (! empty($_REQUEST['add_item'])) {
             $title = __('Add event');
             $item = $this->getDataFromRequest();
@@ -494,11 +483,6 @@ class Events
      */
     private function checkResult($createStatement, array $errors)
     {
-        // OMG, this is really bad! We dropped the query,
-        // failed to create a new one
-        // and now even the backup query does not execute!
-        // This should not happen, but we better handle
-        // this just in case.
         $errors[] = __('Sorry, we failed to restore the dropped event.') . '<br>'
             . __('The backed up query was:')
             . '"' . htmlspecialchars((string) $createStatement) . '"<br>'

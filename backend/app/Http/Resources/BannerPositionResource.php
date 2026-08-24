@@ -15,14 +15,10 @@ class BannerPositionResource extends JsonResource
             'description' => $this->description,
             'max_banners' => $this->max_banners,
             'is_active' => $this->is_active,
-
-            // تعداد بنرها (اگر withCount شده)
             'banners_count' => $this->when(
                 isset($this->banners_count),
                 $this->banners_count
             ),
-
-            // بنرها (اگر load شده)
             'banners' => BannerResource::collection(
                 $this->whenLoaded('activeBanners')
             ),

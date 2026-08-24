@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-    // Query cache
     [
         'id' => 'Query cache disabled',
         'name' => __('Query cache disabled'),
@@ -19,7 +18,7 @@ return [
     ],
     [
         'id' => 'Query cache efficiency (%)',
-        /* xgettext:no-php-format */
+        
         'name' => __('Query cache efficiency (%)'),
         'precondition' => 'Com_select + Qcache_hits > 0 && !fired(\'Query cache disabled\')',
         'formula' => 'Qcache_hits / (Com_select + Qcache_hits) * 100',
@@ -35,7 +34,7 @@ return [
         'precondition' => '!fired(\'Query cache disabled\')',
         'formula' => '100 - Qcache_free_memory / query_cache_size * 100',
         'test' => 'value < 80',
-        /* xgettext:no-php-format */
+        
         'issue' => __('Less than 80% of the query cache is being utilized.'),
         'recommendation' => __(
             'This might be caused by {query_cache_limit} being too low.'

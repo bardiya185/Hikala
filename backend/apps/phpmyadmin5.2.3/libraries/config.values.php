@@ -56,29 +56,18 @@ return [
         'new',
     ],
     'NavigationTreeDefaultTabTable' => [
-        // fields list
         'structure' => __('Structure'),
-        // SQL form
         'sql' => __('SQL'),
-        // search page
         'search' => __('Search'),
-        // insert row page
         'insert' => __('Insert'),
-        // browse page
         'browse' => __('Browse'),
     ],
     'NavigationTreeDefaultTabTable2' => [
-        //don't display
         '' => '',
-        // fields list
         'structure' => __('Structure'),
-        // SQL form
         'sql' => __('SQL'),
-        // search page
         'search' => __('Search'),
-        // insert row page
         'insert' => __('Insert'),
-        // browse page
         'browse' => __('Browse'),
     ],
     'NavigationTreeDbSeparator' => 'short_string',
@@ -149,37 +138,23 @@ return [
         'D' => __('display column'),
     ],
     'DefaultTabServer' => [
-        // the welcome page (recommended for multiuser setups)
         'welcome' => __('Welcome'),
-        // list of databases
         'databases' => __('Databases'),
-        // runtime information
         'status' => __('Status'),
-        // MySQL server variables
         'variables' => __('Variables'),
-        // user management
         'privileges' => __('Privileges'),
     ],
     'DefaultTabDatabase' => [
-        // tables list
         'structure' => __('Structure'),
-        // SQL form
         'sql' => __('SQL'),
-        // search query
         'search' => __('Search'),
-        // operations on database
         'operations' => __('Operations'),
     ],
     'DefaultTabTable' => [
-        // fields list
         'structure' => __('Structure'),
-        // SQL form
         'sql' => __('SQL'),
-        // search page
         'search' => __('Search'),
-        // insert row page
         'insert' => __('Insert'),
-        // browse page
         'browse' => __('Browse'),
     ],
     'InitialSlidersState' => [
@@ -209,13 +184,9 @@ return [
 
     'Import' => [
         'format' => [
-            // CSV
             'csv',
-            // DocSQL
             'docsql',
-            // CSV using LOAD DATA
             'ldi',
-            // SQL
             'sql',
         ],
         'charset' => array_merge(
@@ -231,9 +202,6 @@ return [
             'MYSQL40',
             'MSSQL',
             'ORACLE',
-            // removed; in MySQL 5.0.33, this produces exports that
-            // can't be read by POSTGRESQL (see our bug #1596328)
-            //'POSTGRESQL',
             'TRADITIONAL',
         ],
         'csv_terminated' => 'short_string',
@@ -293,9 +261,6 @@ return [
             'MYSQL40',
             'MSSQL',
             'ORACLE',
-            // removed; in MySQL 5.0.33, this produces exports that
-            // can't be read by POSTGRESQL (see our bug #1596328)
-            //'POSTGRESQL',
             'TRADITIONAL',
         ],
         'codegen_format' => [

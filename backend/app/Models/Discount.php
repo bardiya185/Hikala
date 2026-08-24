@@ -25,10 +25,6 @@ class Discount extends Model
         'value' => 'float',
     ];
 
-    // ================================================================
-    // Relations
-    // ================================================================
-
     public function campaign()
     {
         return $this->belongsTo(DiscountCampaign::class, 'campaign_id');
@@ -69,16 +65,11 @@ class Discount extends Model
         return $this->hasMany(Coupon::class);
     }
 
-    // ================================================================
-    // Scopes
-    // ================================================================
-
     public function scopeActive($query)
     {
         return $query
             ->where('is_active', true)
             ->where(function ($q) {
-                // campaign نداره یا campaign فعاله
                 $q->whereNull('campaign_id')
                   ->orWhereHas('campaign', function ($q) {
                       $q->where('is_active', true)

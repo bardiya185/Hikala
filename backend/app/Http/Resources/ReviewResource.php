@@ -36,12 +36,8 @@ class ReviewResource extends JsonResource
                     'slug' => $this->product->slug,
                 ];
             }),
-
-            // لایک و دیسلایک
             'likes_count' => $this->whenCounted('likes'),
             'dislikes_count' => $this->whenCounted('dislikes'),
-
-            // واکنش کاربر فعلی
             'user_reaction' => $this->when($user !== null, function () use ($user) {
                 if (!$user) return null;
 

@@ -165,7 +165,7 @@ class Validator
             foreach ((array) $validators[$vid] as $validator) {
                 $vdef = (array) $validator;
                 $vname = array_shift($vdef);
-                /** @var callable $vname */
+                
                 $vname = 'PhpMyAdmin\Config\Validator::' . $vname;
                 $args = array_merge([$vid, &$arguments], $vdef);
                 $r = call_user_func_array($vname, $args);
@@ -231,9 +231,9 @@ class Validator
 
         error_clear_last();
 
-        /** @var string $socket */
+        
         $socket = empty($socket) ? null : $socket;
-        /** @var int $port */
+        
         $port = empty($port) ? null : (int) $port;
 
         mysqli_report(MYSQLI_REPORT_OFF);

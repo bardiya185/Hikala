@@ -38,9 +38,9 @@ use const PHP_INT_MAX;
  */
 class StringReader
 {
-    /** @var string */
+    
     private $string;
-    /** @var int */
+    
     private $length;
 
     /**

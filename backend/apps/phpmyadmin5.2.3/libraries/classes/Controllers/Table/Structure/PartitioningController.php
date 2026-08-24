@@ -29,13 +29,13 @@ use function trim;
 
 final class PartitioningController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var CreateAddField */
+    
     private $createAddField;
 
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(
@@ -148,15 +148,11 @@ final class PartitioningController extends AbstractController
                 $partitionDetails['subpartition_count'] = $count;
             }
         }
-
-        // Only LIST and RANGE type parameters allow subpartitioning
         $partitionDetails['can_have_subpartitions'] = $partitionDetails['partition_count'] > 1
             && ($partitionDetails['partition_by'] === 'RANGE'
                 || $partitionDetails['partition_by'] === 'RANGE COLUMNS'
                 || $partitionDetails['partition_by'] === 'LIST'
                 || $partitionDetails['partition_by'] === 'LIST COLUMNS');
-
-        // Values are specified only for LIST and RANGE type partitions
         $partitionDetails['value_enabled'] = isset($partitionDetails['partition_by'])
             && ($partitionDetails['partition_by'] === 'RANGE'
                 || $partitionDetails['partition_by'] === 'RANGE COLUMNS'
@@ -255,8 +251,6 @@ final class PartitioningController extends AbstractController
     {
         $sql_query = 'ALTER TABLE ' . Util::backquote($this->table) . ' '
             . $this->createAddField->getPartitionsDefinition();
-
-        // Execute alter query
         $result = $this->dbi->tryQuery($sql_query);
 
         if ($result === false) {

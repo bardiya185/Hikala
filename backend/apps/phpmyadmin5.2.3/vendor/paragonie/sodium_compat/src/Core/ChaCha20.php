@@ -45,22 +45,22 @@ class ParagonIE_Sodium_Core_ChaCha20 extends ParagonIE_Sodium_Core_Util
     protected static function quarterRound($a, $b, $c, $d)
     {
         # a = PLUS(a,b); d = ROTATE(XOR(d,a),16);
-        /** @var int $a */
+        
         $a = ($a + $b) & 0xffffffff;
         $d = self::rotate($d ^ $a, 16);
 
         # c = PLUS(c,d); b = ROTATE(XOR(b,c),12);
-        /** @var int $c */
+        
         $c = ($c + $d) & 0xffffffff;
         $b = self::rotate($b ^ $c, 12);
 
         # a = PLUS(a,b); d = ROTATE(XOR(d,a), 8);
-        /** @var int $a */
+        
         $a = ($a + $b) & 0xffffffff;
         $d = self::rotate($d ^ $a, 8);
 
         # c = PLUS(c,d); b = ROTATE(XOR(b,c), 7);
-        /** @var int $c */
+        
         $c = ($c + $d) & 0xffffffff;
         $b = self::rotate($b ^ $c, 7);
         return array((int) $a, (int) $b, (int) $c, (int) $d);
@@ -184,37 +184,37 @@ class ParagonIE_Sodium_Core_ChaCha20 extends ParagonIE_Sodium_Core_Util
             x14 = PLUS(x14, j14);
             x15 = PLUS(x15, j15);
             */
-            /** @var int $x0 */
+            
             $x0  = ($x0 & 0xffffffff) + $j0;
-            /** @var int $x1 */
+            
             $x1  = ($x1 & 0xffffffff) + $j1;
-            /** @var int $x2 */
+            
             $x2  = ($x2 & 0xffffffff) + $j2;
-            /** @var int $x3 */
+            
             $x3  = ($x3 & 0xffffffff) + $j3;
-            /** @var int $x4 */
+            
             $x4  = ($x4 & 0xffffffff) + $j4;
-            /** @var int $x5 */
+            
             $x5  = ($x5 & 0xffffffff) + $j5;
-            /** @var int $x6 */
+            
             $x6  = ($x6 & 0xffffffff) + $j6;
-            /** @var int $x7 */
+            
             $x7  = ($x7 & 0xffffffff) + $j7;
-            /** @var int $x8 */
+            
             $x8  = ($x8 & 0xffffffff) + $j8;
-            /** @var int $x9 */
+            
             $x9  = ($x9 & 0xffffffff) + $j9;
-            /** @var int $x10 */
+            
             $x10 = ($x10 & 0xffffffff) + $j10;
-            /** @var int $x11 */
+            
             $x11 = ($x11 & 0xffffffff) + $j11;
-            /** @var int $x12 */
+            
             $x12 = ($x12 & 0xffffffff) + $j12;
-            /** @var int $x13 */
+            
             $x13 = ($x13 & 0xffffffff) + $j13;
-            /** @var int $x14 */
+            
             $x14 = ($x14 & 0xffffffff) + $j14;
-            /** @var int $x15 */
+            
             $x15 = ($x15 & 0xffffffff) + $j15;
 
             /*
@@ -298,13 +298,13 @@ class ParagonIE_Sodium_Core_ChaCha20 extends ParagonIE_Sodium_Core_Util
                  self::store32_le((int) ($x14 & 0xffffffff)) .
                  self::store32_le((int) ($x15 & 0xffffffff));
 
-            /* Partial block */
+            
             if ($bytes < 64) {
                 $c .= self::substr($block, 0, $bytes);
                 break;
             }
 
-            /* Full block */
+            
             $c .= $block;
             $bytes -= 64;
             if ($bytes <= 0) {
@@ -312,7 +312,7 @@ class ParagonIE_Sodium_Core_ChaCha20 extends ParagonIE_Sodium_Core_Util
             }
             $message = self::substr($message, 64);
         }
-        /* end for(;;) loop */
+        
 
         $ctx[12] = $j12;
         $ctx[13] = $j13;

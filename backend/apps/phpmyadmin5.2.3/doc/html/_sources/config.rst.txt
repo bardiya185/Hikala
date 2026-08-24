@@ -579,14 +579,9 @@ Server connection settings
     For example you can configure SSL for the control connection:
 
     .. code-block:: php
-
-        // Enable SSL
         $cfg['Servers'][$i]['control_ssl'] = true;
-        // Client secret key
         $cfg['Servers'][$i]['control_ssl_key'] = '../client-key.pem';
-        // Client certificate
         $cfg['Servers'][$i]['control_ssl_cert'] = '../client-cert.pem';
-        // Server certification authority
         $cfg['Servers'][$i]['control_ssl_ca'] = '../server-ca.pem';
 
     .. seealso::
@@ -1475,19 +1470,15 @@ Server connection settings
 
         $cfg['Servers'][$i]['AllowDeny']['order'] = 'allow,deny';
         $cfg['Servers'][$i]['AllowDeny']['rules'] = ['allow bob from all'];
-        // Allow only 'bob' to connect from any host
 
         $cfg['Servers'][$i]['AllowDeny']['order'] = 'allow,deny';
         $cfg['Servers'][$i]['AllowDeny']['rules'] = ['allow mary from 192.168.100.[50-100]'];
-        // Allow only 'mary' to connect from host 192.168.100.50 through 192.168.100.100
 
         $cfg['Servers'][$i]['AllowDeny']['order'] = 'allow,deny';
         $cfg['Servers'][$i]['AllowDeny']['rules'] = ['allow % from 192.168.[5-6].10'];
-        // Allow any user to connect from host 192.168.5.10 or 192.168.6.10
 
         $cfg['Servers'][$i]['AllowDeny']['order'] = 'allow,deny';
         $cfg['Servers'][$i]['AllowDeny']['rules'] = ['allow root from 192.168.5.50','allow % from 192.168.6.10'];
-        // Allow any user to connect from 192.168.6.10, and additionally allow root to connect from 192.168.5.50
 
 .. config:option:: $cfg['Servers'][$i]['DisableIS']
 
@@ -1928,8 +1919,6 @@ Cookie authentication options
     example:
 
     .. code-block:: php
-
-        // The string is a hexadecimal representation of a 32-bytes long string of random bytes.
         $cfg['blowfish_secret'] = sodium_hex2bin('f16ce59f45714194371b48fe362072dc3b019da7861558cd4ad29e4d6fb13851');
 
     Using a binary string is recommended. However, if all 32 bytes of the string are visible
@@ -1937,8 +1926,6 @@ Cookie authentication options
     example:
 
     .. code-block:: php
-
-        // A string of 32 characters.
         $cfg['blowfish_secret'] = 'JOFw435365IScA&Q!cDugr!lSfuAz*OW';
 
     .. warning::
@@ -2058,14 +2045,8 @@ Cookie authentication options
     **Examples:**
 
     .. code-block:: php
-
-        // Allow connection to three listed servers:
         $cfg['ArbitraryServerRegexp'] = '/^(server|another|yetdifferent)$/';
-
-        // Allow connection to range of IP addresses:
         $cfg['ArbitraryServerRegexp'] = '@^192\.168\.0\.[0-9]{1,}$@';
-
-        // Allow connection to server name ending with -mysql:
         $cfg['ArbitraryServerRegexp'] = '@^[^:]\-mysql$@';
 
     .. note::
@@ -2951,7 +2932,7 @@ Languages
 
     Defines the default language to use, if not browser-defined or user-
     defined. The corresponding language file needs to be in
-    ``locale/*code*/LC_MESSAGES/phpmyadmin.mo``.
+    ``localeLC_MESSAGES/phpmyadmin.mo``.
 
 .. config:option:: $cfg['DefaultConnectionCollation']
 
@@ -2969,7 +2950,7 @@ Languages
     :default: not set
 
     Force language to use. The corresponding language file needs to be in
-    ``locale/*code*/LC_MESSAGES/phpmyadmin.mo``.
+    ``localeLC_MESSAGES/phpmyadmin.mo``.
 
 .. config:option:: $cfg['FilterLanguages']
 
@@ -3959,7 +3940,6 @@ following example shows two of them:
 .. code-block:: php
 
     <?php
-    // The string is a hexadecimal representation of a 32-bytes long string of random bytes.
     $cfg['blowfish_secret'] = sodium_hex2bin('f16ce59f45714194371b48fe362072dc3b019da7861558cd4ad29e4d6fb13851');
     $i = 0;
 
@@ -3967,20 +3947,12 @@ following example shows two of them:
     $cfg['Servers'][$i]['auth_type'] = 'cookie';
     $cfg['Servers'][$i]['verbose']   = 'no1';
     $cfg['Servers'][$i]['host']      = 'localhost';
-    // more options for #1 ...
 
     $i++; // server 2 :
     $cfg['Servers'][$i]['auth_type'] = 'cookie';
     $cfg['Servers'][$i]['verbose']   = 'no2';
     $cfg['Servers'][$i]['host']      = 'remote.host.addr';//or ip:'10.9.8.1'
-    // this server must allow remote clients, e.g., host 10.9.8.%
-    // not only in mysql.host but also in the startup configuration
-    // more options for #2 ...
-
-    // end of server sections
     $cfg['ServerDefault'] = 0; // to choose the server on startup
-
-    // further general options ...
 
 .. _example-google-ssl:
 
@@ -4005,18 +3977,11 @@ To connect phpMyAdmin to Google Cloud SQL using SSL download the client and
 server certificates and tell phpMyAdmin to use them:
 
 .. code-block:: php
-
-    // IP address of your instance
     $cfg['Servers'][$i]['host'] = '8.8.8.8';
-    // Use SSL for connection
     $cfg['Servers'][$i]['ssl'] = true;
-    // Client secret key
     $cfg['Servers'][$i]['ssl_key'] = '../client-key.pem';
-    // Client certificate
     $cfg['Servers'][$i]['ssl_cert'] = '../client-cert.pem';
-    // Server certification authority
     $cfg['Servers'][$i]['ssl_ca'] = '../server-ca.pem';
-    // Disable SSL verification (see above note)
     $cfg['Servers'][$i]['ssl_verify'] = false;
 
 .. seealso::
@@ -4038,14 +4003,9 @@ To connect phpMyAdmin to an Amazon RDS Aurora MySQL database instance using SSL,
 download the CA server certificate and tell phpMyAdmin to use it:
 
 .. code-block:: php
-
-    // Address of your instance
     $cfg['Servers'][$i]['host'] = 'replace-me-cluster-name.cluster-replace-me-id.replace-me-region.rds.amazonaws.com';
-    // Use SSL for connection
     $cfg['Servers'][$i]['ssl'] = true;
-    // You need to have the region CA file and the authority CA file (2019 edition CA for example) in the PEM bundle for it to work
     $cfg['Servers'][$i]['ssl_ca'] = '../rds-combined-ca-bundle.pem';
-    // Enable SSL verification
     $cfg['Servers'][$i]['ssl_verify'] = true;
 
 .. seealso::
@@ -4073,9 +4033,7 @@ reCaptcha using hCaptcha
     $cfg['CaptchaRequestParam'] = 'h-captcha';
     $cfg['CaptchaResponseParam'] = 'h-captcha-response';
     $cfg['CaptchaSiteVerifyURL'] = 'https://hcaptcha.com/siteverify';
-    // This is the secret key from hCaptcha dashboard
     $cfg['CaptchaLoginPrivateKey'] = '0xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-    // This is the site key from hCaptcha dashboard
     $cfg['CaptchaLoginPublicKey'] = 'xxx-xxx-xxx-xxx-xxxx';
 
 .. seealso:: `hCaptcha website <https://www.hcaptcha.com/>`_
@@ -4105,7 +4063,6 @@ reCaptcha using Google reCaptcha v2/v3
 
     $cfg['CaptchaLoginPublicKey'] = 'xxxxxxxxxxxxxxxx-xxxxxxxxxxxx';
     $cfg['CaptchaLoginPrivateKey'] = 'xxxxxxxxx-xxxxxxxxxxxxxx';
-    // Remove it if you dot not want the checkbox mode
     $cfg['CaptchaMethod'] = 'checkbox';
 
 .. seealso:: `Google reCaptcha Developer's Guide <https://developers.google.com/recaptcha/intro>`_

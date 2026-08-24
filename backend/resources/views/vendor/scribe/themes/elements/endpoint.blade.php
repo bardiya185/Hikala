@@ -1,6 +1,6 @@
 @php
     use Knuckles\Scribe\Tools\Utils as u;
-    /** @var  Knuckles\Camel\Output\OutputEndpointData $endpoint */
+    
 @endphp
 
 <div class="sl-stack sl-stack--vertical sl-stack--8 HttpOperation sl-flex sl-flex-col sl-items-stretch sl-w-full">

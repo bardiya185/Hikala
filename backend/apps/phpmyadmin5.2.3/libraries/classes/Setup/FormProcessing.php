@@ -29,7 +29,6 @@ class FormProcessing
     public static function process(FormDisplay $form_display): void
     {
         if (isset($_GET['mode']) && $_GET['mode'] === 'revert') {
-            // revert erroneous fields to their default values
             $form_display->fixErrors();
             $response = ResponseRenderer::getInstance();
             $response->disable();
@@ -37,13 +36,10 @@ class FormProcessing
         }
 
         if (! $form_display->process(false)) {
-            // handle form view and failed POST
             echo $form_display->getDisplay();
 
             return;
         }
-
-        // check for form errors
         if (! $form_display->hasErrors()) {
             $response = ResponseRenderer::getInstance();
             $response->disable();
@@ -51,8 +47,6 @@ class FormProcessing
 
             return;
         }
-
-        // form has errors, show warning
         $page = 'index';
         if (isset($_GET['page']) && in_array($_GET['page'], ['form', 'config', 'servers'], true)) {
             $page = $_GET['page'];
@@ -61,7 +55,6 @@ class FormProcessing
         $formset = isset($_GET['formset']) && is_string($_GET['formset']) ? $_GET['formset'] : '';
         $formId = isset($_GET['id']) && is_numeric($_GET['id']) && (int) $_GET['id'] >= 1 ? (int) $_GET['id'] : 0;
         if ($formId === 0 && $page === 'servers') {
-            // we've just added a new server, get its id
             $formId = $form_display->getConfigFile()->getServerCount();
         }
 

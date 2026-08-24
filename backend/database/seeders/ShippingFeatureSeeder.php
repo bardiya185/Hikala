@@ -11,7 +11,6 @@ class ShippingFeatureSeeder extends Seeder
 {
     public function run(): void
     {
-        // Get all product variants
         $variants = ProductVariant::all();
         
         if ($variants->isEmpty()) {
@@ -22,8 +21,6 @@ class ShippingFeatureSeeder extends Seeder
         $count = 0;
         
         foreach ($variants as $variant) {
-            
-            // Random features for each variant
             $features = $this->getRandomFeatures();
             
             foreach ($features as $feature) {
@@ -70,8 +67,6 @@ class ShippingFeatureSeeder extends Seeder
                 'description' => 'Regular delivery in 5-7 business days',
             ],
         ];
-        
-        // Randomly select 2-3 features
         $count = rand(2, 3);
         shuffle($allFeatures);
         

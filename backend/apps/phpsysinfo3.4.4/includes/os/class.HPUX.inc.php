@@ -294,7 +294,6 @@ class HPUX extends OS
                     $this->sys->setMemBuffer($ar_buf[4]);
                     $this->sys->setMemCache($ar_buf[5]);
                 }
-                // Get info on individual swap files
                 if (CommonFunctions::rfts('/proc/swaps', $swaps)) {
                     $swapdevs = preg_split("/\n/", $swaps, -1, PREG_SPLIT_NO_EMPTY);
                     for ($i = 1, $max = (sizeof($swapdevs) - 1); $i < $max; $i++) {

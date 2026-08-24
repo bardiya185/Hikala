@@ -1,5 +1,4 @@
 <?php
-//3.2.10  $file_charset
 
 $file_charset = 'utf-8';
 

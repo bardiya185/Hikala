@@ -23,8 +23,6 @@ class LicenseController extends AbstractController
         $this->response->header('Content-type: text/plain; charset=utf-8');
 
         $filename = LICENSE_FILE;
-
-        // Check if the file is available, some distributions remove these.
         if (@is_readable($filename)) {
             readfile($filename);
 

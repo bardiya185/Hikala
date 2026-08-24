@@ -2,7 +2,7 @@
   display: none;
 }
 
-/* Override style formats by html tags */
+
 
 font[color="red"],
 span[style="color: #FF0000"] {
@@ -13,7 +13,7 @@ strong {
   font-weight: normal;
 }
 
-/* login */
+
 
 body#loginform {
   margin: 0;
@@ -41,7 +41,7 @@ body#loginform {
 
     &::before {
       color: $body-bg;
-      background: url('../img/user.svg');/* The user avatar icon */
+      background: url('../img/user.svg');
       content: "";
       float: left;
       margin-right: 20px;
@@ -127,7 +127,6 @@ body#loginform {
     padding-right: 0;
 
     .col-sm-8 {
-      // Force 100% because the form label is hidden
       width: 100%;
     }
 
@@ -168,7 +167,6 @@ body#loginform {
 }
 
 h2 {
-  // Hiding icons in the page titles
   img {
     display: none;
   }
@@ -364,7 +362,7 @@ select {
   }
 }
 
-/* classes */
+
 .clearfloat {
   clear: both;
 }
@@ -417,7 +415,7 @@ div.null_div {
     margin-right: 0.5em;
   }
 
-  /* revert for Gecko */
+  
   div[class="formelement"] {
     white-space: normal;
   }
@@ -439,7 +437,7 @@ button.mult_submit {
   }
 }
 
-/* marks table rows/cells if the db field is in a where condition */
+
 
 .condition {
   border-color: $browse-warning-color !important;
@@ -461,8 +459,6 @@ td {
   &.condition {
     border: 1px solid;
   }
-
-  // cells with the value NULL
   &.null {
     font-style: italic;
     color: #7d7d7d;
@@ -508,7 +504,7 @@ img.lightbulb {
   border: 1px dashed #000;
 }
 
-/* Doc links in SQL */
+
 .cm-sql-doc {
   text-decoration: none;
   border-bottom: 1px dotted #999;
@@ -524,7 +520,7 @@ img.lightbulb {
   margin-left: 2em;
 }
 
-/* message boxes: error, confirmation */
+
 #pma_errors,
 #pma_demo,
 #pma_footer {
@@ -552,7 +548,7 @@ img.lightbulb {
   background-color: $browse-warning-color;
 }
 
-/* end messageboxes */
+
 
 .column_name {
   font-size: 80%;
@@ -599,7 +595,7 @@ div.tools,
   }
 }
 
-/* disabled text */
+
 .disabled {
   color: #666;
 
@@ -632,11 +628,10 @@ td.disabled {
 }
 
 li.last.database {
-  // Avoid having the last item of the tree hidden behind the scroll bar
   margin-bottom: 15px !important;
 }
 
-/* zoom search */
+
 div#dataDisplay {
   input,
   select {
@@ -657,9 +652,9 @@ form.clock {
   text-align: center;
 }
 
-/* end Calendar */
 
-/* table stats */
+
+
 div#tablestatistics table {
   float: left;
   margin-bottom: 0.5em;
@@ -668,9 +663,9 @@ div#tablestatistics table {
   min-width: 16em;
 }
 
-/* END table stats */
 
-/* Heading */
+
+
 #topmenucontainer {
   width: 100%;
 }
@@ -720,7 +715,7 @@ div#tablestatistics table {
   padding: 0.5em;
 }
 
-/* user privileges */
+
 
 #fieldset_add_user_login {
   div.item {
@@ -794,9 +789,9 @@ div#tablestatistics table {
   float: left;
 }
 
-/* END user privileges */
 
-/* serverstatus */
+
+
 
 .linkElem:hover {
   text-decoration: underline;
@@ -920,9 +915,9 @@ div {
   padding-left: 7px;
 }
 
-/* end serverstatus */
 
-/* profiling */
+
+
 
 div#profilingchart {
   width: 850px;
@@ -930,20 +925,20 @@ div#profilingchart {
   float: left;
 }
 
-/* END profiling */
 
-/* table charting */
+
+
 
 #resizer {
   border: 1px solid silver;
 }
 
-/* make room for the resize handle */
+
 #inner-resizer {
   padding: 10px;
 }
 
-/* querybox */
+
 
 #togglequerybox {
   margin: 0 10px;
@@ -971,9 +966,9 @@ textarea {
   }
 }
 
-/* end querybox */
 
-/* main page */
+
+
 
 #mysqlmaininformation,
 #pmamaininformation {
@@ -1001,9 +996,9 @@ textarea {
   background: #fff;
 }
 
-/* END main page */
 
-/* iconic view for ul items */
+
+
 
 li {
   br {
@@ -1016,7 +1011,7 @@ li {
   }
 }
 
-/* END iconic view for ul items */
+
 
 #body_browse_foreigners {
   background: $navi-background;
@@ -1103,7 +1098,7 @@ textarea#partitiondefinition {
   height: 3em;
 }
 
-/* for elements that should be revealed only via js */
+
 .hide {
   display: none;
 }
@@ -1185,7 +1180,7 @@ input {
   *  Ajax notification styling
   */
 
-/* additional styles */
+
 .ajax_notification {
   top: 0;
   position: fixed;
@@ -1210,7 +1205,7 @@ input {
 }
 
 #loading_parent {
-  /** Need this parent to properly center the notification division */
+  
   position: relative;
   width: 100%;
 }
@@ -1307,7 +1302,7 @@ table#index_columns {
   }
 }
 
-/* config forms */
+
 
 .config-form {
   .pma-fieldset {
@@ -1330,7 +1325,7 @@ table#index_columns {
       font-size: 16px;
     }
 
-    /* form error list */
+    
     .errors {
       margin: 0 -2px 1em;
       padding: 0.5em 1.5em;
@@ -1343,7 +1338,7 @@ table#index_columns {
       font-size: small;
     }
 
-    /* field error list */
+    
     .inline_errors {
       margin: 0.3em 0.3em 0.3em;
       margin-left: 0;
@@ -1485,7 +1480,7 @@ form {
     display: inline-block;
   }
 
-  /* customized field */
+  
   .custom {
     background: #ffc;
   }
@@ -1999,7 +1994,7 @@ form.append_fields_form .tblFooters {
   margin-right: 5px;
 }
 
-/* css for timepicker */
+
 
 .ui-timepicker-div {
   .ui-widget-header {
@@ -2106,7 +2101,7 @@ table.show_create {
   font-size: smaller;
 }
 
-/* Console styles */
+
 #pma_console_container {
   width: 100%;
   position: fixed;
@@ -2538,7 +2533,7 @@ textarea {
   }
 }
 
-/* Code mirror console style */
+
 
 .cm-s-pma {
   .CodeMirror-code {
@@ -2568,7 +2563,7 @@ textarea {
   }
 }
 
-/* PMA drop-improt style */
+
 
 .pma_drop_handler {
   display: none;
@@ -2725,7 +2720,7 @@ meter {
   }
 }
 
-/* styles for jQuery-ui to support rtl languages */
+
 
 body {
   .ui-dialog {
@@ -2832,7 +2827,7 @@ body {
   vertical-align: baseline;
 }
 
-/* templates/database/multi_table_query */
+
 
 .multi_table_query_form {
   .query-form__tr--hide {
@@ -2856,14 +2851,10 @@ body {
     float: left;
   }
 }
-
-// Enable scrollable blocks of code
 .pre-scrollable {
   max-height: 340px;
   overflow-y: scroll;
 }
-
-// Extra large devices (large desktops, 1200px and up)
 @include media-breakpoint-up(xl) {
   div.tools {
     text-align: left;

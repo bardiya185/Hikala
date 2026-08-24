@@ -166,7 +166,6 @@ class PSI_Error
         $generation->addAttribute('timestamp', time());
         $xmlerr = $xml->addChild("Errors");
         foreach ($this->_arrErrorList as $arrLine) {
-//            $error = $xmlerr->addCData('Error', $arrLine['message']);
             $error = $xmlerr->addChild('Error');
             $error->addAttribute('Message', $arrLine['message']);
             $error->addAttribute('Function', $arrLine['command']);
@@ -191,7 +190,6 @@ class PSI_Error
         $xml = simplexml_import_dom($dom);
         $xmlerr = new SimpleXMLExtended($xml, $encoding);
         foreach ($this->_arrErrorList as $arrLine) {
-//            $error = $xmlerr->addCData('Error', $arrLine['message']);
             $error = $xmlerr->addChild('Error');
             $error->addAttribute('Message', $arrLine['message']);
             $error->addAttribute('Function', $arrLine['command']);
@@ -225,7 +223,6 @@ class PSI_Error
         $strFunc = '';
         $strBacktrace = htmlspecialchars($strMessage)."\n\n";
         foreach ($arrTrace as $val) {
-            // avoid the last line, which says the error is from the error class
             if ($val == $arrTrace[count($arrTrace) - 1]) {
                 break;
             }
@@ -290,7 +287,6 @@ class PSI_Error
 
             return ($strResult);
         }
-        // anything else, just let php try to print it
         return (var_export($var, true));
     }
 }

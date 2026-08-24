@@ -28,10 +28,10 @@ use function sprintf;
  */
 class TableStatsSvg extends TableStats
 {
-    /** @var int */
+    
     public $height;
 
-    /** @var int */
+    
     public $currentCell = 0;
 
     /**
@@ -63,11 +63,7 @@ class TableStatsSvg extends TableStats
         $offline = false
     ) {
         parent::__construct($diagram, $db, $pageNumber, $tableName, $showKeys, $tableDimension, $offline);
-
-        // height and width
         $this->setHeightTable($fontSize);
-        // setWidth must me after setHeight, because title
-        // can include table height which changes table width
         $this->setWidthTable($font, $fontSize);
         if ($same_wide_width >= $this->width) {
             return;

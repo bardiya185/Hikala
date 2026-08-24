@@ -42,7 +42,7 @@ abstract class SQLTransformationsPlugin extends TransformationsPlugin
         return Generator::formatSql($buffer);
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

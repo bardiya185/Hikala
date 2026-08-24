@@ -24,17 +24,17 @@ final class ApcuCache implements CacheInterface
 {
     public const LOADED_KEY = '__TRANSLATIONS_LOADED__';
 
-    /** @var MoParser */
+    
     private $parser;
-    /** @var string */
+    
     private $locale;
-    /** @var string */
+    
     private $domain;
-    /** @var int */
+    
     private $ttl;
-    /** @var bool */
+    
     private $reloadOnMiss;
-    /** @var string */
+    
     private $prefix;
 
     public function __construct(

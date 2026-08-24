@@ -1,27 +1,11 @@
 <?php
 
-// Page created by Shepard [Fabian Pijcke] <Shepard8@laposte.net>
-// Arno Esterhuizen <arno.esterhuizen@gmail.com>
-// and Romain Bourdon <rromain@romainbourdon.com>
-// and Hervé Leclerc <herve.leclerc@alterway.fr>
-// Icons by Mark James
-// Version 2.5 to 3.3.8 by Dominique Ottello alias Otomatic
-
 if(session_id() === '') session_start();
 $server_dir = "../";
 
 require $server_dir.'scripts/config.inc.php';
 require $server_dir.'scripts/wampserver.lib.php';
 $c_local_ip = $wampConf['LinksChooseIp'];
-
-//**** Scroll lists parameters ****
-//** Based on an idea by Panagiotis E. Papazoglou
-//General scrolling (on or off) is controlled by Wampserver parameter 'ScrollListsHomePage'
-// via Right-Click -> Wamp Settings -> Allow scrolling of lists on home page
-//To allow or not the individual scrolling of the lists Projects, Alias and VirtualHost
-//   'scroll' true or false to do the scroll or not
-//   'lines'  minimum number of lines to do the scroll
-// Do not change anything other than the values assigned to 'scroll' and 'lines'
 $Scroll_List = array(
 	'projects' => array('scroll' => true,'lines' => 16,'name' => 'ProjectsListScroller','nbname' => 'nbProjectsLines'),
 	'alias'    => array('scroll' => true,'lines' => 16,'name' => 'AliasListScroller',   'nbname' => 'nbAliasLines'),
@@ -32,38 +16,21 @@ foreach($Scroll_List as $key => $value) {
 	${$value['nbname']} = 0;
 }
 $nbAlias = $nbVirtualHost = $nbProjects = 0;
-
-//path to alias files
 $aliasDir = $server_dir.'alias/';
-
-//Works if you have ServerSignature On and ServerTokens Full in httpd.conf
 $server_software = $_SERVER['SERVER_SOFTWARE'];
 $error_content = '';
-
-// we get the versions of the applications
 $phpVersion = $wampConf['phpVersion'];
 $apacheVersion = $wampConf['apacheVersion'];
 $doca_version = 'doca'.substr($apacheVersion,0,3);
 $mysqlVersion = $wampConf['mysqlVersion'];
-// All php versions
 $phpVersionList = listDir($c_phpVersionDir,'checkPhpConf','php',true);
 $PhpAllVersions = implode(' - ',$phpVersionList);
-
-//--- VirtualHost Menu
 $VirtualHostMenu = 'on';
-
-//we get the value of apachePortUsed
 $port = $wampConf['apachePortUsed'];
 $UrlPort = $port !== "80" ? ":".$port : '';
-//We get the value(s) of the listening ports in Apache
 $ListenPorts = implode(' - ',listen_ports($c_apacheConfFile));
-//We get the value of mysqlPortUsed
 $Mysqlport = $wampConf['mysqlPortUsed'];
-
-//Directories to ignore in projects
 $projectsListIgnore = array ('.','..','wampthemes','wamplangues');
-
-//Search for available themes
 $styleswitcher = '<select id="themes">'."\n";
 $themes = glob('wampthemes/*', GLOB_ONLYDIR);
 foreach ($themes as $theme) {
@@ -73,8 +40,6 @@ foreach ($themes as $theme) {
     }
 }
 $styleswitcher .= '</select>'."\n";
-
-//Displaying phpinfo
 if(isset($_GET['phpinfo'])) {
 	$type_info = intval(trim($_GET['phpinfo']));
 	if($type_info < -1 || $type_info > 64)
@@ -82,8 +47,6 @@ if(isset($_GET['phpinfo'])) {
 	phpinfo($type_info);
 	exit();
 }
-
-//Displaying xdebug_info();
 $xdebug_info = '';
 if(function_exists('xdebug_info')) {
 	if(isset($_GET['xdebuginfo'])) {
@@ -92,8 +55,6 @@ if(function_exists('xdebug_info')) {
 	}
 	$xdebug_info = '<li><a href="?xdebuginfo">xdebug_info()</a></li>';
 }
-
-// Language
 $langue = $wampConf['language'];
 $i_langues = glob('wamplangues/index_*.php');
 $languages = array();
@@ -103,8 +64,6 @@ foreach($i_langues as $value) {
 $langueget = (!empty($_GET['lang']) ? strip_tags(trim($_GET['lang'])) : '');
 if(in_array($langueget,$languages))
 	$langue = $langueget;
-
-// Search for available languages
 $langueswitcher = '<form method="get" style="display:inline-block;"><select name="lang" id="langues" onchange="this.form.submit();">'."\n";
 $selected = false;
 foreach($languages as $i_langue) {
@@ -137,8 +96,6 @@ if(!isset($c_ApacheDefine['PHPROOT'])) {
 		   <dd><small style='color:red;'>[FCGI]&nbsp;{$langues['fcgi_not_loaded']}</small></dd>
 EOF;
 }
-
-// MySQL retrieval if supported
 $nbDBMS = 0;
 $MySQLdb = '';
 if(isset($wampConf['SupportMySQL']) && $wampConf['SupportMySQL'] =='on') {
@@ -149,8 +106,6 @@ if(isset($wampConf['SupportMySQL']) && $wampConf['SupportMySQL'] =='on') {
 	<dd>{$mysqlVersion}&nbsp;-&nbsp;{$langues['mysqlportUsed']}{$Mysqlport}{$defaultDBMSMySQL}&nbsp;-&nbsp; <a href='http://{$langues['docm']}'>{$langues['documentation-of']} MySQL</a></dd>
 EOF;
 }
-
-// MariaDB retrieval if supported
 $MariaDB = '';
 if(isset($wampConf['SupportMariaDB']) && $wampConf['SupportMariaDB'] =='on') {
 	$nbDBMS++;
@@ -160,11 +115,7 @@ if(isset($wampConf['SupportMariaDB']) && $wampConf['SupportMariaDB'] =='on') {
   <dd>{$c_mariadbVersion}&nbsp;-&nbsp;{$langues['mariaportUsed']}{$wampConf['mariaPortUsed']}{$defaultDBMSMaria}&nbsp;-&nbsp; <a href='http://{$langues['docmaria']}'>{$langues['documentation-of']} MariaDB</a></dd>
 EOF;
 }
-
-//**** Modal Dialogs *****
-//Get PHP loaded extensions
 $message['phpLoadedExtensions'] = color('clean',GetPhpLoadedExtensions($c_phpVersion,6));
-//Dialog modal PHP extensions
 $divPhpExt = <<< EOF
 <div id="phpextloaded" class="modalOto">
 	<div>
@@ -178,9 +129,7 @@ EOF;
 $popupPHPExtLink = "<a href='#phpextloaded'><small style='color:#777;'>".$langues['phpExtensions']."</small></a>";
 $ModalDialogs = $divPhpExt;
 unset($message['phpLoadedExtensions']);
-//Get PHP versions usage
 $message['phpVersionsUsage'] = GetPhpVersionsUsage();
-//Dialog modal PHP versions usage
 $divPhpUse = <<< EOF
 <div id="phpversionsuse" class="modalOto">
 	<div>
@@ -194,7 +143,6 @@ EOF;
 $popupPHPExtLink .= "&nbsp;-&nbsp;<a href='#phpversionsuse'><small style='color:#777;'>".$langues['phpVersionsUse']."</small></a>";
 $ModalDialogs .= $divPhpUse;
 unset($message['phpVersionsUsage']);
-//PHP FCGI help
 $message = str_replace('  ','&nbsp;&nbsp;',$langues['fcgi_mode_help']);
 $message = nl2br($message);
 $divHelpFCGI = <<< EOF
@@ -210,7 +158,6 @@ EOF;
 $ModalDialogs .= $divHelpFCGI;
 $PhpAllVersions .= "&nbsp;-&nbsp;<a href='#helpfcgi'><small style='color:#777;'>".$langues['fcgi_mode_link']."</small></a>";
 unset($message);
-//Dialog modal MySQL - MariaDB
 $popupMySQLMariaDBLink = '';
 if($nbDBMS > 1) {
 	$divMySQLMariaDB = <<< EOF
@@ -226,10 +173,7 @@ EOF;
 	$popupMySQLMariaDBLink = "&nbsp;-&nbsp;<a href='#mysqlmariadb'><small style='color:#777;'>MySQL - MariaDB</small></a>";
 	$ModalDialogs .= $divMySQLMariaDB;
 }
-
-//Get Apache loaded modules
 require $server_dir.'files/apacheloadedmodules.php';
-//Dialog modal Apache modules
 $divApacheMod = <<< EOF
 <div id="apachemodloaded" class="modalOto">
 	<div>
@@ -242,21 +186,12 @@ $divApacheMod = <<< EOF
 EOF;
 $popupApacheModLink = "<a href='#apachemodloaded'><small style='color:#777;'>".$langues['apacheLoadedModules']."</small></a>";
 $ModalDialogs .= $divApacheMod;
-
-//**** End of Modal Dialogs *****
-
-//Default DBMS in first position
 if(empty($defaultDBMSMySQL))
 	$DBMSTypes = $MariaDB.str_replace('</dd>',$popupMySQLMariaDBLink.'</dd>',$MySQLdb);
 else
 	$DBMSTypes = $MySQLdb.str_replace('</dd>',$popupMySQLMariaDBLink.'</dd>',$MariaDB);
-
-// No Database Mysql System
 $noDBMS = (empty($MySQLdb) && empty($MariaDB)) ? true : false;
-
-//Alias
 GetAliasVersions();
-// Create alias menu
 $aliasContents = '';
 foreach($Alias_Contents['alias'] as $AliasName) {
 	if($AliasName == 'phpsysinfo') continue;
@@ -275,8 +210,6 @@ foreach($Alias_Contents['alias'] as $AliasName) {
 }
 if(empty($aliasContents))
 	$aliasContents = "<li class='phpmynot'>".$langues['txtNoAlias']."</li>\n";
-
-// Get PhpSysInfo version and parameters
 $phpsysinfo = '';
 if($Alias_Contents['phpsysinfo']['OK']) {
 	$file_sup = '';
@@ -285,8 +218,6 @@ if($Alias_Contents['phpsysinfo']['OK']) {
 	}
 	$phpsysinfo = '<li><a href="phpsysinfo">PhpSysInfo '.$Alias_Contents['phpsysinfo']['version'].'</a>'.$file_sup.'</li>';
 }
-
-//Retrieving ServerName from httpd-vhosts.conf
 $addVhost = "<li><a href='add_vhost.php?lang=".$langue."'>".$langues['txtAddVhost']."</a></li>";
 if($VirtualHostMenu == "on") {
 	$vhostError = false;
@@ -400,19 +331,16 @@ if($VirtualHostMenu == "on") {
 						$error_message[] = sprintf($langues['txtVhostNotClean'],$virtualHost['vhosts_file']);
 					}
 				}
-				//Check number of <Directory equals </Directory
 				if($nb_End_Directory != $nb_Directory) {
 					$vhostError = true;
 					$vhostErrorCorrected = false;
 					$error_message[] = sprintf($langues['txtNbNotEqual'],"&lt;Directory ....&gt;","&lt;/Directory&gt;",$virtualHost['vhosts_file']);
 				}
-				//Check number of DocumentRoot equals to number of ServerName
 				if($nb_Document != $nb_Server) {
 					$vhostError = true;
 					$vhostErrorCorrected = false;
 					$error_message[] = sprintf($langues['txtNbNotEqual'],"DocumentRoot","ServerName",$virtualHost['vhosts_file']);
 				}
-				//Check validity of DocumentRoot
 				if($virtualHost['document'] === false) {
 					foreach($virtualHost['documentPath'] as $value) {
 						if($virtualHost['documentPathValid'][$value] === false) {
@@ -431,7 +359,6 @@ if($VirtualHostMenu == "on") {
 						}
 					}
 				}
-				//Check validity of Directory Path
 				if($virtualHost['directory'] === false) {
 					foreach($virtualHost['directoryPath'] as $value) {
 						if($virtualHost['directoryPathValid'][$value] === false) {
@@ -443,7 +370,6 @@ if($VirtualHostMenu == "on") {
 						}
 					}
 				}
-				//Check Directory Path ended with a slash '/'
 				if($virtualHost['directorySlash'] === false) {
 					foreach($virtualHost['directoryPath'] as $value) {
 						if($virtualHost['directoryPathSlashEnded'][$value] === false) {
@@ -455,28 +381,24 @@ if($VirtualHostMenu == "on") {
 						}
 					}
 				}
-				//Check number of <VirtualHost equals or > to number of ServerName
 				if($nb_Server != $nb_Virtual && $wampConf['NotCheckDuplicate'] == 'off') {
 					$port_number = false;
 					$vhostError = true;
 					$vhostErrorCorrected = false;
 					$error_message[] = sprintf($langues['txtNbNotEqual'],"&lt;VirtualHost","ServerName",$virtualHost['vhosts_file']);
 				}
-				//Check number of port definition of <VirtualHost *:xx> equals to number of ServerName
 				if($virtualHost['nb_Virtual_Port'] != $nb_Virtual && $wampConf['NotCheckDuplicate'] == 'off') {
 					$port_number = false;
 					$vhostError = true;
 					$vhostErrorCorrected = false;
 					$error_message[] = sprintf($langues['txtNbNotEqual'],"port definition of &lt;VirtualHost *:xx&gt;","ServerName",$virtualHost['vhosts_file']);
 				}
-				//Check validity of port number
 				if($port_number && $virtualHost['port_number'] === false) {
 					$port_number = false;
 					$vhostError = true;
 					$vhostErrorCorrected = false;
 					$error_message[] = sprintf($langues['txtPortNumber'],"&lt;VirtualHost *:port&gt;",$virtualHost['vhosts_file']);
 				}
-				//Check if duplicate ServerName
 				if($virtualHost['nb_duplicate'] > 0) {
 					$DuplicateNames = '';
 					foreach($virtualHost['duplicate'] as $NameValue)
@@ -485,7 +407,6 @@ if($VirtualHostMenu == "on") {
 					$vhostErrorCorrected = false;
 					$error_message[] = "Duplicate ServerName <span style='color:blue;'>".$DuplicateNames."</span> into ".$virtualHost['vhosts_file'];
 				}
-				//Check if duplicate Server IP
 				if($virtualHost['nb_duplicateIp'] > 0) {
 					$DuplicateNames = '';
 					foreach($virtualHost['duplicateIp'] as $NameValue)
@@ -520,9 +441,6 @@ if($VirtualHostMenu == "on") {
 else {
     $allToolsClass = "three-columns";
 }
-//End retrieving ServerName from httpd-vhosts.conf
-
-// Project recovery
 $list_projects = array();
 $handle=opendir(".");
 while (false !== ($file = readdir($handle))) {
@@ -558,8 +476,6 @@ else {
 		}
 	}
 }
-
-// To scroll Projects, Alias and VirtualHost list display
 if($wampConf['ScrollListsHomePage'] == 'on') {
 	foreach($Scroll_List as $value) {
 		if($value['scroll'] && ${$value['nbname']} > $value['lines']) {
@@ -567,8 +483,6 @@ if($wampConf['ScrollListsHomePage'] == 'on') {
 		}
 	}
 }
-
-//Miscellaneous checks - Which php.ini is loaded?
 $phpini = mb_strtolower(trim(str_replace("\\","/",php_ini_loaded_file())));
 $c_phpConfFileOri = mb_strtolower($c_phpVersionDir.'/php'.$wampConf['phpVersion'].'/'.$phpConfFileForApache);
 $c_phpCliConf = mb_strtolower($c_phpVersionDir.'/php'.$wampConf['phpVersion'].'/'.$wampConf['phpConfFile']);

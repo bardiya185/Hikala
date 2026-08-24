@@ -12,13 +12,13 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class ConfigurableMenusFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $userGroups;
 
-    /** @var TableName */
+    
     public $users;
 
     public function __construct(DatabaseName $database, TableName $userGroups, TableName $users)

@@ -54,10 +54,10 @@ class Bookmark
      */
     private $query;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var Relation */
+    
     private $relation;
 
     public function __construct(DatabaseInterface $dbi, Relation $relation)
@@ -166,9 +166,7 @@ class Bookmark
      */
     public function applyVariables(array $variables): string
     {
-        // remove comments that encloses a variable placeholder
         $query = (string) preg_replace('|/\*(.*\[VARIABLE[0-9]*\].*)\*/|imsU', '${1}', $this->query);
-        // replace variable placeholders with values
         $number_of_variables = $this->getVariableCount();
         for ($i = 1; $i <= $number_of_variables; $i++) {
             $var = '';
@@ -177,7 +175,6 @@ class Bookmark
             }
 
             $query = str_replace('[VARIABLE' . $i . ']', $var, $query);
-            // backward compatibility
             if ($i != 1) {
                 continue;
             }

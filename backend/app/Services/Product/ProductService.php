@@ -33,10 +33,6 @@ class ProductService
     public function __construct(
         private DiscountService $discountService
     ) {}
-
-    // ================================================================
-    // 📋 LIST PRODUCTS (Main entry point)
-    // ================================================================
     
     /**
      * لیست محصولات با تمام فیلترها
@@ -52,8 +48,6 @@ class ProductService
         if (!$sortByPrice) {
             $query->orderBy($sortBy, $sortOrder);
         }
-
-        // 🎯 Route to appropriate handler
         if ($request->filled('campaign')) {
             return $this->filterByCampaign($query, $request, $sortByPrice, $sortOrder);
         }
@@ -75,8 +69,6 @@ class ProductService
     public function listByCampaign(DiscountCampaign $campaign, Request $request): array
     {
         $query = $this->buildBaseQuery($request);
-        
-        // فورس کن campaign slug رو
         $request->merge(['campaign' => $campaign->slug]);
 
         $sortBy = $this->getSortField($request);
@@ -89,10 +81,6 @@ class ProductService
 
         return $this->filterByCampaign($query, $request, $sortByPrice, $sortOrder);
     }
-
-    // ================================================================
-    // 🔧 QUERY BUILDER
-    // ================================================================
     
     private function buildBaseQuery(Request $request): Builder
     {
@@ -111,14 +99,12 @@ class ProductService
 
     private function applyCategoryFilter(Builder $query, Request $request): void
     {
-        // 🎯 حالت ۱: چند دسته
         if ($request->has('category_ids')) {
             $ids = array_filter(explode(',', $request->category_ids));
             if (empty($ids)) return;
     
             $allCategoryIds = $this->getCategoryWithSubcategories($ids);
             if (empty($allCategoryIds)) {
-                // 🚫 هیچ نتیجه‌ای برنگردون
                 $query->whereRaw('1 = 0');
                 return;
             }
@@ -128,13 +114,10 @@ class ProductService
             );
             return;
         }
-    
-        // 🎯 حالت ۲: یک دسته
         if ($request->has('category_id')) {
             $allCategoryIds = $this->getCategoryWithSubcategories([$request->category_id]);
     
             if (empty($allCategoryIds)) {
-                // 🚫 هیچ نتیجه‌ای برنگردون
                 $query->whereRaw('1 = 0');
                 return;
             }
@@ -159,8 +142,6 @@ class ProductService
         }
     
         if (empty($validIds)) return [];
-    
-        // Recursive برای زیردسته‌ها
         $allIds = $validIds;
         $currentIds = $validIds;
     
@@ -243,10 +224,6 @@ class ProductService
               ->orWhere('description', 'LIKE', "%{$search}%")
         );
     }
-
-    // ================================================================
-    // 🎯 CAMPAIGN FILTER (داینامیک - جایگزین Flash Sale)
-    // ================================================================
     
     /**
      * فیلتر محصولات بر اساس کمپین
@@ -259,11 +236,8 @@ class ProductService
         $products = $query->get()
             ->map(fn($product) => $this->attachPricingData($product))
             ->filter(function ($product) use ($campaignSlug) {
-                // فقط محصولاتی که تخفیف اعمال شده در این کمپین دارن
                 return $product->_campaign_slug === $campaignSlug;
             });
-
-        // Sorting
         if ($sortByPrice) {
             $products = $products->sortBy('_final_price', SORT_REGULAR, $sortOrder === 'desc');
         } else {
@@ -274,10 +248,6 @@ class ProductService
             'campaign' => $campaignSlug,
         ]);
     }
-
-    // ================================================================
-    // 💸 DISCOUNT FILTER
-    // ================================================================
     
     private function filterByDiscount(Builder $query, Request $request, bool $sortByPrice, string $sortOrder): array
     {
@@ -311,10 +281,6 @@ class ProductService
             ]
         ]);
     }
-
-    // ================================================================
-    // 📄 PAGINATION
-    // ================================================================
     
     private function standardPaginate(Builder $query, Request $request, bool $sortByPrice, string $sortOrder): array
     {
@@ -448,10 +414,6 @@ class ProductService
             ], $extraMeta),
         ];
     }
-
-    // ================================================================
-    // 🛠️ HELPERS
-    // ================================================================
     
     /**
      * محاسبه قیمت نهایی، تخفیف و کمپین
@@ -470,8 +432,6 @@ class ProductService
 
         $pricing = $this->discountService->calculate($variant);
         $campaign = $pricing->discount?->campaign;
-
-        // 🎯 اطلاعات کمپین (داینامیک - هر کمپینی می‌تونه باشه)
         $product->_campaign_slug = $campaign?->slug;
         $product->_campaign_name = $campaign?->name;
         $product->_campaign_icon = $campaign?->icon;
@@ -524,10 +484,6 @@ class ProductService
     {
         return $this->defaultRelations;
     }
-
-    // ================================================================
-    // ✏️ CREATE, UPDATE, DELETE (بدون تغییر)
-    // ================================================================
     
     public function create(array $data): Product
     {
@@ -622,10 +578,6 @@ class ProductService
         $product->save();
         return $product;
     }
-
-    // ================================================================
-    // 🔧 VARIANT HELPERS
-    // ================================================================
     
     private function createVariant(Product $product, array $variantData): ProductVariant
     {

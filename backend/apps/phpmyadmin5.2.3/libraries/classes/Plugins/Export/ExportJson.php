@@ -31,7 +31,7 @@ use const JSON_UNESCAPED_UNICODE;
  */
 class ExportJson extends ExportPlugin
 {
-    /** @var bool */
+    
     private $first = true;
 
     /**
@@ -70,15 +70,8 @@ class ExportJson extends ExportPlugin
         $exportPluginProperties->setExtension('json');
         $exportPluginProperties->setMimeType('text/plain');
         $exportPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $exportPluginProperties
-        // this will be shown as "Format specific options"
         $exportSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-        // general options main group
         $generalOptions = new OptionsPropertyMainGroup('general_opts');
-        // create primary items and add them to the group
         $leaf = new HiddenPropertyItem('structure_or_data');
         $generalOptions->addProperty($leaf);
 
@@ -93,11 +86,7 @@ class ExportJson extends ExportPlugin
             __('Output unicode characters unescaped')
         );
         $generalOptions->addProperty($leaf);
-
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($generalOptions);
-
-        // set the options for the export plugin property item
         $exportPluginProperties->setOptions($exportSpecificOptions);
 
         return $exportPluginProperties;
@@ -269,8 +258,6 @@ class ExportJson extends ExportPlugin
         $record_cnt = 0;
         while ($record = $result->fetchRow()) {
             $record_cnt++;
-
-            // Output table name as comment if this is the first record of the table
             if ($record_cnt > 1) {
                 if (! $this->export->outputHandler(',' . $crlf)) {
                     return false;
@@ -280,11 +267,9 @@ class ExportJson extends ExportPlugin
             $data = [];
 
             for ($i = 0; $i < $columns_cnt; $i++) {
-                // 63 is the binary charset, see: https://dev.mysql.com/doc/internals/en/charsets.html
                 $isBlobAndIsBinaryCharset = isset($fieldsMeta[$i])
                                                 && $fieldsMeta[$i]->isType(FieldMetadata::TYPE_BLOB)
                                                 && $fieldsMeta[$i]->charsetnr === 63;
-                // This can occur for binary fields
                 $isBinaryString = isset($fieldsMeta[$i])
                                     && $fieldsMeta[$i]->isType(FieldMetadata::TYPE_STRING)
                                     && $fieldsMeta[$i]->charsetnr === 63;
@@ -297,7 +282,6 @@ class ExportJson extends ExportPlugin
                     ) &&
                     $record[$i] !== null
                 ) {
-                    // export GIS and blob types as hex
                     $record[$i] = '0x' . bin2hex($record[$i]);
                 }
 

@@ -24,10 +24,6 @@ class CartItem extends Model
         'discount_amount' => 'decimal:2',
     ];
 
-    // ================================================================
-    // Relationships
-    // ================================================================
-
     public function cart(): BelongsTo
     {
         return $this->belongsTo(Cart::class);
@@ -42,10 +38,6 @@ class CartItem extends Model
     {
         return $this->belongsTo(Discount::class);
     }
-
-    // ================================================================
-    // Accessors
-    // ================================================================
 
     /**
      * جمع این آیتم (قیمت اصلی × تعداد)

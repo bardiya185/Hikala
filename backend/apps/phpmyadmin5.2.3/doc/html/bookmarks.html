@@ -70,12 +70,12 @@ Be aware that the whole query minus the SQL comments must be
 valid by itself, otherwise you won’t be able to store it as a bookmark.
 Also, note that the text ‘VARIABLE’ is case-sensitive.</p>
 <p>When you execute the bookmark, everything typed into the <em>Variables</em>
-input boxes on the query box page will replace the strings <code class="docutils literal notranslate"><span class="pre">/*[VARIABLE{variable-number}]*/</span></code> in
+input boxes on the query box page will replace the strings <code class="docutils literal notranslate"><span class="pre"></span></code> in
 your stored query.</p>
-<p>Also remember, that everything else inside the <code class="docutils literal notranslate"><span class="pre">/*[VARIABLE{variable-number}]*/</span></code> string for
-your query will remain the way it is, but will be stripped of the <code class="docutils literal notranslate"><span class="pre">/**/</span></code>
+<p>Also remember, that everything else inside the <code class="docutils literal notranslate"><span class="pre"></span></code> string for
+your query will remain the way it is, but will be stripped of the <code class="docutils literal notranslate"><span class="pre"></span></code>
 chars. So you can use:</p>
-<div class="highlight-mysql notranslate"><div class="highlight"><pre><span></span><span class="cm">/*, [VARIABLE1] AS myname */</span>
+<div class="highlight-mysql notranslate"><div class="highlight"><pre><span></span><span class="cm"></span>
 </pre></div>
 </div>
 <p>which will be expanded to</p>
@@ -84,7 +84,7 @@ chars. So you can use:</p>
 </div>
 <p>in your query, where VARIABLE1 is the string you entered in the Variable 1 input box.</p>
 <p>A more complex example, say you have stored this query:</p>
-<div class="highlight-mysql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="k">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Address</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">addresses</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="cm">/* AND Name LIKE &#39;%[VARIABLE1]%&#39; */</span>
+<div class="highlight-mysql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="k">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Address</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">addresses</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="cm"></span>
 </pre></div>
 </div>
 <p>If you wish to enter “phpMyAdmin” as the variable for the stored query, the full
@@ -92,7 +92,7 @@ query will be:</p>
 <div class="highlight-mysql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="k">Name</span><span class="p">,</span><span class="w"> </span><span class="n">Address</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">addresses</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">Name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%phpMyAdmin%&#39;</span>
 </pre></div>
 </div>
-<p><strong>NOTE THE ABSENCE OF SPACES</strong> inside the <code class="docutils literal notranslate"><span class="pre">/**/</span></code> construct. Any spaces
+<p><strong>NOTE THE ABSENCE OF SPACES</strong> inside the <code class="docutils literal notranslate"><span class="pre"></span></code> construct. Any spaces
 inserted there will be later also inserted as spaces in your query and may lead
 to unexpected results especially when using the variable expansion inside of a
 “LIKE ‘’” expression.</p>

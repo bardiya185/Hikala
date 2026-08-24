@@ -32,7 +32,7 @@ use function substr;
  */
 class ZipExtension
 {
-    /** @var ZipArchive|null */
+    
     private $zip;
 
     public function __construct(?ZipArchive $zip = null)
@@ -89,7 +89,7 @@ class ZipExtension
             ];
         }
 
-        /* Is the the zip really an ODS file? */
+        
         $odsMediaType = 'application/vnd.oasis.opendocument.spreadsheet';
         $firstZipEntry = $this->zip->getFromIndex(0);
         if (! strcmp($odsMediaType, (string) $firstZipEntry)) {
@@ -106,7 +106,7 @@ class ZipExtension
             ];
         }
 
-        /* Return the correct contents, not just the first entry */
+        
         for ($i = 0; $i < $this->zip->numFiles; $i++) {
             if (preg_match($specificEntry, (string) $this->zip->getNameIndex($i))) {
                 $fileData = $this->zip->getFromIndex($i);
@@ -114,7 +114,7 @@ class ZipExtension
             }
         }
 
-        /* Couldn't find any files that matched $specific_entry */
+        
         if (empty($fileData)) {
             $errorMessage = __('Error in ZIP archive:')
                 . ' Could not find "' . $specificEntry . '"';
@@ -238,7 +238,7 @@ class ZipExtension
 
             $data = $newData;
         } elseif (is_array($data) && is_array($name) && count($data) === count($name)) {
-            /** @var array $data */
+            
             $data = array_combine($name, $data);
         } else {
             return false;
@@ -247,7 +247,7 @@ class ZipExtension
         foreach ($data as $table => $dump) {
             $tempName = str_replace('\\', '/', $table);
 
-            /* Get Local Time */
+            
             $timearray = getdate();
 
             if ($timearray['year'] < 1980) {
@@ -278,21 +278,15 @@ class ZipExtension
                 . "\x00\x00" // gen purpose bit flag
                 . "\x08\x00" // compression method
                 . $hexdtime // last mod time and date
-
-                // "local file header" segment
                 . pack('V', $crc) // crc32
                 . pack('V', $cLen) // compressed filesize
                 . pack('V', $uncLen) // uncompressed filesize
                 . pack('v', strlen($tempName)) // length of filename
                 . pack('v', 0) // extra field length
                 . $tempName
-
-                // "file data" segment
                 . $zdata;
 
             $datasec[] = $fr;
-
-            // now add to central directory record
             $cdrec = "\x50\x4b\x01\x02"
                 . "\x00\x00" // version made by
                 . "\x14\x00" // version needed to extract
@@ -308,16 +302,13 @@ class ZipExtension
                 . pack('v', 0) // disk number start
                 . pack('v', 0) // internal file attributes
                 . pack('V', 32) // external file attributes
-                                                 // - 'archive' bit set
                 . pack('V', $oldOffset) // relative offset of local header
                 . $tempName; // filename
             $oldOffset += strlen($fr);
-            // optional extra field, file comment goes here
-            // save to central directory
             $ctrlDir[] = $cdrec;
         }
 
-        /* Build string to return */
+        
         $tempCtrlDir = implode('', $ctrlDir);
         $header = $tempCtrlDir .
             $eofCtrlDir .

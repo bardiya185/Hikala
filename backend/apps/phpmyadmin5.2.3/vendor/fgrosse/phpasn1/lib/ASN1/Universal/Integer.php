@@ -19,7 +19,7 @@ use FG\ASN1\Identifier;
 
 class Integer extends ASNObject implements Parsable
 {
-    /** @var int */
+    
     private $value;
 
     /**

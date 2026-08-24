@@ -1,37 +1,4 @@
 <?php
-//============================================================+
-// File name   : tcpdf_autoconfig.php
-// Version     : 1.1.1
-// Begin       : 2013-05-16
-// Last Update : 2025-04-18
-// Authors     : Nicola Asuni - Tecnick.com LTD - www.tecnick.com - info@tecnick.com
-// License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
-// -------------------------------------------------------------------
-// Copyright (C) 2011-2025 Nicola Asuni - Tecnick.com LTD
-//
-// This file is part of TCPDF software library.
-//
-// TCPDF is free software: you can redistribute it and/or modify it
-// under the terms of the GNU Lesser General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// TCPDF is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-// See the GNU Lesser General Public License for more details.
-//
-// You should have received a copy of the License
-// along with TCPDF. If not, see
-// <http://www.tecnick.com/pagefiles/tcpdf/LICENSE.TXT>.
-//
-// See LICENSE.TXT file for more information.
-// -------------------------------------------------------------------
-//
-// Description : Try to automatically configure some TCPDF
-//               constants if not defined.
-//
-//============================================================+
 
 /**
  * @file
@@ -39,20 +6,12 @@
  * @package com.tecnick.tcpdf
  * @version 1.2.1
  */
-
-// Disable phar stream wrapper globally.
-// if (in_array('phar', stream_get_wrappers(), true)) {
-//     stream_wrapper_unregister('phar');
-// }
-
-// DOCUMENT_ROOT fix for IIS Webserver
 if ((!isset($_SERVER['DOCUMENT_ROOT'])) OR (empty($_SERVER['DOCUMENT_ROOT']))) {
 	if(isset($_SERVER['SCRIPT_FILENAME'])) {
 		$_SERVER['DOCUMENT_ROOT'] = str_replace( '\\', '/', substr($_SERVER['SCRIPT_FILENAME'], 0, 0-strlen($_SERVER['PHP_SELF'])));
 	} elseif(isset($_SERVER['PATH_TRANSLATED'])) {
 		$_SERVER['DOCUMENT_ROOT'] = str_replace( '\\', '/', substr(str_replace('\\\\', '\\', $_SERVER['PATH_TRANSLATED']), 0, 0-strlen($_SERVER['PHP_SELF'])));
 	} else {
-		// define here your DOCUMENT_ROOT path if the previous fails (e.g. '/var/www')
 		$_SERVER['DOCUMENT_ROOT'] = '/';
 	}
 }
@@ -60,10 +19,7 @@ $_SERVER['DOCUMENT_ROOT'] = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT']);
 if (substr($_SERVER['DOCUMENT_ROOT'], -1) != '/') {
 	$_SERVER['DOCUMENT_ROOT'] .= '/';
 }
-
-// Load main configuration file only if the K_TCPDF_EXTERNAL_CONFIG constant is set to false.
 if (!defined('K_TCPDF_EXTERNAL_CONFIG') OR !K_TCPDF_EXTERNAL_CONFIG) {
-	// define a list of default config files in order of priority
 	$tcpdf_config_files = array(dirname(__FILE__).'/config/tcpdf_config.php', '/etc/php-tcpdf/tcpdf_config.php', '/etc/tcpdf/tcpdf_config.php', '/etc/tcpdf_config.php');
 	foreach ($tcpdf_config_files as $tcpdf_config) {
 		if (@file_exists($tcpdf_config) AND is_readable($tcpdf_config)) {
@@ -244,12 +200,6 @@ if (!defined('K_TCPDF_THROW_EXCEPTION_ERROR')) {
 if (!defined('K_TIMEZONE')) {
 	define('K_TIMEZONE', @date_default_timezone_get());
 }
-
-// Custom cURL options for curl_setopt_array.
 if (!defined('K_CURLOPTS')) {
 	define('K_CURLOPTS', array());
 }
-
-//============================================================+
-// END OF FILE
-//============================================================+

@@ -22,7 +22,7 @@ use function implode;
 
 final class SimulateDml
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(DatabaseInterface $dbi)

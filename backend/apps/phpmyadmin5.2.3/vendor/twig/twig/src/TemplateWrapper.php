@@ -40,8 +40,6 @@ final class TemplateWrapper
 
     public function display(array $context = [])
     {
-        // using func_get_args() allows to not expose the blocks argument
-        // as it should only be used by internal code
         $this->template->display($context, \func_get_args()[1] ?? []);
     }
 

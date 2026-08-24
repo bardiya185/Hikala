@@ -18,14 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-//$Id: docker.js 661 2014-01-08 11:26:39 aolah76 $
-
-
-/*global $, jQuery, buildBlock, datetime, plugin_translate, genlang, createBar */
-
 "use strict";
 
-var docker_show = false, docker_table;
+var docker_show = false,
+    docker_table;
 
 /**
  * insert content into table
@@ -33,50 +29,80 @@ var docker_show = false, docker_table;
  */
 
 function docker_populate(xml) {
-
     var hostname = "";
 
     docker_table.fnClearTable();
 
-    hostname = $("Plugins Plugin_Docker", xml).attr('Hostname');
+    hostname = $("Plugins Plugin_Docker", xml).attr("Hostname");
     if (hostname !== undefined) {
-        $('span[class=Hostname_Docker]').html(hostname);
+        $("span[class=Hostname_Docker]").html(hostname);
     }
 
-    $("Plugins Plugin_Docker Docker Item", xml).each(function docker_getitem(id) {
-        var name = "", cpuu= 0, memu = 0, used = 0, limit = 0, netio = "", blockio = "", pids = 0;
-        name = $(this).attr("Name");
-        cpuu = parseInt($(this).attr("CPUUsage"), 10);
-        memu = parseInt($(this).attr("MemoryUsage"), 10);
-        used = parseInt($(this).attr("MemoryUsed"), 10);
-        limit = parseInt($(this).attr("MemoryLimit"), 10);
-        netio = $(this).attr("NetIO");
-        blockio = $(this).attr("BlockIO");
-        pids = parseInt($(this).attr("PIDs"), 10);
+    $("Plugins Plugin_Docker Docker Item", xml).each(
+        function docker_getitem(id) {
+            var name = "",
+                cpuu = 0,
+                memu = 0,
+                used = 0,
+                limit = 0,
+                netio = "",
+                blockio = "",
+                pids = 0;
+            name = $(this).attr("Name");
+            cpuu = parseInt($(this).attr("CPUUsage"), 10);
+            memu = parseInt($(this).attr("MemoryUsage"), 10);
+            used = parseInt($(this).attr("MemoryUsed"), 10);
+            limit = parseInt($(this).attr("MemoryLimit"), 10);
+            netio = $(this).attr("NetIO");
+            blockio = $(this).attr("BlockIO");
+            pids = parseInt($(this).attr("PIDs"), 10);
 
-        docker_table.fnAddData(["<span style=\"display:none;\">" + name + "</span>" + name, "<span style=\"display:none;\">" + cpuu + "</span>" + createBar(cpuu), "<span style=\"display:none;\">" + memu + "</span>" + createBar(memu), "<span style=\"display:none;\">" + used + "</span>" + formatBytes(used, xml), "<span style=\"display:none;\">" + limit + "</span>" + formatBytes(limit, xml), "<span style=\"display:none;\">" + netio + "</span>" + netio, "<span style=\"display:none;\">" + blockio + "</span>" + blockio, "<span style=\"display:none;\">" + pids + "</span>" + pids]);
-        docker_show = true;
-    });
+            docker_table.fnAddData([
+                '<span style="display:none;">' + name + "</span>" + name,
+                '<span style="display:none;">' +
+                    cpuu +
+                    "</span>" +
+                    createBar(cpuu),
+                '<span style="display:none;">' +
+                    memu +
+                    "</span>" +
+                    createBar(memu),
+                '<span style="display:none;">' +
+                    used +
+                    "</span>" +
+                    formatBytes(used, xml),
+                '<span style="display:none;">' +
+                    limit +
+                    "</span>" +
+                    formatBytes(limit, xml),
+                '<span style="display:none;">' + netio + "</span>" + netio,
+                '<span style="display:none;">' + blockio + "</span>" + blockio,
+                '<span style="display:none;">' + pids + "</span>" + pids,
+            ]);
+            docker_show = true;
+        },
+    );
 }
 
 function docker_buildTable() {
     var html = "";
 
-    html += "<div style=\"overflow-x:auto;\">\n";
-    html += "  <table id=\"Plugin_DockerTable\" class=\"stripeMe\" style=\"border-collapse:collapse;\">\n";
+    html += '<div style="overflow-x:auto;">\n';
+    html +=
+        '  <table id="Plugin_DockerTable" class="stripeMe" style="border-collapse:collapse;">\n';
     html += "    <thead>\n";
     html += "      <tr>\n";
     html += "        <th>" + genlang(101, "docker") + "</th>\n";
     html += "        <th>" + genlang(102, "docker") + "</th>\n";
     html += "        <th>" + genlang(103, "docker") + "</th>\n";
-    html += "        <th class=\"right\">" + genlang(104, "docker") + "</th>\n";
-    html += "        <th class=\"right\">" + genlang(105, "docker") + "</th>\n";
-    html += "        <th class=\"right\">" + genlang(106, "docker") + "</th>\n";
-    html += "        <th class=\"right\">" + genlang(107, "docker") + "</th>\n";
-    html += "        <th class=\"right\">" + genlang(108, "docker") + "</th>\n";
+    html += '        <th class="right">' + genlang(104, "docker") + "</th>\n";
+    html += '        <th class="right">' + genlang(105, "docker") + "</th>\n";
+    html += '        <th class="right">' + genlang(106, "docker") + "</th>\n";
+    html += '        <th class="right">' + genlang(107, "docker") + "</th>\n";
+    html += '        <th class="right">' + genlang(108, "docker") + "</th>\n";
     html += "      </tr>\n";
     html += "    </thead>\n";
-    html += "    <tbody id=\"Plugin_DockerTable-tbody\">\n";
+    html += '    <tbody id="Plugin_DockerTable-tbody">\n';
     html += "    </tbody>\n";
     html += "  </table>\n";
     html += "</div>\n";
@@ -84,36 +110,45 @@ function docker_buildTable() {
     $("#Plugin_Docker").append(html);
 
     docker_table = $("#Plugin_DockerTable").dataTable({
-        "bPaginate": false,
-        "bLengthChange": false,
-        "bFilter": false,
-        "bSort": true,
-        "bInfo": false,
-        "bProcessing": true,
-        "bAutoWidth": false,
-        "bStateSave": true,
-        "aoColumns": [{
-            "sType": 'span-string'
-        }, {
-            "sType": 'span-number'
-        }, {
-            "sType": 'span-number'
-        }, {
-            "sType": 'span-number',
-            "sClass": "right"
-        }, {
-            "sType": 'span-number',
-            "sClass": "right"
-        }, {
-            "sType": 'span-string',
-            "sClass": "right"
-        }, {
-            "sType": 'span-string',
-            "sClass": "right"
-        }, {
-            "sType": 'span-number',
-            "sClass": "right"
-        }]
+        bPaginate: false,
+        bLengthChange: false,
+        bFilter: false,
+        bSort: true,
+        bInfo: false,
+        bProcessing: true,
+        bAutoWidth: false,
+        bStateSave: true,
+        aoColumns: [
+            {
+                sType: "span-string",
+            },
+            {
+                sType: "span-number",
+            },
+            {
+                sType: "span-number",
+            },
+            {
+                sType: "span-number",
+                sClass: "right",
+            },
+            {
+                sType: "span-number",
+                sClass: "right",
+            },
+            {
+                sType: "span-string",
+                sClass: "right",
+            },
+            {
+                sType: "span-string",
+                sClass: "right",
+            },
+            {
+                sType: "span-number",
+                sClass: "right",
+            },
+        ],
     });
 }
 
@@ -136,7 +171,7 @@ function docker_request() {
                 plugin_translate("Docker");
                 $("#Plugin_Docker").show();
             }
-        }
+        },
     });
 }
 

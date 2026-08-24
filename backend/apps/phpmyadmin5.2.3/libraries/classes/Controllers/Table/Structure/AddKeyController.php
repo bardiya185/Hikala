@@ -12,10 +12,10 @@ use PhpMyAdmin\Template;
 
 final class AddKeyController extends AbstractController
 {
-    /** @var SqlController */
+    
     private $sqlController;
 
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(

@@ -9,13 +9,13 @@ if (class_exists('ParagonIE_Sodium_Core_AES_KeySchedule', false)) {
  */
 class ParagonIE_Sodium_Core_AES_KeySchedule
 {
-    /** @var array<int, int> $skey -- has size 120 */
+    
     protected $skey;
 
-    /** @var bool $expanded */
+    
     protected $expanded = false;
 
-    /** @var int $numRounds */
+    
     private $numRounds;
 
     /**

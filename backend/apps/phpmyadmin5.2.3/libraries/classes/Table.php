@@ -72,31 +72,31 @@ class Table implements Stringable
     public const PROP_COLUMN_ORDER = 'col_order';
     public const PROP_COLUMN_VISIB = 'col_visib';
 
-    /** @var string  engine (innodb, myisam, bdb, ...) */
+    
     public $engine = '';
 
-    /** @var string  type (view, base table, system view) */
+    
     public $type = '';
 
-    /** @var array UI preferences */
+    
     public $uiprefs = [];
 
-    /** @var array errors occurred */
+    
     public $errors = [];
 
-    /** @var array messages */
+    
     public $messages = [];
 
-    /** @var string  table name */
+    
     protected $name = '';
 
-    /** @var string  database name */
+    
     protected $dbName = '';
 
-    /** @var DatabaseInterface */
+    
     protected $dbi;
 
-    /** @var Relation */
+    
     private $relation;
 
     /**
@@ -238,8 +238,6 @@ class Table implements Stringable
         if (empty($db) || empty($table)) {
             return false;
         }
-
-        // use cached data or load information with SHOW command
         if (
             $this->dbi->getCache()->getCachedTableContent([$db, $table]) != null
             || $GLOBALS['cfg']['Server']['DisableIS']
@@ -248,13 +246,9 @@ class Table implements Stringable
 
             return $type === 'VIEW' || $type === 'SYSTEM VIEW';
         }
-
-        // information_schema tables are 'SYSTEM VIEW's
         if ($db === 'information_schema') {
             return true;
         }
-
-        // query information_schema
         $result = $this->dbi->fetchResult(
             'SELECT TABLE_NAME'
             . ' FROM information_schema.VIEWS'
@@ -322,26 +316,18 @@ class Table implements Stringable
         }
 
         $cachedResult = $this->dbi->getCache()->getCachedTableContent([$db, $table]);
-
-        // sometimes there is only one entry (ExactRows) so
-        // we have to get the table's details
         if ($cachedResult === null || $forceRead || count($cachedResult) === 1) {
             $this->dbi->getTablesFull($db, $table);
             $cachedResult = $this->dbi->getCache()->getCachedTableContent([$db, $table]);
         }
 
         if ($cachedResult === null) {
-            // happens when we enter the table creation dialog
-            // or when we really did not get any status info, for example
-            // when $table === 'TABLE_NAMES' after the user tried SHOW TABLES
             return '';
         }
 
         if ($info === null) {
             return $cachedResult;
         }
-
-        // array_key_exists allows for null values
         if (! array_key_exists($info, $cachedResult)) {
             if (! $disableError) {
                 trigger_error(
@@ -455,20 +441,13 @@ class Table implements Stringable
         $tableOptions = $this->getStatusInfo('CREATE_OPTIONS', false, true);
         $createOptionsTmp = empty($tableOptions) ? [] : explode(' ', $tableOptions);
         $createOptions = [];
-        // export create options by its name as variables into global namespace
-        // f.e. pack_keys=1 becomes available as $pack_keys with value of '1'
-        // unset($pack_keys);
         foreach ($createOptionsTmp as $eachCreateOption) {
             $eachCreateOption = explode('=', $eachCreateOption);
             if (! isset($eachCreateOption[1])) {
                 continue;
             }
-
-            // ensure there is no ambiguity for PHP 5 and 7
             $createOptions[$eachCreateOption[0]] = $eachCreateOption[1];
         }
-
-        // we need explicit DEFAULT value here (different from '0')
         $hasPackKeys = isset($createOptions['pack_keys']) && strlen($createOptions['pack_keys']) > 0;
         $createOptions['pack_keys'] = $hasPackKeys ? $createOptions['pack_keys'] : 'DEFAULT';
 
@@ -525,12 +504,6 @@ class Table implements Stringable
         $isTimestamp = mb_stripos($type, 'TIMESTAMP') !== false;
 
         $query = Util::backquote($name) . ' ' . $type;
-
-        // allow the possibility of a length for TIME, DATETIME and TIMESTAMP
-        // (will work on MySQL >= 5.6.4)
-        //
-        // MySQL permits a non-standard syntax for FLOAT and DOUBLE,
-        // see https://dev.mysql.com/doc/refman/5.5/en/floating-point-types.html
         $pattern = '@^(DATE|TINYBLOB|TINYTEXT|BLOB|TEXT|'
             . 'MEDIUMBLOB|MEDIUMTEXT|LONGBLOB|LONGTEXT|SERIAL|BOOLEAN|UUID|JSON)$@i';
         if (
@@ -538,9 +511,6 @@ class Table implements Stringable
             && ! preg_match($pattern, $type)
             && Compatibility::isIntegersSupportLength($type, $length, $dbi)
         ) {
-            // Note: The variable $length here can contain several other things
-            // besides length - ENUM/SET value or length of DECIMAL (eg. 12,3)
-            // so we can't just convert it to integer
             $query .= '(' . $length . ')';
         }
 
@@ -551,12 +521,7 @@ class Table implements Stringable
                 $query .= '(' . $length . ')';
             }
         }
-
-        // if column is virtual, check if server type is Mysql as only Mysql server
-        // supports extra column properties
         $isVirtualColMysql = $virtuality && Compatibility::isMySqlOrPerconaDb();
-        // if column is virtual, check if server type is MariaDB as MariaDB server
-        // supports no extra virtual column properties except CHARACTER SET for text column types
         $isVirtualColMariaDB = $virtuality && Compatibility::isMariaDb();
 
         $matches = preg_match('@^(TINYTEXT|TEXT|MEDIUMTEXT|LONGTEXT|VARCHAR|CHAR|ENUM|SET)$@i', $type);
@@ -584,8 +549,6 @@ class Table implements Stringable
                 switch ($defaultType) {
                     case 'USER_DEFINED':
                         if ($isTimestamp && $defaultValue === '0') {
-                            // a TIMESTAMP does not accept DEFAULT '0'
-                            // but DEFAULT 0 works
                             $query .= ' DEFAULT 0';
                         } elseif (
                             $isTimestamp
@@ -605,7 +568,6 @@ class Table implements Stringable
                             } elseif (preg_match('/^0|F|FALSE|NO$/i', $defaultValue)) {
                                 $query .= ' DEFAULT FALSE';
                             } else {
-                                // Invalid BOOLEAN value
                                 $query .= ' DEFAULT \''
                                 . $dbi->escapeString($defaultValue) . '\'';
                             }
@@ -617,14 +579,11 @@ class Table implements Stringable
                         }
 
                         break;
-                    /** @noinspection PhpMissingBreakStatementInspection */
+                    
                     case 'NULL':
-                        // If user uncheck null checkbox and not change default value null,
-                        // default value will be ignored.
                         if ($null !== false && $null !== 'YES') {
                             break;
                         }
-                        // else fall-through intended, no break here
                     case 'CURRENT_TIMESTAMP':
                     case 'current_timestamp()':
                         $query .= ' DEFAULT ' . $defaultType;
@@ -661,8 +620,6 @@ class Table implements Stringable
         if (! empty($comment)) {
             $query .= " COMMENT '" . $dbi->escapeString($comment) . "'";
         }
-
-        // move column
         if ($moveTo === '-first') { // dash can't appear as part of column name
             $query .= ' FIRST';
         } elseif ($moveTo != '') {
@@ -774,8 +731,6 @@ class Table implements Stringable
                 $rowCount = false;
             }
         }
-
-        // for a VIEW, $row_count is always false at this point
         if ($rowCount !== false && $rowCount >= $GLOBALS['cfg']['MaxExactCount']) {
             return $rowCount;
         }
@@ -786,18 +741,10 @@ class Table implements Stringable
                 . Util::backquote($table)
             );
         } else {
-            // For complex views, even trying to get a partial record
-            // count could bring down a server, so we offer an
-            // alternative: setting MaxExactCountViews to 0 will bypass
-            // completely the record counting for views
 
             if ($GLOBALS['cfg']['MaxExactCountViews'] == 0) {
                 $rowCount = false;
             } else {
-                // Counting all rows of a VIEW could be too long,
-                // so use a LIMIT clause.
-                // Use try_query because it can fail (when a VIEW is
-                // based on a table that no longer exists)
                 $result = $this->dbi->tryQuery(
                     'SELECT 1 FROM ' . Util::backquote($db) . '.'
                     . Util::backquote($table) . ' LIMIT '
@@ -934,9 +881,6 @@ class Table implements Stringable
               FROM ' . Util::backquote($relationParameters->db) . '.'
               . Util::backquote((string) $relationParams[$table]) . '
              WHERE ' . implode(' AND ', $whereParts);
-
-        // must use DatabaseInterface::QUERY_BUFFERED here, since we execute
-        // another query inside the loop
         $tableCopyRs = $dbi->queryAsControlUser($tableCopyQuery);
 
         foreach ($tableCopyRs as $tableCopyRow) {
@@ -988,8 +932,6 @@ class Table implements Stringable
         global $errorUrl, $dbi;
 
         $relation = new Relation($dbi);
-
-        // Try moving the tables directly, using native `RENAME` statement.
         if ($move && $what === 'data') {
             $tbl = new Table($sourceTable, $sourceDb);
             if ($tbl->rename($targetTable, $targetDb)) {
@@ -998,12 +940,8 @@ class Table implements Stringable
                 return true;
             }
         }
-
-        // Setting required export settings.
         $GLOBALS['sql_backquotes'] = 1;
         $GLOBALS['asfile'] = 1;
-
-        // Ensuring the target database is valid.
         if (! $GLOBALS['dblist']->databases->exists($sourceDb, $targetDb)) {
             if (! $GLOBALS['dblist']->databases->exists($sourceDb)) {
                 $GLOBALS['message'] = Message::rawError(
@@ -1033,15 +971,9 @@ class Table implements Stringable
          */
         $source = Util::backquote($sourceDb)
             . '.' . Util::backquote($sourceTable);
-
-        // If the target database is not specified, the operation is taking
-        // place in the same database.
         if (! isset($targetDb) || strlen($targetDb) === 0) {
             $targetDb = $sourceDb;
         }
-
-        // Selecting the database could avoid some problems with replicated
-        // databases, when moving table from replicated one to not replicated one.
         $dbi->selectDb($targetDb);
 
         /**
@@ -1051,8 +983,6 @@ class Table implements Stringable
          */
         $target = Util::backquote($targetDb)
             . '.' . Util::backquote($targetTable);
-
-        // No table is created when this is a data-only operation.
         if ($what !== 'dataonly') {
             /**
              * Instance used for exporting the current structure of the table.
@@ -1066,7 +996,6 @@ class Table implements Stringable
 
             $noConstraintsComments = true;
             $GLOBALS['sql_constraints_query'] = '';
-            // set the value of global sql_auto_increment variable
             if (isset($_POST['sql_auto_increment'])) {
                 $GLOBALS['sql_auto_increment'] = $_POST['sql_auto_increment'];
             }
@@ -1087,22 +1016,11 @@ class Table implements Stringable
 
             unset($noConstraintsComments);
 
-            // -----------------------------------------------------------------
-            // Phase 0: Preparing structures used.
-
             /**
              * The destination where the table is moved or copied to.
              */
             $destination = new Expression($targetDb, $targetTable, '');
-
-            // Find server's SQL mode so the builder can generate correct
-            // queries.
-            // One of the options that alters the behaviour is `ANSI_QUOTES`.
             Context::setMode((string) $dbi->fetchValue('SELECT @@sql_mode'));
-
-            // -----------------------------------------------------------------
-            // Phase 1: Dropping existent element of the same name (if exists
-            // and required).
 
             if ($addDropIfExists) {
                 /**
@@ -1120,21 +1038,11 @@ class Table implements Stringable
                 );
 
                 $statement->fields = [$destination];
-
-                // Building the query.
                 $dropQuery = $statement->build() . ';';
-
-                // Executing it.
                 $dbi->query($dropQuery);
                 $GLOBALS['sql_query'] .= "\n" . $dropQuery;
-
-                // If an existing table gets deleted, maintain any entries for
-                // the PMA_* tables.
                 $maintainRelations = true;
             }
-
-            // -----------------------------------------------------------------
-            // Phase 2: Generating the new query of this structure.
 
             /**
              * The parser responsible for parsing the old queries.
@@ -1149,27 +1057,14 @@ class Table implements Stringable
                  * @var CreateStatement $statement
                  */
                 $statement = $parser->statements[0];
-
-                // Changing the destination.
                 $statement->name = $destination;
-
-                // Building back the query.
                 $sqlStructure = $statement->build() . ';';
-
-                // This is to avoid some issues when renaming databases with views
-                // See: https://github.com/phpmyadmin/phpmyadmin/issues/16422
                 if ($move) {
                     $dbi->selectDb($targetDb);
                 }
-
-                // Executing it
                 $dbi->query($sqlStructure);
                 $GLOBALS['sql_query'] .= "\n" . $sqlStructure;
             }
-
-            // -----------------------------------------------------------------
-            // Phase 3: Adding constraints.
-            // All constraint names are removed because they must be unique.
 
             if (($move || isset($GLOBALS['add_constraints'])) && ! empty($GLOBALS['sql_constraints_query'])) {
                 $parser = new Parser($GLOBALS['sql_constraints_query']);
@@ -1180,24 +1075,15 @@ class Table implements Stringable
                  * @var AlterStatement $statement
                  */
                 $statement = $parser->statements[0];
-
-                // Changing the altered table to the destination.
                 $statement->table = $destination;
-
-                // Removing the name of the constraints.
                 foreach ($statement->altered as $altered) {
-                    // All constraint names are removed because they must be unique.
                     if (! $altered->options->has('CONSTRAINT')) {
                         continue;
                     }
 
                     $altered->field = null;
                 }
-
-                // Building back the query.
                 $GLOBALS['sql_constraints_query'] = $statement->build() . ';';
-
-                // Executing it.
                 if ($mode === 'one_table') {
                     $dbi->query($GLOBALS['sql_constraints_query']);
                 }
@@ -1207,10 +1093,6 @@ class Table implements Stringable
                     unset($GLOBALS['sql_constraints_query']);
                 }
             }
-
-            // -----------------------------------------------------------------
-            // Phase 4: Adding indexes.
-            // View phase 3.
 
             if (! empty($GLOBALS['sql_indexes'])) {
                 $parser = new Parser($GLOBALS['sql_indexes']);
@@ -1222,23 +1104,15 @@ class Table implements Stringable
                  * @var AlterStatement $statement
                  */
                 foreach ($parser->statements as $statement) {
-                    // Changing the altered table to the destination.
                     $statement->table = $destination;
-
-                    // Removing the name of the constraints.
                     foreach ($statement->altered as $altered) {
-                        // All constraint names are removed because they must be unique.
                         if (! $altered->options->has('CONSTRAINT')) {
                             continue;
                         }
 
                         $altered->field = null;
                     }
-
-                    // Building back the query.
                     $sqlIndex = $statement->build() . ';';
-
-                    // Executing it.
                     if ($mode === 'one_table' || $mode === 'db_copy') {
                         $dbi->query($sqlIndex);
                     }
@@ -1252,9 +1126,6 @@ class Table implements Stringable
                 }
             }
 
-            // -----------------------------------------------------------------
-            // Phase 5: Adding AUTO_INCREMENT.
-
             if (! empty($GLOBALS['sql_auto_increments']) && ($mode === 'one_table' || $mode === 'db_copy')) {
                 $parser = new Parser($GLOBALS['sql_auto_increments']);
 
@@ -1263,13 +1134,8 @@ class Table implements Stringable
                  */
                 $statement = $parser->statements[0];
                 if ($statement instanceof AlterStatement) {
-                    // Changing the altered table to the destination.
                     $statement->table = $destination;
-
-                    // Building back the query.
                     $GLOBALS['sql_auto_increments'] = $statement->build() . ';';
-
-                    // Executing it.
                     $dbi->query($GLOBALS['sql_auto_increments']);
                     $GLOBALS['sql_query'] .= "\n" . $GLOBALS['sql_auto_increments'];
                 }
@@ -1281,7 +1147,6 @@ class Table implements Stringable
         }
 
         $table = new Table($targetTable, $targetDb);
-        // Copy the data unless this is a VIEW
         if (($what === 'data' || $what === 'dataonly') && ! $table->isView()) {
             $sqlSetMode = "SET SQL_MODE='NO_AUTO_VALUE_ON_ZERO'";
             $dbi->query($sqlSetMode);
@@ -1301,11 +1166,7 @@ class Table implements Stringable
         }
 
         $relationParameters = $relation->getRelationParameters();
-
-        // Drops old table if the user has requested to move it
         if ($move) {
-            // This could avoid some problems with replicated databases, when
-            // moving table from replicated one to not replicated one
             $dbi->selectDb($sourceDb);
 
             $sourceTableObj = new Table($sourceTable, $sourceDb);
@@ -1317,23 +1178,17 @@ class Table implements Stringable
 
             $sqlDropQuery .= ' ' . $source;
             $dbi->query($sqlDropQuery);
-
-            // Rename table in configuration storage
             $relation->renameTable($sourceDb, $targetDb, $sourceTable, $targetTable);
 
             $GLOBALS['sql_query'] .= "\n\n" . $sqlDropQuery . ';';
 
             return true;
         }
-
-        // we are copying
-        // Create new entries as duplicates from old PMA DBs
         if ($what === 'dataonly' || isset($maintainRelations)) {
             return true;
         }
 
         if ($relationParameters->columnCommentsFeature !== null) {
-            // Get all comments and MIME-Types for current table
             $commentsCopyRs = $dbi->queryAsControlUser(
                 'SELECT column_name, comment'
                 . ($relationParameters->browserTransformationFeature !== null
@@ -1350,8 +1205,6 @@ class Table implements Stringable
                 . ' table_name = \''
                 . $dbi->escapeString((string) $sourceTable) . '\''
             );
-
-            // Write every comment as new copied entry. [MIME]
             foreach ($commentsCopyRs as $commentsCopyRow) {
                 $newCommentQuery = 'REPLACE INTO '
                     . Util::backquote($relationParameters->columnCommentsFeature->database)
@@ -1378,9 +1231,6 @@ class Table implements Stringable
 
             unset($commentsCopyRs);
         }
-
-        // duplicating the bookmarks must not be done here, but
-        // just once per db
 
         $getFields = ['display_field'];
         $whereFields = [
@@ -1445,27 +1295,20 @@ class Table implements Stringable
     public static function isValidName($tableName, $isBackquoted = false): bool
     {
         if ($tableName !== rtrim((string) $tableName)) {
-            // trailing spaces not allowed even in backquotes
             return false;
         }
 
         if (strlen($tableName) === 0) {
-            // zero length
             return false;
         }
 
         if (! $isBackquoted && $tableName !== trim($tableName)) {
-            // spaces at the start or in between only allowed inside backquotes
             return false;
         }
 
         if (! $isBackquoted && preg_match('/^[a-zA-Z0-9_$]+$/', $tableName)) {
-            // only allow the above regex in unquoted identifiers
-            // see : https://dev.mysql.com/doc/refman/5.7/en/identifiers.html
             return true;
         }
-
-        // If backquoted, all characters should be allowed (except w/ trailing spaces).
         return $isBackquoted;
     }
 
@@ -1482,7 +1325,6 @@ class Table implements Stringable
         }
 
         if ($newDb !== null && $newDb !== $this->getDbName()) {
-            // Ensure the target is valid
             if (! $GLOBALS['dblist']->databases->exists($newDb)) {
                 $this->errors[] = __('Invalid database:') . ' ' . $newDb;
 
@@ -1497,18 +1339,12 @@ class Table implements Stringable
         if ($this->getFullName() === $newTable->getFullName()) {
             return true;
         }
-
-        // Allow whitespaces (not trailing) in $new_name,
-        // since we are using $backquoted in getting the fullName of table
-        // below to be used in the query
         if (! self::isValidName($newName, true)) {
             $this->errors[] = __('Invalid table name:') . ' '
                 . $newTable->getFullName();
 
             return false;
         }
-
-        // If the table is moved to a different database drop its triggers first
         $triggers = $this->dbi->getTriggers(
             $this->getDbName(),
             $this->getName(),
@@ -1530,11 +1366,8 @@ class Table implements Stringable
         $GLOBALS['sql_query'] = '
             RENAME TABLE ' . $this->getFullName(true) . '
                   TO ' . $newTable->getFullName(true) . ';';
-        // I don't think a specific error message for views is necessary
         if ($this->dbi->tryQuery($GLOBALS['sql_query']) === false) {
             $this->errors[] = $this->dbi->getError();
-
-            // Restore triggers in the old database
             if ($handleTriggers) {
                 $this->dbi->selectDb($this->getDbName());
                 foreach ($triggers as $trigger) {
@@ -1549,8 +1382,6 @@ class Table implements Stringable
         $oldDb = $this->getDbName();
         $this->name = $newName;
         $this->dbName = $newDb;
-
-        // Rename table in configuration storage
         $this->relation->renameTable($oldDb, $newDb, $oldName, $newName);
 
         $this->messages[] = sprintf(
@@ -1612,8 +1443,6 @@ class Table implements Stringable
             } else {
                 $possibleColumn .= $index[0];
             }
-
-            // a column might have a primary and an unique index on it
             if (in_array($possibleColumn, $return)) {
                 continue;
             }
@@ -1706,8 +1535,6 @@ class Table implements Stringable
         if ($moveColumnsSqlResult !== false) {
             return $this->dbi->getFieldsMeta($moveColumnsSqlResult);
         }
-
-        // unsure how to reproduce but it was seen on the reporting server
         return [];
     }
 
@@ -1730,8 +1557,6 @@ class Table implements Stringable
             if ($backquoted === true) {
                 $value = Util::backquote($value);
             }
-
-            // If contains GENERATED or VIRTUAL and does not contain DEFAULT_GENERATED
             if (
                 (
                 str_contains($column['Extra'], 'GENERATED')
@@ -1757,8 +1582,6 @@ class Table implements Stringable
         if ($uiPreferencesFeature === null) {
             return [];
         }
-
-        // Read from phpMyAdmin database
         $sqlQuery = sprintf(
             'SELECT `prefs` FROM %s.%s WHERE `username` = \'%s\' AND `db_name` = \'%s\' AND `table_name` = \'%s\'',
             Util::backquote($uiPreferencesFeature->database),
@@ -1808,9 +1631,6 @@ class Table implements Stringable
 
             return $message;
         }
-
-        // Remove some old rows in table_uiprefs if it exceeds the configured
-        // maximum rows
         $sqlQuery = 'SELECT COUNT(*) FROM ' . $table;
         $rowsCount = (int) $this->dbi->fetchValue($sqlQuery);
         $maxRows = (int) $GLOBALS['cfg']['Server']['MaxTableUiprefs'];
@@ -1851,10 +1671,7 @@ class Table implements Stringable
     {
         $uiPreferencesFeature = $this->relation->getRelationParameters()->uiPreferencesFeature;
         $serverId = $GLOBALS['server'];
-
-        // set session variable if it's still undefined
         if (! isset($_SESSION['tmpval']['table_uiprefs'][$serverId][$this->dbName][$this->name])) {
-            // check whether we can get from pmadb
             $uiPrefs = $this->getUiPrefsFromDb($uiPreferencesFeature);
             $_SESSION['tmpval']['table_uiprefs'][$serverId][$this->dbName][$this->name] = $uiPrefs;
         }
@@ -1879,31 +1696,23 @@ class Table implements Stringable
         if (empty($this->uiprefs)) {
             $this->loadUiPrefs();
         }
-
-        // do checking based on property
         if ($property == self::PROP_SORTED_COLUMN) {
             if (! isset($this->uiprefs[$property])) {
                 return false;
             }
 
             if (! isset($_POST['discard_remembered_sort'])) {
-                // check if the column name exists in this table
                 $tmp = explode(' ', $this->uiprefs[$property]);
                 $colname = $tmp[0];
-                //remove backquoting from colname
                 $colname = str_replace('`', '', $colname);
-                //get the available column name without backquoting
                 $availColumns = $this->getColumns(false);
 
                 foreach ($availColumns as $eachCol) {
-                    // check if $each_col ends with $colname
                     if (substr_compare($eachCol, $colname, mb_strlen($eachCol) - mb_strlen($colname)) === 0) {
                         return $this->uiprefs[$property];
                     }
                 }
             }
-
-            // remove the property, since it no longer exists in database
             $this->removeUiProp($property);
 
             return false;
@@ -1913,19 +1722,13 @@ class Table implements Stringable
             if ($this->isView() || ! isset($this->uiprefs[$property])) {
                 return false;
             }
-
-            // check if the table has not been modified
             if ($this->getStatusInfo('Create_time') == $this->uiprefs['CREATE_TIME']) {
                 return array_map('intval', $this->uiprefs[$property]);
             }
-
-            // remove the property, since the table has been modified
             $this->removeUiProp($property);
 
             return false;
         }
-
-        // default behaviour for other property:
         return $this->uiprefs[$property] ?? false;
     }
 
@@ -1949,14 +1752,9 @@ class Table implements Stringable
         if (empty($this->uiprefs)) {
             $this->loadUiPrefs();
         }
-
-        // we want to save the create time if the property is PROP_COLUMN_ORDER
         if (! $this->isView() && ($property == self::PROP_COLUMN_ORDER || $property == self::PROP_COLUMN_VISIB)) {
             $currCreateTime = $this->getStatusInfo('CREATE_TIME');
             if (! isset($tableCreateTime) || $tableCreateTime != $currCreateTime) {
-                // there is no $table_create_time, or
-                // supplied $table_create_time is older than current create time,
-                // so don't save
                 return Message::error(
                     sprintf(
                         __(
@@ -1971,11 +1769,7 @@ class Table implements Stringable
 
             $this->uiprefs['CREATE_TIME'] = $currCreateTime;
         }
-
-        // save the value
         $this->uiprefs[$property] = $value;
-
-        // check if pmadb is set
         $uiPreferencesFeature = $this->relation->getRelationParameters()->uiPreferencesFeature;
         if ($uiPreferencesFeature !== null) {
             return $this->saveUiPrefsToDb($uiPreferencesFeature);
@@ -1999,8 +1793,6 @@ class Table implements Stringable
 
         if (isset($this->uiprefs[$property])) {
             unset($this->uiprefs[$property]);
-
-            // check if pmadb is set
             $uiPreferencesFeature = $this->relation->getRelationParameters()->uiPreferencesFeature;
             if ($uiPreferencesFeature !== null) {
                 return $this->saveUiPrefsToDb($uiPreferencesFeature);
@@ -2080,14 +1872,11 @@ class Table implements Stringable
      */
     public function getSqlQueryForIndexCreateOrEdit($index, &$error)
     {
-        // $sql_query is the one displayed in the query box
         $sqlQuery = sprintf(
             'ALTER TABLE %s.%s',
             Util::backquote($this->dbName),
             Util::backquote($this->name)
         );
-
-        // Drops the old index
         if (! empty($_POST['old_index'])) {
             $oldIndex = is_array($_POST['old_index']) ? $_POST['old_index']['Key_name'] : $_POST['old_index'];
             if ($oldIndex === 'PRIMARY') {
@@ -2099,8 +1888,6 @@ class Table implements Stringable
                 );
             }
         }
-
-        // Builds the new one
         switch ($index->getChoice()) {
             case 'PRIMARY':
                 if ($index->getName() == '') {
@@ -2157,10 +1944,6 @@ class Table implements Stringable
                 $this->dbi->escapeString((string) $keyBlockSizes)
             );
         }
-
-        // specifying index type is allowed only for primary, unique and index only
-        // TokuDB is using Fractal Tree, Using Type is not useless
-        // Ref: https://mariadb.com/kb/en/storage-engine-index-types/
         $type = $index->getType();
         if (
             $index->getChoice() !== 'SPATIAL'
@@ -2237,7 +2020,6 @@ class Table implements Stringable
         $updated = false;
         foreach ($destinationDb as $masterFieldMd5 => $foreignDb) {
             $updQuery = null;
-            // Map the fieldname's md5 back to its real name
             $masterField = $multiEditColumnsName[$masterFieldMd5];
             $foreignTable = $destinationTable[$masterFieldMd5];
             $foreignField = $destinationColumn[$masterFieldMd5];
@@ -2333,8 +2115,6 @@ class Table implements Stringable
         foreach ($destinationForeignDb as $masterFieldMd5 => $foreignDb) {
             $create = false;
             $drop = false;
-
-            // Map the fieldname's md5 back to its real name
             $masterField = $multiEditColumnsName[$masterFieldMd5];
 
             $foreignTable = $destinationForeignTable[$masterFieldMd5];
@@ -2385,13 +2165,10 @@ class Table implements Stringable
                         || ($_POST['on_delete'][$masterFieldMd5] != $onDelete)
                         || ($_POST['on_update'][$masterFieldMd5] != $onUpdate)
                     ) {
-                        // another foreign key is already defined for this field
-                        // or an option has been changed for ON DELETE or ON UPDATE
                         $drop = true;
                         $create = true;
                     }
                 } else {
-                    // no key defined for this field(s)
                     $create = true;
                 }
             } elseif (isset($existrelForeign[$masterFieldMd5])) {
@@ -2459,14 +2236,9 @@ class Table implements Stringable
             } else {
                 $previewSqlData .= $createQuery . "\n";
             }
-
-            // this is an alteration and the old constraint has been dropped
-            // without creation of a new one
             if (! $drop || empty($tmpErrorCreate)) {
                 continue;
             }
-
-            // a rollback may be better here
             $sqlQueryRecreate = '# Restoring the dropped constraint...' . "\n";
             $sqlQueryRecreate .= $this->getSQLToCreateForeignKey(
                 $table,
@@ -2519,7 +2291,6 @@ class Table implements Stringable
         $onUpdate = null
     ) {
         $sqlQuery = 'ALTER TABLE ' . Util::backquote($table) . ' ADD ';
-        // if user entered a constraint name
         if (! empty($name)) {
             $sqlQuery .= ' CONSTRAINT ' . Util::backquote($name);
         }
@@ -2630,7 +2401,6 @@ class Table implements Stringable
      */
     public function getRealRowCountTable(): ?int
     {
-        // SQL query to get row count for a table.
         $result = $this->dbi->fetchSingleRow(
             sprintf(
                 'SELECT COUNT(*) AS %s FROM %s.%s',

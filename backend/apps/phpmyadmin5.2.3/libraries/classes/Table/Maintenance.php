@@ -19,7 +19,7 @@ use function sprintf;
 
 final class Maintenance
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(DatabaseInterface $dbi)
@@ -43,7 +43,7 @@ final class Maintenance
         $query = 'ANALYZE TABLE ' . implode(', ', $backQuotedTables) . ';';
 
         $this->dbi->selectDb($db);
-        /** @var array<int, array<string, string>> $result */
+        
         $result = $this->dbi->fetchResult($query);
 
         $rows = [];
@@ -71,7 +71,7 @@ final class Maintenance
         $query = 'CHECK TABLE ' . implode(', ', $backQuotedTables) . ';';
 
         $this->dbi->selectDb($db);
-        /** @var array<int, array<string, string>> $result */
+        
         $result = $this->dbi->fetchResult($query);
 
         $rows = [];
@@ -99,7 +99,7 @@ final class Maintenance
         $query = 'CHECKSUM TABLE ' . implode(', ', $backQuotedTables) . ';';
 
         $this->dbi->selectDb($db);
-        /** @var array<int, array<string, string|null>> $rows */
+        
         $rows = $this->dbi->fetchResult($query);
         $warnings = $this->dbi->getWarnings();
 
@@ -143,7 +143,7 @@ final class Maintenance
         $query = 'OPTIMIZE TABLE ' . implode(', ', $backQuotedTables) . ';';
 
         $this->dbi->selectDb($db);
-        /** @var array<int, array<string, string>> $result */
+        
         $result = $this->dbi->fetchResult($query);
 
         $rows = [];
@@ -171,7 +171,7 @@ final class Maintenance
         $query = 'REPAIR TABLE ' . implode(', ', $backQuotedTables) . ';';
 
         $this->dbi->selectDb($db);
-        /** @var array<int, array<string, string>> $result */
+        
         $result = $this->dbi->fetchResult($query);
 
         $rows = [];

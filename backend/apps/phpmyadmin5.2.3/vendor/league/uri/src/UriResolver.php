@@ -367,7 +367,7 @@ final class UriResolver
     private static function formatPathWithEmptyBaseQuery(string $path): string
     {
         $target_segments = self::getSegments($path);
-        /** @var string $basename */
+        
         $basename = end($target_segments);
 
         return '' === $basename ? './' : $basename;

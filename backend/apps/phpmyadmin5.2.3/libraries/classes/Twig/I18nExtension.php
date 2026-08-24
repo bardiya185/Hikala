@@ -24,7 +24,6 @@ class I18nExtension extends TwigI18nExtension
     public function getFilters()
     {
         return [
-            // This is just a performance override
             new TwigFilter('trans', '_gettext'),
         ];
     }

@@ -8,9 +8,6 @@ if(WAMPTRACE_PROCESS) {
 	$errorTxt .= ' - Elapsed time='.(microtime(true)-$start_time);
 	error_log($errorTxt."\n",3,WAMPTRACE_FILE);
 }
-
-// **** Versions of MariaDB - Already done in refresh.php
-// **** $mariadbVersionList = listDir($c_mariadbVersionDir,'checkMariaDBConf','mariadb');
 if(count($mariadbVersionList) == 0) {
 	error_log("No version of MariaDB is installed.");
 	$glyph = '19';
@@ -19,7 +16,6 @@ if(count($mariadbVersionList) == 0) {
 ';
 }
 else {
-// **** MariaDB submenu
 $typebase = 'mariadb';
 $myPattern = ';WAMPMARIADBMENUSTART';
 $DBMSFooter = '';
@@ -54,8 +50,6 @@ Type: item; Caption: "{$w_mariadbDoc}"; Action: run; FileName: "{$c_navigator}";
 {$DBMSFooter}
 EOF;
 $tpl = str_replace($myPattern,$myreplace,$tpl);
-
-// **** MariaDB submenu Service
 $myPattern = ';WAMPMARIADBSERVICESTART';
 $myreplace = <<< EOF
 ;WAMPMARIADBSERVICESTART
@@ -92,8 +86,6 @@ Action: resetservices
 Action: readconfig
 EOF;
 $tpl = str_replace($myPattern,$myreplace,$tpl);
-
-// **** MariaDB use alternate port submenu
 $myPattern = ';WAMPALTERNATEMARIAPORTSTART';
 $myreplace = <<< EOF
 ;WAMPALTERNATEMARIAPORTSTART
@@ -105,8 +97,6 @@ Action: service; Service: {$c_mariadbService}; ServiceAction: startresume; Flags
 Action: multi; Actions: refresh_readconfig; Flags:appendsection
 EOF;
 $tpl = str_replace($myPattern,$myreplace,$tpl);
-
-// **** MariaDB Tools menu
 $myPattern = ';WAMPMARIADBSUPPORTTOOLS';
 $myreplace = <<< EOF
 ;WAMPMARIADBSUPPORTTOOLS
@@ -116,21 +106,15 @@ Type: separator; Caption: "{$w_portUsedMaria}{$c_UsedMariaPort}"
 Type: item; Caption: "{$w_AlternateMariaPort}"; Action: multi; Actions: UseAlternateMariaPort; Glyph: 24
 EOF;
 $tpl = str_replace($myPattern,$myreplace,$tpl);
-
-// ************************
 $maPattern = ';WAMPMARIADBVERSIONSTART';
 $mareplace = $maPattern."
 ";
 $mareplacemenu = '';
 foreach ($mariadbVersionList as $oneMariaDBVersion) {
 	$count = 0;
-  //File wamp/bin/mariadb/mariadbx.y.z/wampserver.conf
   $maConfile = $c_mariadbVersionDir.'/mariadb'.$oneMariaDBVersion.'/'.$wampBinConfFiles;
   unset($mariadbConf);
   include $maConfile;
-
-	// **** Check name of the group [wamp...] under '# The MariaDB server' in my.ini file
-	//      must be the name of the mariadb service.
 	$maIniFile = $c_mariadbVersionDir.'/mariadb'.$oneMariaDBVersion.'/'.$mariadbConf['mariadbConfFile'];
 	$maIniContents = file_get_contents($maIniFile);
 
@@ -195,39 +179,24 @@ $mareplace .= 'Type: submenu; Caption: " "; Submenu: AddingVersions; Glyph: 1
 
 ';
 $tpl = str_replace($maPattern,$mareplace.$mareplacemenu,$tpl);
-// ************************
-// **** Before configuring MariaDB, we need to make sure that all directives
-// **** in the my.ini file have the same syntax.
-// Although we can use - or _ in any directive, to be able to handle
-// them efficiently, it is better that in the my.ini file
-// all directives use _ as in default_storage_engine=
 $myIniFileContents = @file_get_contents($c_mariadbConfFile) or die ("my.ini file not found");
 $counts = 0;
-// **** Replace all - by _ in my.ini directives only at the left of = sign
 if(preg_match_all('~^(;?[a-z]+-[a-z]+(?:-[a-z]*)*)=?.*\r?$~mi',$myIniFileContents,$matches) > 0) {
 	foreach($matches[1] as $value) {
 		$myIniFileContents = str_replace($value,str_replace('-','_',$value),$myIniFileContents,$count);
 		$counts += $count;
 	}
 }
-// **** Replace space=space by =
 $myIniFileContents = str_replace(array(' = ','= ',' ='),'=',$myIniFileContents,$count);
 $counts += $count;
 if($counts > 0) {
 	write_file($c_mariadbConfFile,$myIniFileContents);
 }
-
-// *****************************
-// **** Configuration of MariaDB
-// **** Retrieves the values of the [wampmariadb] or [wampmariadb64] section
 $mariadbiniS = parse_ini_file($c_mariadbConfFile, true,INI_SCANNER_RAW);
 $mariadbini = $mariadbiniS[$c_mariadbService];
-// **** Retrieve the three values of port used
 $MariadbPort['client'] = $mariadbiniS['client']['port'];
 $MariadbPort[$c_mariadbService] = $mariadbiniS[$c_mariadbService]['port'];
 $MariadbPort['mysqld'] =$mariadbiniS['mysqld']['port'];
-// Check if three values are identical and equal to port used in wampmanager.conf
-// $wampConf['mariaPortUsed']
 if($MariadbPort['client'] <> $MariadbPort[$c_mariadbService] || $MariadbPort['client'] <> $MariadbPort['mysqld'] || $MariadbPort['mysqld'] <> $MariadbPort[$c_mariadbService]) {
 	$WarningsAtEnd = true;
 	$message = color('red',"\r\nThe three 'port=number' directives in the MariaDB my.ini file:\r\n[client], [".$c_mariadbService."], [mysqld]\r\ndo not have the same port number.\r\n");
@@ -242,8 +211,6 @@ if($MariadbPort['client'] <> $wampConf['mariaPortUsed'] || $MariadbPort[$c_maria
 	$WarningText .= 'Type: item; Caption: "MariaDB port not equal"; Glyph: 19; Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($message).'";WorkingDir: "'.$c_installDir.'/scripts"; Flags: waituntilterminated
 ';
 }
-
-// **** Check if there is prompt directive into [mysql] section
 if(!empty($mariadbiniS['mysql']['prompt'])) {
 	$mariadbini += array('prompt' => $mariadbiniS['mysql']['prompt']);
 	$mariadbPrompt = true;
@@ -252,15 +219,9 @@ else {
 	$mariadbini += array('prompt' => 'default');
 	$mariadbPrompt = false;
 }
-
-// **** Check if default sql_mode
 if(!array_key_exists('sql_mode', $mariadbini))
 	$mariadbini = $mariadbini + array('sql_mode' => 'default');
-
-// **** Previously loaded $myIniFileContents = @file_get_contents($c_mariadbConfFile) or die ("my.ini file not found");
-// **** Check if there is a commented or not user sql_mode
 $UserSqlMode = (preg_match('/^[;]?sql_mode[ \t]*=[ \t]*"[^"].*$/m',$myIniFileContents) > 0 ? true : false);
-// **** Check if skip_grant_tables is on (uncommented)
 if(preg_match('/^skip_grant_tables[\r]?$/m',$myIniFileContents) > 0) {
 	$mariadbini = $mariadbini + array('skip_grant_tables' => 'MariaDB On - !! WARNING !!');
 }
@@ -356,7 +317,6 @@ foreach ($params_for_mariadb as $paramname=>$paramstatus) {
 				'10.2.4' => array('NO_ENGINE_SUBSTITUTION','STRICT_TRANS_TABLES','ERROR_FOR_DIVISION_BY_ZERO','NO_AUTO_CREATE_USER'),
 				'valid' => array('ALLOW_INVALID_DATES','ANSI','ANSI_QUOTES','DB2','ERROR_FOR_DIVISION_BY_ZERO','HIGH_NOT_PRECEDENCE','IGNORE_BAD_TABLE_OPTIONS','IGNORE_SPACE','MAXDB','MSSQL','MYSQL323','MYSQL40','NO_AUTO_CREATE_USER','NO_AUTO_VALUE_ON_ZERO','NO_BACKSLASH_ESCAPES','NO_DIR_IN_CREATE','NO_ENGINE_SUBSTITUTION','NO_FIELD_OPTIONS','NO_KEY_OPTIONS','NO_TABLE_OPTIONS','NO_UNSIGNED_SUBTRACTION','NO_ZERO_DATE','NO_ZERO_IN_DATE','ONLY_FULL_GROUP_BY','ORACLE','PAD_CHAR_TO_FULL_LENGTH','PIPES_AS_CONCAT','POSTGRESQL','REAL_AS_FLOAT','STRICT_ALL_TABLES','STRICT_TRANS_TABLES','TRADITIONAL'),
 				);
-				//Memorize default values
 				if(version_compare($c_mariadbVersion, '10.2', '<'))
 					$default_valeurs = $default_modes['10.1'];
 				elseif(version_compare($c_mariadbVersion, '10.2.4', '>='))
@@ -397,7 +357,6 @@ foreach ($params_for_mariadb as $paramname=>$paramstatus) {
 ';
 				$MyUserError = false;
 				foreach($valeurs as $val) {
-					//Check if each user value is allowed
 					if(in_array($val,$default_modes['valid'])) {
 						$UserGlyph = '';
 						$notValid = '';
@@ -423,7 +382,6 @@ foreach ($params_for_mariadb as $paramname=>$paramstatus) {
 		}
 	}
 }
-// **** Check for supplemtary actions
 $MenuSup = $SubMenuSup = array();
 if(count($action_sup) > 0) {
 	$i = 0;

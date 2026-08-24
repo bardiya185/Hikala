@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* recent_favorite_table_recent.twig */
+
 class __TwigTemplate_f485bbcc9b7d289270c5f71f9bbc777a extends Template
 {
     private $source;
@@ -34,18 +34,14 @@ class __TwigTemplate_f485bbcc9b7d289270c5f71f9bbc777a extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         $context['_parent'] = $context;
         $context['_seq'] = CoreExtension::ensureTraversable(($context["tables"] ?? null));
         foreach ($context['_seq'] as $context["_key"] => $context["table"]) {
-            // line 2
             yield "<li class=\"warp_link\">
   <a href=\"";
-            // line 3
             yield PhpMyAdmin\Url::getFromRoute("/table/recent-favorite", $context["table"]);
             yield "\">
     `";
-            // line 4
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["table"], "db", [], "any", false, false, false, 4), "html", null, true);
             yield "`.`";
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["table"], "table", [], "any", false, false, false, 4), "html", null, true);

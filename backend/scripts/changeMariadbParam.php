@@ -48,8 +48,6 @@ EOF1ERROR;
 }
 if($quoted)
 	$newvalue = '"'.$newvalue.'"';
-
-//if sql_mode
 $count = 0;
 if($parameter == 'sql_mode') {
 	if($newvalue == 'none') {
@@ -58,7 +56,6 @@ if($parameter == 'sql_mode') {
 			$myIniFileContents = str_replace(";sql_mode=\"\"","sql_mode=\"\"",$myIniFileContents,$count);
 		}
 		else {
-			//add sql_mode="" under section [wampmariadb]
 			$section = '['.$c_mariadbService.']';
 			$addTxt = 'sql_mode=""';
 			$myIniFileContents = str_replace($section,$section."\r\n".$addTxt,$myIniFileContents,$count);
@@ -78,7 +75,6 @@ elseif($parameter == 'default_storage_engine') {
 	$myIniFileContents = preg_replace('|^;'.$parameter.'[ \t]*=.*|m',';'.$parameter.'='.$newvalue_1,$myIniFileContents, 1);
 }
 else {
-	//Number of replacements limited to 1 to replace only in the first section [wampmariadb64]
 	$myIniFileContents = preg_replace('|^'.$parameter.'[ \t]*=.*|m',$parameter.'='.$newvalue,$myIniFileContents, 1, $count);
 }
 

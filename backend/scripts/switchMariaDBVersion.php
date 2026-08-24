@@ -14,8 +14,6 @@ require 'wampserver.lib.php';
 
 $newMariaDBVersion = $_SERVER['argv'][1];
 
-//on charge le fichier de conf de la nouvelle version
-
 require $c_mariadbVersionDir.'/mariadb'.$newMariaDBVersion.'/'.$wampBinConfFiles;
 if(!array_key_exists('mariadbServiceCmd',$mariadbConf)) {
 	$mariadbConf['mariadbServiceCmd'] = $mariadbConf['mariadbExeFile'];

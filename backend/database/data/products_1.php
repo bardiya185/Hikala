@@ -2,10 +2,6 @@
 
 return [
 
-    // =========================
-    // Apple
-    // =========================
-
     [
         'title' => 'iPhone 17 Pro Max ZAA',
         'slug' => 'iphone-17-pro-max-zaa',

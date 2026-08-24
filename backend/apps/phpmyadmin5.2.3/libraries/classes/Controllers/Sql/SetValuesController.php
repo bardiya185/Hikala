@@ -15,10 +15,10 @@ use function explode;
 
 final class SetValuesController extends AbstractController
 {
-    /** @var Sql */
+    
     private $sql;
 
-    /** @var CheckUserPrivileges */
+    
     private $checkUserPrivileges;
 
     public function __construct(
@@ -54,8 +54,6 @@ final class SetValuesController extends AbstractController
 
             return;
         }
-
-        // If the $currentValue was truncated, we should fetch the correct full values from the table.
         if ($fullValues && ! empty($whereClause)) {
             $currentValue = $this->sql->getFullValuesForSetColumn($db, $table, $column, $whereClause);
         }

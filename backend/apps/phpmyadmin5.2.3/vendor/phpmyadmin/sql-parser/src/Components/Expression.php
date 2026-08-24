@@ -278,7 +278,7 @@ class Expression extends Component
                     $brackets === 0 && strlen((string) $ret->expr) > 0 && ! $alias
                     && ($ret->table === null || $ret->table === '')
                 ) {
-                    /* End of expression */
+                    
                     break;
                 }
             }

@@ -75,8 +75,6 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
         Assertion::isInstanceOf($trustPath, CertificateTrustPath::class, 'Invalid trust path');
 
         $certificates = $trustPath->getCertificates();
-
-        //Decode leaf attestation certificate
         $leaf = $certificates[0];
         $this->checkCertificateAndGetPublicKey($leaf, $clientDataJSONHash, $authenticatorData);
 
@@ -91,8 +89,6 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
         $resource = openssl_pkey_get_public($certificate);
         $details = openssl_pkey_get_details($resource);
         Assertion::isArray($details, 'Unable to read the certificate');
-
-        //Check that authData publicKey matches the public key in the attestation certificate
         $attestedCredentialData = $authenticatorData->getAttestedCredentialData();
         Assertion::notNull($attestedCredentialData, 'No attested credential data found');
         $publicKeyData = $attestedCredentialData->getCredentialPublicKey();
@@ -106,10 +102,8 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
         Assertion::true(($publicKey instanceof Ec2Key) || ($publicKey instanceof RsaKey), 'Unsupported key type');
         Assertion::eq($publicKey->asPEM(), $details['key'], 'Invalid key');
 
-        /*---------------------------*/
+        
         $certDetails = openssl_x509_parse($certificate);
-
-        //Find Android KeyStore Extension with OID “1.3.6.1.4.1.11129.2.1.17” in certificate extensions
         Assertion::isArray($certDetails, 'The certificate is not valid');
         Assertion::keyExists($certDetails, 'extensions', 'The certificate has no extension');
         Assertion::isArray($certDetails['extensions'], 'The certificate has no extension');
@@ -118,13 +112,9 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
         $extensionAsAsn1 = ASNObject::fromBinary($extension);
         Assertion::isInstanceOf($extensionAsAsn1, Sequence::class, 'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid');
         $objects = $extensionAsAsn1->getChildren();
-
-        //Check that attestationChallenge is set to the clientDataHash.
         Assertion::keyExists($objects, 4, 'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid');
         Assertion::isInstanceOf($objects[4], OctetString::class, 'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid');
         Assertion::eq($clientDataHash, hex2bin(($objects[4])->getContent()), 'The client data hash is not valid');
-
-        //Check that both teeEnforced and softwareEnforced structures don’t contain allApplications(600) tag.
         Assertion::keyExists($objects, 6, 'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid');
         $softwareEnforcedFlags = $objects[6];
         Assertion::isInstanceOf($softwareEnforcedFlags, Sequence::class, 'The certificate extension "1.3.6.1.4.1.11129.2.1.17" is invalid');
@@ -140,7 +130,7 @@ final class AndroidKeyAttestationStatementSupport implements AttestationStatemen
     {
         foreach ($sequence->getChildren() as $tag) {
             Assertion::isInstanceOf($tag, ExplicitlyTaggedObject::class, 'Invalid tag');
-            /* @var ExplicitlyTaggedObject $tag */
+            
             Assertion::notEq(600, (int) $tag->getTag(), 'Forbidden tag 600 found');
         }
     }

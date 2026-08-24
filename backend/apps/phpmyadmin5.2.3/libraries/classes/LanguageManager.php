@@ -700,8 +700,6 @@ class LanguageManager
             'zh[-_](tw|hk)|chinese traditional',
             'zh_TW',
         ],
-        // only TW and HK use traditional Chinese while others (CN, SG, MY)
-        // use simplified Chinese
         'zh_cn' => [
             'zh_CN',
             'Chinese simplified',
@@ -711,22 +709,22 @@ class LanguageManager
         ],
     ];
 
-    /** @var array */
+    
     private $availableLocales;
 
-    /** @var array */
+    
     private $availableLanguages = [];
 
-    /** @var bool */
+    
     private $langFailedConfig = false;
 
-    /** @var bool */
+    
     private $langFailedCookie = false;
 
-    /** @var bool */
+    
     private $langFailedRequest = false;
 
-    /** @var LanguageManager */
+    
     private static $instance;
 
     /**
@@ -752,19 +750,19 @@ class LanguageManager
     {
         $result = ['en'];
 
-        /* Check for existing directory */
+        
         if (! is_dir(LOCALE_PATH)) {
             return $result;
         }
 
-        /* Open the directory */
+        
         $handle = @opendir(LOCALE_PATH);
-        /* This can happen if the kit is English-only */
+        
         if ($handle === false) {
             return $result;
         }
 
-        /* Process all files */
+        
         while (($file = readdir($handle)) !== false) {
             $path = LOCALE_PATH
                 . '/' . $file
@@ -776,7 +774,7 @@ class LanguageManager
             $result[] = $file;
         }
 
-        /* Close the handle */
+        
         closedir($handle);
 
         return $result;
@@ -893,7 +891,6 @@ class LanguageManager
      */
     public function selectLanguage()
     {
-        // check forced language
         if (! empty($GLOBALS['config']->get('Lang'))) {
             $lang = $this->getLanguage($GLOBALS['config']->get('Lang'));
             if ($lang !== false) {
@@ -902,9 +899,6 @@ class LanguageManager
 
             $this->langFailedConfig = true;
         }
-
-        // Don't use REQUEST in following code as it might be confused by cookies
-        // with same name. Check user requested language (POST)
         if (! empty($_POST['lang'])) {
             $lang = $this->getLanguage($_POST['lang']);
             if ($lang !== false) {
@@ -913,8 +907,6 @@ class LanguageManager
 
             $this->langFailedRequest = true;
         }
-
-        // check user requested language (GET)
         if (! empty($_GET['lang'])) {
             $lang = $this->getLanguage($_GET['lang']);
             if ($lang !== false) {
@@ -923,8 +915,6 @@ class LanguageManager
 
             $this->langFailedRequest = true;
         }
-
-        // check previous set language
         if (! empty($GLOBALS['config']->getCookie('pma_lang'))) {
             $lang = $this->getLanguage($GLOBALS['config']->getCookie('pma_lang'));
             if ($lang !== false) {
@@ -935,8 +925,6 @@ class LanguageManager
         }
 
         $langs = $this->availableLanguages();
-
-        // try to find out user's language by checking its HTTP_ACCEPT_LANGUAGE variable;
         $accepted_languages = Core::getenv('HTTP_ACCEPT_LANGUAGE');
         if ($accepted_languages) {
             foreach (explode(',', $accepted_languages) as $header) {
@@ -947,8 +935,6 @@ class LanguageManager
                 }
             }
         }
-
-        // try to find out user's language by checking its HTTP_USER_AGENT variable
         $user_agent = Core::getenv('HTTP_USER_AGENT');
         if (! empty($user_agent)) {
             foreach ($langs as $language) {
@@ -957,13 +943,9 @@ class LanguageManager
                 }
             }
         }
-
-        // Didn't catch any valid lang : we use the default settings
         if (isset($langs[$GLOBALS['config']->get('DefaultLang')])) {
             return $langs[$GLOBALS['config']->get('DefaultLang')];
         }
-
-        // Fallback to English
         return $langs['en'];
     }
 
@@ -973,7 +955,6 @@ class LanguageManager
      */
     public function showWarnings(): void
     {
-        // now, that we have loaded the language strings we can send the errors
         if (! $this->langFailedConfig && ! $this->langFailedCookie && ! $this->langFailedRequest) {
             return;
         }

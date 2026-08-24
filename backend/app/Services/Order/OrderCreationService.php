@@ -25,7 +25,6 @@ use App\Enums\DeliveryTimeSlot;
  */
 class OrderCreationService
 {
-    // 💰 هزینه ارسال ثابت (بعداً می‌تونی داینامیک کنی)
     public function __construct(
         private OrderNumberGenerator $numberGenerator,
         private OrderStatusService $statusService,
@@ -56,34 +55,18 @@ class OrderCreationService
         return DB::transaction(function () use (
             $cart, $user, $address, $paymentMethod, $customerNote, $shippingMethod, $preferredDeliveryDate, $preferredTimeSlot
         ) {
-            
-            // 1️⃣ ساخت سفارش (با shipping method)
             $order = $this->createOrder(
                 $cart, $user, $address, $paymentMethod, $customerNote, $shippingMethod,$preferredDeliveryDate, $preferredTimeSlot 
             );
-            
-            // 2️⃣ کپی آیتم‌ها
             $this->createOrderItems($order, $cart);
-            
-            // 3️⃣ کاهش موجودی
             $this->reduceStock($cart);
-            
-            // 4️⃣ مصرف تخفیف‌ها
             $this->consumeDiscounts($cart, $user);
-            
-            // 5️⃣ ثبت تاریخچه
             $this->statusService->logInitialStatus($order, $user);
-            
-            // 6️⃣ خالی کردن سبد
             $this->cartService->clear($cart);
             
             return $order->fresh(['items', 'address', 'statusHistory']);
         });
     }
-
-    // ================================================================
-    // 🔒 Private Methods
-    // ================================================================
 
     private function validateCart(Cart $cart): void
     {
@@ -125,8 +108,6 @@ class OrderCreationService
         $subtotal = $cart->subtotal;
         $productsDiscount = $cart->products_discount;
         $couponDiscount = $cart->coupon_discount;
-        
-        // ✅ محاسبه هوشمند shipping
         $cartTotalAfterDiscount = $subtotal - $productsDiscount - $couponDiscount;
         $shippingCost = $this->shippingCalculator->calculate(
             $cartTotalAfterDiscount,
@@ -159,27 +140,19 @@ class OrderCreationService
         foreach ($cart->items as $cartItem) {
             $variant = $cartItem->variant;
             $product = $variant->product;
-            
-            // 📸 Snapshot attributes
             $attributes = $variant->attributeValues->map(fn($av) => [
                 'attribute' => $av->attribute?->name,
                 'value' => $av->value,
             ])->toArray();
-            
-            // 📸 Get main image
             $mainImage = $product?->images?->firstWhere('is_main', true);
             
             OrderItem::create([
                 'order_id' => $order->id,
                 'product_variant_id' => $variant->id,
-                
-                // 📸 Snapshots
                 'product_title' => $product?->title ?? 'Unknown',
                 'product_sku' => $variant->sku,
                 'product_image' => $mainImage?->image_path,
                 'variant_attributes' => $attributes,
-                
-                // Numbers
                 'quantity' => $cartItem->quantity,
                 'base_price' => $cartItem->base_price,
                 'final_price' => $cartItem->final_price,
@@ -199,7 +172,6 @@ class OrderCreationService
 
     private function consumeDiscounts(Cart $cart, User $user): void
     {
-        // مصرف تخفیف‌های محصولات
         foreach ($cart->items as $item) {
             if ($item->discount_id) {
                 try {
@@ -209,13 +181,10 @@ class OrderCreationService
                         $item->quantity
                     );
                 } catch (\Exception $e) {
-                    // Log but don't fail the order
                     \Log::warning("Discount consume failed: " . $e->getMessage());
                 }
             }
         }
-        
-        // مصرف کوپن
         if ($cart->coupon) {
             try {
                 $this->couponUsageService->consume(

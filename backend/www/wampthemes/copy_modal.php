@@ -1,7 +1,7 @@
 <?php
 $pageContents .= <<< EOF
 <script>
-/*Copy modal dialog contents to clipboard */
+
 var btncopy = document.querySelector('.js-copy');
 if(btncopy) {
   btncopy.addEventListener('click', docopy);

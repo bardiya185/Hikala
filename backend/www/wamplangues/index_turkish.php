@@ -6,7 +6,6 @@
 	Websites:http://hasaneryilmaz.blogspot.com
 
 */
-//3.0.7
 
 $langues = array(
 	'langue' => 'Türkçe',

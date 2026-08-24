@@ -1,5 +1,4 @@
 <?php
-//Wampserver https ready - Contents of https-ssl.conf file
 $httpd_ssl_conf = <<<'EOF'
 #
 # This is the Apache server configuration file providing SSL support.

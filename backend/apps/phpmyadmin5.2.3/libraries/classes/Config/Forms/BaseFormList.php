@@ -22,10 +22,10 @@ class BaseFormList
      */
     protected static $all = [];
 
-    /** @var string */
+    
     protected static $ns = 'PhpMyAdmin\\Config\\Forms\\';
 
-    /** @var array */
+    
     private $forms;
 
     /**
@@ -53,7 +53,7 @@ class BaseFormList
     public static function get($name)
     {
         if (static::isValid($name)) {
-            /** @var class-string<BaseForm> $class */
+            
             $class = static::$ns . $name . 'Form';
 
             return $class;

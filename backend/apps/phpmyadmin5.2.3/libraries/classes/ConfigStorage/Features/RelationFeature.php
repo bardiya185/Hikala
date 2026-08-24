@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class RelationFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $relation;
 
     public function __construct(DatabaseName $database, TableName $relation)

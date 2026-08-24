@@ -19,10 +19,10 @@ namespace Assert;
  */
 abstract class Assert
 {
-    /** @var string */
+    
     protected static $lazyAssertionExceptionClass = LazyAssertionException::class;
 
-    /** @var string */
+    
     protected static $assertionClass = Assertion::class;
 
     /**

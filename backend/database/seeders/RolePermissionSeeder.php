@@ -17,75 +17,52 @@ class RolePermissionSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = [
-            // Products
             'view-products',
             'create-products',
             'update-products',
             'delete-products',
-
-            // Categories
             'view-categories',
             'create-categories',
             'update-categories',
             'delete-categories',
-
-            // Brands
             'view-brands',
             'create-brands',
             'update-brands',
             'delete-brands',
-
-            // Orders
             'view-orders',
             'create-orders',
             'update-orders',
             'cancel-orders',
             'refund-orders',
-
-            // Users
             'view-users',
             'create-users',
             'update-users',
             'delete-users',
             'assign-roles',
-
-            // Reviews
             'view-reviews',
             'create-reviews',
             'update-reviews',
             'delete-reviews',
             'approve-reviews',
             'reject-reviews',
-
-            // Discounts
             'view-discounts',
             'create-discounts',
             'update-discounts',
             'delete-discounts',
-
-            // Campaigns
             'view-campaigns',
             'create-campaigns',
             'update-campaigns',
             'delete-campaigns',
-
-            // Coupons
             'view-coupons',
             'create-coupons',
             'update-coupons',
             'delete-coupons',
-
-            // Banners
             'view-banners',
             'create-banners',
             'update-banners',
             'delete-banners',
-
-            // Settings
             'view-settings',
             'update-settings',
-
-            // Reports
             'view-reports',
             'export-reports',
         ];

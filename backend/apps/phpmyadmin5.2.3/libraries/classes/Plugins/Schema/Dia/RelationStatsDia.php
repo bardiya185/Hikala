@@ -20,34 +20,34 @@ use function shuffle;
  */
 class RelationStatsDia
 {
-    /** @var Dia */
+    
     protected $diagram;
 
-    /** @var mixed */
+    
     public $srcConnPointsRight;
 
-    /** @var mixed */
+    
     public $srcConnPointsLeft;
 
-    /** @var mixed */
+    
     public $destConnPointsRight;
 
-    /** @var mixed */
+    
     public $destConnPointsLeft;
 
-    /** @var int */
+    
     public $masterTableId;
 
-    /** @var int */
+    
     public $foreignTableId;
 
-    /** @var mixed */
+    
     public $masterTablePos;
 
-    /** @var mixed */
+    
     public $foreignTablePos;
 
-    /** @var string */
+    
     public $referenceColor = '#000000';
 
     /**
@@ -94,7 +94,6 @@ class RelationStatsDia
     private function getXy($table, $column)
     {
         $pos = array_search($column, $table->fields);
-        // left, right, position
         $value = 12;
         if ($pos != 0) {
             return [

@@ -140,7 +140,7 @@ final class Expression
             throw new SyntaxError('The expression "'.$expression.'" is invalid.');
         }
 
-        /** @var array{operator:string, variables:string} $parts */
+        
         $parts = $parts + ['operator' => ''];
         if ('' !== $parts['operator'] && false !== strpos(self::RESERVED_OPERATOR, $parts['operator'])) {
             throw new SyntaxError('The operator used in the expression "'.$expression.'" is reserved.');

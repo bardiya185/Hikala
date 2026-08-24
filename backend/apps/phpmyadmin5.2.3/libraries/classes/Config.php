@@ -74,28 +74,28 @@ use const PHP_VERSION_ID;
  */
 class Config
 {
-    /** @var array   default configuration settings */
+    
     public $default = [];
 
-    /** @var array   configuration settings, without user preferences applied */
+    
     public $baseSettings = [];
 
-    /** @var array   configuration settings */
+    
     public $settings = [];
 
-    /** @var string  config source */
+    
     public $source = '';
 
-    /** @var int     source modification time */
+    
     public $sourceMtime = 0;
 
-    /** @var int */
+    
     public $setMtime = 0;
 
-    /** @var bool */
+    
     public $errorConfigFile = false;
 
-    /** @var array */
+    
     public $defaultServer = [];
 
     /**
@@ -355,7 +355,7 @@ class Config
         ob_start();
         $isConfigLoading = true;
         try {
-            /** @psalm-suppress UnresolvableInclude */
+            
             $eval_result = include $this->getSource();
         } catch (Throwable $exception) {
             $eval_result = false;
@@ -857,12 +857,12 @@ class Config
             rtrim(str_replace('\\', '/', $parsedUrlPath), '/')
         );
 
-        /* Remove filename */
+        
         if (substr($parts[count($parts) - 1], -4) === '.php') {
             $parts = array_slice($parts, 0, count($parts) - 1);
         }
 
-        /* Remove extra path from javascript calls */
+        
         if (defined('PMA_PATH_TO_BASEDIR')) {
             $parts = array_slice($parts, 0, count($parts) - 1);
         }
@@ -935,12 +935,12 @@ class Config
 
         if (! $this->issetCookie($cookie) || $this->getCookie($cookie) !== $value) {
             // set cookie with new value
-            /* Calculate cookie validity */
+            
             if ($validity === null) {
-                /* Valid for one month */
+                
                 $validity = time() + 2592000;
             } elseif ($validity == 0) {
-                /* Valid for session */
+                
                 $validity = 0;
             } else {
                 $validity = time() + $validity;
@@ -952,7 +952,7 @@ class Config
                 return true;
             }
 
-            /** @psalm-var 'Lax'|'Strict'|'None' $cookieSameSite */
+            
             $cookieSameSite = $this->get('CookieSameSite');
 
             if (PHP_VERSION_ID < 70300) {

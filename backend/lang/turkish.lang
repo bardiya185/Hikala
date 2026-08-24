@@ -1,16 +1,13 @@
 <?php
 
-//translated by radalin
-//3.2.10  $file_charset
-
 $file_charset = 'Windows-1254';
 
-$w_allServicesRunning = 'Bütün Servisler Çalisiyor';
-$w_oneServiceRunning = '%n servisten %t tanesi çalisiyor';
-$w_allServicesStopped = '%t servisin hiç biri çalismiyor';
+$w_allServicesRunning = 'Bï¿½tï¿½n Servisler ï¿½alisiyor';
+$w_oneServiceRunning = '%n servisten %t tanesi ï¿½alisiyor';
+$w_allServicesStopped = '%t servisin hiï¿½ biri ï¿½alismiyor';
 
-$w_serverOffline = 'sunucu çevrimdisi';
-$w_serverOnline = 'sunucu çevrimiçi';
+$w_serverOffline = 'sunucu ï¿½evrimdisi';
+$w_serverOnline = 'sunucu ï¿½evrimiï¿½i';
 
 $w_about = 'Hakkinda';
 $w_helpFile = 'Yardim';
@@ -20,20 +17,20 @@ $w_exit = 'Kapat';
 $w_localhost = 'Localhost';
 $w_phpmyadmin = 'phpMyAdmin';
 $w_sqlitemanager = 'SQLiteManager';
-$w_wwwDirectory = 'www klasörü';
+$w_wwwDirectory = 'www klasï¿½rï¿½';
 $w_logFiles = 'Kayit Dosyalari';
 $w_configFiles = 'Ayar Dosyalari';
-$w_apacheModules = 'Apache modülleri';
+$w_apacheModules = 'Apache modï¿½lleri';
 $w_phpSettings = 'PHP ayarlari';
 $w_aliasDirectories = 'Kisayol adresleri';
 $w_services = 'Servisler';
 $w_apache = 'Apache';
 $w_mysql = 'MySQL';
-$w_startServices = 'Bütün Servisleri Baslat';
-$w_stopServices = 'Bütün Servisleri Durdur';
-$w_restartServices = 'Bütün Servisleri Yeniden Baslat';
-$w_putOnline = 'Çevrimiçi Hale Getir';
-$w_putOffline = 'Çevrimdisi Hale Getir';
+$w_startServices = 'Bï¿½tï¿½n Servisleri Baslat';
+$w_stopServices = 'Bï¿½tï¿½n Servisleri Durdur';
+$w_restartServices = 'Bï¿½tï¿½n Servisleri Yeniden Baslat';
+$w_putOnline = 'ï¿½evrimiï¿½i Hale Getir';
+$w_putOffline = 'ï¿½evrimdisi Hale Getir';
 
 $w_apacheErrorLog = 'Apache error log';
 $w_apacheAccessLog = 'Apache access log';

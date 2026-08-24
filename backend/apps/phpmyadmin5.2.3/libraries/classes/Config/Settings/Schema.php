@@ -19,13 +19,13 @@ final class Schema
      */
     public $format;
 
-    /** @var bool */
+    
     public $pdf_show_color;
 
-    /** @var bool */
+    
     public $pdf_show_keys;
 
-    /** @var bool */
+    
     public $pdf_all_tables_same_width;
 
     /**
@@ -34,13 +34,13 @@ final class Schema
      */
     public $pdf_orientation;
 
-    /** @var string */
+    
     public $pdf_paper;
 
-    /** @var bool */
+    
     public $pdf_show_grid;
 
-    /** @var bool */
+    
     public $pdf_with_doc;
 
     /**
@@ -49,10 +49,10 @@ final class Schema
      */
     public $pdf_table_order;
 
-    /** @var bool */
+    
     public $dia_show_color;
 
-    /** @var bool */
+    
     public $dia_show_keys;
 
     /**
@@ -61,16 +61,16 @@ final class Schema
      */
     public $dia_orientation;
 
-    /** @var string */
+    
     public $dia_paper;
 
-    /** @var bool */
+    
     public $eps_show_color;
 
-    /** @var bool */
+    
     public $eps_show_keys;
 
-    /** @var bool */
+    
     public $eps_all_tables_same_width;
 
     /**
@@ -79,13 +79,13 @@ final class Schema
      */
     public $eps_orientation;
 
-    /** @var bool */
+    
     public $svg_show_color;
 
-    /** @var bool */
+    
     public $svg_show_keys;
 
-    /** @var bool */
+    
     public $svg_all_tables_same_width;
 
     /**

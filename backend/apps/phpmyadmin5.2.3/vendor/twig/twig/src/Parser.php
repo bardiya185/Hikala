@@ -61,8 +61,6 @@ class Parser
         $vars = get_object_vars($this);
         unset($vars['stack'], $vars['env'], $vars['handlers'], $vars['visitors'], $vars['expressionParser'], $vars['reservedMacroNames'], $vars['varNameSalt']);
         $this->stack[] = $vars;
-
-        // node visitors
         if (null === $this->visitors) {
             $this->visitors = $this->env->getNodeVisitors();
         }
@@ -106,8 +104,6 @@ class Parser
          * @var ModuleNode $node
          */
         $node = $traverser->traverse($node);
-
-        // restore previous stack so previous parse() call can resume working
         foreach (array_pop($this->stack) as $key => $val) {
             $this->$key = $val;
         }
@@ -121,23 +117,23 @@ class Parser
         $rv = [];
         while (!$this->stream->isEOF()) {
             switch ($this->getCurrentToken()->getType()) {
-                case /* Token::TEXT_TYPE */ 0:
+                case  0:
                     $token = $this->stream->next();
                     $rv[] = new TextNode($token->getValue(), $token->getLine());
                     break;
 
-                case /* Token::VAR_START_TYPE */ 2:
+                case  2:
                     $token = $this->stream->next();
                     $expr = $this->expressionParser->parseExpression();
-                    $this->stream->expect(/* Token::VAR_END_TYPE */ 4);
+                    $this->stream->expect( 4);
                     $rv[] = new PrintNode($expr, $token->getLine());
                     break;
 
-                case /* Token::BLOCK_START_TYPE */ 1:
+                case  1:
                     $this->stream->next();
                     $token = $this->getCurrentToken();
 
-                    if (/* Token::NAME_TYPE */ 5 !== $token->getType()) {
+                    if ( 5 !== $token->getType()) {
                         throw new SyntaxError('A block must start with a tag name.', $token->getLine(), $this->stream->getSourceContext());
                     }
 
@@ -259,7 +255,6 @@ class Parser
 
     public function getImportedSymbol(string $type, string $alias)
     {
-        // if the symbol does not exist in the current scope (0), try in the main/global scope (last index)
         return $this->importedSymbols[0][$type][$alias] ?? ($this->importedSymbols[\count($this->importedSymbols) - 1][$type][$alias] ?? null);
     }
 
@@ -305,7 +300,6 @@ class Parser
 
     private function filterBodyNodes(Node $node, bool $nested = false): ?Node
     {
-        // check that the body does not contain non-empty output nodes
         if (
             ($node instanceof TextNode && !ctype_space($node->getAttribute('data')))
             || (!$node instanceof TextNode && !$node instanceof BlockReferenceNode && $node instanceof NodeOutputInterface)
@@ -313,23 +307,15 @@ class Parser
             if (str_contains((string) $node, \chr(0xEF).\chr(0xBB).\chr(0xBF))) {
                 $t = substr($node->getAttribute('data'), 3);
                 if ('' === $t || ctype_space($t)) {
-                    // bypass empty nodes starting with a BOM
                     return null;
                 }
             }
 
             throw new SyntaxError('A template that extends another one cannot include content outside Twig blocks. Did you forget to put the content inside a {% block %} tag?', $node->getTemplateLine(), $this->stream->getSourceContext());
         }
-
-        // bypass nodes that "capture" the output
         if ($node instanceof NodeCaptureInterface) {
-            // a "block" tag in such a node will serve as a block definition AND be displayed in place as well
             return $node;
         }
-
-        // "block" tags that are not captured (see above) are only used for defining
-        // the content of the block. In such a case, nesting it does not work as
-        // expected as the definition is not part of the default template code flow.
         if ($nested && $node instanceof BlockReferenceNode) {
             throw new SyntaxError('A block definition cannot be nested under non-capturing nodes.', $node->getTemplateLine(), $this->stream->getSourceContext());
         }
@@ -337,9 +323,6 @@ class Parser
         if ($node instanceof NodeOutputInterface) {
             return null;
         }
-
-        // here, $nested means "being at the root level of a child template"
-        // we need to discard the wrapping "Node" for the "body" node
         $nested = $nested || Node::class !== \get_class($node);
         foreach ($node as $k => $n) {
             if (null !== $n && null === $this->filterBodyNodes($n, $nested)) {

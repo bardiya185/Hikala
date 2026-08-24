@@ -459,13 +459,10 @@ final class MatrixUtil
     {
         $bitIndex = 0;
         $direction = -1;
-
-        // Start from the right bottom cell.
         $x = $matrix->getWidth() - 1;
         $y = $matrix->getHeight() - 1;
 
         while ($x > 0) {
-            // Skip vertical timing pattern.
             if (6 === $x) {
                 --$x;
             }
@@ -473,8 +470,6 @@ final class MatrixUtil
             while ($y >= 0 && $y < $matrix->getHeight()) {
                 for ($i = 0; $i < 2; $i++) {
                     $xx = $x - $i;
-
-                    // Skip the cell if it's not empty.
                     if (-1 !== $matrix->get($xx, $y)) {
                         continue;
                     }
@@ -483,13 +478,8 @@ final class MatrixUtil
                         $bit = $dataBits->get($bitIndex);
                         ++$bitIndex;
                     } else {
-                        // Padding bit. If there is no bit left, we'll fill the
-                        // left cells with 0, as described in 8.4.9 of
-                        // JISX0510:2004 (p. 24).
                         $bit = false;
                     }
-
-                    // Skip masking if maskPattern is -1.
                     if (-1 !== $maskPattern && MaskUtil::getDataMaskBit($maskPattern, $xx, $y)) {
                         $bit = ! $bit;
                     }
@@ -504,8 +494,6 @@ final class MatrixUtil
             $y += $direction;
             $x -= 2;
         }
-
-        // All bits should be consumed
         if ($dataBits->getSize() !== $bitIndex) {
             throw new WriterException('Not all bits consumed (' . $bitIndex . ' out of ' . $dataBits->getSize() .')');
         }

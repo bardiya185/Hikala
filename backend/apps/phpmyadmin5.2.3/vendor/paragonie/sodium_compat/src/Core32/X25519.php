@@ -48,25 +48,25 @@ abstract class ParagonIE_Sodium_Core32_X25519 extends ParagonIE_Sodium_Core32_Cu
         $g8 = (int) $g[8]->toInt();
         $g9 = (int) $g[9]->toInt();
         $b = -$b;
-        /** @var int $x0 */
+        
         $x0 = ($f0 ^ $g0) & $b;
-        /** @var int $x1 */
+        
         $x1 = ($f1 ^ $g1) & $b;
-        /** @var int $x2 */
+        
         $x2 = ($f2 ^ $g2) & $b;
-        /** @var int $x3 */
+        
         $x3 = ($f3 ^ $g3) & $b;
-        /** @var int $x4 */
+        
         $x4 = ($f4 ^ $g4) & $b;
-        /** @var int $x5 */
+        
         $x5 = ($f5 ^ $g5) & $b;
-        /** @var int $x6 */
+        
         $x6 = ($f6 ^ $g6) & $b;
-        /** @var int $x7 */
+        
         $x7 = ($f7 ^ $g7) & $b;
-        /** @var int $x8 */
+        
         $x8 = ($f8 ^ $g8) & $b;
-        /** @var int $x9 */
+        
         $x9 = ($f9 ^ $g9) & $b;
         $f[0] = ParagonIE_Sodium_Core32_Int32::fromInt($f0 ^ $x0);
         $f[1] = ParagonIE_Sodium_Core32_Int32::fromInt($f1 ^ $x1);
@@ -102,7 +102,7 @@ abstract class ParagonIE_Sodium_Core32_X25519 extends ParagonIE_Sodium_Core32_Cu
      */
     public static function fe_mul121666(ParagonIE_Sodium_Core32_Curve25519_Fe $f)
     {
-        /** @var array<int, ParagonIE_Sodium_Core32_Int64> $h */
+        
         $h = array();
         for ($i = 0; $i < 10; ++$i) {
             $h[$i] = $f[$i]->toInt64()->mulInt(121666, 17);
@@ -151,7 +151,7 @@ abstract class ParagonIE_Sodium_Core32_X25519 extends ParagonIE_Sodium_Core32_Cu
         for ($i = 0; $i < 10; ++$i) {
             $h[$i] = $h[$i]->toInt32();
         }
-        /** @var array<int, ParagonIE_Sodium_Core32_Int32> $h2 */
+        
         $h2 = $h;
         return ParagonIE_Sodium_Core32_Curve25519_Fe::fromArray($h2);
     }
@@ -192,13 +192,13 @@ abstract class ParagonIE_Sodium_Core32_X25519 extends ParagonIE_Sodium_Core32_Cu
         $z3 = self::fe_1();
 
         # swap = 0;
-        /** @var int $swap */
+        
         $swap = 0;
 
         # for (pos = 254;pos >= 0;--pos) {
         for ($pos = 254; $pos >= 0; --$pos) {
             # b = e[pos / 8] >> (pos & 7);
-            /** @var int $b */
+            
             $b = self::chrToInt(
                     $e[(int) floor($pos / 8)]
                 ) >> ($pos & 7);
@@ -215,7 +215,7 @@ abstract class ParagonIE_Sodium_Core32_X25519 extends ParagonIE_Sodium_Core32_Cu
             self::fe_cswap($z2, $z3, $swap);
 
             # swap = b;
-            /** @var int $swap */
+            
             $swap = $b;
 
             # fe_sub(tmp0,x3,z3);

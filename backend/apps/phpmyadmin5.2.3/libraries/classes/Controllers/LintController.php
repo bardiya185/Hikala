@@ -46,7 +46,6 @@ class LintController extends AbstractController
 
         $lints = Linter::lint($prefix . $sqlQuery);
         if ($prefix !== '') {
-            // Adjust positions to account for prefix
             foreach ($lints as $i => $lint) {
                 if ($lint['fromLine'] === 0) {
                     continue;
@@ -58,7 +57,6 @@ class LintController extends AbstractController
         }
 
         $this->response->setAjax(true);
-        // Disabling standard response.
         $this->response->disable();
         Core::headerJSON();
         echo json_encode($lints);

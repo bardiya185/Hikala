@@ -12,7 +12,7 @@ use PhpMyAdmin\Template;
 
 final class ColumnController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, DatabaseInterface $dbi)
@@ -23,9 +23,9 @@ final class ColumnController extends AbstractController
 
     public function __invoke(ServerRequest $request): void
     {
-        /** @var string|null $db */
+        
         $db = $request->getParsedBodyParam('db');
-        /** @var string|null $table */
+        
         $table = $request->getParsedBodyParam('table');
 
         if (! isset($db, $table)) {

@@ -32,7 +32,6 @@ class NetBSD extends BSDCommon
     public function __construct($blockname = false)
     {
         parent::__construct($blockname);
-        //$this->setCPURegExp1("/^cpu(.*)\, (.*) MHz/");
         $this->setCPURegExp2("/user = (.*), nice = (.*), sys = (.*), intr = (.*), idle = (.*)/");
         $this->setSCSIRegExp1("/^(.*) at scsibus.*: <(.*)> .*/");
         $this->setSCSIRegExp2("/^(sd[0-9]+): (.*)([MG])B,/");
@@ -107,7 +106,6 @@ class NetBSD extends BSDCommon
                     $dev->setName($ar_buf[4]);
                 } else {
                     $dev->setName($ar_buf[1]);
-                    // now loop again and find the name
                     foreach ($this->readdmesg() as $line2) {
                         if (preg_match("/^(".$ar_buf[1]."): <(.*)>$/", $line2, $ar_buf_n)) {
                             $dev->setName($ar_buf_n[2]);
@@ -116,7 +114,6 @@ class NetBSD extends BSDCommon
                     }
                 }
                 if (defined('PSI_SHOW_DEVICES_INFOS') && PSI_SHOW_DEVICES_INFOS) {
-                    // now loop again and find the capacity
                     foreach ($this->readdmesg() as $line2) {
                         if (preg_match("/^(".$ar_buf[1]."): (.*), (.*), (.*)MB, .*$/", $line2, $ar_buf_n)) {
                             $dev->setCapacity($ar_buf_n[4] * 1024 * 1024);

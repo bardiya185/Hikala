@@ -11,14 +11,10 @@ class OrderItemResource extends JsonResource
         return [
             'id' => $this->id,
             'product_variant_id' => $this->product_variant_id,
-            
-            // 📸 Snapshots
             'product_title' => $this->product_title,
             'product_sku' => $this->product_sku,
             'product_image' => $this->image_url,
             'variant_attributes' => $this->variant_attributes,
-            
-            // 🔢 Numbers
             'quantity' => $this->quantity,
             'base_price' => (float) $this->base_price,
             'final_price' => (float) $this->final_price,

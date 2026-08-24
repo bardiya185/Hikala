@@ -35,16 +35,16 @@ use const SORT_ASC;
  */
 class Tracking
 {
-    /** @var SqlQueryForm */
+    
     private $sqlQueryForm;
 
-    /** @var Template */
+    
     public $template;
 
-    /** @var Relation */
+    
     protected $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -246,8 +246,6 @@ class Tracking
             $selection_data,
             $selection_both
         );
-
-        // Prepare delete link content here
         $drop_image_or_text = '';
         if (Util::showIcons('ActionLinksMode')) {
             $drop_image_or_text .= Generator::getImage(
@@ -509,7 +507,6 @@ class Tracking
         $ddlog_count,
         $drop_image_or_text
     ) {
-        // no need for the second returned parameter
         [$html] = $this->getHtmlForDataStatements(
             $data,
             $filter_users,
@@ -641,8 +638,6 @@ class Tracking
             . '  [<a href="' . Url::getFromRoute('/table/tracking', $params) . '">' . __('Close')
             . '</a>]</h3>';
         $data = Tracker::getTrackedData($_POST['db'], $_POST['table'], $_POST['version']);
-
-        // Get first DROP TABLE/VIEW and CREATE TABLE/VIEW statements
         $drop_create_statements = $data['ddlog'][0]['statement'];
 
         if (
@@ -651,8 +646,6 @@ class Tracking
         ) {
             $drop_create_statements .= $data['ddlog'][1]['statement'];
         }
-
-        // Print SQL code
         $html .= Generator::getMessage(
             sprintf(
                 __('Version %s snapshot (SQL code)'),
@@ -660,8 +653,6 @@ class Tracking
             ),
             $drop_create_statements
         );
-
-        // Unserialize snapshot
         $temp = Core::safeUnserialize($data['schema_snapshot']);
         if ($temp === null) {
             $temp = [
@@ -718,7 +709,6 @@ class Tracking
     {
         $html = '';
         if (isset($_POST['delete_ddlog'])) {
-            // Delete ddlog row data
             $html .= $this->deleteFromTrackingReportLog(
                 $db,
                 $table,
@@ -730,7 +720,6 @@ class Tracking
         }
 
         if (isset($_POST['delete_dmlog'])) {
-            // Delete dmlog row data
             $html .= $this->deleteFromTrackingReportLog(
                 $db,
                 $table,
@@ -758,8 +747,6 @@ class Tracking
     {
         $html = '';
         $delete_id = $_POST['delete_' . $which_log];
-
-        // Only in case of valid id
         if ($delete_id == (int) $delete_id) {
             unset($data[$which_log][$delete_id]);
 
@@ -826,7 +813,7 @@ class Tracking
     public function exportAsSqlExecution(array $entries): void
     {
         foreach ($entries as $entry) {
-            $this->dbi->query("/*NOTRACK*/\n" . $entry['statement']);
+            $this->dbi->query("\n" . $entry['statement']);
         }
     }
 
@@ -838,8 +825,6 @@ class Tracking
     public function exportAsFileDownload(array $entries): void
     {
         ini_set('url_rewriter.tags', '');
-
-        // Replace all multiple whitespaces by a single space
         $table = htmlspecialchars(preg_replace('/\s+/', ' ', $_POST['table']));
         $dump = '# ' . sprintf(
             __('Tracking report for table `%s`'),
@@ -902,9 +887,6 @@ class Tracking
     public function getTrackingSet()
     {
         $tracking_set = '';
-
-        // a key is absent from the request if it has been removed from
-        // tracking_default_statements in the config
         if (isset($_POST['alter_table']) && $_POST['alter_table'] == true) {
             $tracking_set .= 'ALTER TABLE,';
         }
@@ -1051,7 +1033,6 @@ class Tracking
     public function getEntries(array $data, $filter_ts_from, $filter_ts_to, array $filter_users)
     {
         $entries = [];
-        // Filtering data definition statements
         if ($_POST['logtype'] === 'schema' || $_POST['logtype'] === 'schema_and_data') {
             $entries = array_merge(
                 $entries,
@@ -1063,8 +1044,6 @@ class Tracking
                 )
             );
         }
-
-        // Filtering data manipulation statements
         if ($_POST['logtype'] === 'data' || $_POST['logtype'] === 'schema_and_data') {
             $entries = array_merge(
                 $entries,
@@ -1076,8 +1055,6 @@ class Tracking
                 )
             );
         }
-
-        // Sort it
         $ids = $timestamps = $usernames = $statements = [];
         foreach ($entries as $key => $row) {
             $ids[$key] = $row['id'];
@@ -1109,8 +1086,6 @@ class Tracking
         if ($trackingFeature === null) {
             return '';
         }
-
-        // Prepare statement to get HEAD version
         $allTablesQuery = ' SELECT table_name, MAX(version) as version FROM ' .
             Util::backquote($trackingFeature->database) . '.' .
             Util::backquote($trackingFeature->tracking) .
@@ -1121,8 +1096,6 @@ class Tracking
 
         $allTablesResult = $this->dbi->queryAsControlUser($allTablesQuery);
         $untrackedTables = $this->getUntrackedTables($db);
-
-        // If a HEAD version exists
         $versions = [];
         while ($oneResult = $allTablesResult->fetchRow()) {
             [$tableName, $versionNumber] = $oneResult;
@@ -1167,7 +1140,6 @@ class Tracking
 
         foreach ($table_list as $value) {
             if (is_array($value) && array_key_exists('is' . $sep . 'group', $value) && $value['is' . $sep . 'group']) {
-                // Recursion step
                 $untracked_tables = array_merge($this->extractTableNames($value, $db, $testing), $untracked_tables);
             } elseif (is_array($value) && ($testing || Tracker::getVersion($db, $value['Name']) == -1)) {
                 $untracked_tables[] = $value['Name'];
@@ -1187,8 +1159,6 @@ class Tracking
     public function getUntrackedTables($db)
     {
         $table_list = Util::getTableList($db);
-
-        //Use helper function to get table list recursively.
         return $this->extractTableNames($table_list, $db);
     }
 }

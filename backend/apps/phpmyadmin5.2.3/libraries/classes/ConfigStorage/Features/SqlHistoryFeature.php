@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class SqlHistoryFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $history;
 
     public function __construct(DatabaseName $database, TableName $history)

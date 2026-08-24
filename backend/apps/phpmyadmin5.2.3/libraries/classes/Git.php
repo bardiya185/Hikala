@@ -571,8 +571,8 @@ class Git
     public function getGitRevisionInfo(): ?array
     {
         if (@file_exists($this->baseDir . 'revision-info.php')) {
-            /** @var array{ revision: string, revisionHash: string, revisionUrl: string, branch: string, branchUrl: string, message: string, author: array{ name: string, email: string, date: string }, committer: array{ name: string, email: string, date: string }}|null $info */
-            /** @psalm-suppress MissingFile,UnresolvableInclude */
+            
+            
             $info = include $this->baseDir . 'revision-info.php';
 
             if (! is_array($info)) {

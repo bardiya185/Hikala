@@ -36,20 +36,14 @@ class Banner extends Model
         'click_count' => 'integer',
         'view_count' => 'integer',
     ];
-
-    // ✅ رابطه با Position
     public function position(): BelongsTo
     {
         return $this->belongsTo(BannerPosition::class, 'banner_position_id');
     }
-
-    // ✅ Polymorphic - به هر چیزی میتونه وصل بشه
     public function linkable(): MorphTo
     {
         return $this->morphTo();
     }
-
-    // ✅ Scope: بنرهای فعال
     public function scopeActive($query)
     {
         return $query
@@ -63,16 +57,11 @@ class Banner extends Model
                 ->orWhere('ends_at', '>=', now())
             );
     }
-
-    // ✅ ساخت لینک نهایی
     public function getUrlAttribute(): ?string
     {
-        // اولویت ۱: custom_url
         if ($this->custom_url) {
             return $this->custom_url;
         }
-    
-        // اولویت ۲: linkable با eager load (استفاده از slug)
         if ($this->linkable) {
             return match ($this->linkable_type) {
                 \App\Models\Product::class => "/products/{$this->linkable->id}",
@@ -85,8 +74,6 @@ class Banner extends Model
                 default => null,
             };
         }
-    
-        // اولویت ۳: فقط ID (اگه linkable load نشده)
         if ($this->linkable_type && $this->linkable_id) {
             return match ($this->linkable_type) {
                 \App\Models\Product::class => "/products/{$this->linkable_id}",
@@ -98,7 +85,6 @@ class Banner extends Model
     
         return null;
     }
-    // ✅ آدرس کامل تصویر
     public function getImageUrlAttribute(): string
     {
         return asset('storage/' . $this->image);

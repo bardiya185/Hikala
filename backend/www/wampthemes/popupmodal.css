@@ -1,11 +1,11 @@
-/******         Pop-up box when hovering over a link        ******/
+
 a.popup {font-style:none;color:#666;text-decoration:none;font-size:0.92em;}
-a:active.popup {border-bottom:0px;} /* Essential for IE          */
+a:active.popup {border-bottom:0px;} 
 a:hover.popup, a:focus.popup {
-               border-bottom:0px;   /* Essential for IE          */
+               border-bottom:0px;   
                cursor:help;text-decoration:none;
               }
-a.popup span {display:none;} /* Invisible text between SPAN tags */
+a.popup span {display:none;} 
 a:hover.popup span, a:focus.popup span {
 	display:block;
 	position:absolute;
@@ -23,9 +23,9 @@ a:hover.popup span, a:focus.popup span {
 	font-weight:500;font-style:normal;text-decoration:none;
 	z-index:100;
 }
-/*------------------------------------------------------------------*/
 
-/************* Dialogue modal *************/
+
+
 .modalOto,.modalOtoArial {
 	position: fixed;
 	overflow:auto;
@@ -55,9 +55,9 @@ a:hover.popup span, a:focus.popup span {
 .modalOto > div,.modalOtoArial > div {
   max-width:90%;
 	width: max-content;
-	width: intrinsic;           /* Safari/WebKit */
-  width: -moz-max-content;    /* Firefox/Gecko */
-  width: -webkit-max-content; /* Chrome */
+	width: intrinsic;           
+  width: -moz-max-content;    
+  width: -webkit-max-content; 
 	position: relative;
 	margin: 10% auto;
 	padding: 0 5px 5px 5px;
@@ -108,7 +108,7 @@ a:hover.popup span, a:focus.popup span {
 .js-copy:hover,.js-copya:hover,.js-copyb:hover,.js-copyc:hover,.js-copyd:hover,.js-copye:hover,.js-copyf:hover{background: #fff;}
 
 code {font-size:110%;}
-/*---------------------------------------------------*/
+
 
 @media screen and (max-width: 750px) {
 

@@ -47,7 +47,7 @@ class TagObjectManager
             Assertion::string($data, 'Invalid data');
             $value = Utils::binToInt($data);
         }
-        /** @var TagObject $class */
+        
         $class = $this->getClassForValue($value);
 
         return $class::createFromLoadedData($additionalInformation, $data, $object);

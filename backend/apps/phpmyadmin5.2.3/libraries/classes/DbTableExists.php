@@ -109,7 +109,7 @@ final class DbTableExists
             return;
         }
 
-        /** @var SqlController $controller */
+        
         $controller = $containerBuilder->get(SqlController::class);
         $controller();
 

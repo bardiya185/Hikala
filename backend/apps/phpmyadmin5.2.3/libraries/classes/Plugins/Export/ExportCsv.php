@@ -44,15 +44,8 @@ class ExportCsv extends ExportPlugin
         $exportPluginProperties->setExtension('csv');
         $exportPluginProperties->setMimeType('text/comma-separated-values');
         $exportPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $exportPluginProperties
-        // this will be shown as "Format specific options"
         $exportSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-        // general options main group
         $generalOptions = new OptionsPropertyMainGroup('general_opts');
-        // create leaf items and add them to the group
         $leaf = new TextPropertyItem(
             'separator',
             __('Columns separated with:')
@@ -90,10 +83,7 @@ class ExportCsv extends ExportPlugin
         $generalOptions->addProperty($leaf);
         $leaf = new HiddenPropertyItem('structure_or_data');
         $generalOptions->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($generalOptions);
-
-        // set the options for the export plugin property item
         $exportPluginProperties->setOptions($exportSpecificOptions);
 
         return $exportPluginProperties;
@@ -105,13 +95,10 @@ class ExportCsv extends ExportPlugin
     public function exportHeader(): bool
     {
         global $what, $csv_terminated, $csv_separator, $csv_enclosed, $csv_escaped;
-
-        // Here we just prepare some values for export
         if ($what === 'excel') {
             $csv_terminated = "\015\012";
             switch ($GLOBALS['excel_edition']) {
                 case 'win':
-                    // as tested on Windows with Excel 2002 and Excel 2007
                     $csv_separator = ';';
                     break;
                 case 'mac_excel2003':
@@ -216,12 +203,8 @@ class ExportCsv extends ExportPlugin
         $db_alias = $db;
         $table_alias = $table;
         $this->initAlias($aliases, $db_alias, $table_alias);
-
-        // Gets the data from the database
         $result = $dbi->query($sqlQuery, DatabaseInterface::CONNECT_USER, DatabaseInterface::QUERY_UNBUFFERED);
         $fields_cnt = $result->numFields();
-
-        // If required, get fields name at the first line
         if (isset($GLOBALS['csv_columns']) && $GLOBALS['csv_columns']) {
             $schema_insert = '';
             foreach ($result->getFieldNames() as $col_as) {
@@ -246,20 +229,15 @@ class ExportCsv extends ExportPlugin
                 return false;
             }
         }
-
-        // Format the data
         while ($row = $result->fetchRow()) {
             $schema_insert = '';
             for ($j = 0; $j < $fields_cnt; $j++) {
                 if (! isset($row[$j])) {
                     $schema_insert .= $GLOBALS[$what . '_null'];
                 } elseif ($row[$j] == '0' || $row[$j] != '') {
-                    // always enclose fields
                     if ($what === 'excel') {
                         $row[$j] = preg_replace("/\015(\012)?/", "\012", $row[$j]);
                     }
-
-                    // remove CRLF characters within field
                     if (isset($GLOBALS[$what . '_removeCRLF']) && $GLOBALS[$what . '_removeCRLF']) {
                         $row[$j] = str_replace(
                             [
@@ -274,7 +252,6 @@ class ExportCsv extends ExportPlugin
                     if ($csv_enclosed == '') {
                         $schema_insert .= $row[$j];
                     } else {
-                        // also double the escape string if found in the data
                         if ($csv_escaped != $csv_enclosed) {
                             $schema_insert .= $csv_enclosed
                                 . str_replace(
@@ -288,7 +265,6 @@ class ExportCsv extends ExportPlugin
                                 )
                                 . $csv_enclosed;
                         } else {
-                            // avoid a problem when escape string equals enclose
                             $schema_insert .= $csv_enclosed
                                 . str_replace($csv_enclosed, $csv_escaped . $csv_enclosed, $row[$j])
                                 . $csv_enclosed;

@@ -27,16 +27,16 @@ use function sprintf;
  */
 class OutputBuffering
 {
-    /** @var self */
+    
     private static $instance;
 
-    /** @var int */
+    
     private $mode;
 
-    /** @var string */
+    
     private $content;
 
-    /** @var bool */
+    
     private $on;
 
     /**

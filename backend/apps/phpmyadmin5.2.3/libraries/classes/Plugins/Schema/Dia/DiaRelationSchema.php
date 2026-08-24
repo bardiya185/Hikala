@@ -27,25 +27,25 @@ use function in_array;
  */
 class DiaRelationSchema extends ExportRelationSchema
 {
-    /** @var TableStatsDia[] */
+    
     private $tables = [];
 
-    /** @var RelationStatsDia[] Relations */
+    
     private $relations = [];
 
-    /** @var float */
+    
     private $topMargin = 2.8222000598907471;
 
-    /** @var float */
+    
     private $bottomMargin = 2.8222000598907471;
 
-    /** @var float */
+    
     private $leftMargin = 2.8222000598907471;
 
-    /** @var float */
+    
     private $rightMargin = 2.8222000598907471;
 
-    /** @var int */
+    
     public static $objectId = 0;
 
     /**

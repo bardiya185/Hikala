@@ -104,7 +104,6 @@ abstract class OS implements PSI_Interface_OS
                 $this->sys->setUsers(count($lines));
             }
         } elseif (CommonFunctions::executeProgram('uptime', '', $buf, PSI_DEBUG) && preg_match("/,\s+(\d+)\s+user[s]?,/", $buf, $ar_buf)) {
-        //} elseif (CommonFunctions::executeProgram('uptime', '', $buf) && preg_match("/,\s+(\d+)\s+user[s]?,\s+load average[s]?:\s+(.*),\s+(.*),\s+(.*)$/", $buf, $ar_buf)) {
             $this->sys->setUsers($ar_buf[1]);
         } else {
             $processlist = CommonFunctions::findglob('/proc/*/cmdline', GLOB_NOSORT);
@@ -148,7 +147,6 @@ abstract class OS implements PSI_Interface_OS
         } elseif (((PSI_OS != 'WINNT') && !defined('PSI_EMU_HOSTNAME')) && (CommonFunctions::readenv('SERVER_ADDR', $result) || CommonFunctions::readenv('LOCAL_ADDR', $result))) {
             $this->sys->setIp(preg_replace('/^::ffff:/i', '', $result));
         } else {
-            //$this->sys->setIp(gethostbyname($this->sys->getHostname()));
             $hn = $this->sys->getHostname();
             $ghbn = gethostbyname($hn);
             if (defined('PSI_EMU_HOSTNAME') && ($hn === $ghbn)) {

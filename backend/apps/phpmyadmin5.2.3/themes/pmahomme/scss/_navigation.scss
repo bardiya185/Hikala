@@ -1,4 +1,3 @@
-// Navigation styles for the pmahomme theme
 #pma_navigation {
   width: $navi-width;
   position: fixed;
@@ -221,22 +220,16 @@
         left: 0.75em;
         z-index: 0;
       }
-
-      // Top and right segments for the tree element connections
       i {
         display: block;
         border-left: 1px solid #666;
         border-bottom: 1px solid #666;
         position: relative;
         z-index: 0;
-
-        // Removes top segment
         &.first {
           border-left: 0;
         }
       }
-
-      // Bottom segment for the tree element connections
       b {
         display: block;
         height: 0.75em;
@@ -303,7 +296,6 @@
     padding-left: 0.75em;
 
     li.last.database {
-      // Revert the effect of the rule that is applied on all the tree
       margin-bottom: 0 !important;
     }
   }
@@ -312,8 +304,6 @@
     border-left: 0 solid #666;
   }
 }
-
-// Fast filter
 li.fast_filter {
   padding-left: 0.75em;
   margin-left: 0.75em;
@@ -355,8 +345,6 @@ li.fast_filter {
   float: right;
   padding-right: 23px;
 }
-
-// Resize handler
 #pma_navigation_resizer {
   width: 3px;
   height: 100%;
@@ -385,8 +373,6 @@ li.fast_filter {
   filter: dropshadow(color = #fff, offx = 0, offy = 1);
   border: 1px solid #888;
 }
-
-// Quick warp links
 .pma_quick_warp {
   margin-top: 5px;
   margin-left: 2px;

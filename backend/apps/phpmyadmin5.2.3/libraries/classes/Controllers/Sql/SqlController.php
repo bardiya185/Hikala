@@ -27,13 +27,13 @@ use function urlencode;
 
 class SqlController extends AbstractController
 {
-    /** @var Sql */
+    
     private $sql;
 
-    /** @var CheckUserPrivileges */
+    
     private $checkUserPrivileges;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -102,8 +102,6 @@ class SqlController extends AbstractController
                 $errorUrl .= '&amp;table=' . urlencode($table);
             }
         }
-
-        // Coming from a bookmark dialog
         if (isset($_POST['bkm_fields']['bkm_sql_query'])) {
             $sql_query = $_POST['bkm_fields']['bkm_sql_query'];
         } elseif (isset($_POST['sql_query'])) {
@@ -113,21 +111,13 @@ class SqlController extends AbstractController
                 $sql_query = $_GET['sql_query'];
             }
         }
-
-        // This one is just to fill $db
         if (isset($_POST['bkm_fields']['bkm_database'])) {
             $db = $_POST['bkm_fields']['bkm_database'];
         }
-
-        // Default to browse if no query set and we have table
-        // (needed for browsing from DefaultTabTable)
         if (empty($sql_query) && strlen($table) > 0 && strlen($db) > 0) {
             $sql_query = $this->sql->getDefaultSqlQueryForBrowse($db, $table);
-
-            // set $goto to what will be displayed if query returns 0 rows
             $goto = '';
         } else {
-            // Now we can check the parameters
             Util::checkParameters(['sql_query']);
         }
 

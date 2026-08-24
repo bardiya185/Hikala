@@ -117,7 +117,6 @@ class Nut extends UPS
                     $ups_data[$line[0]] = isset($line[1]) ? trim($line[1]) : '';
                 }
                 $dev = new UPSDevice();
-                //General
                 $dev->setName($name);
                 if (isset($ups_data['ups.model'])) {
                     $dev->setModel($ups_data['ups.model']);
@@ -131,8 +130,6 @@ class Nut extends UPS
                 if (isset($ups_data['ups.beeper.status'])) {
                     $dev->setBeeperStatus($ups_data['ups.beeper.status']);
                 }
-
-                //Line
                 if (isset($ups_data['input.voltage'])) {
                     $dev->setLineVoltage($ups_data['input.voltage']);
                 }
@@ -142,8 +139,6 @@ class Nut extends UPS
                 if (isset($ups_data['ups.load'])) {
                     $dev->setLoad($ups_data['ups.load']);
                 }
-
-                //Battery
                 if (isset($ups_data['battery.voltage'])) {
                     $dev->setBatteryVoltage($ups_data['battery.voltage']);
                 }
@@ -153,8 +148,6 @@ class Nut extends UPS
                 if (isset($ups_data['battery.runtime'])) {
                     $dev->setTimeLeft(round($ups_data['battery.runtime']/60, 2));
                 }
-
-                //Temperature
                 if (isset($ups_data['ups.temperature'])) {
                     $dev->setTemperatur($ups_data['ups.temperature']);
                 }

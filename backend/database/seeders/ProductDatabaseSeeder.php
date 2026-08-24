@@ -60,10 +60,6 @@ class ProductDatabaseSeeder extends Seeder
     public function run()
     {
         $this->command->info('🚀 Starting complete product seeding...');
-
-        // ================================================================
-        // 1. CATEGORIES
-        // ================================================================
         $categories = [
             ['name' => 'Mobile', 'slug' => 'mobile', 'icon_key' => 'mobile', 'sort_order' => 1,
                 'children' => [
@@ -411,10 +407,6 @@ class ProductDatabaseSeeder extends Seeder
         }
 
         $this->command->info('✅ All categories created!');
-
-        // ================================================================
-        // 2. BRANDS
-        // ================================================================
         $this->command->info('🏷️ Creating brands...');
 
         $brands = [
@@ -490,14 +482,9 @@ class ProductDatabaseSeeder extends Seeder
 $this->call(AttributeSeeder::class);
 
 $this->command->info('✅ Attributes created!');
-
-        // ================================================================
-        // 3. PRODUCTS
-        // ================================================================
         $this->command->info('🔄 Creating products...');
 
         $productList = [
-            // Mobile - Apple
             ['title' => 'iPhone 16',            'slug' => 'iphone-16',            'brand' => 'Apple'],
             ['title' => 'iPhone 16 Pro',         'slug' => 'iphone-16-pro',        'brand' => 'Apple'],
             ['title' => 'iPhone 16 Pro Max',     'slug' => 'iphone-16-pro-max',    'brand' => 'Apple'],
@@ -506,7 +493,6 @@ $this->command->info('✅ Attributes created!');
             ['title' => 'iPhone 15 Pro Max',     'slug' => 'iphone-15-pro-max',    'brand' => 'Apple'],
             ['title' => 'iPhone 14',             'slug' => 'iphone-14',            'brand' => 'Apple'],
             ['title' => 'iPhone SE',             'slug' => 'iphone-se',            'brand' => 'Apple'],
-            // Mobile - Samsung
             ['title' => 'Galaxy S24 Ultra',      'slug' => 'galaxy-s24-ultra',     'brand' => 'Samsung'],
             ['title' => 'Galaxy S24 Plus',       'slug' => 'galaxy-s24-plus',      'brand' => 'Samsung'],
             ['title' => 'Galaxy S24',            'slug' => 'galaxy-s24',           'brand' => 'Samsung'],
@@ -514,14 +500,12 @@ $this->command->info('✅ Attributes created!');
             ['title' => 'Galaxy Z Flip 6',       'slug' => 'galaxy-z-flip-6',      'brand' => 'Samsung'],
             ['title' => 'Galaxy A55',            'slug' => 'galaxy-a55',           'brand' => 'Samsung'],
             ['title' => 'Galaxy A35',            'slug' => 'galaxy-a35',           'brand' => 'Samsung'],
-            // Mobile - Xiaomi
             ['title' => 'Xiaomi 14 Ultra',       'slug' => 'xiaomi-14-ultra',      'brand' => 'Xiaomi'],
             ['title' => 'Xiaomi 14 Pro',         'slug' => 'xiaomi-14-pro',        'brand' => 'Xiaomi'],
             ['title' => 'Xiaomi 14',             'slug' => 'xiaomi-14',            'brand' => 'Xiaomi'],
             ['title' => 'Redmi Note 13 Pro',     'slug' => 'redmi-note-13-pro',    'brand' => 'Xiaomi'],
             ['title' => 'Redmi Note 13',         'slug' => 'redmi-note-13',        'brand' => 'Xiaomi'],
             ['title' => 'Poco X7 Pro',           'slug' => 'poco-x7-pro',          'brand' => 'Poco'],
-            // Mobile - Others
             ['title' => 'Google Pixel 8 Pro',    'slug' => 'google-pixel',         'brand' => 'Google'],
             ['title' => 'OnePlus 12',            'slug' => 'oneplus',              'brand' => 'OnePlus'],
             ['title' => 'Huawei P60 Pro',        'slug' => 'huawei',               'brand' => 'Huawei'],
@@ -530,7 +514,6 @@ $this->command->info('✅ Attributes created!');
             ['title' => 'Motorola Edge 40',      'slug' => 'motorola',             'brand' => 'Motorola'],
             ['title' => 'Nothing Phone 2',       'slug' => 'nothing-phone',        'brand' => 'Nothing'],
             ['title' => 'Realme GT 3',           'slug' => 'realme',               'brand' => 'Realme'],
-            // Laptops
             ['title' => 'MacBook Pro M3',        'slug' => 'macbook-pro-m3',       'brand' => 'Apple'],
             ['title' => 'MacBook Pro M4',        'slug' => 'macbook-pro-m4',       'brand' => 'Apple'],
             ['title' => 'MacBook Air M3',        'slug' => 'macbook-air-m3',       'brand' => 'Apple'],
@@ -547,7 +530,6 @@ $this->command->info('✅ Attributes created!');
             ['title' => 'HP Omen',               'slug' => 'hp-omen',              'brand' => 'HP'],
             ['title' => 'Acer Aspire 5',         'slug' => 'acer-aspire-5',        'brand' => 'Acer'],
             ['title' => 'LG Gram',               'slug' => 'lg-gram',              'brand' => 'LG'],
-            // Digital
             ['title' => 'PS5',                   'slug' => 'ps5',                  'brand' => 'PlayStation'],
             ['title' => 'PS5 Slim',              'slug' => 'ps5-slim',             'brand' => 'PlayStation'],
             ['title' => 'Xbox Series X',         'slug' => 'xbox-series-x',        'brand' => 'Xbox'],
@@ -572,14 +554,12 @@ $this->command->info('✅ Attributes created!');
             ['title' => 'Google Nest Hub 2',     'slug' => 'google-nest-hub-2',    'brand' => 'Google'],
             ['title' => 'Samsung 1TB SSD',       'slug' => 'samsung-1tb-ssd',      'brand' => 'Samsung'],
             ['title' => 'TP-Link Router',        'slug' => 'tplink-router',        'brand' => 'TP-Link'],
-            // Home & Kitchen
             ['title' => 'Non-Stick Frying Pan',  'slug' => 'non-stick-frying-pan', 'brand' => 'IKEA'],
             ['title' => 'Pressure Cooker',       'slug' => 'pressure-cooker',      'brand' => 'IKEA'],
             ['title' => 'Coffee Maker',          'slug' => 'coffee-maker',         'brand' => 'Philips'],
             ['title' => 'Electric Kettle',       'slug' => 'electric-kettle',      'brand' => 'Philips'],
             ['title' => 'Sofa Set',              'slug' => 'sofa-set',             'brand' => 'IKEA'],
             ['title' => 'Chandelier',            'slug' => 'chandelier',           'brand' => 'IKEA'],
-            // Home Appliances
             ['title' => 'LG Refrigerator',       'slug' => 'lg-refrigerator',      'brand' => 'LG'],
             ['title' => 'Samsung Refrigerator',  'slug' => 'samsung-refrigerator', 'brand' => 'Samsung'],
             ['title' => 'LG Washing Machine',    'slug' => 'lg-washing-machine',   'brand' => 'LG'],
@@ -590,7 +570,6 @@ $this->command->info('✅ Attributes created!');
             ['title' => 'Sony OLED TV',          'slug' => 'sony-oled-tv',         'brand' => 'Sony'],
             ['title' => 'Samsung QLED TV',       'slug' => 'samsung-qled-tv',      'brand' => 'Samsung'],
             ['title' => 'LG OLED TV',            'slug' => 'lg-oled-tv',           'brand' => 'LG'],
-            // Beauty
             ['title' => 'Moisturizer Cream',     'slug' => 'moisturizer-cream',    'brand' => 'Loreal'],
             ['title' => 'Sunscreen SPF 50',      'slug' => 'sunscreen-spf-50',     'brand' => 'Nivea'],
             ['title' => 'Lipstick',              'slug' => 'lipstick',             'brand' => 'Maybelline'],
@@ -599,7 +578,6 @@ $this->command->info('✅ Attributes created!');
             ['title' => 'Dior Sauvage',          'slug' => 'dior-sauvage',         'brand' => 'Dior'],
             ['title' => 'Chanel No.5',           'slug' => 'chanel-no-5',          'brand' => 'Chanel'],
             ['title' => 'Electric Toothbrush',   'slug' => 'electric-toothbrush',  'brand' => 'Philips'],
-            // Fashion
             ['title' => 'Men\'s T-Shirt',        'slug' => 'mens-t-shirt',         'brand' => 'Nike'],
             ['title' => 'Men\'s Jeans',          'slug' => 'mens-jeans',           'brand' => 'Levis'],
             ['title' => 'Women\'s Dress',        'slug' => 'womens-dress',         'brand' => 'Zara'],
@@ -607,41 +585,33 @@ $this->command->info('✅ Attributes created!');
             ['title' => 'Nike Air Max',          'slug' => 'nike-air-max',         'brand' => 'Nike'],
             ['title' => 'Adidas Ultraboost',     'slug' => 'adidas-ultraboost',    'brand' => 'Adidas'],
             ['title' => 'Rolex Watch',           'slug' => 'rolex-watch',          'brand' => 'Rolex'],
-            // Jewelry
             ['title' => 'Gold Necklace',         'slug' => 'gold-necklace',        'brand' => 'Rolex'],
             ['title' => 'Gold Ring',             'slug' => 'gold-ring',            'brand' => 'Rolex'],
             ['title' => 'Diamond Ring',          'slug' => 'diamond-ring',         'brand' => 'Rolex'],
             ['title' => 'Silver Necklace',       'slug' => 'silver-necklace',      'brand' => 'Seiko'],
-            // Vehicles
             ['title' => 'BMW 5 Series',          'slug' => 'bmw-5-series',         'brand' => 'BMW'],
             ['title' => 'Mercedes E-Class',      'slug' => 'mercedes-e-class',     'brand' => 'Mercedes'],
             ['title' => 'Toyota Camry',          'slug' => 'toyota-camry',         'brand' => 'Toyota'],
             ['title' => 'Honda Civic',           'slug' => 'honda-civic',          'brand' => 'Honda'],
             ['title' => 'Honda CBR 500R',        'slug' => 'honda-cbr-500r',       'brand' => 'Honda'],
-            // Health
             ['title' => 'Blood Pressure Monitor','slug' => 'blood-pressure-monitor','brand' => 'Philips'],
             ['title' => 'Vitamin C',             'slug' => 'vitamin-c',            'brand' => 'Nivea'],
             ['title' => 'Omega-3',               'slug' => 'omega-3',              'brand' => 'Nivea'],
             ['title' => 'Treadmill',             'slug' => 'treadmill',            'brand' => 'Nike'],
             ['title' => 'Yoga Mat',              'slug' => 'yoga-mat',             'brand' => 'Nike'],
-            // Tools
             ['title' => 'Makita Drill',          'slug' => 'makita-drill',         'brand' => 'Makita'],
             ['title' => 'DeWalt Grinder',        'slug' => 'dewalt-grinder',       'brand' => 'DeWalt'],
             ['title' => 'Screwdriver Set',       'slug' => 'screwdriver-set',      'brand' => 'Stanley'],
-            // Sports
             ['title' => 'Boxing Punching Bag',   'slug' => 'boxing-punching-bag',  'brand' => 'Adidas'],
             ['title' => 'Suitcase 4 Wheels',     'slug' => 'suitcase-4-wheels',    'brand' => 'Adidas'],
         ];
 
         $productCount = 0;
         $variantCount = 0;
-
-        // رنگ‌های موجود در AttributeSeeder
         $colorNames = [
             'Black', 'White', 'Red', 'Blue', 'Green',
             'Gold', 'Silver', 'Pink', 'Purple', 'Gray', 'Rose Gold',
         ];
-        // Pre-load همه داده‌ها
                 $this->command->info('📥 Pre-loading attributes...');
 
                 $allAttributes         = DB::table('attributes')->get()->keyBy('slug');
@@ -695,14 +665,7 @@ $this->command->info('✅ Attributes created!');
                 'created_at'        => now(),
                 'updated_at'        => now(),
             ]);
-
-            // اتصال به دسته‌بندی‌ها (خودش، Select، و Main)
             $this->attachProductToCategories($productId, $category);
-
-            // ================================================================
-            // ✅ ساخت variants با 1 تا 3 رنگ مختلف
-            // هر variant = یک رنگ + 10 ویژگی دیگر
-            // ================================================================
             $colorCount       = rand(1, 3);
             $shuffledColors   = collect($colorNames)->shuffle()->take($colorCount);
             $isDefault        = true;
@@ -722,8 +685,6 @@ $this->command->info('✅ Attributes created!');
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
-
-                // ✅ attach ویژگی‌ها به این variant
                 $this->attachVariantAttributes(
                     $variantId,
                     $colorName,
@@ -746,34 +707,21 @@ $this->command->info('✅ Attributes created!');
         $this->command->info('✅ ' . $productCount . ' products created!');
         $this->command->info('✅ ' . $variantCount . ' variants created!');
     }
-
-    // ================================================================
-    // متد اتصال محصول به دسته‌بندی‌ها
-    // ================================================================
     private function attachProductToCategories(int $productId, object $category): void
     {
-        // 1. دسته خودش
         $this->insertCategoryProduct($productId, $category->id);
-
-        // 2. والد (Select ...)
         if ($category->parent_id) {
             $parent = DB::table('categories')->where('id', $category->parent_id)->first();
             if ($parent) {
                 $this->insertCategoryProduct($productId, $parent->id);
-
-                // 3. والد والد (Apple Phones, Samsung Phones, ...)
                 if ($parent->parent_id) {
                     $grandParent = DB::table('categories')->where('id', $parent->parent_id)->first();
                     if ($grandParent) {
                         $this->insertCategoryProduct($productId, $grandParent->id);
-
-                        // 4. بالاتر (Select Mobile, ...)
                         if ($grandParent->parent_id) {
                             $greatGrandParent = DB::table('categories')->where('id', $grandParent->parent_id)->first();
                             if ($greatGrandParent) {
                                 $this->insertCategoryProduct($productId, $greatGrandParent->id);
-
-                                // 5. Root (Mobile, Laptops, ...)
                                 if ($greatGrandParent->parent_id) {
                                     $root = DB::table('categories')->where('id', $greatGrandParent->parent_id)->first();
                                     if ($root) {
@@ -797,8 +745,6 @@ $this->command->info('✅ Attributes created!');
         $allCategoryAttributes
     ): void {
         $colorAttr = $allAttributes->get('color');
-    
-        // 1. یک رنگ
         if ($colorAttr) {
             $colorValues = $allAttributeValues->get($colorAttr->id, collect());
             $colorValue  = $colorValues->firstWhere('value', $colorName);
@@ -811,14 +757,8 @@ $this->command->info('✅ Attributes created!');
                 ]);
             }
         }
-    
-        // 2. تشخیص خانواده
         $rootSlug = $this->getRootCategorySlug($categoryId, $allCategoryAttributes);
-    
-        // 3. pool مناسب
         $familyPool = $this->getFamilyAttributePool($rootSlug);
-    
-        // 4. تبدیل slug به id
         $poolAttrIds = [];
         foreach ($familyPool as $slug) {
             $attr = $allAttributes->get($slug);
@@ -828,8 +768,6 @@ $this->command->info('✅ Attributes created!');
         }
     
         if (empty($poolAttrIds)) return;
-    
-        // 5. انتخاب 10 attribute
         shuffle($poolAttrIds);
     
         while (count($poolAttrIds) < 10) {
@@ -845,8 +783,6 @@ $this->command->info('✅ Attributes created!');
     
             $values = $allAttributeValues->get($attrId, collect());
             if ($values->isEmpty()) continue;
-    
-            // value مناسب بر اساس خانواده
             $value = $this->getFilteredValue($attrId, $values, $rootSlug, $allAttributes);
     
             DB::table('product_variant_attribute_values')->insert([
@@ -876,9 +812,6 @@ $this->command->info('✅ Attributes created!');
         ]);
     }
 }
-// ================================================================
-// تشخیص root category slug
-// ================================================================
 private function getRootCategorySlug(int $categoryId, $allCategoryAttributes): string
 {
     static $allCategories = null;
@@ -895,10 +828,6 @@ private function getRootCategorySlug(int $categoryId, $allCategoryAttributes): s
 
     return $current ? $current->slug : 'general';
 }
-
-// ================================================================
-// Pool ویژگی‌های هر خانواده محصول
-// ================================================================
 private function getFamilyAttributePool(string $rootSlug): array
 {
     $pools = [
@@ -962,10 +891,6 @@ private function getFamilyAttributePool(string $rootSlug): array
         'style', 'season', 'gender', 'capacity', 'connectivity',
     ];
 }
-
-// ================================================================
-// فیلتر value مناسب بر اساس خانواده
-// ================================================================
 private function getFilteredValue($attrId, $values, string $rootSlug, $allAttributes)
 {
     $attr = $allAttributes->first(fn($a) => $a->id == $attrId);

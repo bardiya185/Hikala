@@ -1,6 +1,6 @@
 @php
     use Knuckles\Scribe\Tools\Utils as u;
-    /** @var \Knuckles\Camel\Output\OutputEndpointData $endpoint */
+    
 @endphp
 
 <div class="sl-inverted">
@@ -148,11 +148,10 @@
                         <div class="ParameterGrid sl-p-4">
                             @foreach($endpoint->queryParameters as $name => $parameter)
                                 @php
-                                    /** @var \Knuckles\Camel\Output\Parameter $parameter */
+                                    
                                     if ($parameter->type == 'object') // Skip; individual object children are listed
                                         continue;
                                     if (str_contains($name, "[]"))
-                                        // This likely belongs to an obj-array (eg objs[].a); we only show the parent (objs[]), so skip
                                         continue;
                                     if($endpoint->isAuthed() && $metadata['auth']['location'] === 'query'
                                     && $name === $metadata['auth']['name']) continue;
@@ -214,11 +213,10 @@
                             <div class="ParameterGrid sl-p-4">
                                 @foreach($endpoint->bodyParameters as $name => $parameter)
                                     @php
-                                        /** @var \Knuckles\Camel\Output\Parameter $parameter */
+                                        
                                         if ($parameter->type == 'object') // Skip; individual object children are listed
                                             continue;
                                         if (str_contains($name, "[]"))
-                                            // This likely belongs to an obj-array (eg objs[].a); we only show the parent (objs[]), so skip
                                             continue;
                                     @endphp
                                     <label aria-hidden="true"

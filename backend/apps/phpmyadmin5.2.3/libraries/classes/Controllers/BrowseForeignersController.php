@@ -15,10 +15,10 @@ use PhpMyAdmin\Template;
  */
 class BrowseForeignersController extends AbstractController
 {
-    /** @var BrowseForeigners */
+    
     private $browseForeigners;
 
-    /** @var Relation */
+    
     private $relation;
 
     public function __construct(
@@ -34,19 +34,19 @@ class BrowseForeignersController extends AbstractController
 
     public function __invoke(ServerRequest $request): void
     {
-        /** @var string|null $database */
+        
         $database = $request->getParsedBodyParam('db');
-        /** @var string|null $table */
+        
         $table = $request->getParsedBodyParam('table');
-        /** @var string|null $field */
+        
         $field = $request->getParsedBodyParam('field');
-        /** @var string $fieldKey */
+        
         $fieldKey = $request->getParsedBodyParam('fieldkey', '');
-        /** @var string $data */
+        
         $data = $request->getParsedBodyParam('data', '');
-        /** @var string|null $foreignShowAll */
+        
         $foreignShowAll = $request->getParsedBodyParam('foreign_showAll');
-        /** @var string $foreignFilter */
+        
         $foreignFilter = $request->getParsedBodyParam('foreign_filter', '');
 
         if (! isset($database, $table, $field)) {

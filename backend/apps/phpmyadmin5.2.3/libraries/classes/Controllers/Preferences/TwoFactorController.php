@@ -17,7 +17,7 @@ use function define;
 
 class TwoFactorController extends AbstractController
 {
-    /** @var Relation */
+    
     private $relation;
 
     public function __construct(ResponseRenderer $response, Template $template, Relation $relation)

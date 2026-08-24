@@ -168,7 +168,7 @@ abstract class Context
      */
     public const SQL_MODE_ANSI_QUOTES = 2;
 
-    /** Compatibility mode for Microsoft's SQL server. This is the equivalent of {@see SQL_MODE_ANSI_QUOTES}. */
+    
     public const SQL_MODE_COMPAT_MYSQL = 2;
 
     /**
@@ -448,7 +448,7 @@ abstract class Context
         }
 
         // If comment is closing C style (*/), warning, it could conflicts with wildcard and a real opening C style.
-        // It would looks like the following valid SQL statement: "SELECT */* comment */ FROM...".
+        // It would looks like the following valid SQL statement: "SELECT * FROM...".
         if (($len > 1) && ($str[0] === '*') && ($str[1] === '/')) {
             return Token::FLAG_COMMENT_C;
         }
@@ -634,16 +634,16 @@ abstract class Context
         $length = strlen($context);
         for ($i = $length; $i > 0;) {
             try {
-                /* Trying to load the new context */
+                
                 static::load($context);
 
                 return $context;
             } catch (LoaderException $e) {
-                /* Replace last two non zero digits by zeroes */
+                
                 do {
                     $i -= 2;
                     $part = substr($context, $i, 2);
-                    /* No more numeric parts to strip */
+                    
                     if (! is_numeric($part)) {
                         break 2;
                     }
@@ -653,7 +653,7 @@ abstract class Context
             }
         }
 
-        /* Fallback to loading at least matching engine */
+        
         if (str_starts_with($context, 'MariaDb')) {
             return static::loadClosest('MariaDb100300');
         }

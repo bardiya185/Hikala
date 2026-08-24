@@ -35,25 +35,25 @@ use function sprintf;
  */
 class SvgRelationSchema extends ExportRelationSchema
 {
-    /** @var TableStatsDia[]|TableStatsEps[]|TableStatsPdf[]|TableStatsSvg[] */
+    
     private $tables = [];
 
-    /** @var RelationStatsSvg[] Relations */
+    
     private $relations = [];
 
-    /** @var int|float */
+    
     private $xMax = 0;
 
-    /** @var int|float */
+    
     private $yMax = 0;
 
-    /** @var int|float */
+    
     private $xMin = 100000;
 
-    /** @var int|float */
+    
     private $yMin = 100000;
 
-    /** @var int */
+    
     private $tablewidth = 0;
 
     /**

@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class FavoriteTablesFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $favorite;
 
     public function __construct(DatabaseName $database, TableName $favorite)

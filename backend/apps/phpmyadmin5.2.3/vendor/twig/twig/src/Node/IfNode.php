@@ -53,7 +53,6 @@ class IfNode extends Node
                 ->raw(") {\n")
                 ->indent()
             ;
-            // The node might not exists if the content is empty
             if ($this->getNode('tests')->hasNode((string) ($i + 1))) {
                 $compiler->subcompile($this->getNode('tests')->getNode((string) ($i + 1)));
             }

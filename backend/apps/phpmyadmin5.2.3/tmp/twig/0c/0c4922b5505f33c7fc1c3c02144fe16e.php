@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* config/form_display/group_header.twig */
+
 class __TwigTemplate_897a353f2695d828ee3996ad07fba60f extends Template
 {
     private $source;
@@ -34,16 +34,13 @@ class __TwigTemplate_897a353f2695d828ee3996ad07fba60f extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<tr class=\"group-header group-header-";
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["group"] ?? null), "html", null, true);
         yield "\">
     <th colspan=\"";
-        // line 2
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["colspan"] ?? null), "html", null, true);
         yield "\">
         ";
-        // line 3
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["header_text"] ?? null), "html", null, true);
         yield "
     </th>

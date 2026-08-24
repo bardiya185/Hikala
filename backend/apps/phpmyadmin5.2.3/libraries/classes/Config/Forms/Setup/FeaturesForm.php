@@ -18,7 +18,7 @@ class FeaturesForm extends \PhpMyAdmin\Config\Forms\User\FeaturesForm
     {
         // phpcs:disable Squiz.Arrays.ArrayDeclaration.KeySpecified,Squiz.Arrays.ArrayDeclaration.NoKeySpecified
         $result = parent::getForms();
-        /* Remove only_db/hide_db, we have proper Server form in setup */
+        
         $result['Databases'] = array_diff(
             $result['Databases'],
             [
@@ -26,7 +26,7 @@ class FeaturesForm extends \PhpMyAdmin\Config\Forms\User\FeaturesForm
                 'Servers/1/hide_db',
             ]
         );
-        /* Following are not available to user */
+        
         $result['Import_export'] = [
             'UploadDir',
             'SaveDir',

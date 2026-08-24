@@ -46,7 +46,7 @@ abstract class LongToIPv4TransformationsPlugin extends TransformationsPlugin
         return htmlspecialchars(FormatConverter::longToIp($buffer));
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

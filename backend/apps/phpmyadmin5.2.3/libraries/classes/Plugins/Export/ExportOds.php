@@ -51,15 +51,8 @@ class ExportOds extends ExportPlugin
         $exportPluginProperties->setMimeType('application/vnd.oasis.opendocument.spreadsheet');
         $exportPluginProperties->setForceFile(true);
         $exportPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $exportPluginProperties
-        // this will be shown as "Format specific options"
         $exportSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-        // general options main group
         $generalOptions = new OptionsPropertyMainGroup('general_opts');
-        // create primary items and add them to the group
         $leaf = new TextPropertyItem(
             'null',
             __('Replace NULL with:')
@@ -72,10 +65,7 @@ class ExportOds extends ExportPlugin
         $generalOptions->addProperty($leaf);
         $leaf = new HiddenPropertyItem('structure_or_data');
         $generalOptions->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($generalOptions);
-
-        // set the options for the export plugin property item
         $exportPluginProperties->setOptions($exportSpecificOptions);
 
         return $exportPluginProperties;
@@ -206,15 +196,12 @@ class ExportOds extends ExportPlugin
         $db_alias = $db;
         $table_alias = $table;
         $this->initAlias($aliases, $db_alias, $table_alias);
-        // Gets the data from the database
         $result = $dbi->query($sqlQuery, DatabaseInterface::CONNECT_USER, DatabaseInterface::QUERY_UNBUFFERED);
         $fields_cnt = $result->numFields();
-        /** @var FieldMetadata[] $fieldsMeta */
+        
         $fieldsMeta = $dbi->getFieldsMeta($result);
 
         $GLOBALS['ods_buffer'] .= '<table:table table:name="' . htmlspecialchars($table_alias) . '">';
-
-        // If required, get fields name at the first line
         if (isset($GLOBALS[$what . '_columns'])) {
             $GLOBALS['ods_buffer'] .= '<table:table-row>';
             foreach ($fieldsMeta as $field) {
@@ -234,13 +221,10 @@ class ExportOds extends ExportPlugin
 
             $GLOBALS['ods_buffer'] .= '</table:table-row>';
         }
-
-        // Format the data
         while ($row = $result->fetchRow()) {
             $GLOBALS['ods_buffer'] .= '<table:table-row>';
             for ($j = 0; $j < $fields_cnt; $j++) {
                 if ($fieldsMeta[$j]->isMappedTypeGeometry) {
-                    // export GIS types as hex
                     $row[$j] = '0x' . bin2hex($row[$j]);
                 }
 
@@ -251,7 +235,6 @@ class ExportOds extends ExportPlugin
                         . '</text:p>'
                         . '</table:table-cell>';
                 } elseif ($fieldsMeta[$j]->isBinary && $fieldsMeta[$j]->isBlob) {
-                    // ignore BLOB
                     $GLOBALS['ods_buffer'] .= '<table:table-cell office:value-type="string">'
                         . '<text:p></text:p>'
                         . '</table:table-cell>';

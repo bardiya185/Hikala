@@ -40,7 +40,7 @@ function ProductSkeleton() {
           sm:p-4
         "
       >
-        {/* IMAGE */}
+        {}
 
         <div
           className="
@@ -53,7 +53,7 @@ function ProductSkeleton() {
           "
         />
 
-        {/* TITLE + RATING */}
+        {}
 
         <div
           className="
@@ -71,7 +71,7 @@ function ProductSkeleton() {
           <div className="h-5 w-1/4 rounded bg-neutral-200" />
         </div>
 
-        {/* PRICE */}
+        {}
 
         <div className="mt-4 flex items-center justify-between">
           <div className="h-4 w-1/3 rounded bg-neutral-200" />
@@ -79,7 +79,7 @@ function ProductSkeleton() {
           <div className="h-5 w-1/5 rounded-md bg-neutral-200" />
         </div>
 
-        {/* DESCRIPTION */}
+        {}
 
         <div className="mt-4 space-y-2">
           <div className="h-3 w-full rounded bg-neutral-200" />
@@ -111,20 +111,14 @@ function Products({
     searchParams.get("source") === "banner" ||
     Boolean(searchParams.get("bannerId"));
 
-  const clientBannerId =
-    bannerId || searchParams.get("bannerId");
+  const clientBannerId = bannerId || searchParams.get("bannerId");
 
   /* =========================================
      SORT
   ========================================= */
 
-  const handleSortChange = (
-    sort_by,
-    sort_order,
-  ) => {
-    const params = new URLSearchParams(
-      window.location.search,
-    );
+  const handleSortChange = (sort_by, sort_order) => {
+    const params = new URLSearchParams(window.location.search);
 
     if (sort_by && sort_order) {
       params.set("sort_by", sort_by);
@@ -134,9 +128,7 @@ function Products({
       params.delete("sort_order");
     }
 
-    router.push(
-      `${pathname}?${params.toString()}`,
-    );
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   /* =========================================
@@ -180,7 +172,7 @@ function Products({
           sm:px-0
         "
       >
-        {/* SORT TITLE */}
+        {}
 
         <div
           className="
@@ -193,17 +185,12 @@ function Products({
             sm:gap-2
           "
         >
-          <TfiAlignLeft
-            size={16}
-            className="sm:h-[18px] sm:w-[18px]"
-          />
+          <TfiAlignLeft size={16} className="sm:h-[18px] sm:w-[18px]" />
 
-          <span className="text-xs font-semibold sm:text-sm">
-            Sort:
-          </span>
+          <span className="text-xs font-semibold sm:text-sm">Sort:</span>
         </div>
 
-        {/* CHEAPEST */}
+        {}
 
         <button
           type="button"
@@ -220,23 +207,17 @@ function Products({
             sm:text-xs
 
             ${
-              current_sort === "base_price" &&
-              current_sortorder === "asc"
+              current_sort === "base_price" && current_sortorder === "asc"
                 ? "bg-red-50 text-red-500"
                 : "text-neutral-400 hover:text-neutral-600"
             }
           `}
-          onClick={() =>
-            handleSortChange(
-              "base_price",
-              "asc",
-            )
-          }
+          onClick={() => handleSortChange("base_price", "asc")}
         >
           The cheapest
         </button>
 
-        {/* MOST EXPENSIVE */}
+        {}
 
         <button
           type="button"
@@ -253,18 +234,12 @@ function Products({
             sm:text-xs
 
             ${
-              current_sort === "base_price" &&
-              current_sortorder === "desc"
+              current_sort === "base_price" && current_sortorder === "desc"
                 ? "bg-red-50 text-red-500"
                 : "text-neutral-400 hover:text-neutral-600"
             }
           `}
-          onClick={() =>
-            handleSortChange(
-              "base_price",
-              "desc",
-            )
-          }
+          onClick={() => handleSortChange("base_price", "desc")}
         >
           The most expensive
         </button>
@@ -298,49 +273,34 @@ function Products({
         =================================== */}
 
         {isLoading
-          ? Array.from({ length: 8 }).map(
-              (_, index) => (
-                <ProductSkeleton
-                  key={index}
-                />
-              ),
-            )
+          ? Array.from({ length: 8 }).map((_, index) => (
+              <ProductSkeleton key={index} />
+            ))
           : data.map((product, index) => {
               /* ==============================
                  VARIANT
               ============================== */
 
               const variant =
-                product.variants?.find(
-                  (v) =>
-                    v.is_default &&
-                    v.is_active,
-                ) ??
-                product.variants?.find(
-                  (v) => v.is_active,
-                ) ??
+                product.variants?.find((v) => v.is_default && v.is_active) ??
+                product.variants?.find((v) => v.is_active) ??
                 product.variants?.[0];
 
               /* ==============================
                  PRICE
               ============================== */
 
-              const basePrice =
-                variant?.base_price ?? 0;
+              const basePrice = variant?.base_price ?? 0;
 
-              const finalPrice =
-                variant?.final_price ?? 0;
+              const finalPrice = variant?.final_price ?? 0;
 
-              const discountPercent =
-                variant?.discount_percent ?? 0;
+              const discountPercent = variant?.discount_percent ?? 0;
 
               /* ==============================
                  DISCOUNT
               ============================== */
 
-              const hasDiscount =
-                finalPrice < basePrice &&
-                basePrice > 0;
+              const hasDiscount = finalPrice < basePrice && basePrice > 0;
 
               return (
                 <motion.div
@@ -358,8 +318,7 @@ function Products({
                   transition={{
                     ease: "easeInOut",
                     duration: 0.5,
-                    delay:
-                      0.1 * index,
+                    delay: 0.1 * index,
                   }}
                   className="
                     group
@@ -398,11 +357,8 @@ function Products({
                     ========================== */}
 
                     <div>
-                      <Link
-                        href={`/product/${product?.id}`}
-                        className="block"
-                      >
-                        {/* PRODUCT IMAGE */}
+                      <Link href={`/product/${product?.id}`} className="block">
+                        {}
 
                         <div
                           className="
@@ -423,13 +379,8 @@ function Products({
                             src="/icons/images.jfif"
                             width={200}
                             height={250}
-                            alt={
-                              product?.title ||
-                              "product"
-                            }
-                            priority={
-                              index < 4
-                            }
+                            alt={product?.title || "product"}
+                            priority={index < 4}
                             className="
                               h-full
                               w-full
@@ -441,7 +392,7 @@ function Products({
                           />
                         </div>
 
-                        {/* TITLE + RATING */}
+                        {}
 
                         <div
                           className="
@@ -457,7 +408,7 @@ function Products({
                             lg:mt-5
                           "
                         >
-                          {/* TITLE */}
+                          {}
 
                           <h3
                             className="
@@ -479,7 +430,7 @@ function Products({
                             {product?.title}
                           </h3>
 
-                          {/* RATING */}
+                          {}
 
                           <div
                             className="
@@ -496,20 +447,14 @@ function Products({
                           >
                             <ReactStars
                               count={1}
-                              value={
-                                product?.rating ||
-                                0
-                              }
+                              value={product?.rating || 0}
                               size={15}
                               color2="#fbbf24"
                               edit={false}
                               half={true}
                             />
 
-                            <span>
-                              {product?.rating ||
-                                0}
-                            </span>
+                            <span>{product?.rating || 0}</span>
                           </div>
                         </div>
                       </Link>
@@ -520,7 +465,7 @@ function Products({
                     ========================== */}
 
                     <div>
-                      {/* PRICE */}
+                      {}
 
                       <div
                         dir="ltr"
@@ -535,7 +480,7 @@ function Products({
                           sm:mt-4
                         "
                       >
-                        {/* PRICE GROUP */}
+                        {}
 
                         <div
                           className="
@@ -557,10 +502,7 @@ function Products({
                               sm:text-base
                             "
                           >
-                            $
-                            {formatPrice(
-                              finalPrice,
-                            )}
+                            ${formatPrice(finalPrice)}
                           </p>
 
                           {hasDiscount && (
@@ -573,21 +515,16 @@ function Products({
                                 sm:text-xs
                               "
                             >
-                              $
-                              {formatPrice(
-                                basePrice,
-                              )}
+                              ${formatPrice(basePrice)}
                             </span>
                           )}
                         </div>
 
-                        {/* DISCOUNT */}
+                        {}
 
-                        {hasDiscount &&
-                          discountPercent >
-                            0 && (
-                            <div
-                              className="
+                        {hasDiscount && discountPercent > 0 && (
+                          <div
+                            className="
                                 flex
                                 shrink-0
                                 items-center
@@ -602,9 +539,9 @@ function Products({
                                 sm:px-2
                                 sm:text-[10px]
                               "
-                            >
-                              <svg
-                                className="
+                          >
+                            <svg
+                              className="
                                   mr-0.5
                                   h-2.5
                                   w-2.5
@@ -613,22 +550,17 @@ function Products({
                                   sm:h-3
                                   sm:w-3
                                 "
-                                viewBox="0 0 24 24"
-                              >
-                                <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
-                              </svg>
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
+                            </svg>
 
-                              <span>
-                                {
-                                  discountPercent
-                                }
-                                % Off
-                              </span>
-                            </div>
-                          )}
+                            <span>{discountPercent}% Off</span>
+                          </div>
+                        )}
                       </div>
 
-                      {/* DESCRIPTION */}
+                      {}
 
                       <p
                         className="
@@ -647,9 +579,7 @@ function Products({
                           sm:leading-5
                         "
                       >
-                        {
-                          product?.short_description
-                        }
+                        {product?.short_description}
                       </p>
                     </div>
                   </div>

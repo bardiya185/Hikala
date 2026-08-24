@@ -3,7 +3,6 @@
 }
 
 h2 {
-  // Hiding icons in the page titles
   img {
     display: none;
   }
@@ -66,7 +65,6 @@ form {
 
 input,
 select {
-  // Fix outline in Chrome
   outline: none;
 }
 
@@ -225,13 +223,9 @@ textarea {
     font-size: 1em;
   }
 }
-
-// buttons in some browsers (eg. Konqueror) are block elements, this breaks design
 button {
   display: inline;
 }
-
-// 3.4
 .datatable {
   table-layout: fixed;
 }
@@ -264,7 +258,7 @@ select {
   }
 }
 
-/* classes */
+
 .clearfloat {
   clear: both;
 }
@@ -287,7 +281,6 @@ div.tools {
 
   margin-top: 0;
   margin-bottom: 0.5em;
-  // avoid a thick line since this should be used under another fieldset
   border-top: 0;
   text-align: right;
   float: none;
@@ -298,7 +291,6 @@ div.tools {
 .pma-fieldset.tblFooters {
   margin-top: 0;
   margin-bottom: 0.5em;
-  // avoid a thick line since this should be used under another fieldset
   border-top: 0;
   text-align: right;
   float: none;
@@ -317,11 +309,8 @@ div.null_div {
   .formelement {
     float: left;
     margin-right: 0.5em;
-    // IE
     white-space: nowrap;
   }
-
-  // revert for Gecko
   div[class=formelement] {
     white-space: normal;
   }
@@ -353,13 +342,12 @@ tr:last-child td.condition {
   border-width: 0 1px 1px 1px;
 }
 
-/* rtl:begin:remove */
+
 .before-condition {
-  // for first th which must have right border set (ltr only)
   border-right: 1px solid $browse-marker-color;
 }
 
-/* rtl:end:remove */
+
 
 /**
  * cells with the value NULL
@@ -407,8 +395,6 @@ img.lightbulb {
   font-size: 80%;
   border: 1px dashed #000;
 }
-
-// Doc links in SQL
 .cm-sql-doc {
   text-decoration: none;
   border-bottom: 1px dotted #000;
@@ -423,8 +409,6 @@ img.lightbulb {
 .with-selected {
   margin-left: 2em;
 }
-
-// message boxes: error, confirmation
 #pma_errors,
 #pma_demo,
 #pma_footer {
@@ -443,8 +427,6 @@ img.lightbulb {
   color: #000;
   background: pink;
 }
-
-// end messageboxes
 
 .new_central_col {
   width: 100%;
@@ -498,8 +480,6 @@ div.tools a:hover,
 .tblFooters a:hover {
   color: #f00;
 }
-
-// disabled text
 .disabled {
   color: #666;
 
@@ -605,11 +585,8 @@ label.col-3.d-flex.align-items-center {
 }
 
 li.last.database {
-  // Avoid having the last item of the tree hidden behind the scroll bar
   margin-bottom: 15px !important;
 }
-
-// zoom search
 div#dataDisplay {
   input,
   select {
@@ -629,8 +606,6 @@ img.calendar {
 form.clock {
   text-align: center;
 }
-
-// table stats
 div#tablestatistics table {
   float: left;
   margin-bottom: 0.5em;
@@ -638,10 +613,6 @@ div#tablestatistics table {
   margin-top: 0.5em;
   min-width: 16em;
 }
-
-// end table stats
-
-// Heading
 #topmenucontainer {
   padding-right: 1em;
   width: 100%;
@@ -684,8 +655,6 @@ div#tablestatistics table {
   border: 0.1em solid #000;
   padding: 0.5em;
 }
-
-// user privileges
 #fieldset_add_user_login {
   div.item {
     display: flex;
@@ -757,9 +726,6 @@ div#tablestatistics table {
 #fieldset_user_global_rights > legend input {
   margin-left: 2em;
 }
-// end user privileges
-
-// serverstatus
 
 .linkElem:hover {
   text-decoration: underline;
@@ -886,10 +852,6 @@ div {
   padding-left: 7px;
 }
 
-// end serverstatus
-
-// profiling
-
 div#profilingchart {
   width: 850px;
   height: 370px;
@@ -901,20 +863,12 @@ div#profilingchart {
   left: 11px;
   bottom: 24px;
 }
-
-// end profiling
-
-// table charting
 #resizer {
   border: 1px solid silver;
 }
-
-// make room for the resize handle
 #inner-resizer {
   padding: 10px;
 }
-
-// querybox
 
 #togglequerybox {
   margin: 0 10px;
@@ -942,10 +896,6 @@ textarea {
     display: block;
   }
 }
-
-// end querybox
-
-// main page
 
 #mysqlmaininformation,
 #pmamaininformation {
@@ -1060,8 +1010,6 @@ div.sqlvalidate {
 textarea#partitiondefinition {
   height: 3em;
 }
-
-// for elements that should be revealed only via js
 .hide {
   display: none;
 }
@@ -1147,17 +1095,14 @@ select.invalid_value,
   *  Ajax notification styling
   */
 .ajax_notification {
-  // The notification needs to be shown on the top of the page
   top: 0;
   position: fixed;
   margin-top: 200px;
   margin-right: auto;
   margin-bottom: 0;
   margin-left: auto;
-  // Keep a little space on the sides of the text
   padding: 5px;
   width: 350px;
-  // If this is not kept at a high z-index, the jQueryUI modal dialogs (z-index: 1000) might hide this
   z-index: 1100;
   text-align: center;
   display: inline;
@@ -1173,7 +1118,7 @@ select.invalid_value,
 }
 
 #loading_parent {
-  /** Need this parent to properly center the notification division */
+  
   position: relative;
   width: 100%;
 }
@@ -1279,8 +1224,6 @@ table#index_columns {
     border-radius: 2px;
   }
 }
-
-// config forms
 .config-form {
   .card {
     margin-top: 0;
@@ -1300,8 +1243,6 @@ table#index_columns {
       background: #fff;
       border-top: 0;
     }
-
-    // form error list
     .errors {
       margin: 0 -2px 1em;
       padding: 0.5em 1.5em;
@@ -1310,8 +1251,6 @@ table#index_columns {
       font-family: $font-family-base;
       font-size: small;
     }
-
-    // field error list
     .inline_errors {
       margin: 0.3em 0.3em 0.3em;
       margin-left: 0;
@@ -1375,8 +1314,6 @@ table#index_columns {
       background: #ffc;
     }
   }
-
-  // customized field
   .custom {
     background: #ffc;
   }
@@ -1422,8 +1359,6 @@ table#index_columns {
   .field-comment-warning {
     color: #a00;
   }
-
-  // error list
   dd {
     margin-left: 0.5em;
 
@@ -1937,8 +1872,6 @@ input#auto_increment_opt {
     margin-right: 5px;
   }
 }
-
-// css for timepicker
 .ui-timepicker-div {
   .ui-widget-header {
     margin-bottom: 8px;
@@ -1996,8 +1929,6 @@ body #ui-datepicker-div {
 .ui-draggable {
   z-index: 801;
 }
-
-// over-riding jqplot-yaxis class
 .jqplot-yaxis {
   left: 0 !important;
   min-width: 25px;
@@ -2047,8 +1978,6 @@ table.show_create {
 .small_font {
   font-size: smaller;
 }
-
-// Console styles
 #pma_console_container {
   width: 100%;
   position: fixed;
@@ -2498,8 +2427,6 @@ textarea {
     margin: 0;
   }
 }
-
-// Code mirror console style
 .cm-s-pma {
   .CodeMirror-code {
     font-family: Monaco, Consolas, monospace;
@@ -2527,8 +2454,6 @@ textarea {
     cursor: text;
   }
 }
-
-// PMA drop-improt style
 
 .pma_drop_handler {
   display: none;
@@ -2692,10 +2617,6 @@ meter {
     background: linear-gradient(white 3%, #ffd700 5%, transparent 10%, #ffd700);
   }
 }
-
-// end of styles of sortable tables
-
-// styles for jQuery-ui to support rtl languages
 body .ui-dialog {
   .ui-dialog-titlebar-close {
     right: 0.3em;
@@ -2710,9 +2631,8 @@ body .ui-dialog {
     float: right;
   }
 }
-// end of styles for jQuery-ui to support rtl languages
 
-/* templates/database/multi_table_query */
+
 
 .multi_table_query_form {
   .query-form__tr--hide {
@@ -2736,9 +2656,6 @@ body .ui-dialog {
     float: left;
   }
 }
-
-// templates/database/designer
-// side menu
 #name-panel {
   overflow: hidden;
 }
@@ -2834,14 +2751,10 @@ body .ui-dialog {
 .ui_tpicker_time_input {
   width: 100%;
 }
-
-// Enable scrollable blocks of code
 .pre-scrollable {
   max-height: 340px;
   overflow-y: scroll;
 }
-
-// Extra large devices (large desktops, 1200px and up)
 @include media-breakpoint-up(xl) {
   div.tools {
     text-align: left;

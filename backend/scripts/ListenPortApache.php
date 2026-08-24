@@ -22,7 +22,6 @@ $portToTreat = intval(trim($_SERVER['argv'][2]));
 $goodPort = true;
 
 if($action == 'add') {
-	//Check validity
 	if($portToTreat <= 80 || $portToTreat == 8080 || ($portToTreat > 81 && $portToTreat < 1025) || $portToTreat > 65535 || in_array($portToTreat,$c_listenPort))
 		$goodPort = false;
 
@@ -45,9 +44,7 @@ if($action == 'add') {
 }
 elseif($action == 'delete') {
 	$goodPort = true;
-	//httpd.conf file
 	$httpdFileContents = file_get_contents($c_apacheConfFile);
-	//Check if variable to delete is used in httpd-vhosts.conf
 	$httpdVhostFileContents = file_get_contents($c_apacheVhostConfFile);
 	if(strpos($httpdVhostFileContents,'MYPORT'.$portToTreat) !== false) {
 		$message .= "The port number you give: ".$portToTreat."\n\n";
@@ -73,7 +70,6 @@ elseif($action == 'delete') {
 		$httpdFileContents = clean_file_contents($httpdFileContents,array(2,1));
 		write_file($c_apacheConfFile,$httpdFileContents);
 	}
-	//httpd-vhosts.conf file
 	$count = 0;
 	$search = '~\$\{MYPORT'.$portToTreat.'\}~mi';
 	$replace = $c_UsedPort;

@@ -77,8 +77,8 @@ class ParagonIE_Sodium_Core32_Curve25519_Fe implements ArrayAccess
         }
         $array = array_values($array);
         $set = array();
-        /** @var int $i */
-        /** @var int $v */
+        
+        
         foreach ($array as $i => $v) {
             $set[$i] = ParagonIE_Sodium_Core32_Int32::fromInt($v);
         }
@@ -160,7 +160,7 @@ class ParagonIE_Sodium_Core32_Curve25519_Fe implements ArrayAccess
         if (!isset($this->container[$offset])) {
             $this->container[(int) $offset] = new ParagonIE_Sodium_Core32_Int32();
         }
-        /** @var ParagonIE_Sodium_Core32_Int32 $get */
+        
         $get = $this->container[$offset];
         return $get;
     }

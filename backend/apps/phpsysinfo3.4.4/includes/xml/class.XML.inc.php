@@ -129,8 +129,6 @@ class XML
         if ($this->_sysinfo->getEncoding() !== null) {
             $vitals->addAttribute('CodePage', $this->_sysinfo->getEncoding());
         }
-
-        //processes
         if (($procss = $this->_sys->getProcesses()) !== null) {
             if (isset($procss['*']) && (($procall = $procss['*']) > 0)) {
                 $vitals->addAttribute('Processes', $procall);
@@ -888,17 +886,13 @@ class XML
         if (($this->_plugin == '') || $this->_complete_request) {
             if ($this->_sys === null) {
                 if (PSI_DEBUG) {
-                    // unstable version check
                     if (!is_numeric(substr(PSI_VERSION, -1))) {
                         $this->_errors->addWarning("This is an unstable version of phpSysInfo, some things may not work correctly");
                     }
-
-                    // Safe mode check
                     $safe_mode = @ini_get("safe_mode") ? true : false;
                     if ($safe_mode) {
                         $this->_errors->addError("WARN", "PhpSysInfo requires to set off 'safe_mode' in 'php.ini'");
                     }
-                    // Include path check
                     $include_path = @ini_get("include_path");
                     if ($include_path && ($include_path!="")) {
                         $include_path = preg_replace("/(:)|(;)/", "\n", $include_path);
@@ -909,7 +903,6 @@ class XML
                     if ($include_path != ".") {
                         $this->_errors->addError("WARN", "PhpSysInfo requires '.' inside the 'include_path' in php.ini");
                     }
-                    // popen mode check
                     if (defined("PSI_MODE_POPEN") && PSI_MODE_POPEN) {
                         $this->_errors->addError("WARN", "Installed version of PHP does not support proc_open() function, popen() is used");
                     }

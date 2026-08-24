@@ -143,7 +143,7 @@ final class FieldMetadata
      */
     public $isSet;
 
-    /** @var int|null */
+    
     private $mappedType;
 
 

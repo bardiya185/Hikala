@@ -27,13 +27,11 @@ require_once PSI_APP_ROOT.'/includes/autoloader.inc.php';
 if ((isset($_GET['json']) || isset($_GET['jsonp'])) && !extension_loaded("json")) {
     echo '<Error Message="The json extension to php required!" Function="ERROR"/>';
 } else {
-    // check what xml part should be generated
     if (isset($_GET['plugin'])) {
         $output = new WebpageXML($_GET['plugin']);
     } else {
         $output = new WebpageXML();
     }
-    // generate output in proper type
     if (isset($_GET['json']) || isset($_GET['jsonp'])) {
         header('Cache-Control: no-cache, must-revalidate');
         $json = $output->getJsonString();

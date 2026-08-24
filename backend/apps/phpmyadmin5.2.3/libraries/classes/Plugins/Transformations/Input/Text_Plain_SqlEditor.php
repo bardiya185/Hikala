@@ -44,7 +44,7 @@ class Text_Plain_SqlEditor extends CodeMirrorEditorTransformationPlugin
         return $scripts;
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

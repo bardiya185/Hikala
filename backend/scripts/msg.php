@@ -88,11 +88,6 @@ elseif(is_string($msgId)) {
 			}
 			if(stripos($output, "RUNNING") !== false) {
 				$message['stateservices'] .= " is started\n";
-				// Checks if the service matches the Apache, MySQL or MariaDB version used.
-				// Command is: sc qc service | findstr "BINARY_PATH_NAME"
-				// For Apache :        BINARY_PATH_NAME   : "J:\wamp\bin\apache\apache2.4.39\bin\httpd.exe"
-				// For MySQL  :        BINARY_PATH_NAME   : J:\wamp\bin\mysql\mysql5.7.27\bin\mysqld.exe
-				// For MariaDB:        BINARY_PATH_NAME   : J:\wamp\bin\mariadb\mariadb10.4.6\bin\mysqld.exe
 				$command = 'CMD /D /C sc qc '.$value.' | FINDSTR "BINARY_PATH_NAME START_TYPE SERVICE_START_NAME"';
 				$output = shell_exec($command);
 				if(preg_match("/[ \t]+BINARY_PATH_NAME[ \t]+:[ \t]+(.+\.exe).*$/m", $output, $matches) > 0) {
@@ -104,7 +99,6 @@ elseif(is_string($msgId)) {
 						$service_PATH = false;
 					}
 				}
-				//Check START_TYPE
 				if(preg_match("/[ \t]+START_TYPE[ \t]+:[ \t0-9]+([A-Z_]+).*$/m", $output, $matches) > 0) {
 					$service_type = $matches[1];
 					$message['stateservices'] .= ' Start type : '.$service_type."\n";
@@ -114,10 +108,7 @@ elseif(is_string($msgId)) {
 						$message['typestart'] .= 'DEMAND_START'."\n";
 						$service_START = false;
 					}
-					//$message['stateservices'] .= 'Start type is: '.$service_type;
 				}
-				// Checks service session : LocalSystem by default
-				//Command is: sc qc service | findstr "SERVICE_START_NAME" (done before, see upper)
 				if(preg_match("/[ \t]+SERVICE_START_NAME[ \t]+:[ \t]+(.+)$/m", $output, $matches) > 0) {
 					$message['stateservices'] .= " Service Session : ".$matches[1]."\n";
 				}
@@ -136,7 +127,6 @@ elseif(is_string($msgId)) {
 					$output = shell_exec($command);
 					$message['stateservices'] .= " Help message for error code ".$matches[1]." is:".str_replace(array("\r","\n"),"",$output)."\n";
 				}
-				//Specific check for STOPPED Apache Service in Event Viewer
 				if($value == $c_apacheService) {
 					$command = "CMD /D /C wevtutil qe Application /c:2 /rd:true /f:text /q:\"*[System[Provider[@Name='Apache Service'] and (Level=2)]]\"";
 					$output = shell_exec($command);
@@ -144,7 +134,6 @@ elseif(is_string($msgId)) {
 						error_log("Result of command ".$command." is null");
 					}
 					else {
-						//Check if there is 'Apache Service' in the result
 						if(stripos($output,"Apache Service") !== false) {
 							if(preg_match_all("~>>>.*~",$output,$matches) > 0) {
 								foreach($matches[0] as $errorVal) $message['stateservices'] .= $errorVal."\n";
@@ -202,7 +191,6 @@ elseif(is_string($msgId)) {
 	}
 	elseif($msgId == "dnsorder") {
 	Command_Windows('Check DNS search order',40,2,0,'Check DNS search order');
-	//Check values of DNS priorities
 	$message['dnscheckorder'] = ($doReport ? "--------------------------------------------------\n" : '');
 	$message['dnscheckorder'] .= "*** Checking the DNS search order ***\n";
 	$command = 'CMD /D /C reg query HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\ServiceProvider';
@@ -270,12 +258,9 @@ elseif(is_string($msgId)) {
 		$phpVersionList = listDir($c_phpVersionDir,'checkPhpConf','php');
 		$mysqlVersionList = listDir($c_mysqlVersionDir,'checkMysqlConf','mysql');
 		$mariadbVersionList = listDir($c_mariadbVersionDir,'checkMariaDBConf','mariadb');
-
-		// Apache versions
 		foreach($apacheVersionList as $oneApache) {
     	$oneApacheVersion = str_ireplace('apache','',$oneApache);
 			echo "Apache ".$oneApacheVersion." to check\n";
-    	//First three characters i.e 2.4
     	$apacheVersion[] = substr($oneApacheVersion,0,3);
     	$apacheVersionTot[] = $oneApacheVersion;
 			unset($result);
@@ -305,8 +290,6 @@ elseif(is_string($msgId)) {
 			$apacheCompiler[$oneApacheVersion] = $output_1."\n\t".$output_2;
 			$nb_v++;
     }
-
-		// PHP versions
 		$NTSversion = $DIRversion = false;
 		foreach($phpVersionList as $onePhp) {
 			$onePhpVersion = str_ireplace('php','',$onePhp);
@@ -357,7 +340,6 @@ elseif(is_string($msgId)) {
 				}
 			}
 			$phpCompiler[$onePhpVersion] = $output_1." - ".$output_2;
-			//Search compatibility with Apache
 			unset($phpConf);
 		  include $c_phpVersionDir.'/php'.$onePhpVersion.'/'.$wampBinConfFiles;
 			foreach($apacheVersion as $value) {
@@ -373,8 +355,6 @@ elseif(is_string($msgId)) {
 			}
 			$nb_v++;
 		}
-
-		// MySQL versions
 		$mysqlVersion = array();
 		if($wampConf['SupportMySQL'] == 'on') {
 			foreach($mysqlVersionList as $oneMysql) {
@@ -393,7 +373,6 @@ elseif(is_string($msgId)) {
 				$nb_v++;
 			}
 		}
-		// MariaDB versions
 		$mariaVersion = array();
 		if($wampConf['SupportMariaDB'] == 'on') {
 			foreach($mariadbVersionList as $oneMaria) {
@@ -435,7 +414,6 @@ elseif(is_string($msgId)) {
     		$message['compilerversions'] .= "\t".color('red')."is *** NOT RIGHT VERSION ***\n\t   *** Folder=".$key." - php -i =".$phpVer[$key].color('black')."\n";
     		$DIRversion = true;
     	}
-    	//error_log("key=".$key);
     	$message['compilerversions'] .= "\n";
     }
 		$message['compilerversions'] .= "\n";
@@ -462,15 +440,12 @@ elseif(is_string($msgId)) {
     	foreach($v64 as $value)
     		$message['compilerversions'] .= "\t".$value."\n";
     }
-    //Are all PHP versions TS ?
     if($NTSversion) {
     	$message['compilerversions'] .= "\n\t\t".color('red')."WARNING - WARNING - WARNING\nIt is IMPERATIVE that all PHP versions are the SAME TYPE 'Thread Safe'\nThere is at least one PHP version Non Thread Safe (NTS)".color('black')."\n";
     }
-    //Are all PHP folder == PHP version ?
     if($DIRversion) {
     	$message['compilerversions'] .= "\n\t\t".color('red')."WARNING - WARNING - WARNING\nOne or more PHP folder name is not equal PHP version".color('black')."\n";
     }
-  	//What is the php.ini file loaded?
   	$message['inifiles'] = '';
 		ob_start();
 		phpinfo(1);
@@ -540,7 +515,6 @@ elseif(is_string($msgId)) {
 							}
 						}
 						$virtualNames = array();
-						//Check on port other than 80
 						$nb_vhost = preg_match_all("~^.*:([0-9]{2,5})[ \t]*(.*)[ \t]+\(.*\)$~m",$output,$matchesPort);
 						if($nb_vhost > 0) {
 							$virtual_host = true;
@@ -637,9 +611,7 @@ elseif(is_string($msgId)) {
 	}
 	elseif($msgId == "apachedefine") {
 		Command_Windows("Show Apache Define",40,30,0,'Show Apache variables');
-		//Retrieve Apache variables from file wamp(64)\bin\apache\apache2.4.xx\wampdefineapache.conf
 		$ApacheDefineMsg = retrieve_apache_define($c_apacheDefineConf);
-		//Retrieve Apache variables from Apache itself (Define)
 		$ApacheDefineVerifMsg = retrieve_apache_define($c_apacheDefineConf,true);
 		$message['apachedefine'] = ($doReport ? "--------------------------------------------------\n" : '');
 		$message['apachedefine'] .= "         Apache variables (Define)\n\n";
@@ -760,7 +732,6 @@ elseif(is_string($msgId)) {
 				}
 			}
 			if($automaticAll) {
-				// Clean tmp dir
 				$fileTmp = glob($c_installDir.'/tmp/*');
 				foreach($fileTmp as $file){
  					if(is_file($file)) {
@@ -777,13 +748,10 @@ elseif(is_string($msgId)) {
 		Command_Windows('Check unused PHP xDebug dll\'s',40,-1,0,'Check unused PHP xDebug dll\'s');
 		$Nbfiles = 0;
 		$message = "\nCheck unused PHP xDebug dll's\n";
-		// Delete unused xdebug dll's following successive updates of xDebug
-		// Get all php versions
 		$phpVersionList = listDir($c_phpVersionDir,'checkPhpConf','php');
 		foreach($phpVersionList as $phpVersion) {
 			if(($files = glob($c_phpVersionDir.'/'.$phpVersion.'/zend_ext/php_xdebug-*.dll')) !== false) {
 				if(count($files) > 1) {
-					// Get php_xdebug...dll used by php version
 					$zend_ext_PFA_ini = $zend_ext_ini = '';
 					$phpIniContents = file_get_contents($c_phpVersionDir.'/'.$phpVersion.'/phpForApache.ini');
 					if(preg_match('~^;?zend_extension=\"(.*php_xdebug.*)\"\r?$~m',$phpIniContents,$matches) === 1) {
@@ -794,10 +762,8 @@ elseif(is_string($msgId)) {
 						$zend_ext_ini = $matches[1];
 					}
 					unset($phpIniContents);
-					// Get files to delete
 					foreach($files as $value) {
 						if(($value != $zend_ext_PFA_ini) && ($value != $zend_ext_ini)) {
-							// Delete file
 							if(unlink($value) !== false) {
 								$message .= $value." deleted\n";
 								$Nbfiles++;
@@ -818,7 +784,6 @@ elseif(is_string($msgId)) {
 	if(!empty($complete_result)) {
 		$complete_result .= "\n--- Do you want to copy the results into Clipboard?\n--- Press the Y key to confirm - Press ENTER to continue...";
 		$linesSup = 0;
-		//if($msg_index == 'compilerversions') $linesSup = 3;
 		if(!isset($message_title)) $message_title = 'Wampserver';
 		Command_Windows($complete_result,-1,-1,$linesSup,$message_title);
     $confirm = trim(fgetc(STDIN));
@@ -829,7 +794,6 @@ elseif(is_string($msgId)) {
 		exit(0);
  	}
 }
-//Command_Windows("\nPress ENTER to continue",30,3,0,' ');
 trim(fgets(STDIN));
 
 ?>

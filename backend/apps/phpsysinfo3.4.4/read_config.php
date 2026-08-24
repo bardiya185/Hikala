@@ -65,8 +65,6 @@ if (!defined('PSI_CONFIG_FILE')) {
             echo "Client IP wrong address (".$ip."). Client not allowed.";
             die();
         }
-
-        // code based on https://gist.github.com/tott/7684443
         $was = false;
         foreach ($allowed as $allow) {
             if (strpos($allow, '/') === false) {
@@ -94,16 +92,16 @@ if (!defined('PSI_CONFIG_FILE')) {
         die();
     }
 
-    /* default error handler */
+    
     if (function_exists('errorHandlerPsi')) {
         restore_error_handler();
     }
 
-    /* fatal errors only */
+    
     $old_err_rep = error_reporting();
     error_reporting(E_ERROR);
 
-    /* get git revision */
+    
     if (file_exists(PSI_APP_ROOT.'/.git/HEAD')) {
         $contents = @file_get_contents(PSI_APP_ROOT.'/.git/HEAD');
         if ($contents && preg_match("/^ref:\s+(.*)\/([^\/\s]*)/m", $contents, $matches)) {
@@ -115,7 +113,7 @@ if (!defined('PSI_CONFIG_FILE')) {
             }
         }
     }
-    /* get svn revision */
+    
     if (!defined('PSI_VERSION_STRING') && file_exists(PSI_APP_ROOT.'/.svn/entries')) {
         $contents = @file_get_contents(PSI_APP_ROOT.'/.svn/entries');
         if ($contents && preg_match("/dir\n(.+)/", $contents, $matches)) {
@@ -140,7 +138,7 @@ if (!defined('PSI_CONFIG_FILE')) {
     }
 
     if (!defined('PSI_OS')) { //if not overloaded in phpsysinfo.ini
-        /* get Linux code page */
+        
         if ((PHP_OS == 'Linux') || (PHP_OS == 'GNU')) {
             if (file_exists($fname = PSI_ROOT_FILESYSTEM.'/etc/sysconfig/i18n')
                || file_exists($fname = PSI_ROOT_FILESYSTEM.'/etc/default/locale')
@@ -197,8 +195,6 @@ if (!defined('PSI_CONFIG_FILE')) {
                                     fclose($pipes[0]);
                                     fclose($pipes[1]);
                                     fclose($pipes[2]);
-                                    // It is important that you close any pipes before calling
-                                    // proc_close in order to avoid a deadlock
                                     proc_close($process);
                                 }
                             }
@@ -286,28 +282,28 @@ if (!defined('PSI_CONFIG_FILE')) {
         }
     }
 
-    /* maximum time in seconds a script is allowed to run before it is terminated by the parser */
+    
     if (defined('PSI_MAX_TIMEOUT')) {
         ini_set('max_execution_time', max(intval(PSI_MAX_TIMEOUT), 0));
     } else {
         ini_set('max_execution_time', 30);
     }
 
-    /* executeProgram() timeout value in seconds */
+    
     if (defined('PSI_EXEC_TIMEOUT')) {
         define('PSI_EXEC_TIMEOUT_INT', max(intval(PSI_EXEC_TIMEOUT), 1));
     } else {
         define('PSI_EXEC_TIMEOUT_INT', 30);
     }
 
-    /* snmprealwalk() and executeProgram("snmpwalk") number of seconds until the first timeout */
+    
     if (defined('PSI_SNMP_TIMEOUT')) {
         define('PSI_SNMP_TIMEOUT_INT', max(intval(PSI_SNMP_TIMEOUT), 1));
     } else {
         define('PSI_SNMP_TIMEOUT_INT', 3);
     }
 
-    /* snmprealwalk() and executeProgram("snmpwalk") number of times to retry if timeouts occur */
+    
     if (defined('PSI_SNMP_RETRY')) {
         define('PSI_SNMP_RETRY_INT', max(intval(PSI_SNMP_RETRY), 0));
     } else {
@@ -340,10 +336,10 @@ if (!defined('PSI_CONFIG_FILE')) {
         }
     }
 
-    /* restore error level */
+    
     error_reporting($old_err_rep);
 
-    /* restore error handler */
+    
     if (function_exists('errorHandlerPsi')) {
         set_error_handler('errorHandlerPsi');
     }

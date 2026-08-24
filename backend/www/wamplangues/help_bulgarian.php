@@ -1,6 +1,4 @@
 <?php
-//3.2.8 - New file
-//3.3.0 - Modification of lines FcgidInitialEnv
 
 $langues['fcgi_mode_link'] = 'Помощ за режим FCGI';
 $langues['fcgi_not_loaded'] = 'PHP не може да се изпозлва в режим FCGI, защото модулът на Apache fcgid_module не е зареден.';

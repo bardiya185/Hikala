@@ -44,18 +44,11 @@ class ExportHtmlword extends ExportPlugin
         $exportPluginProperties->setMimeType('application/vnd.ms-word');
         $exportPluginProperties->setForceFile(true);
         $exportPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $exportPluginProperties
-        // this will be shown as "Format specific options"
         $exportSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-        // what to dump (structure/data/both)
         $dumpWhat = new OptionsPropertyMainGroup(
             'dump_what',
             __('Dump table')
         );
-        // create primary items and add them to the group
         $leaf = new RadioPropertyItem('structure_or_data');
         $leaf->setValues(
             [
@@ -65,16 +58,12 @@ class ExportHtmlword extends ExportPlugin
             ]
         );
         $dumpWhat->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($dumpWhat);
-
-        // data options main group
         $dataOptions = new OptionsPropertyMainGroup(
             'dump_what',
             __('Data dump options')
         );
         $dataOptions->setForce('structure');
-        // create primary items and add them to the group
         $leaf = new TextPropertyItem(
             'null',
             __('Replace NULL with:')
@@ -85,10 +74,7 @@ class ExportHtmlword extends ExportPlugin
             __('Put columns names in the first row')
         );
         $dataOptions->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($dataOptions);
-
-        // set the options for the export plugin property item
         $exportPluginProperties->setOptions($exportSpecificOptions);
 
         return $exportPluginProperties;
@@ -201,12 +187,8 @@ class ExportHtmlword extends ExportPlugin
         if (! $this->export->outputHandler('<table width="100%" cellspacing="1">')) {
             return false;
         }
-
-        // Gets the data from the database
         $result = $dbi->query($sqlQuery, DatabaseInterface::CONNECT_USER, DatabaseInterface::QUERY_UNBUFFERED);
         $fields_cnt = $result->numFields();
-
-        // If required, get fields name at the first line
         if (isset($GLOBALS['htmlword_columns'])) {
             $schema_insert = '<tr class="print-category">';
             foreach ($result->getFieldNames() as $col_as) {
@@ -225,8 +207,6 @@ class ExportHtmlword extends ExportPlugin
                 return false;
             }
         }
-
-        // Format the data
         while ($row = $result->fetchRow()) {
             $schema_insert = '<tr class="print-category">';
             for ($j = 0; $j < $fields_cnt; $j++) {
@@ -349,8 +329,6 @@ class ExportHtmlword extends ExportPlugin
          * Gets fields properties
          */
         $dbi->selectDb($db);
-
-        // Check if we can use Relations
         [$res_rel, $have_rel] = $this->relation->getRelationsAndStatus(
             $do_relation && $relationParameters->relationFeature !== null,
             $db,
@@ -572,7 +550,6 @@ class ExportHtmlword extends ExportPlugin
                 . __('Stand-in structure for view') . ' '
                 . htmlspecialchars($table_alias)
                 . '</h2>';
-                // export a stand-in definition to resolve view dependencies
                 $dump .= $this->getTableDefStandIn($db, $table, $crlf, $aliases);
         }
 

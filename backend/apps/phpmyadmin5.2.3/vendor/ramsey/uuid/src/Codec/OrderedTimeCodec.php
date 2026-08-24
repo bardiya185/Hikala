@@ -67,7 +67,7 @@ class OrderedTimeCodec extends StringCodec
 
         $bytes = $uuid->getFields()->getBytes();
 
-        /** @phpstan-ignore-next-line PHPStan complains that this is not a non-empty-string. */
+        
         return $bytes[6] . $bytes[7]
             . $bytes[4] . $bytes[5]
             . $bytes[0] . $bytes[1] . $bytes[2] . $bytes[3]
@@ -89,8 +89,6 @@ class OrderedTimeCodec extends StringCodec
                 '$bytes string should contain 16 characters.'
             );
         }
-
-        // Rearrange the bytes to their original order.
         $rearrangedBytes = $bytes[4] . $bytes[5] . $bytes[6] . $bytes[7]
             . $bytes[2] . $bytes[3]
             . $bytes[0] . $bytes[1]

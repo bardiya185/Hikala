@@ -17,8 +17,6 @@ class CouponResource extends JsonResource
                 ? max(0, $this->usage_limit - $this->used_count)
                 : null,
             'is_active' => $this->is_active,
-            
-            // اطلاعات تخفیف مرتبط
             'discount' => $this->when($this->discount, function () {
                 return [
                     'id' => $this->discount->id,

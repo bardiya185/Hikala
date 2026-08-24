@@ -1,6 +1,6 @@
 @php
     use Knuckles\Scribe\Tools\Utils as u;
-    /** @var  Knuckles\Camel\Output\OutputEndpointData $endpoint */
+    
 @endphp
 
 <h2 id="{!! $endpoint->fullSlug() !!}">{{ $endpoint->name() }}</h2>

@@ -1,6 +1,4 @@
 <?php
-//3.2.8 - New file
-//3.3.0 - Modification of lines FcgidInitialEnv
 
 $langues['fcgi_mode_link'] = 'Βοήθεια κατάστασης FCGI';
 $langues['fcgi_not_loaded'] = 'Η PHP δεν μπορεί να χρησιμοποιηθεί σε κατάσταση FCGI διότι το module fcgid_module του Apache δεν έχει φορτωθεί';

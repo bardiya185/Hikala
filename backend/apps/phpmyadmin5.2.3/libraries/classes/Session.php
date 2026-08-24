@@ -63,12 +63,9 @@ class Session
      */
     public static function secure(): void
     {
-        // prevent session fixation and XSS
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_regenerate_id(true);
         }
-
-        // continue with empty session
         session_unset();
         self::generateToken();
     }
@@ -123,30 +120,22 @@ class Session
      */
     public static function setUp(Config $config, ErrorHandler $errorHandler): void
     {
-        // verify if PHP supports session, die if it does not
         if (! function_exists('session_name')) {
             Core::warnMissingExtension('session', true);
         } elseif (! empty(ini_get('session.auto_start')) && session_name() !== 'phpMyAdmin' && ! empty(session_id())) {
-            // Do not delete the existing non empty session, it might be used by
-            // other applications; instead just close it.
             if (empty($_SESSION)) {
-                // Ignore errors as this might have been destroyed in other
-                // request meanwhile
                 @session_destroy();
             } else {
-                // do not use session_write_close, see issue #13392
                 session_abort();
             }
         }
 
-        /** @psalm-var 'Lax'|'Strict'|'None' $cookieSameSite */
+        
         $cookieSameSite = $config->get('CookieSameSite') ?? 'Strict';
         $cookiePath = $config->getRootPath();
         if (PHP_VERSION_ID < 70300) {
             $cookiePath .= '; SameSite=' . $cookieSameSite;
         }
-
-        // session cookie settings
         session_set_cookie_params(
             0,
             $cookiePath,
@@ -154,51 +143,27 @@ class Session
             $config->isHttps(),
             true
         );
-
-        // cookies are safer (use ini_set() in case this function is disabled)
         ini_set('session.use_cookies', 'true');
-
-        // optionally set session_save_path
         $path = $config->get('SessionSavePath');
         if (! empty($path)) {
             session_save_path($path);
-            // We can not do this unconditionally as this would break
-            // any more complex setup (eg. cluster), see
-            // https://github.com/phpmyadmin/phpmyadmin/issues/8346
             ini_set('session.save_handler', 'files');
         }
-
-        // use cookies only
         ini_set('session.use_only_cookies', '1');
-        // strict session mode (do not accept random string as session ID)
         ini_set('session.use_strict_mode', '1');
-        // make the session cookie HttpOnly
         ini_set('session.cookie_httponly', '1');
         if (PHP_VERSION_ID >= 70300) {
-            // add SameSite to the session cookie
             ini_set('session.cookie_samesite', $cookieSameSite);
         }
-
-        // do not force transparent session ids
         ini_set('session.use_trans_sid', '0');
-
-        // delete session/cookies when browser is closed
         ini_set('session.cookie_lifetime', '0');
-
-        // some pages (e.g. stylesheet) may be cached on clients, but not in shared
-        // proxy servers
         session_cache_limiter('private');
 
         $httpCookieName = $config->getCookieName('phpMyAdmin');
         @session_name($httpCookieName);
-
-        // Restore correct session ID (it might have been reset by auto started session
         if ($config->issetCookie('phpMyAdmin')) {
             session_id($config->getCookie('phpMyAdmin'));
         }
-
-        // on first start of session we check for errors
-        // f.e. session dir cannot be accessed - session file not created
         $orig_error_count = $errorHandler->countErrors(false);
 
         $session_result = session_start();

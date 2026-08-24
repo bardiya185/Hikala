@@ -19,10 +19,10 @@ use function count;
 
 final class PrimaryController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(
@@ -54,7 +54,6 @@ final class PrimaryController extends AbstractController
 
         $primary = $this->getKeyForTablePrimary();
         if (empty($primary) && ! empty($selected_fld)) {
-            // no primary key, so we can safely create new
             $mult_btn = __('Yes');
             $selected = $selected_fld;
         }
@@ -122,7 +121,6 @@ final class PrimaryController extends AbstractController
         );
         $primary = '';
         foreach ($result as $row) {
-            // Backups the list of primary keys
             if ($row['Key_name'] !== 'PRIMARY') {
                 continue;
             }

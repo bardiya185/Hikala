@@ -5,16 +5,16 @@
  */
 class ParagonIE_Sodium_Core_SecretStream_State
 {
-    /** @var string $key */
+    
     protected $key;
 
-    /** @var int $counter */
+    
     protected $counter;
 
-    /** @var string $nonce */
+    
     protected $nonce;
 
-    /** @var string $_pad */
+    
     protected $_pad;
 
     /**

@@ -34,12 +34,9 @@ class BannerImageService
      */
     public function replaceImage(UploadedFile $newFile, ?string $oldPath): string
     {
-        // حذف قدیمی
         if ($oldPath) {
             $this->imageService->delete($oldPath);
         }
-        
-        // آپلود جدید
         return $this->uploadImage($newFile);
     }
 

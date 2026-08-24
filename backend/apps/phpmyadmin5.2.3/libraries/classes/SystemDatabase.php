@@ -12,10 +12,10 @@ use function sprintf;
 
 class SystemDatabase
 {
-    /** @var DatabaseInterface */
+    
     protected $dbi;
 
-    /** @var Relation */
+    
     private $relation;
 
     /**
@@ -43,9 +43,6 @@ class SystemDatabase
         if ($browserTransformationFeature === null) {
             return false;
         }
-
-        // Get the existing transformation details of the same database
-        // from pma__column_info table
         $transformationSql = sprintf(
             "SELECT * FROM %s.%s WHERE `db_name` = '%s'",
             Util::backquote($browserTransformationFeature->database),
@@ -76,8 +73,6 @@ class SystemDatabase
         if ($browserTransformationFeature === null) {
             return '';
         }
-
-        // Need to store new transformation details for VIEW
         $newTransformationsSql = sprintf(
             'INSERT INTO %s.%s ('
             . '`db_name`, `table_name`, `column_name`, '

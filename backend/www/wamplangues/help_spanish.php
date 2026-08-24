@@ -1,6 +1,4 @@
 <?php
-//3.2.8 - New file
-//3.3.0 - Modification of lines FcgidInitialEnv
 
 $langues['fcgi_mode_link'] = 'Ayuda del modo FCGI';
 $langues['fcgi_not_loaded'] = 'PHP no se puede usar en modo FCGI porque el módulo Apache fcgid_module no está cargado';

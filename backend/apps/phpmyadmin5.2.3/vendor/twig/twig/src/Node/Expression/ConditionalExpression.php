@@ -23,7 +23,6 @@ class ConditionalExpression extends AbstractExpression
 
     public function compile(Compiler $compiler): void
     {
-        // Ternary with no then uses Elvis operator
         if ($this->getNode('expr1') === $this->getNode('expr2')) {
             $compiler
                 ->raw('((')

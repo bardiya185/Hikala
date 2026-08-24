@@ -128,8 +128,6 @@
         @foreach($urlsToDocs as $title => $url)
             urls.push({name: "{{ $title }}", url: "{{ $url }}"});
         @endforeach
-
-        // Build a system
         const ui = SwaggerUIBundle({
             dom_id: '#swagger-ui',
             urls: urls,

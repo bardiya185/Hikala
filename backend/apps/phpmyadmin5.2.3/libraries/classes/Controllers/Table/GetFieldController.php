@@ -23,7 +23,7 @@ use function strlen;
  */
 class GetFieldController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -43,13 +43,13 @@ class GetFieldController extends AbstractController
 
         $this->response->disable();
 
-        /* Check parameters */
+        
         Util::checkParameters([
             'db',
             'table',
         ]);
 
-        /* Select database */
+        
         if (! $this->dbi->selectDb($db)) {
             Generator::mysqlDie(
                 sprintf(__('\'%s\' database does not exist.'), htmlspecialchars($db)),
@@ -58,7 +58,7 @@ class GetFieldController extends AbstractController
             );
         }
 
-        /* Check if table exists */
+        
         if (! $this->dbi->getColumns($db, $table)) {
             Generator::mysqlDie(__('Invalid table name'));
         }
@@ -68,19 +68,19 @@ class GetFieldController extends AbstractController
             || ! isset($_GET['where_clause_sign'])
             || ! Core::checkSqlQuerySignature($_GET['where_clause'], $_GET['where_clause_sign'])
         ) {
-            /* l10n: In case a SQL query did not pass a security check  */
+            
             Core::fatalError(__('There is an issue with your request.'));
 
             return;
         }
 
-        /* Grab data */
+        
         $sql = 'SELECT ' . Util::backquote($_GET['transform_key'])
             . ' FROM ' . Util::backquote($table)
             . ' WHERE ' . $_GET['where_clause'] . ';';
         $result = $this->dbi->fetchValue($sql);
 
-        /* Check return code */
+        
         if ($result === false) {
             Generator::mysqlDie(
                 __('MySQL returned an empty result set (i.e. zero rows).'),
@@ -90,7 +90,7 @@ class GetFieldController extends AbstractController
             return;
         }
 
-        /* Avoid corrupting data */
+        
         ini_set('url_rewriter.tags', '');
 
         Core::downloadHeader(

@@ -22,10 +22,7 @@ if(!empty($_SERVER['argv'][2]) && !empty($_SERVER['argv'][3]) && trim($_SERVER['
 }
 
 if(!$compareOnly) {
-	// loading the configuration file of the current php
 	require $c_phpVersionDir.'/php'.$wampConf['phpVersion'].'/'.$wampBinConfFiles;
-
-	// it is verified that the new version of Apache is compatible with the current php
 	$newApacheVersionTemp = $newApacheVersion;
 	while (!isset($phpConf['apache'][$newApacheVersionTemp]) && $newApacheVersionTemp != '')
 	{
@@ -36,7 +33,6 @@ if(!$compareOnly) {
 	{
 	    exit();
 	}
-	//Restore some wampmanager.conf to default value before switching Apache version
 	$wampIniNewContents = array();
 	if($wampConf['apacheCompareVersion'] == 'on') {
 		$wampIniNewContents['apacheCompareVersion'] = 'off';
@@ -49,46 +45,29 @@ if(!$compareOnly) {
 	if(count($wampIniNewContents) > 0) {
 		wampIniSet($configurationFile, $wampIniNewContents);
 	}
-
-	// loading Wampserver configuration file of the new version of Apache
 	require $c_apacheVersionDir.'/apache'.$newApacheVersion.'/'.$wampBinConfFiles;
 }
-
-// Verify new Apache version configuration from old Apache version
 if($apacheNew != $apacheOld) {
 	$majTodo = $majModules = $majIncludes = $majVhost = $majHttpdssl = $majOpenssl = $majListen = $majDefaultListen = false;
 	$majModulesGo = $majIncludesGo = $majVhostGo = $majHttpdsslGo = $majOpensslGo = $majListenGo = $majDefaultListenGo = false;
-
-	//--- File to save for LoadModule and Include arrays
-	//    of old Apache and new Apache httpd.conf files
 	$fp = fopen($c_installDir.'/bin/apache/save_apache.php', 'wb');
 	fwrite($fp, "<?php\n\n");
-
-	//--- Recover config of old Apache
 	$apacheConfFile = $c_apacheVersionDir.'/apache'.$apacheOld.'/'.$wampConf['apacheConfDir'].'/'.$wampConf['apacheConfFile'];
 	$httpdFileContents = @file_get_contents($apacheConfFile);
-	// Recovering the extensions loading configuration
 	preg_match_all('~^LoadModule\s+([0-9a-z_]+\s+modules/.+)\r?$~im',$httpdFileContents,$matchesON);
 	preg_match_all('~^\#LoadModule\s+([0-9a-z_]+\s+modules/.+)\r?$~im',$httpdFileContents,$matchesOFF);
-	// Key = module_name - Value = Module loaded = 1, not loaded = 0
 	$mod = array_fill_keys($matchesON[1], '1') + array_fill_keys($matchesOFF[1], '0');
-	// Key = module_name - Value = file name in modules/ folder
 	ksort($mod);
 	fwrite($fp, "\$modules_apache_old = ".var_export($mod, true).";\n\n");
-	// Recovering the includes loading configuration
 	preg_match_all('~^Include\s+(conf/.+)\r?$~im',$httpdFileContents,$matchesON);
 	preg_match_all('~^\#Include\s+(conf/.+)\r?$~im',$httpdFileContents,$matchesOFF);
-	// Key = include_name - Value = Include loaded = 1, not loaded = 0
 	$includes = array_fill_keys($matchesON[1], '1') + array_fill_keys($matchesOFF[1], '0');
 	ksort($includes);
 	fwrite($fp, "\$includes_apache_old = ".var_export($includes, true).";\n\n");
-	// Recovering default Listen Port
 	preg_match('~^ServerName\s+localhost:([0-9]{2,5})~im',$httpdFileContents,$matches);
 	$oldDefaultListenPort = $matches[1];
 	unset($httpdFileContents);
-	// Recovering Listen Ports
 	$newListenPort = $oldListenPort = array();
-	// We retrieve the 'Old' Apache variables (Define)
 	$c_apacheDefineConf = $c_apacheVersionDir.'/apache'.$apacheOld.'/wampdefineapache.conf';
 	$c_ApacheDefine = retrieve_apache_define($c_apacheDefineConf);
 	$oldListenPort = listen_ports($apacheConfFile);
@@ -98,35 +77,25 @@ if($apacheNew != $apacheOld) {
 			$oldListenPort[$key] = $value;
 		}
 	}
-
-	//--- Recover config of new Apache
 	$apacheConfFile = $c_apacheVersionDir.'/apache'.$apacheNew.'/'.$wampConf['apacheConfDir'].'/'.$wampConf['apacheConfFile'];
 	$httpdFileContents = @file_get_contents($apacheConfFile);
-	// Recovering the extensions loading configuration
 	preg_match_all('~^LoadModule ([0-9a-z_]+ modules/.+)\r?$~im',$httpdFileContents,$matchesON);
 	preg_match_all('~^\#LoadModule ([0-9a-z_]+ modules/.+)\r?$~im',$httpdFileContents,$matchesOFF);
-	// Key = module_name - Value = Module loaded = 1, not loaded = 0
 	$mod = array_fill_keys($matchesON[1], '1') + array_fill_keys($matchesOFF[1], '0');
-	// Key = module_name - Value = file name in modules/ folder
 	ksort($mod);
 	fwrite($fp, "\$modules_apache_new = ".var_export($mod, true).";\n\n");
-	// Recovering the includes loading configuration
 	preg_match_all('~^Include (conf/.+)\r?$~im',$httpdFileContents,$matchesON);
 	preg_match_all('~^\#Include (conf/.+)\r?$~im',$httpdFileContents,$matchesOFF);
-	// Key = include_name - Value = Include loaded = 1, not loaded = 0
 	$includes = array_fill_keys($matchesON[1], '1') + array_fill_keys($matchesOFF[1], '0');
 	ksort($includes);
 	fwrite($fp, "\$includes_apache_new = ".var_export($includes, true).";\n\n");
 	fwrite($fp, "?>\n");
 	fclose($fp);
-	// Recovering default Listen Port
 	preg_match('~^ServerName\s+localhost:([0-9]{2,5})~im',$httpdFileContents,$matches);
 	$newDefaultListenPort = $matches[1];
 	unset($httpdFileContents);
-	// We retrieve the 'New' Apache variables (Define)
 	$c_apacheDefineConf = $c_apacheVersionDir.'/apache'.$apacheNew.'/wampdefineapache.conf';
 	$c_ApacheDefine = retrieve_apache_define($c_apacheDefineConf);
-	// Recovering Listen Ports
 	$newListenPort = listen_ports($apacheConfFile);
 	foreach($newListenPort as $key => $value) {
 		if(strpos($value,'MYPORT') !== false) {
@@ -134,18 +103,13 @@ if($apacheNew != $apacheOld) {
 			$newistenPort[$key] = $value;
 		}
 	}
-	//Retrieve the Apache variables for the current version of Apache
 	if($apacheNew <> $c_apacheVersion) {
 		$c_apacheDefineConf = $c_apacheVersionDir.'/apache'.$c_apacheVersion.'/wampdefineapache.conf';
 		$c_ApacheDefine = retrieve_apache_define($c_apacheDefineConf);
 	}
-
-	//--- Check difference between Default Listen Port
 	if($newDefaultListenPort <> $oldDefaultListenPort) {
 		$majTodo = $majDefaultListen = true;
 	}
-
-	//--- Check differences between new Apache and old Apache
 	$moduleDiff = $includeDiff = array();
 	$apacheNewConfFile = $c_apacheVersionDir.'/apache'.$apacheNew.'/'.$wampConf['apacheConfDir'].'/'.$wampConf['apacheConfFile'];
 	$httpdNewFileContents = @file_get_contents($apacheNewConfFile);
@@ -153,9 +117,7 @@ if($apacheNew != $apacheOld) {
 	$count = 0;
 	$FindModuleTxt = $ReplaceModuleTxt = array();
 	foreach($modules_apache_old as $key => $value) {
-		//Does same LoadModule exist in New Apache
 		if(array_key_exists($key, $modules_apache_new)) {
-			//key exists - Same value - loaded (1) or not loaded (0) ?
 			if($modules_apache_new[$key] <> $value) {
 				$majTodo = $majModules = true;
 				if($value == 1) {//Load module
@@ -171,13 +133,9 @@ if($apacheNew != $apacheOld) {
 			}
 		}
 	}
-
-	// --- Compare new Apache include with old Apache
 	$FindIncludeTxt = $ReplaceIncludeTxt = array();
 	foreach($includes_apache_old as $key => $value) {
-		//Does same include exist in New Apache
 		if(array_key_exists($key,$includes_apache_new)) {
-			//key exists - Same value - loaded (1) or not loaded (0) ?
 			if($includes_apache_new[$key] <> $value) {
 				$majTodo = $majIncludes = true;
 				if($value == 1) {//Include
@@ -194,11 +152,8 @@ if($apacheNew != $apacheOld) {
 		}
 	}
 	unlink($c_installDir.'/bin/apache/save_apache.php');
-
-	//Compare httpd-vhosts.conf
 	$oldVhost = $c_apacheVersionDir.'/apache'.$apacheOld.'/'.$wampConf['apacheConfDir'].'/extra/httpd-vhosts.conf';
 	$newVhost = $c_apacheVersionDir.'/apache'.$apacheNew.'/'.$wampConf['apacheConfDir'].'/extra/httpd-vhosts.conf';
-	//if identical files, copy no asked
 	$content1 = file($oldVhost, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 	$content2 = file($newVhost, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 	$nbVhostOld = count($content1);
@@ -223,11 +178,8 @@ if($apacheNew != $apacheOld) {
 		}
 	}
 	unset($content1,$content2);
-
-	//Compare httpd-ssl.conf
 	$oldSslConf = $c_apacheVersionDir.'/apache'.$apacheOld.'/'.$wampConf['apacheConfDir'].'/extra/httpd-ssl.conf';
 	$newSslConf = $c_apacheVersionDir.'/apache'.$apacheNew.'/'.$wampConf['apacheConfDir'].'/extra/httpd-ssl.conf';
-	//if identical files, copy no asked
 	$content1 = file($oldSslConf, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 	$content2 = file($newSslConf, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 	$nbSslOld = count($content1);
@@ -252,11 +204,8 @@ if($apacheNew != $apacheOld) {
 		}
 	}
 	unset($content1,$content2);
-
-	//Compare openssl.cnf
 	$oldOpenssl = $c_apacheVersionDir.'/apache'.$apacheOld.'/'.$wampConf['apacheConfDir'].'/openssl.cnf';
 	$newOpenssl = $c_apacheVersionDir.'/apache'.$apacheNew.'/'.$wampConf['apacheConfDir'].'/openssl.cnf';
-	//if identical files, copy no asked
 	$content1 = file($oldOpenssl, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 	$content2 = file($newOpenssl, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
 	$nbOpenOld = count($content1);
@@ -309,26 +258,20 @@ if($apacheNew != $apacheOld) {
 	else {
 		$CertsNew = false;
 	}
-	//Only one Apache version has Certs directory
 	if($CertsNew !== $CertsOld) $majTodo = $majCerts = true;
-	//Compare directories if all Apache Version have Certs directories
 	$notCertsNew = $notCertsOld = array();
 	if($CertsNew && $CertsOld){
 		$notCertsNew = array_diff($files1, $files2);
 		$notCertsOld = array_diff($files2, $files1);
 		if(count($notCertsNew) > 0) {
 			$majTodo = $majCerts = true;
-			//Files on Old not found on New
 		}
 		if(count($notCertsOld) > 0) {
 			$majTodo = $majCerts = true;
-			//Files on New not found on Old
 		}
 	}
 	unset($files1,$files2);
 	*/
-
-	//Compare Listen Port added
 	$nbListenOld = count($oldListenPort);
 	$nbListenNew = count($newListenPort);
 	$notListenNew = $notListenOld = array();
@@ -345,9 +288,6 @@ if($apacheNew != $apacheOld) {
 			}
 		}
 	}
-	// End of verify
-
-	// Do we need to update some thing?
 	if($majTodo) {
 		$YESred = color('red','YES');
 		$NOgreen = color('green','NO');
@@ -467,7 +407,6 @@ if($apacheNew != $apacheOld) {
 		$message .= "To        ".color('blue',"CANCEL")."   updates, press only ".color('blue',"Enter")." key\n";
 		$message .= "When your ".color('blue',"CHOICE is READY")." press  ".color('blue',"'G'")." key then Enter key\n";
 		$message .= "To choose one or more updates, press the associated key then Enter key: ";
-		//Write message in Command Windows
 		Command_Windows($message,-1,-1,0,'Compare Apache version');
 		$touche = mb_strtoupper(trim(fgets(STDIN)));
 		if($touche == 'A') {
@@ -518,28 +457,22 @@ if($apacheNew != $apacheOld) {
 		$message .= "  *** between Apache ".$apacheOld." and Apache ".$apacheNew."\n";
 		$message .= "  *** There is no need to update anything\n";
 		$message .= "Press Enter key to continue ";
-		//Write message in Command Windows
 		Command_Windows($message,-1,-1,0,'Compare Apache version');
 		$touche = mb_strtoupper(trim(fgets(STDIN)));
 	}
 	$copyConf = $FileToWrite = false;
 	if($majTodo) {
-		// Modify LoadModule?
 		if($majModules &&$majModulesGo) {
-			//Load or unload Module
 			$httpdNewFileContents = str_replace($FindModuleTxt,$ReplaceModuleTxt,$httpdNewFileContents,$count);
 			if($count > 0) $FileToWrite = true;
 		}
-		// Modify Include?
 		if($majIncludes && $majIncludesGo) {
-			//Load or unload Include
 			$httpdNewFileContents = str_replace($FindIncludeTxt,$ReplaceIncludeTxt,$httpdNewFileContents,$count);
 			if($count > 0) $FileToWrite = true;
 		}
 		if($majListen && $majListenGo) {
 			if($listenToAdd) {
 				foreach($notListenNew as $value) {
-					//Check validity
 					if($value <= 80 || $value == 8080 || ($value > 81 && $value < 1025) || $value > 65535) continue;
 					$count = 0;
 					$search = array(
@@ -556,7 +489,6 @@ if($apacheNew != $apacheOld) {
 			}
 			if($listenToDel) {
 				foreach($notListenOld as $value) {
-					//Check validity
 					if($value <= 80 || $value == 8080 || ($value > 81 && $value < 1025) || $value > 65535) continue;
 					$count = 0;
 					$search = array(
@@ -574,7 +506,6 @@ if($apacheNew != $apacheOld) {
 
 		}//end of MajListen
 		if($majDefaultListenGo){
-			//Update httpd.conf
 			$findTxtRegex = array(
 			'/^(Listen 0.0.0.0:)[0-9]{2,5}/m',
 			'/^(Listen \[::0\]:)[0-9]{2,5}/m',
@@ -595,8 +526,6 @@ if($apacheNew != $apacheOld) {
 				$httpdNewFileContents = str_replace($search,$replace,$httpdNewFileContents,$count);
 				if($count > 0) $FileToWrite = true;
 			}
-
-			//Update httpd-vhosts.conf
 			$virtualHost = check_virtualhost(true);
 			if($virtualHost['include_vhosts'] && $virtualHost['vhosts_exist']) {
 				$c_vhostConfFile = $virtualHost['vhosts_file'];
@@ -607,8 +536,6 @@ if($apacheNew != $apacheOld) {
 				$myVhostsContents = preg_replace($findTxtRegex,$replaceTxtRegex, $myVhostsContents, -1, $count);
 				if($count > 0) write_file($c_vhostConfFile,$myVhostsContents);
 			}
-
-			//Update wampmanager.conf
 			$apacheConf['apachePortUsed'] = $oldDefaultListenPort;
 			if($oldDefaultListenPort == $c_DefaultPort) {
 				$apacheConf['apacheUseOtherPort'] = "off";
@@ -619,26 +546,22 @@ if($apacheNew != $apacheOld) {
 			wampIniSet($configurationFile, $apacheConf);
 		}
 		if($FileToWrite) {
-			//Save Apache new version httpd.conf file
 			write_file($apacheNewConfFile,$httpdNewFileContents);
 			$copyConf = true;
 		}
 		unset($httpdNewFileContents);
-		// Rewrite httpd-vhosts.conf's?
 		if($majVhost && $majVhostGo) {
 			if(copy($oldVhost,$newVhost) === false) {
 				error_log("**** Copy error ****\n".$oldVhost."\nto\n".$newVhost."\n");
 			}
 			else $copyConf = true;
 		}
-		// Rewrite httpd-ssl.conf's?
 		if($majHttpdssl && $majHttpdsslGo) {
 			if(copy($oldSslConf,$newSslConf) === false) {
 				error_log("**** Copy error ****\n".$oldSslConf."\nto\n".$newSslConf."\n");
 			}
 			else $copyConf = true;
 		}
-		// Rewrite openssl.cnf's?
 		if($majOpenssl && $majOpensslGo) {
 			if(copy($oldOpenssl,$newOpenssl) === false) {
 				error_log("**** Copy error ****\n".$oldOpenssl."\nto\n".$newOpenssl."\n");

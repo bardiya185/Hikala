@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class SavedQueryByExampleSearchesFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $savedSearches;
 
     public function __construct(DatabaseName $database, TableName $savedSearches)

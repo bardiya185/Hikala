@@ -154,7 +154,7 @@ class Request extends Message implements ServerRequestInterface
      */
     protected function filterMethod($method): string
     {
-        /** @var mixed $method */
+        
         if (!is_string($method)) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported HTTP method; must be a string, received %s',
@@ -370,7 +370,7 @@ class Request extends Message implements ServerRequestInterface
      */
     public function withParsedBody($data)
     {
-        /** @var mixed $data */
+        
         if (!is_null($data) && !is_object($data) && !is_array($data)) {
             throw new InvalidArgumentException('Parsed body value must be an array, an object, or null');
         }

@@ -12,7 +12,7 @@ use function rewind;
 
 final class DataStream
 {
-    /** @var resource */
+    
     private $stream;
 
     /**

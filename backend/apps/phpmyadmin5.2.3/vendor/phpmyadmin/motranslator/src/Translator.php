@@ -97,13 +97,13 @@ class Translator
      */
     private $pluralEquation = null;
 
-    /** @var ExpressionLanguage|null Evaluator for plurals */
+    
     private $pluralExpression = null;
 
-    /** @var int|null number of plurals */
+    
     private $pluralCount = null;
 
-    /** @var CacheInterface */
+    
     private $cache;
 
     /**

@@ -11,10 +11,6 @@ class ReviewSeeder extends Seeder
     public function run(): void
     {
         $this->command->info('🚀 Creating reviews...');
-
-        // ================================================================
-        // 🧹 Clean previous data
-        // ================================================================
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
         if (Schema::hasTable('review_reactions')) {
@@ -23,10 +19,6 @@ class ReviewSeeder extends Seeder
 
         DB::table('reviews')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-
-        // ================================================================
-        // 📥 Get required data
-        // ================================================================
         $users = DB::table('users')->pluck('id')->toArray();
         $products = DB::table('products')->pluck('id')->toArray();
 
@@ -39,8 +31,6 @@ class ReviewSeeder extends Seeder
             $this->command->warn('⚠️ No products found. Please seed products first.');
             return;
         }
-
-        // Check if orders table exists and has delivered orders
         $deliveredOrders = [];
 
         if (Schema::hasTable('orders')) {
@@ -49,10 +39,6 @@ class ReviewSeeder extends Seeder
                 ->pluck('id', 'user_id')
                 ->toArray();
         }
-
-        // ================================================================
-        // 📝 Sample review data
-        // ================================================================
         $reviewBodies = [
             'Great product! Exactly what I was looking for. The quality is excellent and it arrived on time.',
             'Very good quality for the price. I would definitely recommend this to anyone looking for a reliable product.',
@@ -98,13 +84,7 @@ class ReviewSeeder extends Seeder
         ];
 
         $statuses = ['pending', 'approved', 'approved', 'approved', 'rejected'];
-
-        // Check if likes_count column exists
         $hasLikesColumn = Schema::hasColumn('reviews', 'likes_count');
-
-        // ================================================================
-        // 🔄 Create reviews
-        // ================================================================
         $reviewCount = 0;
         $usedPairs = [];
 
@@ -122,8 +102,6 @@ class ReviewSeeder extends Seeder
                 }
 
                 $usedPairs[] = $pairKey;
-
-                // Check if user is a buyer
                 $isBuyer = false;
 
                 if (isset($deliveredOrders[$userId]) && Schema::hasTable('order_items')) {
@@ -149,8 +127,6 @@ class ReviewSeeder extends Seeder
                     'created_at' => now()->subDays(rand(1, 60)),
                     'updated_at' => now()->subDays(rand(0, 10)),
                 ];
-
-                // Add likes/dislikes columns if they exist
                 if ($hasLikesColumn) {
                     $reviewData['likes_count'] = 0;
                     $reviewData['dislikes_count'] = 0;
@@ -162,10 +138,6 @@ class ReviewSeeder extends Seeder
         }
 
         $this->command->info("✅ {$reviewCount} reviews created!");
-
-        // ================================================================
-        // 🔄 Update product ratings
-        // ================================================================
         if (Schema::hasColumn('products', 'rating')) {
             $this->command->info('📊 Updating product ratings...');
 
@@ -181,8 +153,6 @@ class ReviewSeeder extends Seeder
                     ->where('id', $item->product_id)
                     ->update(['rating' => $item->avg_rating]);
             }
-
-            // Reset rating for products without approved reviews
             $productIdsWithReviews = $productsWithReviews->pluck('product_id')->toArray();
             $productsWithoutReviews = array_diff($products, $productIdsWithReviews);
 
@@ -194,10 +164,6 @@ class ReviewSeeder extends Seeder
 
             $this->command->info('✅ Product ratings updated!');
         }
-
-        // ================================================================
-        // 📊 Final report
-        // ================================================================
         $this->command->newLine();
         $this->command->info('🎉 Review seeding completed!');
         $this->command->info('📊 Statistics:');

@@ -1173,8 +1173,8 @@ class TCPDF_STATIC {
 		$css = $tidy_head->value;
 		$css = preg_replace('/<style([^>]+)>/ims', '<style>', $css);
 		$css = preg_replace('/<\/style>(.*)<style>/ims', "\n", $css);
-		$css = str_replace('/*<![CDATA[*/', '', $css);
-		$css = str_replace('/*]]>*/', '', $css);
+		$css = str_replace('', '', $css);
+		$css = str_replace('', '', $css);
 		preg_match('/<style>(.*)<\/style>/ims', $css, $matches);
 		if (isset($matches[1])) {
 			$css = strtolower($matches[1]);

@@ -12,13 +12,13 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class PdfFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $pdfPages;
 
-    /** @var TableName */
+    
     public $tableCoords;
 
     public function __construct(DatabaseName $database, TableName $pdfPages, TableName $tableCoords)

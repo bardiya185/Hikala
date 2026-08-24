@@ -143,7 +143,7 @@ abstract class AbstractArray implements ArrayInterface
      */
     public function unserialize($serialized): void
     {
-        /** @var array<array-key, T> $data */
+        
         $data = unserialize($serialized, ['allowed_classes' => false]);
 
         $this->data = $data;

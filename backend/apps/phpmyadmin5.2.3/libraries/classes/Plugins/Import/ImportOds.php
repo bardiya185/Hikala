@@ -51,15 +51,8 @@ class ImportOds extends ImportPlugin
         $importPluginProperties->setText('OpenDocument Spreadsheet');
         $importPluginProperties->setExtension('ods');
         $importPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $importPluginProperties
-        // this will be shown as "Format specific options"
         $importSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-        // general options main group
         $generalOptions = new OptionsPropertyMainGroup('general_opts');
-        // create primary items and add them to the group
         $leaf = new BoolPropertyItem(
             'col_names',
             __(
@@ -86,11 +79,7 @@ class ImportOds extends ImportPlugin
             __('Import currencies <i>(ex. $5.00 to 5.00)</i>')
         );
         $generalOptions->addProperty($leaf);
-
-        // add the main group to the root group
         $importSpecificOptions->addProperty($generalOptions);
-
-        // set the options for the import plugin property item
         $importPluginProperties->setOptions($importSpecificOptions);
 
         return $importPluginProperties;
@@ -114,7 +103,7 @@ class ImportOds extends ImportPlugin
         while (! $finished && ! $error && ! $timeout_passed) {
             $data = $this->import->getNextChunk($importHandle);
             if ($data === false) {
-                /* subtract data we didn't handle yet and stop processing */
+                
                 $GLOBALS['offset'] -= strlen($buffer);
                 break;
             }
@@ -123,7 +112,7 @@ class ImportOds extends ImportPlugin
                 continue;
             }
 
-            /* Append new data to buffer */
+            
             $buffer .= $data;
         }
 
@@ -131,7 +120,6 @@ class ImportOds extends ImportPlugin
          * Disable loading of external XML entities for PHP versions below 8.0.
          */
         if (PHP_VERSION_ID < 80000) {
-            // phpcs:ignore Generic.PHP.DeprecatedFunctions.Deprecated
             libxml_disable_entity_loader();
         }
 
@@ -155,7 +143,7 @@ class ImportOds extends ImportPlugin
             );
             $GLOBALS['error'] = true;
         } else {
-            /** @var SimpleXMLElement $root */
+            
             $root = $xml->children('office', true)->{'body'}->{'spreadsheet'};
             if (empty($root)) {
                 $sheets = [];
@@ -189,10 +177,10 @@ class ImportOds extends ImportPlugin
             }
         }
 
-        /* No longer needed */
+        
         unset($rows);
 
-        /* Obtain the best-fit MySQL types for each column */
+        
         $analyses = [];
 
         $len = count($tables);
@@ -214,18 +202,18 @@ class ImportOds extends ImportPlugin
          * array $options = an associative array of options
          */
 
-        /* Set database name to the currently selected one, if applicable */
+        
         [$db_name, $options] = $this->getDbnameAndOptions($db, 'ODS_DB');
 
-        /* Non-applicable parameters */
+        
         $create = null;
 
-        /* Created and execute necessary SQL statements from data */
+        
         $this->import->buildSql($db_name, $tables, $analyses, $create, $options, $sql_data);
 
         unset($tables, $analyses);
 
-        /* Commit any possible data in buffers */
+        
         $this->import->runQuery('', '', $sql_data);
     }
 
@@ -255,11 +243,9 @@ class ImportOds extends ImportPlugin
             return (float) $cell_attrs['value'];
         }
 
-        /* We need to concatenate all paragraphs */
+        
         $values = [];
         foreach ($text as $paragraph) {
-            // Maybe a text node has the content ? (email, url, ...)
-            // Example: <text:a ... xlink:href="mailto:contact@example.org">test@example.fr</text:a>
             $paragraphValue = $paragraph->__toString();
             if ($paragraphValue === '' && isset($paragraph->{'a'})) {
                 $values[] = $paragraph->{'a'}->__toString();
@@ -296,8 +282,6 @@ class ImportOds extends ImportPlugin
                     if (! $col_names_in_first_row) {
                         $tempRow[] = $value;
                     } else {
-                        // MySQL column names can't end with a space
-                        // character.
                         $col_names[] = rtrim((string) $value);
                     }
 
@@ -306,8 +290,6 @@ class ImportOds extends ImportPlugin
 
                 continue;
             }
-
-            // skip empty repeats in the last row
             if ($a == $cellCount) {
                 continue;
             }
@@ -364,12 +346,12 @@ class ImportOds extends ImportPlugin
                 $col_count
             );
 
-            /* Find the widest row */
+            
             if ($col_count > $max_cols) {
                 $max_cols = $col_count;
             }
 
-            /* Don't include a row that is full of NULL values */
+            
             if (! $col_names_in_first_row) {
                 if ($_REQUEST['ods_empty_rows'] ?? false) {
                     foreach ($tempRow as $cell) {
@@ -406,7 +388,7 @@ class ImportOds extends ImportPlugin
         $tempRows = [];
         $rows = [];
 
-        /** @var SimpleXMLElement $sheet */
+        
         foreach ($sheets as $sheet) {
             $col_names_in_first_row = isset($_REQUEST['ods_col_names']);
 
@@ -420,7 +402,7 @@ class ImportOds extends ImportPlugin
                 $tempRows
             );
 
-            /* Skip over empty sheets */
+            
             if (count($tempRows) == 0 || count($tempRows[0]) === 0) {
                 $col_names = [];
                 $tempRow = [];
@@ -434,12 +416,12 @@ class ImportOds extends ImportPlugin
              * row. This included column names.
              */
 
-            /* Fill out column names */
+            
             for ($i = count($col_names); $i < $max_cols; ++$i) {
                 $col_names[] = $this->import->getColumnAlphaName($i + 1);
             }
 
-            /* Fill out all rows */
+            
             $num_rows = count($tempRows);
             for ($i = 0; $i < $num_rows; ++$i) {
                 for ($j = count($tempRows[$i]); $j < $max_cols; ++$j) {
@@ -447,11 +429,11 @@ class ImportOds extends ImportPlugin
                 }
             }
 
-            /* Store the table name so we know where to place the row set */
+            
             $tbl_attr = $sheet->attributes('table', true);
             $tables[] = [(string) $tbl_attr['name']];
 
-            /* Store the current sheet in the accumulator */
+            
             $rows[] = [
                 (string) $tbl_attr['name'],
                 $col_names,

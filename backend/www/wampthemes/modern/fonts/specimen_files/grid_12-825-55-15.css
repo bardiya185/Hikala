@@ -16,14 +16,14 @@ Gutter Width: 15px
 .section .firstcol {margin-left: 0;}
  
  
-/* Border on left hand side of a column. */
+
 .border {
   padding-left: 7px;
   margin-left: 7px;
   border-left: 1px solid #eee;
 }
  
-/* Border with more whitespace, spans one column. */
+
 .colborder {
     padding-left: 42px;
   margin-left: 42px;
@@ -32,7 +32,7 @@ Gutter Width: 15px
  
 
  
-/* The Grid Classes */
+
 .grid1, .grid1_2cols, .grid1_3cols, .grid1_4cols, .grid2, .grid2_3cols, .grid2_4cols, .grid3, .grid3_2cols, .grid3_4cols, .grid4, .grid4_3cols, .grid5, .grid5_2cols, .grid5_3cols, .grid5_4cols, .grid6, .grid6_4cols, .grid7, .grid7_2cols, .grid7_3cols, .grid7_4cols, .grid8, .grid8_3cols, .grid9, .grid9_2cols, .grid9_4cols, .grid10, .grid10_3cols, .grid10_4cols, .grid11, .grid11_2cols, .grid11_3cols, .grid11_4cols, .grid12
 {margin-left: 15px;float: left;display: inline; overflow: hidden;}
  
@@ -96,7 +96,7 @@ Gutter Width: 15px
 .width12, .grid12, .span-12 {width: 825px;}
 .input_width12 {width: 819px;}
  
-/* Subdivided grid spaces */
+
 .emptycols_left1, .prepend-1 {padding-left: 70px;}
 .emptycols_right1, .append-1 {padding-right: 70px;}
 .emptycols_left2, .prepend-2 {padding-left: 140px;}

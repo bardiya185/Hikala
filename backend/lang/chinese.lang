@@ -1,90 +1,83 @@
 <?php
-// Ô­·­Òë£º ZDYX <zhangduyixiong@gmail.com>
-// ÏÖ·­Òë£º jwj <jwjbjg@gmail.com>
-//3.0.7 - $w_mariadbConsole - $w_mariadbLog - $w_mariaSettings
-//        $w_apacheDoc - $w_mysqlDoc - $w_mariadbDoc - $w_phpDoc - $w_doc
-//3.0.8 - $w_noDBMS
-//3.1.1   $w_cmdWindows - $w_mysqlCommand - $w_mariadbCommand - $w_apacheCommand - $w_services_msc
-//3.2.0		$w_helpForums - $w_helpUse
-//3.2.1   $w_apacheSettings - $w_apacheDefaults
-//3.2.2 $w_helpFile modifi¨¦
-//3.2.10  $file_charset
+// Ô­ï¿½ï¿½ï¿½ë£º ZDYX <zhangduyixiong@gmail.com>
+// ï¿½Ö·ï¿½ï¿½ë£º jwj <jwjbjg@gmail.com>
+//3.2.2 $w_helpFile modifiï¿½ï¿½
 
 $file_charset = 'GB2312';
 
-$w_allServicesRunning = 'ËùÓÐ·þÎñÕý³£ÔËÐÐÖÐ';
-$w_oneServiceRunning = '%n / %t ¸ö·þÎñÕýÔÚÔËÐÐ';
-$w_allServicesStopped = '%t ¸ö·þÎñ¶¼Ã»ÓÐÔËÐÐ';
+$w_allServicesRunning = 'ï¿½ï¿½ï¿½Ð·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½';
+$w_oneServiceRunning = '%n / %t ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½';
+$w_allServicesStopped = '%t ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½';
 
-$w_serverOffline = '·þÎñÆ÷ÀëÏß(±¾»úÄ£Ê½)';
-$w_serverOnline = '·þÎñÆ÷ÔÚÏß(¿ª·ÅÄ£Ê½)';
+$w_serverOffline = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ä£Ê½)';
+$w_serverOnline = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½Ä£Ê½)';
 
-$w_about = '¹ØÓÚ...';
-$w_helpFile = 'ÎÄ¼þ & ÎÄµµ';
-$w_help = '°ïÖú';
-$w_helpForums = 'Ö§³ÖÂÛÌ³';
-$w_helpUse = '²Ù×÷ËµÃ÷';
-$w_exit = 'ÍË³ö';
-$w_version = '°æ±¾';
-$w_service = '·þÎñ¹ÜÀí';
-$w_services_msc = '·þÎñ¿ØÖÆÃæ°å';
-$w_doc = 'ÎÄµµ';
-$w_cmdWindows = 'ÃüÁîÐÐ´°¿Ú£¨CMD£©';
+$w_about = 'ï¿½ï¿½ï¿½ï¿½...';
+$w_helpFile = 'ï¿½Ä¼ï¿½ & ï¿½Äµï¿½';
+$w_help = 'ï¿½ï¿½ï¿½ï¿½';
+$w_helpForums = 'Ö§ï¿½ï¿½ï¿½ï¿½Ì³';
+$w_helpUse = 'ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½';
+$w_exit = 'ï¿½Ë³ï¿½';
+$w_version = 'ï¿½æ±¾';
+$w_service = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½';
+$w_services_msc = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½';
+$w_doc = 'ï¿½Äµï¿½';
+$w_cmdWindows = 'ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½Ú£ï¿½CMDï¿½ï¿½';
 
 $w_localhost = 'localhost';
 $w_phpmyadmin = 'phpMyAdmin';
 $w_sqlitemanager = 'SQLiteManager';
 $w_wwwDirectory = 'www Ä¿Â¼';
-$w_logFiles = 'ÈÕÖ¾ÎÄ¼þ';
-$w_configFiles = 'ÅäÖÃÎÄ¼þ';
-$w_apacheModules = 'Apache Ä£¿é';
-$w_apacheSettings = 'Apache ÉèÖÃ';
-$w_apacheDefaults = 'Ä¬ÈÏÖ¸Áî';
-$w_phpSettings = 'PHP ÉèÖÃ';
-$w_aliasDirectories = '±ðÃû£¨Alias£©Ä¿Â¼';
-$w_services = '·þÎñ';
+$w_logFiles = 'ï¿½ï¿½Ö¾ï¿½Ä¼ï¿½';
+$w_configFiles = 'ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½';
+$w_apacheModules = 'Apache Ä£ï¿½ï¿½';
+$w_apacheSettings = 'Apache ï¿½ï¿½ï¿½ï¿½';
+$w_apacheDefaults = 'Ä¬ï¿½ï¿½Ö¸ï¿½ï¿½';
+$w_phpSettings = 'PHP ï¿½ï¿½ï¿½ï¿½';
+$w_aliasDirectories = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aliasï¿½ï¿½Ä¿Â¼';
+$w_services = 'ï¿½ï¿½ï¿½ï¿½';
 $w_apache = 'Apache';
-$w_apacheCommand = 'ÔÚ ' . $w_cmdWindows . ' ´ò¿ª ' . $w_apache . '/bin Ä¿Â¼';
+$w_apacheCommand = 'ï¿½ï¿½ ' . $w_cmdWindows . ' ï¿½ï¿½ ' . $w_apache . '/bin Ä¿Â¼';
 $w_apacheDoc = 'Apache '.$w_doc;
 $w_mysql = 'MySQL';
 $w_mysqlDoc = 'MySQL '.$w_doc;
-$w_mysqlSettings = $w_mysql . ' ÉèÖÃ';
-$w_mariaSettings = 'MariaDB ÉèÖÃ';
+$w_mysqlSettings = $w_mysql . ' ï¿½ï¿½ï¿½ï¿½';
+$w_mariaSettings = 'MariaDB ï¿½ï¿½ï¿½ï¿½';
 $w_mariadbDoc = 'MariaDB '.$w_doc;
-$w_startServices = 'Æô¶¯ËùÓÐ·þÎñ';
-$w_stopServices = 'Í£Ö¹ËùÓÐ·þÎñ';
-$w_restartServices = 'ÖØÐÂÆô¶¯ËùÓÐ·þÎñ';
-$w_putOnline = 'ÇÐ»»µ½ÔÚÏß×´Ì¬';
-$w_putOffline = 'ÇÐ»»µ½ÀëÏß×´Ì¬';
+$w_startServices = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð·ï¿½ï¿½ï¿½';
+$w_stopServices = 'Í£Ö¹ï¿½ï¿½ï¿½Ð·ï¿½ï¿½ï¿½';
+$w_restartServices = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð·ï¿½ï¿½ï¿½';
+$w_putOnline = 'ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬';
+$w_putOffline = 'ï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×´Ì¬';
 
-$w_apacheErrorLog = $w_apache . ' ´íÎóÈÕÖ¾';
-$w_apacheAccessLog = $w_apache . ' ·ÃÎÊÈÕÖ¾';
-$w_phpLog = 'PHP ´íÎóÈÕÖ¾';
+$w_apacheErrorLog = $w_apache . ' ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾';
+$w_apacheAccessLog = $w_apache . ' ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾';
+$w_phpLog = 'PHP ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾';
 $w_phpDoc = 'PHP '.$w_doc;
-$w_mysqlLog = 'MySQL ÈÕÖ¾';
-$w_mariadbLog = 'MariaDB ÈÕÖ¾';
-$w_addAlias = 'Ìí¼Ó±ðÃû£¨Alias£©';
-$w_editAlias = '±à¼­±ðÃû£¨Alias£©';
-$w_editHtaccess = '±à¼­ .htaccess';
-$w_deleteAlias = 'É¾³ý±ðÃû£¨Alias£©';
-$w_refresh = 'Ë¢ÐÂ';
-$w_phpExtensions = 'PHP À©Õ¹';
-$w_addExtension = 'Ìí¼ÓÀ©Õ¹';
+$w_mysqlLog = 'MySQL ï¿½ï¿½Ö¾';
+$w_mariadbLog = 'MariaDB ï¿½ï¿½Ö¾';
+$w_addAlias = 'ï¿½ï¿½ï¿½Ó±ï¿½ï¿½ï¿½ï¿½ï¿½Aliasï¿½ï¿½';
+$w_editAlias = 'ï¿½à¼­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aliasï¿½ï¿½';
+$w_editHtaccess = 'ï¿½à¼­ .htaccess';
+$w_deleteAlias = 'É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aliasï¿½ï¿½';
+$w_refresh = 'Ë¢ï¿½ï¿½';
+$w_phpExtensions = 'PHP ï¿½ï¿½Õ¹';
+$w_addExtension = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¹';
 
-$w_startResume = 'Æô¶¯/»Ö¸´·þÎñ';
-$w_pauseService = 'ÔÝÍ£·þÎñ';
-$w_stopService = 'Í£Ö¹·þÎñ';
-$w_restartService = 'ÖØÐÂÆô¶¯·þÎñ';
-$w_testPort80 = '²âÊÔ 80 ¶Ë¿Ú';
-$w_installService = '°²×°·þÎñ';
-$w_removeService = 'Ð¶ÔØ·þÎñ';
-$w_mysqlConsole = $w_mysql . ' ¿ØÖÆÌ¨';
-$w_mysqlCommand =  'ÔÚ ' . $w_cmdWindows . ' ´ò¿ª ' . $w_mysql . '/bin Ä¿Â¼';
+$w_startResume = 'ï¿½ï¿½ï¿½ï¿½/ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½';
+$w_pauseService = 'ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½';
+$w_stopService = 'Í£Ö¹ï¿½ï¿½ï¿½ï¿½';
+$w_restartService = 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½';
+$w_testPort80 = 'ï¿½ï¿½ï¿½ï¿½ 80 ï¿½Ë¿ï¿½';
+$w_installService = 'ï¿½ï¿½×°ï¿½ï¿½ï¿½ï¿½';
+$w_removeService = 'Ð¶ï¿½Ø·ï¿½ï¿½ï¿½';
+$w_mysqlConsole = $w_mysql . ' ï¿½ï¿½ï¿½ï¿½Ì¨';
+$w_mysqlCommand =  'ï¿½ï¿½ ' . $w_cmdWindows . ' ï¿½ï¿½ ' . $w_mysql . '/bin Ä¿Â¼';
 $w_mariadbConsole = 'MariaDB ' . $w_cmdWindows;
-$w_mariadbCommand = 'ÔÚ ' . $w_cmdWindows . ' ´ò¿ª MariaDB/bin Ä¿Â¼';
+$w_mariadbCommand = 'ï¿½ï¿½ ' . $w_cmdWindows . ' ï¿½ï¿½ MariaDB/bin Ä¿Â¼';
 
-$w_noDBMS = 'ÎÞÊý¾Ý¿â¹ÜÀíÏµÍ³£¨DBMS£©';
+$w_noDBMS = 'ï¿½ï¿½ï¿½ï¿½ï¿½Ý¿ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½DBMSï¿½ï¿½';
 
-$w_language = 'ÓïÑÔ';
+$w_language = 'ï¿½ï¿½ï¿½ï¿½';
 
 ?>

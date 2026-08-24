@@ -31,10 +31,10 @@ use function rawurlencode;
  */
 class Common
 {
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     /**
@@ -59,7 +59,6 @@ class Common
     {
         $designerTables = [];
         $db = $db ?? $GLOBALS['db'];
-        // seems to be needed later
         $this->dbi->selectDb($db);
         if ($table === null) {
             $tables = $this->dbi->getTablesFull($db);
@@ -91,7 +90,6 @@ class Common
      */
     public function getColumnsInfo(array $designerTables): array
     {
-        //$this->dbi->selectDb($GLOBALS['db']);
         $tabColumn = [];
 
         foreach ($designerTables as $designerTable) {
@@ -147,8 +145,6 @@ class Common
             }
 
             $row = $this->relation->getForeigners($GLOBALS['db'], $val, '', 'foreign');
-
-            // We do not have access to the foreign keys if the user has partial access to the columns
             if (! isset($row['foreign_keys_data'])) {
                 continue;
             }
@@ -220,7 +216,6 @@ class Common
 
         foreach ($designerTables as $designerTable) {
             $schema = $designerTable->getDatabaseName();
-            // for now, take into account only the first index segment
             foreach (Index::getFromTable($designerTable->getTableName(), $schema) as $index) {
                 if ($unique_only && ! $index->isUnique()) {
                     continue;
@@ -561,10 +556,7 @@ class Common
         $type_T1 = mb_strtoupper($tables[$T1]['ENGINE'] ?? '');
         $tables = $this->dbi->getTablesFull($DB2, $T2);
         $type_T2 = mb_strtoupper($tables[$T2]['ENGINE'] ?? '');
-
-        // native foreign key
         if (ForeignKey::isSupported($type_T1) && ForeignKey::isSupported($type_T2) && $type_T1 == $type_T2) {
-            // relation exists?
             $existrel_foreign = $this->relation->getForeigners($DB2, $T2, '', 'foreign');
             $foreigner = $this->relation->searchColumnInForeigners($existrel_foreign, $F2);
             if ($foreigner && isset($foreigner['constraint'])) {
@@ -573,16 +565,10 @@ class Common
                     __('Error: relationship already exists.'),
                 ];
             }
-
-            // note: in InnoDB, the index does not requires to be on a PRIMARY
-            // or UNIQUE key
-            // improve: check all other requirements for InnoDB relations
             $result = $this->dbi->query(
                 'SHOW INDEX FROM ' . Util::backquote($DB1)
                 . '.' . Util::backquote($T1) . ';'
             );
-
-            // will be use to emphasis prim. keys in the table view
             $index_array1 = [];
             while ($row = $result->fetchAssoc()) {
                 $index_array1[$row['Column_name']] = 1;
@@ -592,7 +578,6 @@ class Common
                 'SHOW INDEX FROM ' . Util::backquote($DB2)
                 . '.' . Util::backquote($T2) . ';'
             );
-            // will be used to emphasis prim. keys in the table view
             $index_array2 = [];
             while ($row = $result->fetchAssoc()) {
                 $index_array2[$row['Column_name']] = 1;
@@ -649,9 +634,6 @@ class Common
             ];
         }
 
-        // no need to recheck if the keys are primary or unique at this point,
-        // this was checked on the interface part
-
         $q = 'INSERT INTO '
             . Util::backquote($relationFeature->database)
             . '.'
@@ -703,7 +685,6 @@ class Common
         $type_T2 = mb_strtoupper($tables[$T2]['ENGINE']);
 
         if (ForeignKey::isSupported($type_T1) && ForeignKey::isSupported($type_T2) && $type_T1 == $type_T2) {
-            // InnoDB
             $existrel_foreign = $this->relation->getForeigners($DB2, $T2, '', 'foreign');
             $foreigner = $this->relation->searchColumnInForeigners($existrel_foreign, $F2);
 
@@ -727,8 +708,6 @@ class Common
                 __('Error: Relational features are disabled!'),
             ];
         }
-
-        // internal relations
         $delete_query = 'DELETE FROM '
             . Util::backquote($relationFeature->database) . '.'
             . Util::backquote($relationFeature->relation) . ' WHERE '

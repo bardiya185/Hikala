@@ -60,7 +60,7 @@ class Text_Plain_Xml extends TransformationsPlugin
         . '</pre></code>';
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the plugin`s MIME type

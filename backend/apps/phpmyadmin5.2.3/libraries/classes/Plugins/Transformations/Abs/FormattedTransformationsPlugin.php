@@ -48,7 +48,7 @@ abstract class FormattedTransformationsPlugin extends TransformationsPlugin
             . '" sandbox=""></iframe>';
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

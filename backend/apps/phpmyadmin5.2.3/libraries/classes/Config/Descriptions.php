@@ -41,7 +41,7 @@ class Descriptions
         );
         $value = self::getString($key, $type);
 
-        /* Fallback to path for name and empty string for description and comment */
+        
         if ($value === null) {
             if ($type === 'name') {
                 $value = $path;
@@ -58,7 +58,7 @@ class Descriptions
      */
     private static function getComments(): array
     {
-        /** @var array<string, string> $commentsMap */
+        
         static $commentsMap = [];
 
         if ($commentsMap !== []) {
@@ -77,7 +77,7 @@ class Descriptions
      */
     private static function getDescriptions(): array
     {
-        /** @var array<string, string> $descriptionsMap */
+        
         static $descriptionsMap = [];
 
         if ($descriptionsMap !== []) {
@@ -606,7 +606,7 @@ class Descriptions
      */
     private static function getNames(): array
     {
-        /** @var array<string, string> $namesMap */
+        
         static $namesMap = [];
 
         if ($namesMap !== []) {

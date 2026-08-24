@@ -30,7 +30,7 @@ class Translator
      */
     private static $translator;
 
-    /** @var string */
+    
     private static $locale = '';
 
     /**

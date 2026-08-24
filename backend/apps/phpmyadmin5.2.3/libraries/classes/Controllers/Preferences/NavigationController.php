@@ -20,13 +20,13 @@ use function ltrim;
 
 class NavigationController extends AbstractController
 {
-    /** @var UserPreferences */
+    
     private $userPreferences;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Config */
+    
     private $config;
 
     public function __construct(
@@ -52,7 +52,6 @@ class NavigationController extends AbstractController
         $formDisplay = new NaviForm($cf, 1);
 
         if (isset($_POST['revert'])) {
-            // revert erroneous fields to their default values
             $formDisplay->fixErrors();
             $this->redirect('/preferences/navigation');
 
@@ -61,14 +60,10 @@ class NavigationController extends AbstractController
 
         $error = null;
         if ($formDisplay->process(false) && ! $formDisplay->hasErrors()) {
-            // Load 2FA settings
             $twoFactor = new TwoFactor($cfg['Server']['user']);
-            // save settings
             $result = $this->userPreferences->save($cf->getConfigArray());
-            // save back the 2FA setting only
             $twoFactor->save();
             if ($result === true) {
-                // reload config
                 $this->config->loadUserPreferences();
                 $tabHash = $_POST['tab_hash'] ?? null;
                 $hash = ltrim($tabHash, '#');

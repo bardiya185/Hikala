@@ -324,8 +324,8 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         if ($zero === null) {
             $zero = str_repeat("\x00", 32);
         }
-        /** @var string $zero */
-        /** @var string $str */
+        
+        
         $str = self::fe_tobytes($f);
         return !self::verify_32($str, (string) $zero);
     }
@@ -780,11 +780,11 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $f5_2 = $f5 << 1;
         $f6_2 = $f6 << 1;
         $f7_2 = $f7 << 1;
-        $f5_38 = self::mul($f5, 38, 6); /* 1.959375*2^30 */
-        $f6_19 = self::mul($f6, 19, 5); /* 1.959375*2^30 */
-        $f7_38 = self::mul($f7, 38, 6); /* 1.959375*2^30 */
-        $f8_19 = self::mul($f8, 19, 5); /* 1.959375*2^30 */
-        $f9_38 = self::mul($f9, 38, 6); /* 1.959375*2^30 */
+        $f5_38 = self::mul($f5, 38, 6); 
+        $f6_19 = self::mul($f6, 19, 5); 
+        $f7_38 = self::mul($f7, 38, 6); 
+        $f8_19 = self::mul($f8, 19, 5); 
+        $f9_38 = self::mul($f9, 38, 6); 
         $f0f0 = self::mul($f0, $f0, 24);
         $f0f1_2 = self::mul($f0_2, $f1, 24);
         $f0f2_2 = self::mul($f0_2, $f2, 24);
@@ -1169,10 +1169,10 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
                 $a = str_pad($a, 256, '0', STR_PAD_RIGHT);
             }
         }
-        /** @var array<int, int> $r */
+        
         $r = array();
 
-        /** @var int $i */
+        
         for ($i = 0; $i < 256; ++$i) {
             $r[$i] = (int) (
                 1 & (
@@ -1234,48 +1234,48 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
 
         # fe_sq(u,h->Y);
         # fe_mul(v,u,d);
-        # fe_sub(u,u,h->Z);       /* u = y^2-1 */
-        # fe_add(v,v,h->Z);       /* v = dy^2+1 */
+        # fe_sub(u,u,h->Z);       
+        # fe_add(v,v,h->Z);       
         $u = self::fe_sq($h->Y);
-        /** @var ParagonIE_Sodium_Core_Curve25519_Fe $d */
+        
         $v = self::fe_mul($u, $d);
-        $u = self::fe_sub($u, $h->Z); /* u =  y^2 - 1 */
-        $v = self::fe_add($v, $h->Z); /* v = dy^2 + 1 */
+        $u = self::fe_sub($u, $h->Z); 
+        $v = self::fe_add($v, $h->Z); 
 
         # fe_sq(v3,v);
-        # fe_mul(v3,v3,v);        /* v3 = v^3 */
+        # fe_mul(v3,v3,v);        
         # fe_sq(h->X,v3);
         # fe_mul(h->X,h->X,v);
-        # fe_mul(h->X,h->X,u);    /* x = uv^7 */
+        # fe_mul(h->X,h->X,u);    
         $v3 = self::fe_sq($v);
-        $v3 = self::fe_mul($v3, $v); /* v3 = v^3 */
+        $v3 = self::fe_mul($v3, $v); 
         $h->X = self::fe_sq($v3);
         $h->X = self::fe_mul($h->X, $v);
-        $h->X = self::fe_mul($h->X, $u); /* x = uv^7 */
+        $h->X = self::fe_mul($h->X, $u); 
 
-        # fe_pow22523(h->X,h->X); /* x = (uv^7)^((q-5)/8) */
+        # fe_pow22523(h->X,h->X); 
         # fe_mul(h->X,h->X,v3);
-        # fe_mul(h->X,h->X,u);    /* x = uv^3(uv^7)^((q-5)/8) */
-        $h->X = self::fe_pow22523($h->X); /* x = (uv^7)^((q-5)/8) */
+        # fe_mul(h->X,h->X,u);    
+        $h->X = self::fe_pow22523($h->X); 
         $h->X = self::fe_mul($h->X, $v3);
-        $h->X = self::fe_mul($h->X, $u); /* x = uv^3(uv^7)^((q-5)/8) */
+        $h->X = self::fe_mul($h->X, $u); 
 
         # fe_sq(vxx,h->X);
         # fe_mul(vxx,vxx,v);
-        # fe_sub(check,vxx,u);    /* vx^2-u */
+        # fe_sub(check,vxx,u);    
         $vxx = self::fe_sq($h->X);
         $vxx = self::fe_mul($vxx, $v);
-        $check = self::fe_sub($vxx, $u); /* vx^2 - u */
+        $check = self::fe_sub($vxx, $u); 
 
         # if (fe_isnonzero(check)) {
-        #     fe_add(check,vxx,u);  /* vx^2+u */
+        #     fe_add(check,vxx,u);  
         #     if (fe_isnonzero(check)) {
         #         return -1;
         #     }
         #     fe_mul(h->X,h->X,sqrtm1);
         # }
         if (self::fe_isnonzero($check)) {
-            $check = self::fe_add($vxx, $u); /* vx^2 + u */
+            $check = self::fe_add($vxx, $u); 
             if (self::fe_isnonzero($check)) {
                 throw new RangeException('Internal check failed.');
             }
@@ -1450,7 +1450,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         if ($d2 === null) {
             $d2 = ParagonIE_Sodium_Core_Curve25519_Fe::fromArray(self::$d2);
         }
-        /** @var ParagonIE_Sodium_Core_Curve25519_Fe $d2 */
+        
         $r = new ParagonIE_Sodium_Core_Curve25519_Ge_Cached();
         $r->YplusX = self::fe_add($p->Y, $p->X);
         $r->YminusX = self::fe_sub($p->Y, $p->X);
@@ -1655,7 +1655,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         static $base = null;
         if ($base === null) {
             $base = array();
-            /** @var int $i */
+            
             foreach (self::$base as $i => $bas) {
                 for ($j = 0; $j < 8; ++$j) {
                     $base[$i][$j] = new ParagonIE_Sodium_Core_Curve25519_Ge_Precomp(
@@ -1666,7 +1666,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
                 }
             }
         }
-        /** @var array<int, array<int, ParagonIE_Sodium_Core_Curve25519_Ge_Precomp>> $base */
+        
         if (!is_int($pos)) {
             throw new InvalidArgumentException('Position must be an integer');
         }
@@ -1762,10 +1762,10 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         ParagonIE_Sodium_Core_Curve25519_Ge_P3 $A,
         $b
     ) {
-        /** @var array<int, ParagonIE_Sodium_Core_Curve25519_Ge_Cached> $Ai */
+        
         $Ai = array();
 
-        /** @var array<int, ParagonIE_Sodium_Core_Curve25519_Ge_Precomp> $Bi */
+        
         static $Bi = array();
         if (!$Bi) {
             for ($i = 0; $i < 8; ++$i) {
@@ -1787,9 +1787,9 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
 
         # slide(aslide,a);
         # slide(bslide,b);
-        /** @var array<int, int> $aslide */
+        
         $aslide = self::slide($a);
-        /** @var array<int, int> $bslide */
+        
         $bslide = self::slide($b);
 
         # ge_p3_to_cached(&Ai[0],A);
@@ -1851,7 +1851,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
 
             # if (bslide[i] > 0) {
             if ($bslide[$i] > 0) {
-                /** @var int $index */
+                
                 $index = (int) floor($bslide[$i] / 2);
                 # ge_p1p1_to_p3(&u,&t);
                 # ge_madd(&t,&u,&Bi[bslide[i]/2]);
@@ -1859,7 +1859,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
                 $t = self::ge_madd($t, $u, $Bi[$index]);
             # } else if (bslide[i] < 0) {
             } elseif ($bslide[$i] < 0) {
-                /** @var int $index */
+                
                 $index = (int) floor(-$bslide[$i] / 2);
                 # ge_p1p1_to_p3(&u,&t);
                 # ge_msub(&t,&u,&Bi[(-bslide[i])/2]);
@@ -1887,57 +1887,57 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
     {
         $e = array_fill(0, 64, 0);
 
-        /** @var ParagonIE_Sodium_Core_Curve25519_Ge_Cached[] $pi */
+        
         $pi = array();
 
-        //        ge25519_p3_to_cached(&pi[1 - 1], p);   /* p */
+        //        ge25519_p3_to_cached(&pi[1 - 1], p);   
         $pi[0] = self::ge_p3_to_cached($p);
 
         //        ge25519_p3_dbl(&t2, p);
         //        ge25519_p1p1_to_p3(&p2, &t2);
-        //        ge25519_p3_to_cached(&pi[2 - 1], &p2); /* 2p = 2*p */
+        //        ge25519_p3_to_cached(&pi[2 - 1], &p2); 
         $t2 = self::ge_p3_dbl($p);
         $p2 = self::ge_p1p1_to_p3($t2);
         $pi[1] = self::ge_p3_to_cached($p2);
 
         //        ge25519_add_cached(&t3, p, &pi[2 - 1]);
         //        ge25519_p1p1_to_p3(&p3, &t3);
-        //        ge25519_p3_to_cached(&pi[3 - 1], &p3); /* 3p = 2p+p */
+        //        ge25519_p3_to_cached(&pi[3 - 1], &p3); 
         $t3 = self::ge_add($p, $pi[1]);
         $p3 = self::ge_p1p1_to_p3($t3);
         $pi[2] = self::ge_p3_to_cached($p3);
 
         //        ge25519_p3_dbl(&t4, &p2);
         //        ge25519_p1p1_to_p3(&p4, &t4);
-        //        ge25519_p3_to_cached(&pi[4 - 1], &p4); /* 4p = 2*2p */
+        //        ge25519_p3_to_cached(&pi[4 - 1], &p4); 
         $t4 = self::ge_p3_dbl($p2);
         $p4 = self::ge_p1p1_to_p3($t4);
         $pi[3] = self::ge_p3_to_cached($p4);
 
         //        ge25519_add_cached(&t5, p, &pi[4 - 1]);
         //        ge25519_p1p1_to_p3(&p5, &t5);
-        //        ge25519_p3_to_cached(&pi[5 - 1], &p5); /* 5p = 4p+p */
+        //        ge25519_p3_to_cached(&pi[5 - 1], &p5); 
         $t5 = self::ge_add($p, $pi[3]);
         $p5 = self::ge_p1p1_to_p3($t5);
         $pi[4] = self::ge_p3_to_cached($p5);
 
         //        ge25519_p3_dbl(&t6, &p3);
         //        ge25519_p1p1_to_p3(&p6, &t6);
-        //        ge25519_p3_to_cached(&pi[6 - 1], &p6); /* 6p = 2*3p */
+        //        ge25519_p3_to_cached(&pi[6 - 1], &p6); 
         $t6 = self::ge_p3_dbl($p3);
         $p6 = self::ge_p1p1_to_p3($t6);
         $pi[5] = self::ge_p3_to_cached($p6);
 
         //        ge25519_add_cached(&t7, p, &pi[6 - 1]);
         //        ge25519_p1p1_to_p3(&p7, &t7);
-        //        ge25519_p3_to_cached(&pi[7 - 1], &p7); /* 7p = 6p+p */
+        //        ge25519_p3_to_cached(&pi[7 - 1], &p7); 
         $t7 = self::ge_add($p, $pi[5]);
         $p7 = self::ge_p1p1_to_p3($t7);
         $pi[6] = self::ge_p3_to_cached($p7);
 
         //        ge25519_p3_dbl(&t8, &p4);
         //        ge25519_p1p1_to_p3(&p8, &t8);
-        //        ge25519_p3_to_cached(&pi[8 - 1], &p8); /* 8p = 2*4p */
+        //        ge25519_p3_to_cached(&pi[8 - 1], &p8); 
         $t8 = self::ge_p3_dbl($p4);
         $p8 = self::ge_p1p1_to_p3($t8);
         $pi[7] = self::ge_p3_to_cached($p8);
@@ -1951,8 +1951,8 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
             $e[($i << 1)    ] =  self::chrToInt($a[$i]) & 15;
             $e[($i << 1) + 1] = (self::chrToInt($a[$i]) >> 4) & 15;
         }
-        //        /* each e[i] is between 0 and 15 */
-        //        /* e[63] is between 0 and 7 */
+        //        
+        //        
 
         //        carry = 0;
         //        for (i = 0; i < 63; ++i) {
@@ -1969,7 +1969,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
             $e[$i] -= $carry << 4;
         }
         //        e[63] += carry;
-        //        /* each e[i] is between -8 and 8 */
+        //        
         $e[63] += $carry;
 
         //        ge25519_p3_0(h);
@@ -1999,8 +1999,8 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
             $s = self::ge_p1p1_to_p2($r);
             $r = self::ge_p2_dbl($s);
 
-            // ge25519_p1p1_to_p3(h, &r);  /* *16 */
-            $h = self::ge_p1p1_to_p3($r); /* *16 */
+            // ge25519_p1p1_to_p3(h, &r);  
+            $h = self::ge_p1p1_to_p3($r); 
         }
 
         //        ge25519_cmov8_cached(&t, pi, e[i]);
@@ -2023,7 +2023,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
      */
     public static function ge_scalarmult_base($a)
     {
-        /** @var array<int, int> $e */
+        
         $e = array();
         $r = new ParagonIE_Sodium_Core_Curve25519_Ge_P1p1();
 
@@ -2122,7 +2122,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
         $c10 = 2097151 & (self::load_3(self::substr($c, 26, 3)) >> 2);
         $c11 = (self::load_4(self::substr($c, 28, 4)) >> 7);
 
-        /* Can't really avoid the pyramid here: */
+        
         $s0 = $c0 + self::mul($a0, $b0, 24);
         $s1 = $c1 + self::mul($a0, $b1, 24) + self::mul($a1, $b0, 24);
         $s2 = $c2 + self::mul($a0, $b2, 24) + self::mul($a1, $b1, 24) + self::mul($a2, $b0, 24);
@@ -2866,7 +2866,7 @@ abstract class ParagonIE_Sodium_Core_Curve25519 extends ParagonIE_Sodium_Core_Cu
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1
         );
 
-        /** @var array<int, ParagonIE_Sodium_Core_Curve25519_Ge_Cached> $Ai size 8 */
+        
         $Ai = array();
 
         # ge_p3_to_cached(&Ai[0], A);

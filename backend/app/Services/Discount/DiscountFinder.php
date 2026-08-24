@@ -14,8 +14,6 @@ class DiscountFinder
     public function find(ProductVariant $variant): Collection
     {
         $discounts = collect();
-    
-        // ✅ از relation cache استفاده می‌کنیم
         $discounts = $discounts->merge(
             $variant->relationLoaded('discounts')
                 ? $variant->discounts
@@ -27,14 +25,11 @@ class DiscountFinder
             : $variant->product()->first();
     
         if ($product) {
-            // ✅ Product discounts
             $discounts = $discounts->merge(
                 $product->relationLoaded('discounts')
                     ? $product->discounts
                     : $product->discounts()->active()->get()
             );
-    
-            // ✅ Category discounts
             $categories = $product->relationLoaded('categories')
                 ? $product->categories
                 : $product->categories()->get();
@@ -46,8 +41,6 @@ class DiscountFinder
                         : $category->discounts()->active()->get()
                 );
             }
-    
-            // ✅ Brand discounts
             $brand = $product->relationLoaded('brand')
                 ? $product->brand
                 : $product->brand()->first();

@@ -4,10 +4,10 @@ namespace CodeLts\U2F\U2FServer;
 
 class U2FServer
 {
-    /** Constant for the version of the u2f protocol */
+    
     public const VERSION = 'U2F_V2';
 
-    /** @internal */
+    
     public const PUBKEY_LEN = 65;
 
     /*
@@ -250,10 +250,10 @@ class U2FServer
         }
 
         // Set default values to null, so we get fails by default
-        /** @var object|null $req */
+        
         $req = null;
 
-        /** @var object|null $reg */
+        
         $reg = null;
 
         // Extract client response data
@@ -317,7 +317,7 @@ class U2FServer
         if (openssl_verify($dataToVerify, $signature, $pemKey, 'sha256') === 1) {
             $ctr = unpack('Nctr', substr($signData, 1, 4));
             $counter = $ctr['ctr'];
-            /* TODO: wrap-around should be handled somehow.. */
+            
             if ($counter > $reg->counter) {
                 $reg->counter = $counter;
                 return $reg;

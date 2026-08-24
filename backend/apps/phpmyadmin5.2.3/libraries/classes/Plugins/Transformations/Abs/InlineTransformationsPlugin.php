@@ -62,7 +62,7 @@ abstract class InlineTransformationsPlugin extends TransformationsPlugin
             . '" alt="[' . htmlspecialchars($buffer) . ']" width="320" height="240">';
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

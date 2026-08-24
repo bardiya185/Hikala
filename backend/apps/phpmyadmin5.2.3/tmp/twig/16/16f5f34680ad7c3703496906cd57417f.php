@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* filter.twig */
+
 class __TwigTemplate_5b99d2041706733036093a10132aedd9 extends Template
 {
     private $source;
@@ -34,20 +34,16 @@ class __TwigTemplate_5b99d2041706733036093a10132aedd9 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<div class=\"card mb-3\" id=\"tableFilter\">
   <div class=\"card-header\">";
 yield _gettext("Filters");
-        // line 2
         yield "</div>
   <div class=\"card-body row row-cols-lg-auto gy-1 gx-3 align-items-center\">
     <label class=\"col-12 col-form-label\" for=\"filterText\">";
 yield _gettext("Containing the word:");
-        // line 4
         yield "</label>
     <div class=\"col-12\">
       <input class=\"form-control\" name=\"filterText\" type=\"text\" id=\"filterText\" value=\"";
-        // line 6
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["filter_value"] ?? null), "html", null, true);
         yield "\">
     </div>

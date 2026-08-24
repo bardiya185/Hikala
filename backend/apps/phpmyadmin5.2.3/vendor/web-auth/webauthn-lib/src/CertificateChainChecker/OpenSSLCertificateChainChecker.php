@@ -92,7 +92,6 @@ final class OpenSSLCertificateChainChecker implements CertificateChainChecker
         $rehashProcess = new Process(['openssl', 'rehash', $caDirname]);
         $rehashProcess->run();
         while ($rehashProcess->isRunning()) {
-            //Just wait
         }
         if (!$rehashProcess->isSuccessful()) {
             throw new InvalidArgumentException('Invalid certificate or certificate chain');
@@ -124,7 +123,6 @@ final class OpenSSLCertificateChainChecker implements CertificateChainChecker
         if ($hasCrls) {
             array_unshift($processArguments, '-crl_check');
             array_unshift($processArguments, '-crl_check_all');
-            //array_unshift($processArguments, '-crl_download');
             array_unshift($processArguments, '-extended_crl');
         }
         array_unshift($processArguments, 'openssl', 'verify');
@@ -132,7 +130,6 @@ final class OpenSSLCertificateChainChecker implements CertificateChainChecker
         $process = new Process($processArguments);
         $process->run();
         while ($process->isRunning()) {
-            //Just wait
         }
 
         foreach ($filenames as $filename) {
@@ -201,7 +198,6 @@ final class OpenSSLCertificateChainChecker implements CertificateChainChecker
         $rehashProcess = new Process(['rm', '-rf', $dirname]);
         $rehashProcess->run();
         while ($rehashProcess->isRunning()) {
-            //Just wait
         }
     }
 

@@ -81,13 +81,13 @@ class SearchController extends AbstractController
      */
     private $foreigners;
 
-    /** @var Search */
+    
     private $search;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -120,29 +120,20 @@ class SearchController extends AbstractController
      */
     private function loadTableInfo(): void
     {
-        // Gets the list and number of columns
         $columns = $this->dbi->getColumns($this->db, $this->table, true);
-        // Get details about the geometry functions
         $geom_types = Gis::getDataTypes();
 
         foreach ($columns as $row) {
-            // set column name
             $this->columnNames[] = $row['Field'];
 
             $type = (string) $row['Type'];
-            // before any replacement
             $this->originalColumnTypes[] = mb_strtolower($type);
-            // check whether table contains geometric columns
             if (in_array($type, $geom_types)) {
                 $this->geomColumnFlag = true;
             }
-
-            // reformat mysql query output
             if (strncasecmp($type, 'set', 3) == 0 || strncasecmp($type, 'enum', 4) == 0) {
                 $type = str_replace(',', ', ', $type);
             } else {
-                // strip the "BINARY" attribute, except if we find "BINARY(" because
-                // this would be a BINARY or VARBINARY column type
                 if (! preg_match('@BINARY[\(]@i', $type)) {
                     $type = str_ireplace('BINARY', '', $type);
                 }
@@ -162,8 +153,6 @@ class SearchController extends AbstractController
                 ? $row['Collation']
                 : '';
         }
-
-        // Retrieve foreign keys
         $this->foreigners = $this->relation->getForeigners($this->db, $this->table);
     }
 
@@ -222,7 +211,6 @@ class SearchController extends AbstractController
         $result = $this->dbi->query($row_info_query . ';');
         $fields_meta = $this->dbi->getFieldsMeta($result);
         while ($row = $result->fetchAssoc()) {
-            // for bit fields we need to convert them to printable form
             $i = 0;
             foreach ($row as $col => $val) {
                 if (isset($fields_meta[$i]) && $fields_meta[$i]->isMappedTypeBit) {
@@ -342,11 +330,9 @@ class SearchController extends AbstractController
     {
         $selected_operator = ($_POST['criteriaColumnOperators'][$search_index] ?? '');
         $entered_value = ($_POST['criteriaValues'] ?? '');
-        //Gets column's type and collation
         $type = $this->columnTypes[$column_index];
         $collation = $this->columnCollations[$column_index];
         $cleanType = preg_replace('@\(.*@s', '', $type);
-        //Gets column's comparison operators depending on column type
         $typeOperators = $this->dbi->types->getTypeOperatorsHtml(
             $cleanType,
             $this->columnNullFlags[$column_index],
@@ -356,7 +342,6 @@ class SearchController extends AbstractController
             'search_index' => $search_index,
             'type_operators' => $typeOperators,
         ]);
-        //Gets link to browse foreign data(if any) and criteria inputbox
         $foreignData = $this->relation->getForeignData(
             $this->foreigners,
             $this->columnNames[$column_index],

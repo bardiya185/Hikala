@@ -139,12 +139,8 @@ class Error extends Message
         $this->setMessage($errstr, false);
         $this->setFile($errfile);
         $this->setLine($errline);
-
-        // This function can be disabled in php.ini
         if (function_exists('debug_backtrace')) {
             $backtrace = @debug_backtrace();
-            // remove last three calls:
-            // debug_backtrace(), handleError() and addError()
             $backtrace = array_slice($backtrace, 3);
         } else {
             $backtrace = [];
@@ -172,15 +168,15 @@ class Error extends Message
         ];
 
         foreach ($backtrace as $idx => $step) {
-            /* Create new backtrace entry */
+            
             $result[$idx] = [];
 
-            /* Make path relative */
+            
             if (isset($step['file'])) {
                 $result[$idx]['file'] = self::relPath($step['file']);
             }
 
-            /* Store members we want */
+            
             foreach ($members as $name) {
                 if (! isset($step[$name])) {
                     continue;
@@ -189,7 +185,7 @@ class Error extends Message
                 $result[$idx][$name] = $step[$name];
             }
 
-            /* Store simplified args */
+            
             if (! isset($step['args'])) {
                 continue;
             }
@@ -520,7 +516,7 @@ class Error extends Message
     {
         $dest = @realpath($path);
 
-        /* Probably affected by open_basedir */
+        
         if ($dest === false) {
             return basename($path);
         }

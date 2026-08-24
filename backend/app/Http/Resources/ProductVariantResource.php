@@ -29,8 +29,6 @@ class ProductVariantResource extends JsonResource
             'stock' => $this->stock,
             'max_order_quantity' => $this->max_order_quantity,
             'weight' => $this->weight,
-    
-            // ✅ اضافه شد - برای انتخاب درست در فرانت
             'is_default' => $this->is_default,
             'is_active' => $this->is_active,
     

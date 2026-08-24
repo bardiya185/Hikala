@@ -10,7 +10,6 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            // ===== اطلاعات پایه =====
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
@@ -26,8 +25,6 @@ class ProductResource extends JsonResource
             'is_active' => $this->is_active,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-
-            // ===== 💰 اطلاعات قیمت و تخفیف (از ProductService میاد) =====
             'pricing' => $this->when(
                 isset($this->_final_price),
                 fn() => [
@@ -38,8 +35,6 @@ class ProductResource extends JsonResource
                     'has_discount' => ($this->_discount_percent ?? 0) > 0,
                 ]
             ),
-
-            // ===== 🎯 اطلاعات کمپین (داینامیک) =====
             'campaign' => $this->when(
                 isset($this->_campaign_slug) && $this->_campaign_slug,
                 fn() => [
@@ -50,8 +45,6 @@ class ProductResource extends JsonResource
                     'ends_at' => $this->_campaign_ends_at,
                 ]
             ),
-
-            // ===== 🔗 روابط =====
             'brand' => new BrandResource($this->whenLoaded('brand')),
 
             'categories' => ProductCategoryResource::collection(
@@ -69,8 +62,6 @@ class ProductResource extends JsonResource
             'discounts' => DiscountResource::collection(
                 $this->whenLoaded('discounts')
             ),
-
-            // ===== ⭐ نظرات =====
             'reviews_count' => $this->whenCounted('approvedReviews'),
             'reviews' => ReviewResource::collection(
                 $this->whenLoaded('approvedReviews')

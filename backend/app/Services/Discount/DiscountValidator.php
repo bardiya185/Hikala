@@ -17,16 +17,11 @@ class DiscountValidator
         int $quantity = 1
     ): bool
     {
-
-        // Check active status
         if (!$discount->is_active) {
 
             return false;
 
         }
-
-
-        // Check start date
         if (
             $discount->starts_at &&
             now()->lt($discount->starts_at)
@@ -35,9 +30,6 @@ class DiscountValidator
             return false;
 
         }
-
-
-        // Check end date
         if (
             $discount->ends_at &&
             now()->gt($discount->ends_at)
@@ -46,9 +38,6 @@ class DiscountValidator
             return false;
 
         }
-
-
-        // Check total quantity limit
         if (
             $discount->quantity_limit &&
             (
@@ -76,42 +65,24 @@ class DiscountValidator
         int $quantity = 1
     ): bool
     {
-
-        // Guest users have no personal limit
         if (!$user) {
 
             return true;
 
         }
-
-
-
-        // Find user limit
         $limit = $discount
             ->userLimits()
             ->where('user_id', $user->id)
             ->first();
-
-
-
-        // No custom limit
         if (!$limit) {
 
             return true;
 
         }
-
-
-
-        // Calculate previous usage
         $used = $discount
             ->usages()
             ->where('user_id', $user->id)
             ->sum('quantity');
-
-
-
-        // Check user limit
         if (
             ($used + $quantity)
             > $limit->max_quantity

@@ -1,12 +1,4 @@
 <?php
-// 3.2.0 - txtProjects
-// 3.2.1 - defaultDBMS - HelpMySQLMariaDB
-// 3.2.5 - documentation-of ajouté pour les langues le nécessitant
-// pour le Français est identique à documentation
-// 3.2.6 - txtNoHosts
-// 3.2.8 - phpNotExists - txtProjectsLink - phpExtensions - phpVersionsUse
-// 3.3.0 - txtPathNoSlash
-// 3.3.2 - txtSlashEnd
 
 $langues = array(
 	'langue' => 'Español',

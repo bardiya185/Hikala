@@ -43,7 +43,7 @@ class YamlReferenceDumper
                 throw new \UnexpectedValueException(sprintf('Unable to find node at path "%s.%s".', $rootNode->getName(), $path));
             }
 
-            /** @var NodeInterface[] $children */
+            
             $children = $node instanceof PrototypedArrayNode ? $this->getPrototypeChildren($node) : $node->getChildren();
 
             foreach ($children as $child) {

@@ -62,10 +62,10 @@ class Charsets
      */
     private static $serverCharset = null;
 
-    /** @var array<string, Charset> */
+    
     private static $charsets = [];
 
-    /** @var array<string, array<string, Collation>> */
+    
     private static $collations = [];
 
     /**
@@ -76,7 +76,7 @@ class Charsets
      */
     private static function loadCharsets(DatabaseInterface $dbi, bool $disableIs): void
     {
-        /* Data already loaded */
+        
         if (count(self::$charsets) > 0) {
             return;
         }
@@ -109,7 +109,7 @@ class Charsets
      */
     private static function loadCollations(DatabaseInterface $dbi, bool $disableIs): void
     {
-        /* Data already loaded */
+        
         if (count(self::$collations) > 0) {
             return;
         }
@@ -172,16 +172,7 @@ class Charsets
         }
 
         self::$serverCharset = self::$charsets[$serverCharset] ?? null;
-
-        // MySQL 8.0.11+ fallback, issue #16931
         if (self::$serverCharset === null && $serverCharset === 'utf8mb3') {
-            // See: https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-11.html#mysqld-8-0-11-charset
-            // The utf8mb3 character set will be replaced by utf8mb4 in a future MySQL version.
-            // The utf8 character set is currently an alias for utf8mb3,
-            // but will at that point become a reference to utf8mb4.
-            // To avoid ambiguity about the meaning of utf8,
-            // consider specifying utf8mb4 explicitly for character set references instead of utf8.
-            // Warning: #3719 'utf8' is currently an alias for the character set UTF8MB3 [...]
             return self::$charsets['utf8'];
         }
 

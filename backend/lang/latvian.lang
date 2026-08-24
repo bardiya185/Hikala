@@ -1,12 +1,5 @@
 <?php
-//3.0.7 - $w_mariadbConsole - $w_mariadbLog - $w_mariaSettings
-//        $w_apacheDoc - $w_mysqlDoc - $w_mariadbDoc - $w_phpDoc - $w_doc
-//3.0.8 - $w_noDBMS
-//3.1.1   $w_cmdWindows - $w_mysqlCommand - $w_mariadbCommand - $w_apacheCommand - $w_services_msc
-//3.2.0	  $w_helpForums - $w_helpUse
-//3.2.1   $w_apacheSettings - $w_apacheDefaults
-//3.2.2   $w_helpFile modifié
-//3.2.10  $file_charset
+//3.2.2   $w_helpFile modifiï¿½
 
 $file_charset = 'iso-8859-1';
 

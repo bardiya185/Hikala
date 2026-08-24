@@ -6,8 +6,6 @@
 	Websites:http://hasaneryilmaz.blogspot.com
 
 */
-
-//3.0.7 VirtualHostPort - VirtualPortNotExist - VirtualPortExist
 $langues = array(
 	'langue' => 'Türkçe',
 	'locale' => 'turkish',

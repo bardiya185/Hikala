@@ -122,8 +122,6 @@ final class ReedSolomonCodec
         $this->padding = $padding;
         $this->alphaTo = SplFixedArray::fromArray(array_fill(0, $this->blockSize + 1, 0), false);
         $this->indexOf = SplFixedArray::fromArray(array_fill(0, $this->blockSize + 1, 0), false);
-
-        // Generate galous field lookup table
         $this->indexOf[0] = $this->blockSize;
         $this->alphaTo[$this->blockSize] = 0;
 
@@ -145,14 +143,10 @@ final class ReedSolomonCodec
         if (1 !== $sr) {
             throw new RuntimeException('Field generator polynomial is not primitive');
         }
-
-        // Form RS code generator polynomial from its roots
         $this->generatorPoly = SplFixedArray::fromArray(array_fill(0, $numRoots + 1, 0), false);
         $this->firstRoot = $firstRoot;
         $this->primitive = $primitive;
         $this->numRoots = $numRoots;
-
-        // Find prim-th root of 1, used in decoding
         for ($iPrimitive = 1; ($iPrimitive % $primitive) !== 0; $iPrimitive += $this->blockSize) {
         }
 
@@ -175,8 +169,6 @@ final class ReedSolomonCodec
 
             $this->generatorPoly[$j] = $this->alphaTo[$this->modNn($this->indexOf[$this->generatorPoly[0]] + $root)];
         }
-
-        // Convert generator poly to index form for quicker encoding
         for ($i = 0; $i <= $numRoots; ++$i) {
             $this->generatorPoly[$i] = $this->indexOf[$this->generatorPoly[$i]];
         }
@@ -197,7 +189,6 @@ final class ReedSolomonCodec
             $feedback = $this->indexOf[$data[$i] ^ $parity[0]];
 
             if ($feedback !== $this->blockSize) {
-                // Feedback term is non-zero
                 $feedback = $this->modNn($this->blockSize - $this->generatorPoly[$this->numRoots] + $feedback);
 
                 for ($j = 1; $j < $this->numRoots; ++$j) {
@@ -224,7 +215,6 @@ final class ReedSolomonCodec
      */
     public function decode(SplFixedArray $data, SplFixedArray $erasures = null) : ?int
     {
-        // This speeds up the initialization a bit.
         $numRootsPlusOne = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0), false);
         $numRoots = SplFixedArray::fromArray(array_fill(0, $this->numRoots, 0), false);
 
@@ -236,8 +226,6 @@ final class ReedSolomonCodec
         $loc = clone $numRoots;
 
         $numErasures = (null !== $erasures ? count($erasures) : 0);
-
-        // Form the Syndromes; i.e., evaluate data(x) at roots of g(x)
         $syndromes = SplFixedArray::fromArray(array_fill(0, $this->numRoots, $data[0]), false);
 
         for ($i = 1; $i < $this->blockSize - $this->padding; ++$i) {
@@ -251,8 +239,6 @@ final class ReedSolomonCodec
                 }
             }
         }
-
-        // Convert syndromes to index form, checking for nonzero conditions
         $syndromeError = 0;
 
         for ($i = 0; $i < $this->numRoots; ++$i) {
@@ -261,15 +247,12 @@ final class ReedSolomonCodec
         }
 
         if (! $syndromeError) {
-            // If syndrome is zero, data[] is a codeword and there are no errors to correct, so return data[]
-            // unmodified.
             return 0;
         }
 
         $lambda[0] = 1;
 
         if ($numErasures > 0) {
-            // Init lambda to be the erasure locator polynomial
             $lambda[1] = $this->alphaTo[$this->modNn($this->primitive * ($this->blockSize - 1 - $erasures[0]))];
 
             for ($i = 1; $i < $numErasures; ++$i) {
@@ -288,13 +271,10 @@ final class ReedSolomonCodec
         for ($i = 0; $i <= $this->numRoots; ++$i) {
             $b[$i] = $this->indexOf[$lambda[$i]];
         }
-
-        // Begin Berlekamp-Massey algorithm to determine error+erasure locator polynomial
         $r  = $numErasures;
         $el = $numErasures;
 
         while (++$r <= $this->numRoots) {
-            // Compute discrepancy at the r-th step in poly form
             $discrepancyR = 0;
 
             for ($i = 0; $i < $r; ++$i) {
@@ -344,8 +324,6 @@ final class ReedSolomonCodec
 
             $lambda = clone $t;
         }
-
-        // Convert lambda to index form and compute deg(lambda(x))
         $degLambda = 0;
 
         for ($i = 0; $i <= $this->numRoots; ++$i) {
@@ -355,8 +333,6 @@ final class ReedSolomonCodec
                 $degLambda = $i;
             }
         }
-
-        // Find roots of the error+erasure locator polynomial by Chien search.
         $reg = clone $lambda;
         $reg[0] = 0;
         $count = 0;
@@ -373,11 +349,8 @@ final class ReedSolomonCodec
             }
 
             if ($q !== 0) {
-                // Not a root
                 continue;
             }
-
-            // Store root (index-form) and error location number
             $root[$count] = $i;
             $loc[$count] = $k;
 
@@ -387,12 +360,8 @@ final class ReedSolomonCodec
         }
 
         if ($degLambda !== $count) {
-            // deg(lambda) unequal to number of roots: uncorrectable error detected
             return null;
         }
-
-        // Compute err+eras evaluate poly omega(x) = s(x)*lambda(x) (modulo x**numRoots). In index form. Also find
-        // deg(omega).
         $degOmega = $degLambda - 1;
 
         for ($i = 0; $i <= $degOmega; ++$i) {
@@ -406,9 +375,6 @@ final class ReedSolomonCodec
 
             $omega[$i] = $this->indexOf[$tmp];
         }
-
-        // Compute error values in poly-form. num1 = omega(inv(X(l))), num2 = inv(X(l))**(firstRoot-1) and
-        // den = lambda_pr(inv(X(l))) all in poly form.
         for ($j = $count - 1; $j >= 0; --$j) {
             $num1 = 0;
 
@@ -420,15 +386,11 @@ final class ReedSolomonCodec
 
             $num2 = $this->alphaTo[$this->modNn($root[$j] * ($this->firstRoot - 1) + $this->blockSize)];
             $den  = 0;
-
-            // lambda[i+1] for i even is the formal derivativelambda_pr of lambda[i]
             for ($i = min($degLambda, $this->numRoots - 1) & ~1; $i >= 0; $i -= 2) {
                 if ($lambda[$i + 1] !== $this->blockSize) {
                     $den ^= $this->alphaTo[$this->modNn($lambda[$i + 1] + $i * $root[$j])];
                 }
             }
-
-            // Apply error to data
             if ($num1 !== 0 && $loc[$j] >= $this->padding) {
                 $data[$loc[$j] - $this->padding] = $data[$loc[$j] - $this->padding] ^ (
                     $this->alphaTo[

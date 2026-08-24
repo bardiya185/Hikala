@@ -15,10 +15,10 @@ use function strval;
 
 final class EnumValuesController extends AbstractController
 {
-    /** @var Sql */
+    
     private $sql;
 
-    /** @var CheckUserPrivileges */
+    
     private $checkUserPrivileges;
 
     public function __construct(

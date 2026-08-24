@@ -327,7 +327,7 @@ class UserGroups
             . '(`usergroup`, `tab`, `allowed`)'
             . ' VALUES ';
         $first = true;
-        /** @var array<string, string> $tabGroup */
+        
         foreach ($tabs as $tabGroupName => $tabGroup) {
             foreach (array_keys($tabGroup) as $tab) {
                 if (! $first) {

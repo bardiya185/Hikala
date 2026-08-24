@@ -106,7 +106,7 @@ abstract class ImageUploadTransformationsPlugin extends IOTransformationsPlugin
         return ['transformations/image_upload.js'];
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

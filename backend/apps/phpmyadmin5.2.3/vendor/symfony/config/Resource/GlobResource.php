@@ -111,7 +111,7 @@ class GlobResource implements \IteratorAggregate, SelfCheckingResourceInterface
 
         if ('' === $this->pattern && is_file($prefix)) {
             $paths = [$this->prefix];
-        } elseif (!str_starts_with($this->prefix, 'phar://') && !str_contains($this->pattern, '/**/')) {
+        } elseif (!str_starts_with($this->prefix, 'phar://') && !str_contains($this->pattern, '')) {
             if ($this->globBrace || !str_contains($this->pattern, '{')) {
                 $paths = glob($this->prefix.$this->pattern, \GLOB_NOSORT | $this->globBrace);
             } elseif (!str_contains($this->pattern, '\\') || !preg_match('/\\\\[,{}]/', $this->pattern)) {

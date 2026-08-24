@@ -44,7 +44,7 @@ final class MoParser
      */
     public $error = self::ERROR_NONE;
 
-    /** @var string|null */
+    
     private $filename;
 
     public function __construct(?string $filename)
@@ -81,17 +81,17 @@ final class MoParser
                 return;
             }
 
-            /* Parse header */
+            
             $total = $stream->readint($unpack, 8);
             $originals = $stream->readint($unpack, 12);
             $translations = $stream->readint($unpack, 16);
 
-            /* get original and translations tables */
+            
             $totalTimesTwo = (int) ($total * 2);// Fix for issue #36 on ARM
             $tableOriginals = $stream->readintarray($unpack, $originals, $totalTimesTwo);
             $tableTranslations = $stream->readintarray($unpack, $translations, $totalTimesTwo);
 
-            /* read all strings to the cache */
+            
             for ($i = 0; $i < $total; ++$i) {
                 $iTimesTwo = $i * 2;
                 $iPlusOne = $iTimesTwo + 1;

@@ -78,18 +78,14 @@ class Transformations
         while (($option = array_shift($transformOptions)) !== null) {
             $trimmed = trim($option);
             if (strlen($trimmed) > 1 && $trimmed[0] == "'" && $trimmed[strlen($trimmed) - 1] == "'") {
-                // '...'
                 $option = mb_substr($trimmed, 1, -1);
             } elseif (isset($trimmed[0]) && $trimmed[0] == "'") {
-                // '...,
                 $trimmed = ltrim($option);
                 $rtrimmed = '';
                 while (($option = array_shift($transformOptions)) !== null) {
-                    // ...,
                     $trimmed .= ',' . $option;
                     $rtrimmed = rtrim($trimmed);
                     if ($rtrimmed[strlen($rtrimmed) - 1] == "'") {
-                        // ,...'
                         break;
                     }
                 }
@@ -136,12 +132,9 @@ class Transformations
 
             $filestack = [];
             while ($file = readdir($handle)) {
-                // Ignore hidden files
                 if ($file[0] === '.') {
                     continue;
                 }
-
-                // Ignore old plugins (.class in filename)
                 if (str_contains($file, '.class')) {
                     continue;
                 }
@@ -154,7 +147,6 @@ class Transformations
 
             foreach ($filestack as $file) {
                 if (preg_match('|^[^.].*_.*_.*\.php$|', $file)) {
-                    // File contains transformation functions.
                     $parts = explode('_', str_replace('.php', '', $file));
                     $mimetype = $parts[0] . '/' . $parts[1];
                     $stack['mimetype'][$mimetype] = $mimetype;
@@ -166,7 +158,6 @@ class Transformations
                         $stack['input_transformation_file'][] = $sd . $file;
                     }
                 } elseif (preg_match('|^[^.].*\.php$|', $file)) {
-                    // File is a plain mimetype, no functions.
                     $base = str_replace('.php', '', $file);
 
                     if ($base !== 'global') {
@@ -190,7 +181,6 @@ class Transformations
      */
     public function getClassName($filename)
     {
-        // get the transformation class name
         $class_name = explode('.php', $filename);
         $class_name = 'PhpMyAdmin\\' . str_replace('/', '\\', mb_substr($class_name[0], 18));
 
@@ -207,7 +197,7 @@ class Transformations
     public function getDescription($file)
     {
         $include_file = 'libraries/classes/Plugins/Transformations/' . $file;
-        /** @psalm-var class-string<TransformationsInterface> $class_name */
+        
         $class_name = $this->getClassName($include_file);
         if (class_exists($class_name)) {
             return $class_name::getInfo();
@@ -226,7 +216,7 @@ class Transformations
     public function getName($file)
     {
         $include_file = 'libraries/classes/Plugins/Transformations/' . $file;
-        /** @psalm-var class-string<TransformationsInterface> $class_name */
+        
         $class_name = $this->getClassName($include_file);
         if (class_exists($class_name)) {
             return $class_name::getName();
@@ -314,12 +304,7 @@ class Transformations
         $result = $dbi->fetchResult($com_qry, 'column_name', null, DatabaseInterface::CONNECT_CONTROL);
 
         foreach ($result as $column => $values) {
-            // convert mimetype to new format (f.e. Text_Plain, etc)
             $values['mimetype'] = $this->fixUpMime($values['mimetype']);
-
-            // For transformation of form
-            // output/image_jpeg__inline.inc.php
-            // extract dir part.
             $dir = explode('/', $values['transformation']);
             $subdir = '';
             if (count($dir) === 2) {
@@ -367,12 +352,8 @@ class Transformations
         if ($browserTransformationFeature === null) {
             return false;
         }
-
-        // lowercase mimetype & transformation
         $mimetype = mb_strtolower($mimetype);
         $transformation = mb_strtolower($transformation);
-
-        // Do we have any parameter to set?
         $has_value = (
             strlen($mimetype) > 0 ||
             strlen($transformation) > 0 ||

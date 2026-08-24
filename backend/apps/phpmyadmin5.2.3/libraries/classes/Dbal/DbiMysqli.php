@@ -67,12 +67,12 @@ class DbiMysqli implements DbiExtension
 
         $client_flags = 0;
 
-        /* Optionally compress connection */
+        
         if ($server['compress'] && defined('MYSQLI_CLIENT_COMPRESS')) {
             $client_flags |= MYSQLI_CLIENT_COMPRESS;
         }
 
-        /* Optionally enable SSL */
+        
         if ($server['ssl']) {
             $client_flags |= MYSQLI_CLIENT_SSL;
             if (
@@ -139,10 +139,8 @@ class DbiMysqli implements DbiExtension
              * - #2001 - SSL Connection is required. Please specify SSL options and retry.
              * - #9002 - SSL connection is required. Please specify SSL options and retry.
              */
-            // phpcs:disable Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
             $error_number = $mysqli->connect_errno;
             $error_message = $mysqli->connect_error;
-            // phpcs:enable
             if (
                 ! $server['ssl']
                 && ($error_number == 3159
@@ -269,7 +267,6 @@ class DbiMysqli implements DbiExtension
      */
     public function getHostInfo($link)
     {
-        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
         return $link->host_info;
     }
 
@@ -282,7 +279,6 @@ class DbiMysqli implements DbiExtension
      */
     public function getProtoInfo($link)
     {
-        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
         return $link->protocol_version;
     }
 
@@ -316,9 +312,6 @@ class DbiMysqli implements DbiExtension
         if ($error_number === 0 || $error_message === '') {
             return '';
         }
-
-        // keep the error number for further check after
-        // the call to getError()
         $GLOBALS['errno'] = $error_number;
 
         return Utilities::formatError($error_number, $error_message);
@@ -334,7 +327,6 @@ class DbiMysqli implements DbiExtension
      */
     public function affectedRows($link)
     {
-        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
         return $link->affected_rows;
     }
 

@@ -14,10 +14,10 @@ use PhpMyAdmin\Url;
 
 final class SlowLogController extends AbstractController
 {
-    /** @var Monitor */
+    
     private $monitor;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(

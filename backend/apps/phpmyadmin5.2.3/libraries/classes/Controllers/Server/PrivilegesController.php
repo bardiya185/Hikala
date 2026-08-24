@@ -36,10 +36,10 @@ use function urlencode;
  */
 class PrivilegesController extends AbstractController
 {
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -206,7 +206,6 @@ class PrivilegesController extends AbstractController
             $password ?? null,
             $relationParameters->configurableMenusFeature !== null
         );
-        //update the old variables
         if (isset($ret_queries)) {
             $queries = $ret_queries;
             unset($ret_queries);
@@ -351,8 +350,6 @@ class PrivilegesController extends AbstractController
          */
         if (isset($_GET['viewing_mode']) && $_GET['viewing_mode'] === 'db') {
             $db = $_REQUEST['db'] = $_GET['checkprivsdb'];
-
-            // Gets the database structure
             $sub_part = '_structure';
             ob_start();
 
@@ -372,8 +369,6 @@ class PrivilegesController extends AbstractController
             $this->response->addHTML(Generator::getMessage($GLOBALS['message']));
             unset($GLOBALS['message']);
         }
-
-        // export user definition
         if (isset($_GET['export']) || (isset($_POST['submit_mult']) && $_POST['submit_mult'] === 'export')) {
             [$title, $export] = $serverPrivileges->getListForExportUserDefinition($username ?? '', $hostname ?? '');
 
@@ -388,10 +383,7 @@ class PrivilegesController extends AbstractController
 
             $this->response->addHTML('<h2>' . $title . '</h2>' . $export);
         }
-
-        // Show back the form if an error occurred
         if (isset($_GET['adduser']) || $_add_user_error === true) {
-            // Add user
             $this->response->addHTML(
                 $serverPrivileges->getHtmlForAddUser(Util::escapeMysqlWildcards(is_string($dbname) ? $dbname : ''))
             );
@@ -429,7 +421,6 @@ class PrivilegesController extends AbstractController
             }
 
             if (! isset($username)) {
-                // No username is given --> display the overview
                 $this->response->addHTML(
                     $serverPrivileges->getHtmlForUserOverview($text_dir)
                 );
@@ -444,8 +435,6 @@ class PrivilegesController extends AbstractController
                     )
                 );
             } else {
-                // A user was selected -> display the user's properties
-                // In an Ajax request, prevent cached values from showing
                 if ($this->response->isAjax()) {
                     header('Cache-Control: no-cache');
                 }

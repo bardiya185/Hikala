@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* database/import/index.twig */
+
 class __TwigTemplate_667af66470495644343a0b831651b3cd extends Template
 {
     private $source;
@@ -32,7 +32,6 @@ class __TwigTemplate_667af66470495644343a0b831651b3cd extends Template
 
     protected function doGetParent(array $context)
     {
-        // line 1
         return "import.twig";
     }
 
@@ -42,8 +41,6 @@ class __TwigTemplate_667af66470495644343a0b831651b3cd extends Template
         $this->parent = $this->loadTemplate("import.twig", "database/import/index.twig", 1);
         yield from $this->parent->unwrap()->yield($context, array_merge($this->blocks, $blocks));
     }
-
-    // line 3
     public function block_title($context, array $blocks = [])
     {
         $macros = $this->macros;

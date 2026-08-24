@@ -38,12 +38,9 @@ class Response extends Message implements ResponseInterface
      * @var array
      */
     protected static $messages = [
-        // Informational 1xx
         StatusCodeInterface::STATUS_CONTINUE => 'Continue',
         StatusCodeInterface::STATUS_SWITCHING_PROTOCOLS => 'Switching Protocols',
         StatusCodeInterface::STATUS_PROCESSING => 'Processing',
-
-        // Successful 2xx
         StatusCodeInterface::STATUS_OK => 'OK',
         StatusCodeInterface::STATUS_CREATED => 'Created',
         StatusCodeInterface::STATUS_ACCEPTED => 'Accepted',
@@ -54,8 +51,6 @@ class Response extends Message implements ResponseInterface
         StatusCodeInterface::STATUS_MULTI_STATUS => 'Multi-Status',
         StatusCodeInterface::STATUS_ALREADY_REPORTED => 'Already Reported',
         StatusCodeInterface::STATUS_IM_USED => 'IM Used',
-
-        // Redirection 3xx
         StatusCodeInterface::STATUS_MULTIPLE_CHOICES => 'Multiple Choices',
         StatusCodeInterface::STATUS_MOVED_PERMANENTLY => 'Moved Permanently',
         StatusCodeInterface::STATUS_FOUND => 'Found',
@@ -65,8 +60,6 @@ class Response extends Message implements ResponseInterface
         StatusCodeInterface::STATUS_RESERVED => '(Unused)',
         StatusCodeInterface::STATUS_TEMPORARY_REDIRECT => 'Temporary Redirect',
         StatusCodeInterface::STATUS_PERMANENT_REDIRECT => 'Permanent Redirect',
-
-        // Client Error 4xx
         StatusCodeInterface::STATUS_BAD_REQUEST => 'Bad Request',
         StatusCodeInterface::STATUS_UNAUTHORIZED => 'Unauthorized',
         StatusCodeInterface::STATUS_PAYMENT_REQUIRED => 'Payment Required',
@@ -97,8 +90,6 @@ class Response extends Message implements ResponseInterface
         444 => 'Connection Closed Without Response',
         StatusCodeInterface::STATUS_UNAVAILABLE_FOR_LEGAL_REASONS => 'Unavailable For Legal Reasons',
         499 => 'Client Closed Request',
-
-        // Server Error 5xx
         StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR => 'Internal Server Error',
         StatusCodeInterface::STATUS_NOT_IMPLEMENTED => 'Not Implemented',
         StatusCodeInterface::STATUS_BAD_GATEWAY => 'Bad Gateway',

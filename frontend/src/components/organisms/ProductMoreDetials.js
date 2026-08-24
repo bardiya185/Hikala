@@ -1,36 +1,21 @@
 "use client";
 
-import {
-  FaStar,
-  FaStarHalfAlt,
-  FaRegStar,
-  FaFire,
-} from "react-icons/fa";
+import { FaStar, FaStarHalfAlt, FaRegStar, FaFire } from "react-icons/fa";
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { BsSortDownAlt } from "react-icons/bs";
 import { useGetCommentProduct } from "@/core/services/queries";
-import {
-  AiOutlineLike,
-  AiTwotoneDislike,
-} from "react-icons/ai";
+import { AiOutlineLike, AiTwotoneDislike } from "react-icons/ai";
 import { Trash2, Minus, Plus } from "lucide-react";
 import { RotatingLines } from "react-loader-spinner";
 import { VscCopilotSuccess } from "react-icons/vsc";
-
-
-// ======================================================
-// Product Overview
-// ======================================================
 
 function ProductOverview({ data }) {
   return (
     <div className="w-full">
       <div className="flex flex-col px-4 sm:px-5">
-        <p className="mt-8 sm:mt-12 text-base font-semibold">
-          Introduction
-        </p>
+        <p className="mt-8 sm:mt-12 text-base font-semibold">Introduction</p>
 
         <p className="w-full lg:w-9/12 mt-3 text-sm sm:text-base leading-7 text-neutral-700">
           {data?.description}
@@ -40,23 +25,13 @@ function ProductOverview({ data }) {
   );
 }
 
-
-// ======================================================
-// Product Specifications
-// ======================================================
-
 function ProductSpecifications({ data }) {
   const attr = data?.variants?.[0]?.attributes || [];
 
   return (
-    <div
-      id="specifications-section"
-      className="w-full lg:w-9/12 px-4 sm:px-5"
-    >
+    <div id="specifications-section" className="w-full lg:w-9/12 px-4 sm:px-5">
       <div className="flex flex-col">
-        <p className="mt-8 sm:mt-5 text-base font-semibold">
-          Specifications
-        </p>
+        <p className="mt-8 sm:mt-5 text-base font-semibold">Specifications</p>
 
         <div className="w-[70px] mt-2 border-2 border-red-500" />
 
@@ -66,7 +41,7 @@ function ProductSpecifications({ data }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 mt-4">
-        {/* Attribute Names */}
+        {}
         <div className="flex flex-col">
           {attr?.map((item) => (
             <div
@@ -89,7 +64,7 @@ function ProductSpecifications({ data }) {
           ))}
         </div>
 
-        {/* Attribute Values */}
+        {}
         <div className="flex flex-col">
           {attr?.map((item) => (
             <div key={`value-${item?.id}`}>
@@ -116,17 +91,9 @@ function ProductSpecifications({ data }) {
   );
 }
 
-
-// ======================================================
-// In Depth Review
-// ======================================================
-
 function InDepthReview() {
   return (
-    <div
-      id="In-depth Review-section"
-      className="w-full mt-10"
-    >
+    <div id="In-depth Review-section" className="w-full mt-10">
       <h1 className="px-4 sm:px-5 text-base sm:text-lg font-semibold">
         In-depth Review
       </h1>
@@ -153,60 +120,27 @@ function InDepthReview() {
   );
 }
 
-
-// ======================================================
-// Rating Stars
-// ======================================================
-
-function RatingStars({
-  rating = 0,
-  maxStars = 5,
-}) {
+function RatingStars({ rating = 0, maxStars = 5 }) {
   return (
     <div className="flex items-center gap-1 text-amber-400">
-      {Array.from(
-        { length: maxStars },
-        (_, index) => {
-          const starValue = index + 1;
+      {Array.from({ length: maxStars }, (_, index) => {
+        const starValue = index + 1;
 
-          if (rating >= starValue) {
-            return (
-              <FaStar
-                key={index}
-                className="w-4 h-4"
-              />
-            );
-          }
-
-          if (rating >= starValue - 0.5) {
-            return (
-              <FaStarHalfAlt
-                key={index}
-                className="w-4 h-4"
-              />
-            );
-          }
-
-          return (
-            <FaRegStar
-              key={index}
-              className="w-4 h-4 text-gray-300"
-            />
-          );
+        if (rating >= starValue) {
+          return <FaStar key={index} className="w-4 h-4" />;
         }
-      )}
 
-      <span className="text-xs font-bold text-gray-600 mr-1">
-        {rating}
-      </span>
+        if (rating >= starValue - 0.5) {
+          return <FaStarHalfAlt key={index} className="w-4 h-4" />;
+        }
+
+        return <FaRegStar key={index} className="w-4 h-4 text-gray-300" />;
+      })}
+
+      <span className="text-xs font-bold text-gray-600 mr-1">{rating}</span>
     </div>
   );
 }
-
-
-// ======================================================
-// Submit Comment
-// ======================================================
 
 function SubmitComment({ id }) {
   return (
@@ -222,9 +156,7 @@ function SubmitComment({ id }) {
           lg:gap-64
         "
       >
-        <p className="font-medium">
-          4 out of 5
-        </p>
+        <p className="font-medium">4 out of 5</p>
 
         <Reviews id={id} />
       </div>
@@ -255,22 +187,13 @@ function SubmitComment({ id }) {
   );
 }
 
-
-// ======================================================
-// Reviews
-// ======================================================
-
 function Reviews({ id }) {
   const { data: comments } = useGetCommentProduct(id);
 
   return (
-    <div
-      className="w-full"
-      id="viewpoint-section"
-    >
+    <div className="w-full" id="viewpoint-section">
       <div className="w-full">
-
-        {/* Sort */}
+        {}
         <div
           className="
             flex
@@ -285,20 +208,16 @@ function Reviews({ id }) {
         >
           <BsSortDownAlt className="shrink-0" />
 
-          <button className="text-xs sm:text-sm shrink-0">
-            Latest
-          </button>
+          <button className="text-xs sm:text-sm shrink-0">Latest</button>
 
           <button className="text-xs sm:text-sm shrink-0">
             Customer Reviews
           </button>
 
-          <button className="text-xs sm:text-sm shrink-0">
-            Most useful
-          </button>
+          <button className="text-xs sm:text-sm shrink-0">Most useful</button>
         </div>
 
-        {/* User */}
+        {}
         <div
           className="
             w-full
@@ -312,9 +231,7 @@ function Reviews({ id }) {
           "
         >
           <div className="flex items-center gap-2">
-            <p className="text-sm">
-              Digikala user
-            </p>
+            <p className="text-sm">Digikala user</p>
 
             <span
               className="
@@ -331,13 +248,11 @@ function Reviews({ id }) {
             </span>
           </div>
 
-          <div className="text-xs text-neutral-400">
-            14 مرداد
-          </div>
+          <div className="text-xs text-neutral-400">14 مرداد</div>
         </div>
       </div>
 
-      {/* Comment */}
+      {}
       <div className="w-full max-w-[750px]">
         <p
           className="
@@ -349,37 +264,25 @@ function Reviews({ id }) {
           "
         >
           {comments?.data?.body}
-
-          My phone arrived promptly on the scheduled date.
-          I was quite worried it might have issues—I’d never
-          bought a phone online before—but before opening the
-          box, I checked the serial number on Apple’s website.
-          Once I was reassured that it hadn't been previously
-          opened or activated, I unboxed and turned it on.
-          Since it’s a dual-SIM model, I verified both the
-          serial number and IMEI against the details shown on
-          the phone itself.
+          My phone arrived promptly on the scheduled date. I was quite worried
+          it might have issues—I’d never bought a phone online before—but before
+          opening the box, I checked the serial number on Apple’s website. Once
+          I was reassured that it hadn't been previously opened or activated, I
+          unboxed and turned it on. Since it’s a dual-SIM model, I verified both
+          the serial number and IMEI against the details shown on the phone
+          itself.
         </p>
       </div>
 
-      {/* Like / Dislike */}
+      {}
       <div className="flex items-center gap-3 mt-3">
-        <AiOutlineLike
-          className="w-5 h-5 text-neutral-400"
-        />
+        <AiOutlineLike className="w-5 h-5 text-neutral-400" />
 
-        <AiTwotoneDislike
-          className="w-5 h-5 text-neutral-400"
-        />
+        <AiTwotoneDislike className="w-5 h-5 text-neutral-400" />
       </div>
     </div>
   );
 }
-
-
-// ======================================================
-// Seller Card
-// ======================================================
 
 function SellerCard({
   data,
@@ -414,20 +317,16 @@ function SellerCard({
           sm:p-5
         "
       >
-
-        {/* Seller Header */}
+        {}
         <div className="flex justify-between items-center">
-          <p className="font-medium">
-            Seller
-          </p>
+          <p className="font-medium">Seller</p>
 
           <span className="text-orange-400 text-xs sm:text-sm font-medium">
             3 other sellers
           </span>
         </div>
 
-
-        {/* Seller */}
+        {}
         <div className="flex items-center gap-2 mt-5">
           <Image
             src="/icons/idigi.jfif"
@@ -437,28 +336,19 @@ function SellerCard({
             className="rounded-lg"
           />
 
-          <span className="text-sm">
-            Digikala
-          </span>
+          <span className="text-sm">Digikala</span>
         </div>
 
-
-        {/* Performance */}
+        {}
         <div className="flex items-center gap-2 mt-3 ml-7">
-          <p className="text-[10px] text-neutral-400">
-            Performance
-          </p>
+          <p className="text-[10px] text-neutral-400">Performance</p>
 
-          <span className="text-sm text-green-600">
-            Excellent
-          </span>
+          <span className="text-sm text-green-600">Excellent</span>
         </div>
-
 
         <div className="w-full mt-4 border-t border-neutral-300" />
 
-
-        {/* Discount */}
+        {}
         <div className="flex items-center gap-2 mt-5">
           <span
             className="
@@ -474,19 +364,15 @@ function SellerCard({
             3%
           </span>
 
-          <del className="text-xs text-neutral-400">
-            3.500 $
-          </del>
+          <del className="text-xs text-neutral-400">3.500 $</del>
         </div>
 
-
-        {/* Price */}
+        {}
         <span className="mt-3 inline-block text-lg sm:text-xl font-medium">
           {selectedVariant?.base_price ?? 0} $
         </span>
 
-
-        {/* Stock */}
+        {}
         <div className="flex items-center gap-2 mt-3">
           <FaFire className="w-5 h-5 text-orange-600" />
 
@@ -495,8 +381,7 @@ function SellerCard({
           </span>
         </div>
 
-
-        {/* Cart */}
+        {}
         {cartItem ? (
           <div className="mt-5">
             <div
@@ -513,24 +398,13 @@ function SellerCard({
                 rounded-lg
               "
             >
-
-              <button
-                onClick={handleDeacrease}
-                className="text-white"
-              >
+              <button onClick={handleDeacrease} className="text-white">
                 {cartItem.quantity === 1 ? (
-                  <Trash2
-                    size={18}
-                    className="text-white"
-                  />
+                  <Trash2 size={18} className="text-white" />
                 ) : (
-                  <Minus
-                    size={18}
-                    className="text-white"
-                  />
+                  <Minus size={18} className="text-white" />
                 )}
               </button>
-
 
               {!up ? (
                 <span className="text-sm font-medium text-white">
@@ -548,15 +422,11 @@ function SellerCard({
                 />
               )}
 
-
               <button
                 onClick={handleIncrease}
                 className="text-white disabled:opacity-30"
               >
-                <Plus
-                  size={18}
-                  className="text-white"
-                />
+                <Plus size={18} className="text-white" />
               </button>
             </div>
           </div>
@@ -565,9 +435,7 @@ function SellerCard({
             <button
               onClick={handleAddToCarts}
               disabled={
-                isPending ||
-                !selectedVariant ||
-                selectedVariant.stock === 0
+                isPending || !selectedVariant || selectedVariant.stock === 0
               }
               className="
                 w-full
@@ -582,36 +450,25 @@ function SellerCard({
                 hover:bg-red-600
               "
             >
-              {isPending
-                ? "در حال افزودن..."
-                : "Add to Basket"}
+              {isPending ? "در حال افزودن..." : "Add to Basket"}
             </button>
           </div>
         )}
 
-
-        {/* Warranty */}
+        {}
         <div className="mt-5">
           <div className="flex items-center text-neutral-400 gap-3">
-            <VscCopilotSuccess
-              className="w-5 h-5 shrink-0"
-            />
+            <VscCopilotSuccess className="w-5 h-5 shrink-0" />
 
             <span className="text-xs sm:text-sm">
               Sadrtel 18-month warranty
             </span>
           </div>
         </div>
-
       </div>
     </aside>
   );
 }
-
-
-// ======================================================
-// Main Component
-// ======================================================
 
 const INITIAL_SPECS_COUNT = 4;
 
@@ -626,7 +483,6 @@ export default function ProductMoreDetails({
   up,
   isPending,
 }) {
-
   const TABS = [
     {
       id: "Introduction",
@@ -662,61 +518,31 @@ export default function ProductMoreDetails({
     },
   ];
 
-  const [activeTab, setActiveTab] =
-    useState("Introduction");
+  const [activeTab, setActiveTab] = useState("Introduction");
 
-  const [isVisible, setIsVisible] =
-    useState(true);
+  const [isVisible, setIsVisible] = useState(true);
 
-  const [showAllSpecs, setShowAllSpecs] =
-    useState(false);
-
-
-  // ====================================================
-  // Sticky Tab Visibility
-  // ====================================================
+  const [showAllSpecs, setShowAllSpecs] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      const targetElement =
-        document.getElementById(
-          "specifications-section"
-        );
+      const targetElement = document.getElementById("specifications-section");
 
       if (!targetElement) return;
 
-      const rect =
-        targetElement.getBoundingClientRect();
+      const rect = targetElement.getBoundingClientRect();
 
       setIsVisible(rect.top > 0);
     };
 
-    window.addEventListener(
-      "scroll",
-      handleScroll,
-      { passive: true }
-    );
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
-    return () =>
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-
-  // ====================================================
-  // Tab Click
-  // ====================================================
-
   const handleTabClick = (tab) => {
-
     if (tab.actionType === "scroll") {
-
-      const element =
-        document.getElementById(
-          tab.targetId
-        );
+      const element = document.getElementById(tab.targetId);
 
       if (element) {
         element.scrollIntoView({
@@ -726,34 +552,18 @@ export default function ProductMoreDetails({
       }
 
       setActiveTab(tab.id);
-
     } else {
-
       setActiveTab(tab.id);
-
     }
   };
 
+  const allAttributes = selectedVariant?.attributes || [];
 
-  // ====================================================
-  // Specifications
-  // ====================================================
+  const visibleAttributes = showAllSpecs
+    ? allAttributes
+    : allAttributes.slice(0, INITIAL_SPECS_COUNT);
 
-  const allAttributes =
-    selectedVariant?.attributes || [];
-
-  const visibleAttributes =
-    showAllSpecs
-      ? allAttributes
-      : allAttributes.slice(
-          0,
-          INITIAL_SPECS_COUNT
-        );
-
-  const hasMoreSpecs =
-    allAttributes.length >
-    INITIAL_SPECS_COUNT;
-
+  const hasMoreSpecs = allAttributes.length > INITIAL_SPECS_COUNT;
 
   return (
     <div
@@ -764,12 +574,7 @@ export default function ProductMoreDetails({
         overflow-x-hidden
       "
     >
-
-      <section
-        className="relative"
-        id="product-section"
-      >
-
+      <section className="relative" id="product-section">
         {/* =================================================
             TABS
         ================================================= */}
@@ -797,13 +602,10 @@ export default function ProductMoreDetails({
             }
           `}
         >
-
           {TABS.map((tab) => (
             <button
               key={tab.id}
-              onClick={() =>
-                handleTabClick(tab)
-              }
+              onClick={() => handleTabClick(tab)}
               className={`
                 shrink-0
                 px-3
@@ -825,9 +627,7 @@ export default function ProductMoreDetails({
               {tab.label}
             </button>
           ))}
-
         </div>
-
 
         {/* =================================================
             MAIN GRID
@@ -845,26 +645,18 @@ export default function ProductMoreDetails({
             sm:mt-6
           "
         >
-
           {/* =================================================
               CONTENT
           ================================================= */}
 
           <div className="min-w-0 w-full">
-
-            {activeTab === "Introduction" && (
-              <ProductOverview
-                data={data}
-              />
-            )}
+            {activeTab === "Introduction" && <ProductOverview data={data} />}
 
             <InDepthReview />
 
-            <ProductSpecifications
-              data={data}
-            />
+            <ProductSpecifications data={data} />
 
-            {/* Divider */}
+            {}
 
             <div
               className="
@@ -876,14 +668,10 @@ export default function ProductMoreDetails({
               "
             />
 
-            {/* Reviews */}
+            {}
 
-            <SubmitComment
-              id={data?.id}
-            />
-
+            <SubmitComment id={data?.id} />
           </div>
-
 
           {/* =================================================
               SELLER
@@ -899,9 +687,7 @@ export default function ProductMoreDetails({
             up={up}
             isPending={isPending}
           />
-
         </div>
-
       </section>
     </div>
   );

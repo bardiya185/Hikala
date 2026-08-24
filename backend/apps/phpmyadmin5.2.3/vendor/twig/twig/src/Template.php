@@ -373,9 +373,6 @@ abstract class Template
             if (!$e->getSourceContext()) {
                 $e->setSourceContext($this->getSourceContext());
             }
-
-            // this is mostly useful for \Twig\Error\LoaderError exceptions
-            // see \Twig\Error\LoaderError
             if (-1 === $e->getTemplateLine()) {
                 $e->guess();
             }
@@ -410,8 +407,6 @@ abstract class Template
             $template = null;
             $block = null;
         }
-
-        // avoid RCEs when sandbox is enabled
         if (null !== $template && !$template instanceof self) {
             throw new \LogicException('A block must be a method on a \Twig\Template instance.');
         }
@@ -443,9 +438,6 @@ abstract class Template
                 if (!$e->getSourceContext()) {
                     $e->setSourceContext($template->getSourceContext());
                 }
-
-                // this is mostly useful for \Twig\Error\LoaderError exceptions
-                // see \Twig\Error\LoaderError
                 if (-1 === $e->getTemplateLine()) {
                     $e->guess();
                 }

@@ -26,22 +26,22 @@ use function is_string;
 
 final class EmptyTableController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var RelationCleanup */
+    
     private $relationCleanup;
 
-    /** @var Operations */
+    
     private $operations;
 
-    /** @var FlashMessages */
+    
     private $flash;
 
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(

@@ -52,7 +52,6 @@ $https_virtualhost
 EOF;
 	$installDir = str_replace('/','\\',$c_installDir);
 	if(empty($changeError)) {
-		//HTTPS VirtualHost is ready - Needs to create site certificate
 		$command = <<<EOF
 Rem Wampserver installation variables
 set installdir=$installDir
@@ -70,7 +69,7 @@ Rem 8- Private RSA key.
 if exist %DIRCERTS%\Server\Server.key del %DIRCERTS%\Server\Server.key
 openssl genrsa -out %DIRCERTS%/Server/Server.key -rand %DIRCERTS%/Server/Server.rnd 4096
 Rem 9- Signing request for ServerName certificate
-Rem /C=FR : Country -- /ST=Paris : State or région -- /L=Paris : City
+Rem /C=FR : Country -- /ST=Paris : State or rï¿½gion -- /L=Paris : City
 Rem /O=Otomatic & Cie : Organisation -- /CN=nom du site local
 if exist %DIRCERTS%\Server\Server.csr del %DIRCERTS%\Server\Server.csr
 openssl req -new -sha256 -key %DIRCERTS%/Server/Server.key -out %DIRCERTS%/Server/Server.csr -subj "/C=FR/ST=Paris/L=Paris/O=Otomatic & Cie/OU=Wampserver/CN=%SERVLOCAL%"
@@ -95,12 +94,10 @@ EOF;
 		write_file('batch.bat',$command);
 		$result = exec('batch.bat',$output,$result_code);
 		unlink('batch.bat');
-		//error_log("result=".$result."\nresult_code=".$result_code."\noutput=".print_r($output,true));
 		if($result_code != '0') {
 			$changeError .= "\nError in batch file to create certificats";
 		}
 		if(empty($changeError)) {
-			//Put new HTTPS VirtualHost into httpd-ssl.conf
 			$contents = file_get_contents_dos($c_apacheConfDir."/extra/httpd-ssl.conf");
 			$contents = str_replace('## Never modify these four lines',$https_virtualhost."
 ## Never modify these four lines",$contents,$count);
@@ -129,7 +126,6 @@ elseif(trim($_SERVER['argv'][1]) == 'nohttps') {
 		}
 	}
 	if($replaceVhostSsl) {
-		//Suppress ServerName certificats into Certs/Server and Certs/Site
 		$files_to_delete = array(
 			$c_installDir.'/bin/Certs/Server/'.$value.'p7b',
 			$c_installDir.'/bin/Certs/Site/'.$value.'crt',

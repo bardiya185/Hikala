@@ -51,7 +51,7 @@ abstract class Bool2TextTransformationsPlugin extends TransformationsPlugin
         return $options[0]; // or true one if nonzero
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin
