@@ -59,9 +59,7 @@ function Header() {
 
   const { data: cart } = useCart();
 
-  const totalCount =
-    cart?.data?.items?.reduce((sum, item) => sum + (item?.quantity || 0), 0) ||
-    0;
+  const totalCount =  cart?.data ?  cart?.data.items_count : 0 ;
 
   const { data: categoriess } = useGetMainCategories();
 
