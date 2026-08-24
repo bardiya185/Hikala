@@ -290,7 +290,7 @@ class CategoryController extends Controller
     }
 
     #[OA\Put(
-        path: "/api/categories/{category}",
+        path: "/api/admin/categories/{category}",
         tags: ["Categories"],
         summary: "Update a category",
         description: "Update category information. All fields are optional.",
@@ -411,7 +411,7 @@ class CategoryController extends Controller
     }
 
     #[OA\Delete(
-        path: "/api/categories/{category}",
+        path: "/api/admin/categories/{category}",
         tags: ["Categories"],
         summary: "Delete a category",
         description: "Delete a category. Also deletes all subcategories (cascade).",

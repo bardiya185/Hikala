@@ -19,12 +19,14 @@ class UpdateCategoryRequest extends FormRequest
         return [
             'parent_id' => 'nullable|exists:categories,id',
             'name' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:255',
                 Rule::unique('categories', 'name')->ignore($categoryId),
             ],
             'slug' => [
+                'sometimes',
                 'required',
                 'string',
                 'max:255',

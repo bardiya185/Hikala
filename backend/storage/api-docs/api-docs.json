@@ -3013,14 +3013,16 @@
                         "description": "Category not found"
                     }
                 }
-            },
+            }
+        },
+        "/api/admin/categories/{category}": {
             "put": {
                 "tags": [
                     "Categories"
                 ],
                 "summary": "Update a category",
                 "description": "Update category information. All fields are optional.",
-                "operationId": "3146e96866d62a90bd01a7070fd61470",
+                "operationId": "decc152d00e60f86768977bbbe517a13",
                 "parameters": [
                     {
                         "name": "category",
@@ -3151,7 +3153,7 @@
                 ],
                 "summary": "Delete a category",
                 "description": "Delete a category. Also deletes all subcategories (cascade).",
-                "operationId": "88c22abd8149aea4b3bdcb280a0fddf7",
+                "operationId": "59f9e8d62f6df5da4b508311692e8e94",
                 "parameters": [
                     {
                         "name": "category",

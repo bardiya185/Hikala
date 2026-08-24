@@ -201,13 +201,15 @@ Route::prefix('admin')
             Route::put('/reorder', [ProductImageController::class, 'reorder']);
         });
 
-    // ===== 🗂️ Categories Management =====
-    Route::prefix('categories')->middleware('permission:create-categories')->group(function () {
-        Route::post('/', [CategoryController::class, 'store']);
-        Route::put('/{category}', [CategoryController::class, 'update']);
-        Route::delete('/{category}', [CategoryController::class, 'destroy'])
-            ->middleware('permission:delete-categories');
-    });
+  // ===== 🗂️ Categories Management =====
+Route::prefix('categories')->group(function () {
+    Route::post('/', [CategoryController::class, 'store'])
+        ->middleware('permission:create-categories');
+    Route::put('/{category}', [CategoryController::class, 'update'])
+        ->middleware('permission:update-categories');
+    Route::delete('/{category}', [CategoryController::class, 'destroy'])
+        ->middleware('permission:delete-categories');
+});
 
     // ===== 🏷️ Brands Management =====
     Route::prefix('brands')->middleware('permission:create-brands')->group(function () {
