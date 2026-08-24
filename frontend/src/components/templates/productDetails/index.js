@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
+import ProductReviewModal from "@/components/ProductReviewModal";
 
 import { FcRating } from "react-icons/fc";
 import { TbBrandSpeedtest } from "react-icons/tb";

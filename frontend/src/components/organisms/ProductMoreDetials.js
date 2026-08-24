@@ -10,8 +10,10 @@ import { AiOutlineLike, AiTwotoneDislike } from "react-icons/ai";
 import { Trash2, Minus, Plus } from "lucide-react";
 import { RotatingLines } from "react-loader-spinner";
 import { VscCopilotSuccess } from "react-icons/vsc";
+import ProductReviewModal from "../ProductReviewModal";
 
 function ProductOverview({ data }) {
+  console.log(data);
   return (
     <div className="w-full">
       <div className="flex flex-col px-4 sm:px-5">
@@ -142,48 +144,61 @@ function RatingStars({ rating = 0, maxStars = 5 }) {
   );
 }
 
-function SubmitComment({ id }) {
-  return (
-    <div className="px-4 sm:px-5 max-w-[1270px]">
-      <div
-        className="
-          flex
-          flex-col
-          sm:flex-row
-          sm:items-center
-          gap-4
-          sm:gap-10
-          lg:gap-64
-        "
-      >
-        <p className="font-medium">4 out of 5</p>
+function SubmitComment({ id, data }) {
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
-        <Reviews id={id} />
+  return (
+    <>
+      <div className="px-4 sm:px-5 max-w-[1270px]">
+        <div
+          className="
+            flex
+            flex-col
+            sm:flex-row
+            sm:items-center
+            gap-4
+            sm:gap-10
+            lg:gap-64
+          "
+        >
+          <p className="font-medium">4 out of 5</p>
+
+          <Reviews id={id} />
+        </div>
+
+        <p className="mt-7 text-sm">
+          You too can leave a review for this product.
+        </p>
+
+        <button
+          type="button"
+          onClick={() => setIsReviewModalOpen(true)}
+          className="
+            w-full
+            sm:w-[320px]
+            h-[41px]
+            border
+            border-red-500
+            rounded-lg
+            mt-5
+            sm:mt-7
+            text-red-600
+            text-center
+            transition-all
+            hover:bg-red-50
+            active:scale-[0.99]
+          "
+        >
+          Submit a comment
+        </button>
       </div>
 
-      <p className="mt-7 text-sm">
-        You too can leave a review for this product.
-      </p>
-
-      <button
-        className="
-          w-full
-          sm:w-[320px]
-          h-[41px]
-          border
-          border-red-500
-          rounded-lg
-          mt-5
-          sm:mt-7
-          text-red-600
-          text-center
-          hover:bg-red-50
-          transition-colors
-        "
-      >
-        Submit a comment
-      </button>
-    </div>
+      <ProductReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        product={data}
+      />
+    </>
   );
 }
 
@@ -670,7 +685,7 @@ export default function ProductMoreDetails({
 
             {}
 
-            <SubmitComment id={data?.id} />
+            <SubmitComment id={data?.id} data={data} />
           </div>
 
           {/* =================================================

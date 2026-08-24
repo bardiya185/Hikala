@@ -45,12 +45,10 @@ export default function SearchBar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  const handleSelectProduct = (title) => {
-  if (!title) return;
-
+const handleSelectProduct = (product) => {
   setIsOpen(false);
 
-  router.push(`/search/${encodeURIComponent(title.trim())}`);
+  router.push(`/product/${product.id}`);
 };
   const handleSelectCategory = (category) => {
 
@@ -320,7 +318,7 @@ export default function SearchBar() {
                     <button
                       type="button"
                       key={product.id}
-                      onClick={() => handleSelectProduct(product?.title)}
+                      onClick={() => handleSelectProduct(product)}
                       className="
                         w-full
                         flex

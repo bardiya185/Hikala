@@ -352,11 +352,6 @@ function Header() {
             </div>
           </div>
         </div>
-<<<<<<< Updated upstream
-      </div>
-          </div>
-=======
->>>>>>> Stashed changes
 
         {/* ==================================================
           CATEGORY MENU

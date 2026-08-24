@@ -2,6 +2,7 @@ import Stories from "@/components/templates/digikalstories";
 import TopBanner from "@/components/banner/Banner";
 import AmazingSliders from "@/components/organisms/AmazingSliders";
 import CardShop from "@/components/templates/cardStore";
+import Categories from "@/components/home/Categories";
 async function getFlashSaleCampaign() {
   try {
     const res = await fetch(
@@ -81,6 +82,11 @@ export default async function Home() {
         <section className="w-full">
           <CardShop data={middleSection} />
         </section>
+
+        <section className="w-full">
+          <Categories />
+        </section>
+        
       </div>
     </main>
   );
