@@ -8,6 +8,7 @@ import ReactStars from "react-stars";
 import { motion } from "framer-motion";
 
 import { formatPrice } from "@/core/utils/formatPrice";
+import { FreeShippingBadge } from "@/components/atom/FreeShippingBadge.";
 
 const SORT_OPTIONS = [
   {
@@ -56,27 +57,28 @@ function SortBar({ currentSort, currentSortOrder, onSortChange }) {
       className="mb-3 flex w-full items-center gap-2 overflow-x-auto px-1 pb-1 sm:mb-4 sm:gap-3 sm:px-0"
     >
       <div className="flex shrink-0 items-center gap-1.5 text-neutral-700 sm:gap-2">
-        <TfiAlignLeft size={16} className="sm:h-[18px] sm:w-[18px]" />
+        <TfiAlignLeft
+          size={16}
+          className="sm:h-[18px] sm:w-[18px]"
+        />
 
         <span className="text-xs font-semibold sm:text-sm">
           Sort:
         </span>
       </div>
 
-      {SORT_OPTIONS.map((option) => {
+      {SORT_OPTIONS.map(({ label, sortBy, sortOrder }) => {
         const isActive =
-          currentSort === option.sortBy &&
-          currentSortOrder === option.sortOrder;
+          currentSort === sortBy &&
+          currentSortOrder === sortOrder;
 
         return (
           <SortButton
-            key={`${option.sortBy}-${option.sortOrder}`}
+            key={`${sortBy}-${sortOrder}`}
             active={isActive}
-            onClick={() =>
-              onSortChange(option.sortBy, option.sortOrder)
-            }
+            onClick={() => onSortChange(sortBy, sortOrder)}
           >
-            {option.label}
+            {label}
           </SortButton>
         );
       })}
@@ -101,22 +103,30 @@ function getProductVariant(product) {
   );
 }
 
-function getProductPricing(product) {
+export function getProductPricing(product) {
   const variant = getProductVariant(product);
 
   const basePrice = variant?.base_price ?? 0;
   const finalPrice = variant?.final_price ?? 0;
   const discountPercent = variant?.discount_percent ?? 0;
 
-  const hasDiscount =
-    finalPrice < basePrice && basePrice > 0;
-
   return {
     basePrice,
     finalPrice,
     discountPercent,
-    hasDiscount,
+    hasDiscount:
+      finalPrice < basePrice && basePrice > 0,
   };
+}
+
+export function hasFreeShipping(product) {
+  const variant = getProductVariant(product);
+
+  return variant?.shipping_features?.some(
+    (feature) =>
+      feature?.type === "free" &&
+      feature?.is_active === true
+  );
 }
 
 function DiscountBadge({ discountPercent }) {
@@ -131,7 +141,7 @@ function DiscountBadge({ discountPercent }) {
         viewBox="0 0 24 24"
         aria-hidden="true"
       >
-        <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
+        <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l-7-7c-.37-.36-.59-.86-.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
       </svg>
 
       <span>{discountPercent}% Off</span>
@@ -181,16 +191,15 @@ function ProductCard({ product, index }) {
     hasDiscount,
   } = getProductPricing(product);
 
+    const freeShipping = hasFreeShipping(product);
+
+
+  console.log(product)
+
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        y: 10,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{
         ease: "easeOut",
         duration: 0.3,
@@ -199,54 +208,50 @@ function ProductCard({ product, index }) {
       className="group min-w-0 rounded-2xl border border-neutral-100 bg-white p-1.5 sm:rounded-[20px] sm:p-2 lg:p-3"
     >
       <div className="flex h-full flex-col justify-between rounded-xl border border-neutral-100 p-2 sm:rounded-[10px] sm:p-3 lg:p-4">
-        <div>
-          <Link
-            href={`/product/${product?.id}`}
-            className="block"
-          >
-            <ProductImage
-              product={product}
-              priority={index < 4}
-            />
+        <Link
+          href={`/product/${product?.id}`}
+          className="block"
+        >
+          <ProductImage
+            product={product}
+            priority={index < 4}
+          />
 
-            <div className="mt-3 flex items-start justify-between gap-1.5 sm:mt-4 sm:gap-2 lg:mt-5">
-              <h3 className="min-w-0 flex-1 overflow-hidden text-xs font-bold leading-5 text-neutral-800 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] sm:text-sm sm:leading-6">
-                {product?.title}
-              </h3>
+          <div className="mt-3 flex items-start justify-between gap-1.5 sm:mt-4 sm:gap-2 lg:mt-5">
+            <h3 className="min-w-0 flex-1 overflow-hidden text-xs font-bold leading-5 text-neutral-800 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] sm:text-sm sm:leading-6">
+              {product?.title}
+            </h3>
 
-              <ProductRating rating={product?.rating} />
-            </div>
-          </Link>
-        </div>
-
-        <div>
-          <div
-            dir="ltr"
-            className="mt-3 flex flex-wrap items-center justify-between gap-2 sm:mt-4"
-          >
-            <div className="flex min-w-0 flex-wrap items-center gap-1.5 sm:gap-2">
-              <p className="text-sm font-bold text-green-600 sm:text-base">
-                ${formatPrice(finalPrice)}
-              </p>
-
-              {hasDiscount && (
-                <span className="text-[10px] text-neutral-400 line-through sm:text-xs">
-                  ${formatPrice(basePrice)}
-                </span>
-              )}
-            </div>
-
-            {hasDiscount && discountPercent > 0 && (
-              <DiscountBadge
-                discountPercent={discountPercent}
-              />
-            )}
+            <ProductRating rating={product?.rating} />
           </div>
+        </Link>
 
-          <p className="mt-2 w-full overflow-hidden text-[10px] leading-4 text-neutral-500 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] sm:mt-3 sm:text-xs sm:leading-5">
-            {product?.short_description}
-          </p>
-        </div>
+        <div
+  dir="ltr"
+  className="mt-3 flex flex-wrap items-center justify-between gap-2 sm:mt-4"
+>
+  <div className="flex min-w-0 flex-wrap items-center gap-1.5 sm:gap-2">
+    <p className="text-sm font-bold text-green-600 sm:text-base">
+      ${formatPrice(finalPrice)}
+    </p>
+
+    {hasDiscount && (
+      <span className="text-[10px] text-neutral-400 line-through sm:text-xs">
+        ${formatPrice(basePrice)}
+      </span>
+    )}
+  </div>
+
+  <div className="flex flex-wrap items-center gap-1.5">
+    {freeShipping && <FreeShippingBadge />}
+
+    {hasDiscount && discountPercent > 0 && (
+      <DiscountBadge
+        discountPercent={discountPercent}
+      />
+    )}
+  </div>
+</div>
       </div>
     </motion.div>
   );
@@ -274,7 +279,9 @@ function Products({
     Boolean(clientBannerId);
 
   const handleSortChange = (sortBy, sortOrder) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(
+      searchParams.toString()
+    );
 
     if (sortBy && sortOrder) {
       params.set("sort_by", sortBy);

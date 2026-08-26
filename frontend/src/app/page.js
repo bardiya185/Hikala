@@ -3,6 +3,7 @@ import TopBanner from "@/components/banner/Banner";
 import AmazingSliders from "@/components/organisms/AmazingSliders";
 import CardShop from "@/components/templates/cardStore";
 import Categories from "@/components/home/Categories";
+import SpecialOffers from "@/components/organisms/SpecialOffers";
 async function getFlashSaleCampaign() {
   try {
     const res = await fetch(
@@ -20,6 +21,21 @@ async function getFlashSaleCampaign() {
     return null;
   }
 }
+
+
+async function getSpecialOffer(){
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/campaigns/flash-sale/products`, {
+      next: { revalidate: 60 },
+    })
+    if(!res.ok) return null
+    return res.json()
+  }catch(error){
+    console.log(error)
+    return null
+  }
+}
+
 async function getBanners() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/banners`, {
@@ -27,6 +43,7 @@ async function getBanners() {
     });
 
     if (!res.ok) return null;
+    
 
     return res.json();
   } catch (error) {
@@ -35,9 +52,10 @@ async function getBanners() {
   }
 }
 export default async function Home() {
-  const [flashSaleData, bannerData] = await Promise.all([
+  const [flashSaleData, bannerData,specialOff] = await Promise.all([
     getFlashSaleCampaign(),
     getBanners(),
+    getSpecialOffer()
   ]);
 
   const middleSection = bannerData?.data?.find(
@@ -86,6 +104,13 @@ export default async function Home() {
         <section className="w-full">
           <Categories />
         </section>
+        {specialOff && (
+        <section className="w-full">
+          <SpecialOffers campaign={specialOff.campaign}
+           products={specialOff?.data} />
+        </section>
+
+        )}
         
       </div>
     </main>
