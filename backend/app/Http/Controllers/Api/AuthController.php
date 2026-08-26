@@ -64,14 +64,14 @@ class AuthController extends Controller
         
         Log::info('OTP sent successfully', [
             'mobile' => substr($mobile, 0, 4) . '*****',
-            'code' => $otpData['otp'] ?? null,
+            'code' => $otpData['otp'] ?? null,//🛑Beta🛑
         ]);
 
           
         return response()->json([
             'success' => true,
             'message' => 'Verification code sent successfully.',
-            'code' => $otpData['otp'], 
+            'code' => $otpData['otp'], //🛑Beta🛑
         ]);
      
 
