@@ -25,7 +25,6 @@ async function getCategoryProducts({
     const sortOrder = sort_order || "desc";
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-    const url = `${baseUrl}/api/products`;
     const params = new URLSearchParams();
 
     // Category
@@ -73,13 +72,16 @@ async function getCategoryProducts({
     }
 
     // Sorting & Pagination
-    params.set("sort_by", sortBy);
-    params.set("sort_order", sortOrder);
+    params.set("sort_by", String(sortBy));
+    params.set("sort_order", String(sortOrder));
     params.set("per_page", "50");
 
-    const response = await fetch(`${url}?${params.toString()}`, {
-      cache: "no-store",
-    });
+    const response = await fetch(
+      `${baseUrl}/api/products?${params.toString()}`,
+      {
+        cache: "no-store",
+      }
+    );
 
     if (!response.ok) {
       console.error(
@@ -116,7 +118,8 @@ export default async function SearchResultPage({
     null;
 
   const isFromBanner =
-    Boolean(bannerId) || resolvedSearchParams?.source === "banner";
+    Boolean(bannerId) ||
+    resolvedSearchParams?.source === "banner";
 
   const products = await getCategoryProducts({
     ...resolvedSearchParams,
@@ -157,7 +160,9 @@ export default async function SearchResultPage({
       <CategoryPage
         data={products}
         current_sort={resolvedSearchParams?.sort_by || "created_at"}
-        current_sortorder={resolvedSearchParams?.sort_order || "desc"}
+        current_sortorder={
+          resolvedSearchParams?.sort_order || "desc"
+        }
         category_id={resolvedSearchParams?.category_id || ""}
         isFromBanner={isFromBanner}
         bannerId={bannerId}
