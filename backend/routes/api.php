@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\UserRoleController;
 use App\Http\Controllers\Api\WishlistController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\AdminNotificationController;
+use App\Http\Controllers\GetOtpController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -91,6 +92,13 @@ Route::prefix('cart')->middleware('optional.auth')->group(function () {
     Route::delete('/coupon', [CartController::class, 'removeCoupon']);
 });
 
+
+/*
+|==================================================================================
+| 📲 GET OTP (BETA)
+|==================================================================================
+*/
+Route::get('GetOtp' , [GetOtpController::class  , 'GetOtp']);
 
 /*
 |==================================================================================
@@ -228,6 +236,7 @@ Route::prefix('categories')->group(function () {
 });
 
 
+
 /*
 |==================================================================================
 | 👑 SUPER ADMIN ROUTES
@@ -251,7 +260,7 @@ Route::prefix('admin')
     ->middleware(['auth:sanctum', 'role:super-admin|admin'])
     ->group(function () {
     
-    // ... بقیه روت‌های ادمین ...
+
 
     // ===== 📢 Admin Notifications (ارسال اعلانات) =====
     Route::prefix('notifications')->group(function () {

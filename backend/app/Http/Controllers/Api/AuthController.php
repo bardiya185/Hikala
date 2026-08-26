@@ -44,7 +44,7 @@ class AuthController extends Controller
     public function sendOtp(SendOtpRequest $request)
     {
         $mobile = $request->mobile;
-        
+    
         // Check rate limit
         if ($this->authService->isOtpThrottled($mobile)) {
             Log::info('OTP rate limit exceeded', [
@@ -52,22 +52,30 @@ class AuthController extends Controller
                 'ip' => $request->ip(),
             ]);
             
+
             return response()->json([
                 'message' => 'Please wait 2 minutes before requesting again.',
             ], Response::HTTP_TOO_MANY_REQUESTS);
+
         }
         
         // Create OTP
-        $this->authService->createOtp($mobile);
+        $otpData = $this->authService->createOtp($mobile);
         
         Log::info('OTP sent successfully', [
             'mobile' => substr($mobile, 0, 4) . '*****',
+            'code' => $otpData['otp'] ?? null,
         ]);
-        
+
+          
         return response()->json([
+            'success' => true,
             'message' => 'Verification code sent successfully.',
+            'code' => $otpData['otp'], 
         ]);
-    }
+     
+
+      }
 
     #[OA\Post(
         path: '/api/check-otp',

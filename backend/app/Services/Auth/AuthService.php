@@ -2,9 +2,11 @@
 
 namespace App\Services\Auth;
 
+use App\Http\Controllers\Api\AuthController;
 use App\Models\User;
 use App\Models\OtpCode;
 use App\Models\RefreshToken;
+use Carbon\Traits\ToStringFormat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Response;
+use Stringable;
 
 class AuthService
 {
@@ -47,14 +50,14 @@ class AuthService
     public function isOtpThrottled(string $mobile): bool
     {
         return OtpCode::where('mobile', $mobile)
-            ->where('created_at', '>', now()->subMinutes(2))
+            ->where('created_at', '>', now()->subMinutes(2) )
             ->exists();
     }
 
     /**
      * Create OTP code
      */
-    public function createOtp(string $mobile): void
+    public function createOtp(string $mobile): array
     {
         $code = random_int(100000, 999999);
         
@@ -64,8 +67,7 @@ class AuthService
             'expires_at' => now()->addMinutes(2),
         ]);
         
-        // TODO: Send SMS with code
-        // sendSms($mobile, $code);
+        return ['otp' => $code];
     }
 
     /**
