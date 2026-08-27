@@ -10,12 +10,12 @@ export function FreeShippingBadge() {
         gap-1.5
         rounded-md
         bg-green-200
-        px-2
+        px-1
         py-1.5
         text-[10px]
         font-medium
         text-green-600
-        sm:text-xs
+        sm:text-[11px]
       "
       title="Free Shipping"
     >
