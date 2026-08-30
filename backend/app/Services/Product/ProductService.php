@@ -42,8 +42,8 @@ class ProductService
         $query = $this->buildBaseQuery($request);
 
         $sortBy = $this->getSortField($request);
-        $sortOrder = $request->get('sort_order', 'desc');
-        $sortByPrice = $sortBy === 'base_price';
+        $sortOrder = strtolower($request->get('sort_order', 'desc')) === 'asc' ? 'asc' : 'desc';
+        $sortByPrice = in_array($sortBy, ['base_price', 'price', 'final_price']);
 
         if (!$sortByPrice) {
             $query->orderBy($sortBy, $sortOrder);
@@ -72,8 +72,8 @@ class ProductService
         $request->merge(['campaign' => $campaign->slug]);
 
         $sortBy = $this->getSortField($request);
-        $sortOrder = $request->get('sort_order', 'desc');
-        $sortByPrice = $sortBy === 'base_price';
+        $sortOrder = strtolower($request->get('sort_order', 'desc')) === 'asc' ? 'asc' : 'desc';
+        $sortByPrice = in_array($sortBy, ['base_price', 'price', 'final_price']);
 
         if (!$sortByPrice) {
             $query->orderBy($sortBy, $sortOrder);
@@ -91,6 +91,7 @@ class ProductService
         $this->applyCategoryFilter($query, $request);
         $this->applyBrandFilter($query, $request);
         $this->applyPriceFilter($query, $request);
+        $this->applyInStockFilter($query, $request); // ✅ فیلتر کالاهای موجود
         $this->applyAttributesFilter($query, $request);
         $this->applySearchFilter($query, $request);
 
@@ -99,8 +100,10 @@ class ProductService
 
     private function applyCategoryFilter(Builder $query, Request $request): void
     {
-        if ($request->has('category_ids')) {
-            $ids = array_filter(explode(',', $request->category_ids));
+        if ($request->filled('category_ids')) {
+            $raw = $request->category_ids;
+            $ids = is_array($raw) ? $raw : explode(',', $raw);
+            $ids = array_filter(array_map('intval', $ids));
             if (empty($ids)) return;
     
             $allCategoryIds = $this->getCategoryWithSubcategories($ids);
@@ -114,8 +117,9 @@ class ProductService
             );
             return;
         }
-        if ($request->has('category_id')) {
-            $allCategoryIds = $this->getCategoryWithSubcategories([$request->category_id]);
+
+        if ($request->filled('category_id')) {
+            $allCategoryIds = $this->getCategoryWithSubcategories([(int)$request->category_id]);
     
             if (empty($allCategoryIds)) {
                 $query->whereRaw('1 = 0');
@@ -182,37 +186,66 @@ class ProductService
     
         return true;
     }
+
     private function applyBrandFilter(Builder $query, Request $request): void
     {
-        if ($request->has('brand_id')) {
-            $query->where('brand_id', $request->brand_id);
+        if ($request->filled('brand_id')) {
+            $raw = $request->brand_id;
+            $brandIds = is_array($raw) ? $raw : explode(',', $raw);
+            $brandIds = array_filter(array_map('intval', $brandIds));
+
+            if (!empty($brandIds)) {
+                $query->whereIn('brand_id', $brandIds);
+            }
         }
     }
 
     private function applyPriceFilter(Builder $query, Request $request): void
     {
-        if (!$request->has('min_price') && !$request->has('max_price')) return;
-
-        $query->whereHas('variants', function ($q) use ($request) {
-            if ($request->has('min_price')) {
-                $q->where('base_price', '>=', $request->min_price);
-            }
-            if ($request->has('max_price')) {
-                $q->where('base_price', '<=', $request->max_price);
-            }
+        $hasMin = $request->filled('min_price');
+        $hasMax = $request->filled('max_price');
+    
+        if (!$hasMin && !$hasMax) return;
+    
+        $minPrice = $hasMin ? (float) $request->min_price : null;
+        $maxPrice = $hasMax ? (float) $request->max_price : null;
+    
+        // فیلتر روی واریانت پیش‌فرض (Default Variant) که توی کارت محصول نمایش داده میشه
+        $query->whereHas('variants', function ($q) use ($minPrice, $maxPrice) {
+            $q->where('is_active', 1);
+            
+            // اگر واریانت پیش‌فرض وجود دارد، روی قیمت اون فیلتر بزند
+            $q->where(function ($variantQuery) use ($minPrice, $maxPrice) {
+                $variantQuery->where('is_default', 1);
+    
+                if ($minPrice !== null) {
+                    $variantQuery->where('base_price', '>=', $minPrice);
+                }
+                if ($maxPrice !== null) {
+                    $variantQuery->where('base_price', '<=', $maxPrice);
+                }
+            });
         });
+    }
+
+    /**
+     * ✅ فیلتر کالاهای موجود (In Stock Only)
+     */
+    private function applyInStockFilter(Builder $query, Request $request): void
+    {
+        if ($request->boolean('in_stock_only') || $request->boolean('has_stock') || $request->boolean('in_stock')) {
+            $query->whereHas('variants', fn($q) => $q->where('stock', '>', 0)->where('is_active', 1));
+        }
     }
 
     private function applyAttributesFilter(Builder $query, Request $request): void
     {
-        // گرفتن مقادیر (پشتیبانی از هر دو اسم برای خراب نشدن فرانت)
         $rawIds = $request->get('attribute_value_ids') ?? $request->get('attributes_id');
     
         if (!$rawIds) {
             return;
         }
     
-        // تبدیل به آرایه تمیز از اعداد صحیح
         $valueIds = is_array($rawIds) ? $rawIds : explode(',', $rawIds);
         $valueIds = array_filter(array_map('intval', $valueIds));
     
@@ -220,14 +253,12 @@ class ProductService
             return;
         }
     
-        // ۱. گروه‌بندی مقادیر بر اساس ویژگی والد (Group values by parent attribute_id)
         $groupedValues = DB::table('attribute_values')
             ->whereIn('id', $valueIds)
             ->select('id', 'attribute_id')
             ->get()
             ->groupBy('attribute_id');
     
-        // ۲. اعمال منطق AND بین ویژگی‌های مختلف و OR بین مقادیر یک ویژگی
         foreach ($groupedValues as $attributeId => $values) {
             $targetValueIds = $values->pluck('id')->toArray();
     
@@ -239,9 +270,9 @@ class ProductService
 
     private function applySearchFilter(Builder $query, Request $request): void
     {
-        if (!$request->has('search')) return;
+        if (!$request->filled('search')) return;
 
-        $search = $request->search;
+        $search = trim($request->search);
         $query->where(fn($q) =>
             $q->where('title', 'LIKE', "%{$search}%")
               ->orWhere('short_description', 'LIKE', "%{$search}%")
@@ -251,7 +282,6 @@ class ProductService
     
     /**
      * فیلتر محصولات بر اساس کمپین
-     * پشتیبانی از: flash-sale, special, weekly, clearance, ...
      */
     private function filterByCampaign(Builder $query, Request $request, bool $sortByPrice, string $sortOrder): array
     {
@@ -262,6 +292,7 @@ class ProductService
             ->filter(function ($product) use ($campaignSlug) {
                 return $product->_campaign_slug === $campaignSlug;
             });
+
         if ($sortByPrice) {
             $products = $products->sortBy('_final_price', SORT_REGULAR, $sortOrder === 'desc');
         } else {
@@ -280,12 +311,12 @@ class ProductService
             ->filter(function ($product) use ($request) {
                 if ($product->_discount_percent <= 0) return false;
 
-                if ($request->has('min_discount') 
+                if ($request->filled('min_discount') 
                     && $product->_discount_percent < (int) $request->min_discount) {
                     return false;
                 }
 
-                if ($request->has('max_discount') 
+                if ($request->filled('max_discount') 
                     && $product->_discount_percent > (int) $request->max_discount) {
                     return false;
                 }
@@ -300,7 +331,7 @@ class ProductService
         return $this->paginateCollection($products->values(), $request, [
             'filters_applied' => [
                 'min_discount' => (int) $request->get('min_discount', 0),
-                'max_discount' => $request->has('max_discount') ? (int) $request->max_discount : null,
+                'max_discount' => $request->filled('max_discount') ? (int) $request->max_discount : null,
                 'has_discount' => $request->boolean('has_discount'),
             ]
         ]);
@@ -439,9 +470,6 @@ class ProductService
         ];
     }
     
-    /**
-     * محاسبه قیمت نهایی، تخفیف و کمپین
-     */
     private function attachPricingData(Product $product): Product
     {
         $variant = $this->getDefaultVariant($product);
@@ -491,15 +519,21 @@ class ProductService
 
     private function hasDiscountFilter(Request $request): bool
     {
-        return $request->has('min_discount') 
-            || $request->has('max_discount') 
+        return $request->filled('min_discount') 
+            || $request->filled('max_discount') 
             || $request->boolean('has_discount');
     }
 
     private function getSortField(Request $request): string
     {
         $sortBy = $request->get('sort_by', 'created_at');
-        $allowedSortFields = ['base_price', 'view_count', 'created_at', 'title', 'sort_order'];
+        
+        // پشتیبانی از اسامی مختلف سورت قیمت برای فرانت‌کار
+        if (in_array($sortBy, ['price', 'final_price', 'cheapest', 'most_expensive'])) {
+            return 'base_price';
+        }
+
+        $allowedSortFields = ['base_price', 'view_count', 'created_at', 'title', 'sort_order', 'rating'];
 
         return in_array($sortBy, $allowedSortFields) ? $sortBy : 'created_at';
     }
