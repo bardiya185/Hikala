@@ -558,4 +558,66 @@ class OrderController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
+
+
+    #[OA\Post(
+        path: '/api/admin/orders/{order}/status',
+        tags: ['Admin Orders'],
+        summary: 'Update order status (Admin)',
+        security: [['bearerAuth' => []]],
+        parameters: [
+            new OA\Parameter(name: 'order', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['status'],
+                properties: [
+                    new OA\Property(property: 'status', type: 'string', enum: ['processing', 'shipped', 'delivered', 'canceled']),
+                    new OA\Property(property: 'transaction_id', type: 'string', nullable: true, example: 'TRK-123456789'),
+                    new OA\Property(property: 'note', type: 'string', nullable: true, example: 'Handed over to post office'),
+                ]
+            )
+        ),
+        responses: [new OA\Response(response: 200, description: 'Order status updated successfully')]
+    )]
+    public function updateStatus(Request $request, Order $order): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'status'        => 'required|in:processing,shipped,delivered,canceled',
+            'transaction_id' => 'nullable|string|max:100',
+            'note'          => 'nullable|string|max:500',
+        ]);
+
+        $newStatus = $request->status;
+
+
+        $updateData = ['status' => $newStatus];
+
+        if ($newStatus === 'shipped') {
+            $updateData['shipped_at'] = now();
+            if ($request->filled('transaction_id')) {
+                $updateData['transaction_id'] = $request->tracking_code;
+            }
+        } elseif ($newStatus === 'delivered') {
+            $updateData['delivered_at'] = now();
+        } elseif ($newStatus === 'canceled') {
+            $updateData['canceled_at'] = now();
+        }
+
+        $order->update($updateData);
+
+
+        $order->statusHistory()->create([
+            'to_status'  => $newStatus,
+            'note'       => $request->note ?? "Status changed to {$newStatus}",
+            'changed_by' => $request->user()->id,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Order status updated to {$newStatus} successfully.",
+            'data'    => new OrderResource($order->fresh(['statusHistory', 'items', 'address']))
+        ]);
+    }
 }

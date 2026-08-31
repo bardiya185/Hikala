@@ -4840,6 +4840,69 @@
                 ]
             }
         },
+        "/api/admin/orders/{order}/status": {
+            "post": {
+                "tags": [
+                    "Admin Orders"
+                ],
+                "summary": "Update order status (Admin)",
+                "operationId": "950431a4e83822e9079654cf829ad679",
+                "parameters": [
+                    {
+                        "name": "order",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "status"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "processing",
+                                            "shipped",
+                                            "delivered",
+                                            "canceled"
+                                        ]
+                                    },
+                                    "transaction_id": {
+                                        "type": "string",
+                                        "example": "TRK-123456789",
+                                        "nullable": true
+                                    },
+                                    "note": {
+                                        "type": "string",
+                                        "example": "Handed over to post office",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Order status updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/products": {
             "get": {
                 "tags": [
@@ -7677,6 +7740,10 @@
         {
             "name": "Discounts",
             "description": "Discounts"
+        },
+        {
+            "name": "Admin Orders",
+            "description": "Admin Orders"
         },
         {
             "name": "Shipping Features",

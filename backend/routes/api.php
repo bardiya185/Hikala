@@ -115,9 +115,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{order}', [OrderController::class, 'show']);
         Route::post('/{order}/cancel', [OrderController::class, 'cancel']);
         Route::post('/{order}/pay', [OrderController::class, 'pay']);
-    });
+        Route::get('/delivery/options', [OrderController::class, 'deliveryOptions']);
+        Route::post('/{order}/refund', [OrderController::class, 'refund']);
+    });   
 
-    Route::get('/delivery/options', [OrderController::class, 'deliveryOptions']);
+
+
 
     Route::prefix('wishlist')->group(function () {
         Route::get('/', [WishlistController::class, 'index']);
@@ -222,10 +225,7 @@ Route::prefix('categories')->group(function () {
         Route::post('/{review}/approve', [ReviewController::class, 'approve']);
         Route::post('/{review}/reject', [ReviewController::class, 'reject']);
     });
-    Route::prefix('orders')->middleware('permission:view-orders')->group(function () {
-        Route::post('/{order}/refund', [OrderController::class, 'refund'])
-            ->middleware('permission:refund-orders');
-    });
+
 });
 
 
@@ -262,4 +262,11 @@ Route::prefix('admin')
     });
 
 });
+
+Route::prefix('admin/orders')
+->middleware(['auth:sanctum', 'role:super-admin|admin'])
+->group(function () {
+    Route::post('/{order}/status', [OrderController::class, 'updateStatus']);
+});
+
  

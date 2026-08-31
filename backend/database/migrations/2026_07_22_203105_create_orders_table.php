@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\DeliveryTimeSlot;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
@@ -52,6 +53,8 @@ return new class extends Migration
             $table->timestamp('delivered_at')->nullable();
             $table->timestamp('canceled_at')->nullable();
             $table->timestamp('refunded_at')->nullable();
+            $table->date('preferred_delivery_date')->nullable();
+            $table->enum('preferred_delivery_time_slot', DeliveryTimeSlot::values())->nullable(); 
             $table->timestamps();
             
             $table->index('order_number');
