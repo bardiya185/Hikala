@@ -20,7 +20,7 @@ function SpecialOffers({ campaign, products }) {
 
   if (!products || products.length === 0) return null;
 
-  const bgColor = "#42f54b";
+  const bgColor =  campaign.color;
 
   return (
     <div

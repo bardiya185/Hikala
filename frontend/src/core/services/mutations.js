@@ -162,56 +162,42 @@ export const useCreateProductReview = () => {
 
 
 
-
-
-export const useToggleWishlist = () => {
+export const useAddToWishlist = () => {
   const queryClient = useQueryClient();
 
-  const mutationFn = (productId) => {
-    if (!productId) {
-      throw new Error("Product ID is required");
-    }
-
-    console.log(
-      "Toggle wishlist product:",
-      productId,
-    );
-
-    return api.post(
-      `/api/wishlist/${productId}/toggle`,
-    );
-  };
-
-  const onSuccess = (response) => {
-    console.log(
-      "Wishlist toggle success:",
-      response?.data,
-    );
-
-    /*
-     * اگر query مربوط به wishlist داری،
-     * بعد از toggle دوباره اطلاعات را می‌گیریم.
-     */
-
-    queryClient.invalidateQueries({
-      queryKey: ["wishlist"],
-    });
-  };
-
-  const onError = (error) => {
-    console.error(
-      "Wishlist toggle failed:",
-      error?.response?.data || error,
-    );
-  };
-
   return useMutation({
-    mutationFn,
-    onSuccess,
-    onError,
+    mutationFn: (productId) => api.post(`/api/wishlist/${productId}/toggle`),
+
+       onMutate: async (productId) => {
+      await queryClient.cancelQueries({ queryKey: ["wishlist_ids"] });
+
+      const previousIds = queryClient.getQueryData(["wishlist_ids"]) || [];
+      const pIdStr = String(productId);
+      
+      const exists = previousIds.some((id) => String(id) === pIdStr);
+
+      const nextIds = exists
+        ? previousIds.filter((id) => String(id) !== pIdStr)
+        : [...previousIds, productId];
+
+      queryClient.setQueryData(["wishlist_ids"], nextIds);
+
+      return { previousIds };
+    },
+
+
+    onError: (_err, _id, context) => {
+      if (context?.previousIds) {
+        queryClient.setQueryData(["wishlist_ids"], context.previousIds);
+      }
+    },
+
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["wishlist_ids"] });
+    },
   });
 };
-
 export const useCreateAddress = () => {
   const queryClient = useQueryClient();
 
@@ -229,3 +215,5 @@ export const useCreateAddress = () => {
     },
   });
 };
+
+

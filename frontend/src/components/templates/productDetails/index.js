@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import ProductReviewModal from "@/components/ProductReviewModal";
-
 import { FcRating } from "react-icons/fc";
 import { TbBrandSpeedtest } from "react-icons/tb";
 import { FaFire } from "react-icons/fa6";
@@ -12,7 +11,6 @@ import { VscCopilotSuccess } from "react-icons/vsc";
 import { IoWarningOutline } from "react-icons/io5";
 import { FaRegStar } from "react-icons/fa";
 import { BsDot } from "react-icons/bs";
-
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 
@@ -26,19 +24,27 @@ import {
   useUpdateCartItem,
 } from "@/core/services/mutations";
 
-import { useCart } from "@/core/services/queries";
+import { useCart, useWishlistIds } from "@/core/services/queries";
 
 import toast from "react-hot-toast";
 
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { RotatingLines } from "react-loader-spinner";
+import WishlistButton from "@/components/WishlistButton";
+import { useParams } from "next/navigation";
+import { useMemo } from "react";
 
 gsap.registerPlugin(SplitText);
 
+
 function ProductsDe({ data }) {
+
+
   /* =========================================
      STATE
   ========================================= */
+
+
 
   const [selectedVariant, setSelectedVariant] = useState(
     data?.variants?.[0] || null,
@@ -216,7 +222,7 @@ function ProductsDe({ data }) {
               min-w-0
             "
           >
-            {}
+            { }
 
             <p
               className="
@@ -237,7 +243,7 @@ function ProductsDe({ data }) {
               فروش ویژه
             </p>
 
-            {}
+            { }
 
             <div
               className="
@@ -290,7 +296,7 @@ function ProductsDe({ data }) {
               min-w-0
             "
           >
-            {}
+            { }
 
             <h1
               className="
@@ -309,7 +315,7 @@ function ProductsDe({ data }) {
               {data?.description}
             </h1>
 
-            {}
+            { }
 
             <p
               className="
@@ -325,11 +331,11 @@ function ProductsDe({ data }) {
               {data?.description}
             </p>
 
-            {}
+            { }
 
             <div className="mt-4 h-px w-full bg-neutral-200" />
 
-            {}
+            { }
 
             <div
               className="
@@ -341,8 +347,9 @@ function ProductsDe({ data }) {
                 gap-y-2
                 text-xs
                 text-neutral-500
-
+                relative
                 sm:text-sm
+
               "
             >
               <div className="flex items-center gap-1.5">
@@ -359,6 +366,13 @@ function ProductsDe({ data }) {
               <Link href="/" className="text-blue-600 hover:underline">
                 260 پرسش
               </Link>
+              <div className="  mb-20 -mt-10">
+                <WishlistButton
+                  productId={data?.id}
+                  className=" self-end "
+                />
+              </div>
+
             </div>
 
             {/* =================================
@@ -381,7 +395,7 @@ function ProductsDe({ data }) {
 
             {/* =================================
                 FAST DELIVERY
-            ================================= */}
+                ================================= */}
 
             <div
               className="
@@ -441,32 +455,32 @@ function ProductsDe({ data }) {
                 xl:grid-cols-3
               "
             >
-              {}
+              { }
 
               <FeatureBox
                 title="Display technology"
                 value={attributes?.[5]?.value}
               />
 
-              {}
+              { }
 
               <FeatureBox
                 title="Operating system version"
                 value="dynamic LTPO AMOLED 2"
               />
 
-              {}
+              { }
 
               <FeatureBox
                 title="Main camera resolution"
                 value={attributes?.[6]?.value}
               />
 
-              {}
+              { }
 
               <FeatureBox title="Size" value="dynamic LTPO AMOLED 2" />
 
-              {}
+              { }
 
               <FeatureBox
                 title="Display technology"
@@ -474,7 +488,7 @@ function ProductsDe({ data }) {
               />
             </div>
 
-            {}
+            { }
 
             <div className="mt-4">
               <ViewDetailsButton />
@@ -538,7 +552,7 @@ function ProductsDe({ data }) {
                 sm:p-5
               "
             >
-              {}
+              { }
 
               <div className="flex items-center gap-2">
                 <FaRegStar
@@ -564,7 +578,7 @@ function ProductsDe({ data }) {
                 </p>
               </div>
 
-              {}
+              { }
 
               <div className="mt-3 space-y-2">
                 <PlusItem>4 Free digital delivery</PlusItem>
@@ -581,7 +595,7 @@ function ProductsDe({ data }) {
                 </PlusItem>
               </div>
 
-              {}
+              { }
 
               <button
                 type="button"
@@ -595,7 +609,7 @@ function ProductsDe({ data }) {
                 Buy a subscription
               </button>
 
-              {}
+              { }
 
               <div className="mt-2 flex justify-end">
                 <Image
@@ -634,7 +648,7 @@ function ProductsDe({ data }) {
                 sm:p-5
               "
             >
-              {}
+              { }
 
               <div className="flex items-center justify-between gap-3">
                 <p className="text-sm font-semibold">Seller</p>
@@ -644,7 +658,7 @@ function ProductsDe({ data }) {
                 </span>
               </div>
 
-              {}
+              { }
 
               <div className="mt-5 flex items-center gap-2">
                 <Image
@@ -658,7 +672,7 @@ function ProductsDe({ data }) {
                 <span className="text-sm">Digikala</span>
               </div>
 
-              {}
+              { }
 
               <div className="mt-3 flex items-center gap-2 pl-7">
                 <p className="text-[10px] text-neutral-400">Performance</p>
@@ -668,7 +682,7 @@ function ProductsDe({ data }) {
 
               <div className="mt-4 h-px w-full bg-neutral-200" />
 
-              {}
+              { }
 
               <div className="mt-5 flex items-center gap-2">
                 <span
@@ -688,7 +702,7 @@ function ProductsDe({ data }) {
                 <del className="text-xs text-neutral-400">3.500 $</del>
               </div>
 
-              {}
+              { }
 
               <span
                 className="
@@ -702,7 +716,7 @@ function ProductsDe({ data }) {
                 {data?.variants?.base_price} $
               </span>
 
-              {}
+              { }
 
               <div className="mt-3 flex items-start gap-2">
                 <FaFire
@@ -738,7 +752,7 @@ function ProductsDe({ data }) {
                       px-3
                     "
                   >
-                    {}
+                    { }
 
                     <button
                       type="button"
@@ -752,7 +766,7 @@ function ProductsDe({ data }) {
                       )}
                     </button>
 
-                    {}
+                    { }
 
                     {!up ? (
                       <span className="text-sm font-medium text-white">
@@ -770,7 +784,7 @@ function ProductsDe({ data }) {
                       />
                     )}
 
-                    {}
+                    { }
 
                     <button
                       type="button"
@@ -817,7 +831,7 @@ function ProductsDe({ data }) {
                 </div>
               )}
 
-              {}
+              { }
 
               <div className="mt-5">
                 <div className="flex items-center gap-3 text-neutral-400">
@@ -888,7 +902,7 @@ function ProductsDe({ data }) {
           </div>
         </div>
 
-        {}
+        { }
 
         <div className="mt-8 border-b border-neutral-200" />
 
