@@ -67,11 +67,11 @@ class WishlistService
             'message' => 'Product added to wishlist.',
         ];
     }
-    public function isInWishlist(User $user, Product $product): bool
+    public function isInWishlist(User $user): array
     {
         return Wishlist::where('user_id', $user->id)
-            ->where('product_id', $product->id)
-            ->exists();
+        ->pluck('product_id')
+        ->toArray();
     }
     public function getCount(User $user): int
     {
