@@ -149,7 +149,7 @@ function DiscountBadge({ discountPercent }) {
   );
 }
 
-function ProductRating({ rating }) {
+export function ProductRating({ rating }) {
   const productRating = rating || 0;
 
   return (
@@ -168,7 +168,7 @@ function ProductRating({ rating }) {
   );
 }
 
-function ProductImage({ product, priority }) {
+export function ProductImage({ product, priority }) {
   return (
     <div className="relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-xl bg-white sm:rounded-2xl">
       <Image
