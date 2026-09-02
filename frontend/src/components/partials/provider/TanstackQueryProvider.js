@@ -1,3 +1,4 @@
+
 // components/partials/provider/TanstackQueryProvider.tsx
 "use client";
 
@@ -22,10 +23,4 @@ export default function TanstackQueryProvider({
       })
   );
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
-  );
 }
