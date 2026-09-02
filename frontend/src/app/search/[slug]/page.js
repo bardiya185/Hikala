@@ -27,12 +27,14 @@ async function getCategoryProducts({
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
     const params = new URLSearchParams();
 
-    // Category
-    if (category_ids) {
-      params.set("category_ids", String(category_ids));
-    } else if (category_id) {
-      params.set("category_id", String(category_id));
-    }
+ // Category
+if (category_ids) {
+  params.set("category_ids", String(category_ids));
+} else if (category_id) {
+  params.set("category_id", String(category_id));
+} else if (routeSlug) {
+  params.set("category_slug", String(routeSlug));
+}
 
     // Brand
     if (brands) {
@@ -111,6 +113,7 @@ export default async function SearchResultPage({
     params,
     searchParams,
   ]);
+  const {slug} =await params
 
   const bannerId =
     resolvedSearchParams?.bannerId ||
@@ -126,32 +129,26 @@ export default async function SearchResultPage({
     slug: resolvedParams?.slug,
   });
 
-  const category = products?.[0]?.categories?.[0];
+ const categories = products?.categories || [];
 
-  const breadcrumbItems = [
-    {
-      title: "Digikala",
-      href: "/",
-    },
+const breadcrumbItems = [
+  {
+    title: "DigiKala",
+    href: "/",
+  },
 
-    ...(category?.parent
-      ? [
-          {
-            title: category.parent.name,
-            href: `/search/${category.parent.slug}`,
-          },
-        ]
-      : []),
+  ...categories
+    .slice()
+    .reverse()
+    .map((category) => ({
+      title: category?.name,
+      href: `/search/${category?.slug}`,
+    })),
 
-    ...(category
-      ? [
-          {
-            title: category.name,
-            href: `/search/${category.slug}`,
-          },
-        ]
-      : []),
-  ];
+  {
+    title: products?.title,
+  },
+];
 
   return (
     <div>

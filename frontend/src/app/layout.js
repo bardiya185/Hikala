@@ -2,9 +2,7 @@ import "./globals.css";
 
 import Header from "@/components/templates/header";
 import Footer from "@/components/templates/footer/Footer";
-
 import TanstackQueryProvider from "@/components/partials/provider/TanstackQueryProvider";
-
 import { Toaster } from "react-hot-toast";
 import NextTopLoader from "nextjs-toploader";
 import PageTransition from "@/components/atom/PageTransition";
@@ -38,9 +36,9 @@ export default function RootLayout({ children }) {
             {/* Footer */}
             <Footer />
           </div>
-        </TanstackQueryProvider>
 
-        <Toaster />
+          <Toaster />
+        </TanstackQueryProvider>
       </body>
     </html>
   );
