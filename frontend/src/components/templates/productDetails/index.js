@@ -22,7 +22,7 @@ import {
   useAddProductsBasket,
   useRemoveCartItem,
   useUpdateCartItem,
-  useToggleWishlist,
+  useAddToWishlist,
 } from "@/core/services/mutations";
 
 import { useCart, useWishlistIds } from "@/core/services/queries";
@@ -41,6 +41,7 @@ import { formatPrice } from "@/core/utils/formatPrice";
 import WishlistButton from "@/components/WishlistButton";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
+import Link from "next/link";
 
 gsap.registerPlugin(SplitText);
 
@@ -118,10 +119,10 @@ function ProductsDe({ data }) {
   const [isFavorite, setIsFavorite] =
     useState(false);
 
-  const {
-    mutate: toggleWishlist,
-    isPending: isWishlistLoading,
-  } = useToggleWishlist();
+    const {
+      mutate: toggleWishlist, 
+      isPending: isWishlistLoading,
+    } = useAddToWishlist();
 
   /* =======================================================
      CART
@@ -262,7 +263,7 @@ function ProductsDe({ data }) {
 
         toast.error(
           error?.message ||
-            "Could not update wishlist",
+            "Failed to update wishlist",
         );
       },
     });
@@ -815,7 +816,7 @@ function ProductsDe({ data }) {
 
             <span>
               {data?.buyers_count ||
-                0}{" "}
+                0}
               خریدار
             </span>
 

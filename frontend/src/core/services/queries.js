@@ -165,21 +165,21 @@ export const useGetAddresses = () => {
 };
 
 
-export const useToggleWishlist  = () => {
-  return useQuery({
-    queryKey: ["wishlist"],
-    queryFn: async () => {
-      const response = await api.get("/api/wishlist", {
-        params: {
-          page: 1,
-          per_page: 50,
-        },
-      });
+// export const useToggleWishlist  = () => {
+//   return useQuery({
+//     queryKey: ["wishlist"],
+//     queryFn: async () => {
+//       const response = await api.get("/api/wishlist", {
+//         params: {
+//           page: 1,
+//           per_page: 50,
+//         },
+//       });
 
-      return response?.data;
-    },
-  });
-};
+//       return response?.data;
+//     },
+//   });
+// };
 
 
 

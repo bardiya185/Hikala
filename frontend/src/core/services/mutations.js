@@ -129,7 +129,7 @@ export const useRemoveCartItem = () => {
   const sessionId = getGuestSessionId()
 
   const mutationFn = (cartItemId) =>
-    api.delete(`/api/cart/items/${cartItemId},`,{
+    api.delete(`/api/cart/items/${cartItemId}`,{
       headers:{
         "X-Session-Id": sessionId,
       }
@@ -166,39 +166,38 @@ export const useAddToWishlist = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (productId) => api.post(`/api/wishlist/${productId}/toggle`),
-
-       onMutate: async (productId) => {
+    mutationFn: (productId) => {
+      console.log("Toggling wishlist for product:", productId);
+      return api.post(`/api/wishlist/${productId}/toggle`);
+    },
+    
+    onMutate: async (productId) => {
       await queryClient.cancelQueries({ queryKey: ["wishlist_ids"] });
-
+      
       const previousIds = queryClient.getQueryData(["wishlist_ids"]) || [];
       const pIdStr = String(productId);
-      
       const exists = previousIds.some((id) => String(id) === pIdStr);
-
+      
       const nextIds = exists
         ? previousIds.filter((id) => String(id) !== pIdStr)
         : [...previousIds, productId];
-
+      
       queryClient.setQueryData(["wishlist_ids"], nextIds);
-
+      
       return { previousIds };
     },
-
-
+    
     onError: (_err, _id, context) => {
       if (context?.previousIds) {
         queryClient.setQueryData(["wishlist_ids"], context.previousIds);
       }
     },
-
-
+    
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["wishlist_ids"] });
     },
   });
-};
-export const useCreateAddress = () => {
+};export const useCreateAddress = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

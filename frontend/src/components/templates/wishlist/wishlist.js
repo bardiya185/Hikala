@@ -1,7 +1,7 @@
+// frontend/src/components/templates/wishlist/wishlist.js
+
 "use client";
 
-import React from "react";
-import { useToggleWishlist } from "@/core/services/queries";
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -12,284 +12,126 @@ import {
   Heart,
 } from "lucide-react";
 
-import { useToggleWishlist } from "@/core/services/mutations";
-
-import { ProductImage } from "../products";
-import { ProductRating } from "../products";
-import { getProductPricing } from "../products";
-import { hasFreeShipping } from "../products";
 import { useGetWishlist } from "@/core/services/queries";
+import { formatPrice } from "@/core/utils/formatPrice";
 
+// ============================================================
+// HELPERS - اینها رو خودت باید تعریف کنی
+// ============================================================
 
-// import {
-//   ProductImage,
-//   ProductRating,
-//   getProductPricing,
-//   hasFreeShipping,
-//   formatPrice,
-// } from "../products";
+function getProductPricing(product) {
+  const variant = product?.variants?.[0] || {};
+  const basePrice = Number(variant?.base_price || 0);
+  const finalPrice = Number(variant?.final_price || 0);
+  const discountPercent = Number(variant?.discount_percent || 0);
+  const hasDiscount = finalPrice > 0 && basePrice > 0 && finalPrice < basePrice;
 
-function WishlistProductCard({
-  product,
-  index,
-  onDelete,
-}) {
-  const {
-    basePrice,
-    finalPrice,
-    discountPercent,
-    hasDiscount,
-  } = getProductPricing(product);
+  return { basePrice, finalPrice, discountPercent, hasDiscount };
+}
 
+function hasFreeShipping(product) {
+  return product?.free_shipping === true;
+}
+
+function ProductImage({ product, priority = false }) {
+  const imageUrl = product?.images?.[0] || "/icons/test.webp";
+  
+  return (
+    <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-neutral-100">
+      <img
+        src={imageUrl}
+        alt={product?.title || "Product"}
+        className="h-full w-full object-cover"
+        loading={priority ? "eager" : "lazy"}
+      />
+    </div>
+  );
+}
+
+function ProductRating({ rating }) {
+  if (!rating || rating === 0) return null;
+  
+  return (
+    <div className="flex items-center gap-1 text-xs text-yellow-500">
+      <span>⭐</span>
+      <span>{rating.toFixed(1)}</span>
+    </div>
+  );
+}
+
+// ============================================================
+// PRODUCT CARD
+// ============================================================
+
+function WishlistProductCard({ product, index, onDelete }) {
+  const { basePrice, finalPrice, discountPercent, hasDiscount } = getProductPricing(product);
   const freeShipping = hasFreeShipping(product);
 
   return (
     <motion.div
-      initial={{
-        opacity: 0,
-        y: 10,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{
         ease: "easeOut",
         duration: 0.3,
         delay: Math.min(index * 0.03, 0.3),
       }}
-      className="
-        group
-        min-w-0
-        rounded-2xl
-        border
-        border-neutral-100
-        bg-white
-        p-1.5
-        sm:rounded-[20px]
-        sm:p-2
-        lg:p-3
-      "
+      className="group min-w-0 rounded-2xl border border-neutral-100 bg-white p-1.5 sm:rounded-[20px] sm:p-2 lg:p-3"
     >
-      <div
-        className="
-          flex
-          h-full
-          flex-col
-          justify-between
-          rounded-xl
-          border
-          border-neutral-100
-          p-2
-          sm:rounded-[10px]
-          sm:p-3
-          lg:p-4
-        "
-      >
-        {/* PRODUCT */}
+      <div className="flex h-full flex-col justify-between rounded-xl border border-neutral-100 p-2 sm:rounded-[10px] sm:p-3 lg:p-4">
+        <Link href={`/product/${product?.id}`} className="block">
+          <ProductImage product={product} priority={index < 4} />
 
-        <Link
-          href={`/product/${product?.id}`}
-          className="block"
-        >
-          <ProductImage
-            product={product}
-            priority={index < 4}
-          />
-
-          <div
-            className="
-              mt-3
-              flex
-              items-start
-              justify-between
-              gap-1.5
-              sm:mt-4
-              sm:gap-2
-              lg:mt-5
-            "
-          >
-            <h3
-              className="
-                min-w-0
-                flex-1
-                overflow-hidden
-                text-xs
-                font-bold
-                leading-5
-                text-neutral-800
-                [display:-webkit-box]
-                [-webkit-box-orient:vertical]
-                [-webkit-line-clamp:2]
-                sm:text-sm
-                sm:leading-6
-              "
-            >
+          <div className="mt-3 flex items-start justify-between gap-1.5 sm:mt-4 sm:gap-2 lg:mt-5">
+            <h3 className="min-w-0 flex-1 overflow-hidden text-xs font-bold leading-5 text-neutral-800 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] sm:text-sm sm:leading-6">
               {product?.title}
             </h3>
 
-            <ProductRating
-              rating={product?.rating}
-            />
+            <ProductRating rating={product?.rating} />
           </div>
         </Link>
 
-        {/* PRICE */}
-
-        <div
-          dir="ltr"
-          className="
-            mt-3
-            flex
-            flex-wrap
-            items-center
-            justify-between
-            gap-2
-            sm:mt-4
-          "
-        >
-          <div
-            className="
-              flex
-              min-w-0
-              flex-wrap
-              items-center
-              gap-1.5
-              sm:gap-2
-            "
-          >
-            <p
-              className="
-                text-sm
-                font-bold
-                text-green-600
-                sm:text-base
-              "
-            >
+        <div dir="ltr" className="mt-3 flex flex-wrap items-center justify-between gap-2 sm:mt-4">
+          <div className="flex min-w-0 flex-wrap items-center gap-1.5 sm:gap-2">
+            <p className="text-sm font-bold text-green-600 sm:text-base">
               ${finalPrice}
             </p>
 
             {hasDiscount && (
-              <span
-                className="
-                  text-[10px]
-                  text-neutral-400
-                  line-through
-                  sm:text-xs
-                "
-              >
+              <span className="text-[10px] text-neutral-400 line-through sm:text-xs">
                 ${formatPrice(basePrice)}
               </span>
             )}
           </div>
 
-          <div
-            className="
-              flex
-              flex-wrap
-              items-center
-              gap-1.5
-            "
-          >
+          <div className="flex flex-wrap items-center gap-1.5">
             {freeShipping && (
-              <span
-                className="
-                  rounded-full
-                  bg-green-50
-                  px-2
-                  py-1
-                  text-[9px]
-                  font-medium
-                  text-green-600
-                "
-              >
+              <span className="rounded-full bg-green-50 px-2 py-1 text-[9px] font-medium text-green-600">
                 Free Shipping
               </span>
             )}
 
-            {hasDiscount &&
-              discountPercent > 0 && (
-                <span
-                  className="
-                    rounded-full
-                    bg-red-50
-                    px-2
-                    py-1
-                    text-[9px]
-                    font-medium
-                    text-red-600
-                  "
-                >
-                  {discountPercent}% OFF
-                </span>
-              )}
+            {hasDiscount && discountPercent > 0 && (
+              <span className="rounded-full bg-red-50 px-2 py-1 text-[9px] font-medium text-red-600">
+                {discountPercent}% OFF
+              </span>
+            )}
           </div>
         </div>
 
-        {/* ACTIONS */}
-
-        <div
-          className="
-            mt-4
-            flex
-            items-center
-            gap-2
-          "
-        >
-          {/* ADD TO CART */}
-
+        <div className="mt-4 flex items-center gap-2">
           <Link
             href={`/product/${product?.id}`}
-            className="
-              flex
-              h-10
-              flex-1
-              items-center
-              justify-center
-              gap-2
-              rounded-lg
-              border
-              border-red-600
-              bg-white
-              px-3
-              text-xs
-              font-bold
-              text-red-600
-              transition-all
-              hover:bg-red-600
-              hover:text-white
-              sm:text-sm
-            "
+            className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-red-600 bg-white px-3 text-xs font-bold text-red-600 transition-all hover:bg-red-600 hover:text-white sm:text-sm"
           >
             <ShoppingCart className="h-4 w-4" />
-
-            <span>
-              Add to Cart
-            </span>
+            <span>Add to Cart</span>
           </Link>
-
-          {/* DELETE */}
 
           <button
             type="button"
             onClick={() => onDelete(product)}
-            className="
-              flex
-              h-10
-              w-10
-              shrink-0
-              cursor-pointer
-              items-center
-              justify-center
-              rounded-lg
-              border
-              border-neutral-300
-              bg-white
-              text-neutral-500
-              transition-all
-              hover:border-red-500
-              hover:text-red-500
-            "
+            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-neutral-300 bg-white text-neutral-500 transition-all hover:border-red-500 hover:text-red-500"
             aria-label="Remove from wishlist"
           >
             <Trash2 className="h-4 w-4" />
@@ -300,209 +142,67 @@ function WishlistProductCard({
   );
 }
 
+// ============================================================
+// DELETE MODAL
+// ============================================================
 
-/* =========================================================
-   DELETE MODAL
-========================================================= */
-
-function DeleteWishlistModal({
-  product,
-  isOpen,
-  onClose,
-  onConfirm,
-  isDeleting,
-}) {
-  if (!isOpen || !product) {
-    return null;
-  }
+function DeleteWishlistModal({ product, isOpen, onClose, onConfirm, isDeleting }) {
+  if (!isOpen || !product) return null;
 
   return (
     <div
-      className="
-        fixed
-        inset-0
-        z-[999]
-        flex
-        items-center
-        justify-center
-        bg-black/40
-        px-4
-      "
+      className="fixed inset-0 z-[999] flex items-center justify-center bg-black/40 px-4"
       onClick={onClose}
     >
       <motion.div
-        initial={{
-          opacity: 0,
-          scale: 0.95,
-          y: 10,
-        }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          y: 0,
-        }}
-        transition={{
-          duration: 0.2,
-        }}
-        onClick={(event) =>
-          event.stopPropagation()
-        }
-        className="
-          w-full
-          max-w-[430px]
-          rounded-2xl
-          bg-white
-          p-5
-          shadow-2xl
-          sm:p-6
-        "
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
+        onClick={(event) => event.stopPropagation()}
+        className="w-full max-w-[430px] rounded-2xl bg-white p-5 shadow-2xl sm:p-6"
       >
-        {/* HEADER */}
-
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-          "
-        >
-          <h2
-            className="
-              text-lg
-              font-bold
-              text-neutral-800
-            "
-          >
-            Remove from Wishlist
-          </h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-neutral-800">Remove from Wishlist</h2>
 
           <button
             type="button"
             onClick={onClose}
-            className="
-              flex
-              h-8
-              w-8
-              cursor-pointer
-              items-center
-              justify-center
-              rounded-lg
-              text-neutral-500
-              transition-colors
-              hover:bg-neutral-100
-              hover:text-neutral-800
-            "
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-800"
             aria-label="Close"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* SEPARATOR */}
-
-        <div
-          className="
-            mx-2
-            my-4
-            border-t
-            border-neutral-200
-          "
-        />
-
-        {/* MESSAGE */}
+        <div className="mx-2 my-4 border-t border-neutral-200" />
 
         <div className="text-center">
-          <p
-            className="
-              text-sm
-              leading-6
-              text-neutral-600
-            "
-          >
-            Are you sure you want to remove this
-            product from your wishlist?
+          <p className="text-sm leading-6 text-neutral-600">
+            Are you sure you want to remove this product from your wishlist?
           </p>
 
           {product?.title && (
-            <p
-              className="
-                mt-2
-                line-clamp-2
-                text-sm
-                font-bold
-                text-neutral-800
-              "
-            >
+            <p className="mt-2 line-clamp-2 text-sm font-bold text-neutral-800">
               {product.title}
             </p>
           )}
         </div>
 
-        {/* BUTTONS */}
-
-        <div
-          className="
-            mt-6
-            flex
-            flex-col
-            gap-2
-            sm:flex-row
-          "
-        >
+        <div className="mt-6 flex flex-col gap-2 sm:flex-row">
           <button
             type="button"
             disabled={isDeleting}
             onClick={onConfirm}
-            className="
-              flex
-              h-11
-              flex-1
-              cursor-pointer
-              items-center
-              justify-center
-              rounded-lg
-              border
-              border-red-600
-              bg-red-600
-              px-4
-              text-sm
-              font-bold
-              text-white
-              transition-colors
-              hover:bg-red-700
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
+            className="flex h-11 flex-1 cursor-pointer items-center justify-center rounded-lg border border-red-600 bg-red-600 px-4 text-sm font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isDeleting
-              ? "Removing..."
-              : "Remove Product"}
+            {isDeleting ? "Removing..." : "Remove Product"}
           </button>
 
           <button
             type="button"
             disabled={isDeleting}
             onClick={onClose}
-            className="
-              flex
-              h-11
-              flex-1
-              cursor-pointer
-              items-center
-              justify-center
-              rounded-lg
-              border
-              border-red-600
-              bg-white
-              px-4
-              text-sm
-              font-bold
-              text-red-600
-              transition-colors
-              hover:bg-red-50
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-            "
+            className="flex h-11 flex-1 cursor-pointer items-center justify-center rounded-lg border border-red-600 bg-white px-4 text-sm font-bold text-red-600 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Cancel
           </button>
@@ -512,396 +212,145 @@ function DeleteWishlistModal({
   );
 }
 
-
-/* =========================================================
-   WISHLIST
-========================================================= */
+// ============================================================
+// MAIN WISHLIST COMPONENT
+// ============================================================
 
 export default function Wishlist() {
-  const [selectedProduct, setSelectedProduct] =
-    useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const [isDeleteModalOpen, setIsDeleteModalOpen] =
-    useState(false);
+  const { data, isLoading, isFetching, isError, error } = useGetWishlist(10);
 
-  /*
-   * GET WISHLIST
-   *
-   * توجه:
-   * useToggleWishlist در حال حاضر GET است.
-   * بنابراین نباید به آن productId بدهیم.
-   */
-
-
-  const {
-    data,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-  } =useGetWishlist(10)
-
-  console.log(
-    "WISHLIST COMPONENT DATA:",
-    data
-  );
-
-  /*
-   * Normalize API response
-   */
+  console.log("WISHLIST COMPONENT DATA:", data);
 
   const products = useMemo(() => {
-    if (!data) {
-      return [];
-    }
+    if (!data) return [];
 
-    // response.data
-    if (Array.isArray(data?.data)) {
-      return data.data;
-    }
-
-    // response.data.data
-    if (Array.isArray(data?.data?.data)) {
-      return data.data.data;
-    }
-
-    // response.wishlist
-    if (Array.isArray(data?.wishlist)) {
-      return data.wishlist;
-    }
-
-    // response.data.wishlist
-    if (
-      Array.isArray(data?.data?.wishlist)
-    ) {
-      return data.data.wishlist;
-    }
-
-    // خود response آرایه باشد
-    if (Array.isArray(data)) {
-      return data;
-    }
+    if (Array.isArray(data?.data)) return data.data;
+    if (Array.isArray(data?.data?.data)) return data.data.data;
+    if (Array.isArray(data?.wishlist)) return data.wishlist;
+    if (Array.isArray(data?.data?.wishlist)) return data.data.wishlist;
+    if (Array.isArray(data)) return data;
 
     return [];
   }, [data]);
 
-  console.log(
-    "WISHLIST PRODUCTS:",
-    products
-  );
-
-  /*
-   * OPEN DELETE MODAL
-   */
+  console.log("WISHLIST PRODUCTS:", products);
 
   const handleDeleteClick = (product) => {
     setSelectedProduct(product);
     setIsDeleteModalOpen(true);
   };
 
-  /*
-   * CLOSE MODAL
-   */
-
   const handleCloseModal = () => {
     setIsDeleteModalOpen(false);
     setSelectedProduct(null);
   };
 
-  /*
-   * فعلاً حذف واقعی انجام نمی‌شود
-   *
-   * چون endpoint حذف wishlist را از بک‌اند نداریم.
-   */
-
   const handleConfirmDelete = () => {
-    console.log(
-      "DELETE WISHLIST PRODUCT:",
-      selectedProduct
-    );
-
+    console.log("DELETE WISHLIST PRODUCT:", selectedProduct);
     handleCloseModal();
   };
 
-  /*
-   * LOADING
-   */
-
-  // نمایش درحال بارگذاری
+  // LOADING
   if (isLoading) {
     return (
       <section className="w-full">
-        <div
-          className="
-            rounded-2xl
-            border
-            border-neutral-200
-            bg-white
-            p-4
-            sm:p-6
-          "
-        >
-          <div
-            className="
-              h-7
-              w-44
-              animate-pulse
-              rounded
-              bg-neutral-100
-            "
-          />
-
-          <div
-            className="
-              mt-6
-              h-px
-              w-full
-              bg-neutral-200
-            "
-          />
-
-          <div
-            className="
-              mt-6
-              grid
-              grid-cols-2
-              gap-3
-              sm:gap-4
-              lg:gap-5
-            "
-          >
-            {[1, 2, 3, 4].map(
-              (item) => (
-                <div
-                  key={item}
-                  className="
-                    h-[300px]
-                    animate-pulse
-                    rounded-2xl
-                    bg-neutral-100
-                  "
-                />
-              )
-            )}
+        <div className="rounded-2xl border border-neutral-200 bg-white p-4 sm:p-6">
+          <div className="h-7 w-44 animate-pulse rounded bg-neutral-100" />
+          <div className="mt-6 h-px w-full bg-neutral-200" />
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
+            {[1, 2, 3, 4].map((item) => (
+              <div key={item} className="h-[300px] animate-pulse rounded-2xl bg-neutral-100" />
+            ))}
           </div>
         </div>
       </section>
     );
   }
 
-
-  // نمایش خطا
+  // ERROR
   if (isError) {
     return (
-      <div className="p-10 text-center">
-        <p className="text-red-500">
       <section className="w-full">
-        <div
-          className="
-            rounded-2xl
-            border
-            border-neutral-200
-            bg-white
-            p-6
-            text-center
-          "
->
-          <Heart
-            className="
-              mx-auto
-              h-10
-              text-neutral-300
-            "
-          />
-
-          <h2
-            className="
-              mt-3
-              text-base
-              font-bold
-              text-neutral-800
-            "
-          >
-            Unable to load wishlist
-          </h2>
-
-          <p
-            className="
-              mt-2
-              text-sm
-              text-neutral-500
-            "
-          >
-            {error?.message ||
-              "Please try again later."}
+        <div className="rounded-2xl border border-neutral-200 bg-white p-6 text-center">
+          <Heart className="mx-auto h-10 text-neutral-300" />
+          <h2 className="mt-3 text-base font-bold text-neutral-800">Unable to load wishlist</h2>
+          <p className="mt-2 text-sm text-neutral-500">
+            {error?.message || "Please try again later."}
           </p>
         </div>
       </section>
-      </p>
-      </div>
     );
   }
-  
 
-
-
-  if (!wishlist || wishlist.length === 0) {
+  // EMPTY WISHLIST
+  if (!products || products.length === 0) {
     return (
-      <main
-        dir="ltr"
-        className="mx-auto w-full max-w-[1440px] px-4 py-8"
-      >
-        <h1 className="text-2xl font-bold">
-          Wishlist
-        </h1>
-        <div className="mt-5 rounded-xl bg-neutral-100 p-10 text-center">
-          <p>Your wishlist is empty</p>
+      <section className="w-full">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-4 sm:p-6">
+          <h1 className="text-xl font-bold text-neutral-800 sm:text-2xl">Lists</h1>
+          
+          <div className="mt-5">
+            <button
+              type="button"
+              className="relative pb-3 text-sm font-bold text-red-600"
+            >
+              Wishlist
+              <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-full bg-red-600" />
+            </button>
+          </div>
+
+          <div className="border-t border-neutral-200" />
+
+          <div className="flex min-h-[300px] flex-col items-center justify-center text-center">
+            <Heart className="h-12 w-12 text-neutral-300" />
+            <h2 className="mt-4 text-base font-bold text-neutral-800">Your wishlist is empty</h2>
+            <p className="mt-2 text-sm text-neutral-500">
+              Products you add to your wishlist will appear here.
+            </p>
+          </div>
         </div>
-      </main>
+      </section>
     );
   }
 
-  // نمایش لیست
+  // RENDER WISHLIST
   return (
     <>
-          <h1
-            className="
-              text-xl
-              font-bold
-              text-neutral-800
-              sm:text-2xl
-            "
-          >
-            Lists
-          </h1>
-
-          {/* WISHLIST TAB */}
+      <section className="w-full">
+        <div className="rounded-2xl border border-neutral-200 bg-white p-4 sm:p-6">
+          <h1 className="text-xl font-bold text-neutral-800 sm:text-2xl">Lists</h1>
 
           <div className="mt-5">
             <button
               type="button"
-              className="
-                relative
-                pb-3
-                text-sm
-                font-bold
-                text-red-600
-              "
+              className="relative pb-3 text-sm font-bold text-red-600"
             >
               Wishlist
-
-              <span
-                className="
-                  absolute
-                  bottom-0
-                  left-0
-                  h-[3px]
-                  w-full
-                  rounded-full
-                  bg-red-600
-                "
-              />
+              <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-full bg-red-600" />
             </button>
           </div>
 
-          {/* LINE */}
+          <div className="border-t border-neutral-200" />
 
-          <div
-            className="
-              border-t
-              border-neutral-200
-            "
-          />
-
-          {/* PRODUCTS */}
-
-          {products.length > 0 ? (
-            <div
-              className="
-                mt-6
-                grid
-                grid-cols-2
-                gap-3
-                sm:gap-4
-                lg:gap-5
-              "
-            >
-              {products.map(
-                (product, index) => (
-                  <WishlistProductCard
-                    key={
-                      product?.id ||
-                      index
-                    }
-                    product={product}
-                    index={index}
-                    onDelete={
-                      handleDeleteClick
-                    }
-                  />
-                )
-              )}
-            </div>
-          ) : (
-            <div
-              className="
-                flex
-                min-h-[300px]
-                flex-col
-                items-center
-                justify-center
-                text-center
-              "
-            >
-              <Heart
-                className="
-                  h-12
-                  w-12
-                  text-neutral-300
-                "
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
+            {products.map((product, index) => (
+              <WishlistProductCard
+                key={product?.id || index}
+                product={product}
+                index={index}
+                onDelete={handleDeleteClick}
               />
+            ))}
+          </div>
 
-              <h2
-                className="
-                  mt-4
-                  text-base
-                  font-bold
-                  text-neutral-800
-                "
-              >
-                Your wishlist is empty
-              </h2>
-
-              <p
-                className="
-                  mt-2
-                  text-sm
-                  text-neutral-500
-                "
-              >
-                Products you add to your
-                wishlist will appear here.
-              </p>
-            </div>
+          {isFetching && !isLoading && (
+            <div className="mt-4 text-center text-xs text-neutral-400">Updating wishlist...</div>
           )}
-
-          {/* FETCHING */}
-
-          {isFetching &&
-            !isLoading && (
-              <div
-                className="
-                  mt-4
-                  text-center
-                  text-xs
-                  text-neutral-400
-                "
-              >
-                Updating wishlist...
-              </div>
-            )}
-
-      {/* DELETE MODAL */}
+        </div>
+      </section>
 
       <DeleteWishlistModal
         product={selectedProduct}
