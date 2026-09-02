@@ -90,8 +90,13 @@ class ManageController extends AbstractController
             Core::downloadHeader($filename, 'application/php');
             $settings = $this->userPreferences->load();
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             echo "\n\n";
             echo "\n\n";
+=======
+            echo '\n\n";
+            echo '\n\n";
+>>>>>>> Stashed changes
 =======
             echo '\n\n";
             echo '\n\n";

@@ -1121,9 +1121,18 @@ function Header() {
         <div
           className="
           w-full
+<<<<<<< Updated upstream
           bg-white
           font-sans
           select-none
+=======
+          px-3
+          sm:px-4
+          lg:px-6
+
+          mt-3
+          sm:mt-4
+>>>>>>> Stashed changes
         "
         >
           <div
@@ -1150,12 +1159,23 @@ function Header() {
             <div
               className="
               flex
+<<<<<<< Updated upstream
               w-full
               items-center
               justify-between
               gap-2
               sm:gap-3
               lg:gap-6
+=======
+              items-center
+
+              gap-2
+              sm:gap-4
+              lg:gap-6
+
+              flex-1
+              min-w-0
+>>>>>>> Stashed changes
             "
             >
               {}
@@ -1613,8 +1633,26 @@ function Header() {
                             }?category_id=${col.id}`}
                             className="
                               flex
+<<<<<<< Updated upstream
                               min-w-0
                               flex-col
+=======
+                              items-center
+                              justify-between
+
+                              mb-2
+                              py-1
+
+                              text-sm
+                              font-bold
+
+                              text-neutral-900
+
+                              border-b
+                              border-neutral-100
+
+                              group
+>>>>>>> Stashed changes
                             "
                           >
                             <span

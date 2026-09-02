@@ -3,8 +3,11 @@ import TopBanner from "@/components/banner/Banner";
 import AmazingSliders from "@/components/organisms/AmazingSliders";
 import CardShop from "@/components/templates/cardStore";
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import Categories from "@/components/home/Categories";
 import SpecialOffers from "@/components/organisms/SpecialOffers";
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 async function getFlashSaleCampaign() {
@@ -25,6 +28,7 @@ async function getFlashSaleCampaign() {
   }
 }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
 async function getSpecialOffer(){
@@ -40,6 +44,8 @@ async function getSpecialOffer(){
   }
 }
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 async function getBanners() {

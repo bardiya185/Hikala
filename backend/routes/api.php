@@ -162,6 +162,7 @@ Route::prefix('admin')
             Route::put('/reorder', [ProductImageController::class, 'reorder']);
         });
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
   // ===== 🗂️ Categories Management =====
 Route::prefix('categories')->group(function () {
@@ -180,6 +181,8 @@ Route::prefix('categories')->group(function () {
         Route::put('/{brand}', [BrandController::class, 'update'])
         ->middleware('permission:update-brands');
 =======
+=======
+>>>>>>> Stashed changes
     Route::prefix('categories')->middleware('permission:create-categories')->group(function () {
         Route::post('/', [CategoryController::class, 'store']);
         Route::put('/{category}', [CategoryController::class, 'update']);

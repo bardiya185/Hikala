@@ -154,7 +154,11 @@ final class ModuleNode extends Node
         }
         $compiler
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             ->write('/* ' . $this->getSourceContext()->getName() . " */\n")
+=======
+            ->write('', '* /', $this->getSourceContext()->getName())." */\n")
+>>>>>>> Stashed changes
 =======
             ->write('', '* /', $this->getSourceContext()->getName())." */\n")
 >>>>>>> Stashed changes

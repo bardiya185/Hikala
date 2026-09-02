@@ -154,7 +154,10 @@ class AuthController extends Controller
         ]);
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
           
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         return response()->json([
@@ -250,6 +253,9 @@ class AuthController extends Controller
                 'user'          => new UserResource($user),
             ];
         });
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         $cookie = Cookie::make(
             'refresh_token',
@@ -361,6 +367,7 @@ class AuthController extends Controller
     {
         $user = $request->user();
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         
         if (!$user) {
             return response()->json([
@@ -372,10 +379,15 @@ class AuthController extends Controller
         
         // Clear refresh token cookie
 =======
+=======
+>>>>>>> Stashed changes
         if ($user->currentAccessToken()) {
             $user->currentAccessToken()->delete();
         }
         RefreshToken::where('user_id', $user->id)->delete();
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         $cookie = Cookie::forget('refresh_token');
         

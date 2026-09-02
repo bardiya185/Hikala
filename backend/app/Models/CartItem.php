@@ -40,7 +40,10 @@ class CartItem extends Model
     }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
     /**
      * جمع این آیتم (قیمت اصلی × تعداد)
      */

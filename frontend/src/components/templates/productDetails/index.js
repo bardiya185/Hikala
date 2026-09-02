@@ -593,6 +593,7 @@ function ProductsDe({ data }) {
             "
           >
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             {/* WISHLIST BUTTON */}
 
             <button
@@ -661,6 +662,9 @@ function ProductsDe({ data }) {
 =======
             {}
 >>>>>>> Stashed changes
+=======
+            {}
+>>>>>>> Stashed changes
 
             <p
               className="
@@ -673,7 +677,11 @@ function ProductsDe({ data }) {
             </p>
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             {/* BALANCE FOR CENTERING */}
+=======
+            {}
+>>>>>>> Stashed changes
 =======
             {}
 >>>>>>> Stashed changes
@@ -706,6 +714,7 @@ function ProductsDe({ data }) {
             "
           >
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <Image
               src="/icons/test.webp"
               fill
@@ -720,6 +729,8 @@ function ProductsDe({ data }) {
               }
               priority
 =======
+=======
+>>>>>>> Stashed changes
             {}
 
             <h1
@@ -754,9 +765,13 @@ function ProductsDe({ data }) {
         </section>
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         {/* =================================================
             PRODUCT INFORMATION
         ================================================= */}
+=======
+            {}
+>>>>>>> Stashed changes
 =======
             {}
 >>>>>>> Stashed changes
@@ -769,6 +784,7 @@ function ProductsDe({ data }) {
         >
           {/* TITLE */}
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
           <h1
             className="
@@ -786,6 +802,9 @@ function ProductsDe({ data }) {
               data?.description ||
               "-"}
           </h1>
+=======
+            {}
+>>>>>>> Stashed changes
 =======
             {}
 >>>>>>> Stashed changes
