@@ -1086,15 +1086,15 @@ function Header() {
       <header
         dir="ltr"
         className="
-          w-full
-          bg-white
-          font-sans
-          select-none
-        "
+        w-full
+        bg-white
+        font-sans
+        select-none
+      "
       >
         {/* ==================================================
-            TOP BANNER
-        ================================================== */}
+          TOP BANNER
+      ================================================== */}
 
         <div className="w-full overflow-hidden">
           <Image
@@ -1104,32 +1104,51 @@ function Header() {
             alt="banner"
             priority
             className="
-              block
-              h-[45px]
-              w-full
-              object-cover
-              sm:h-[50px]
-              md:h-[60px]
-            "
+            block
+            w-full
+            h-[45px]
+            sm:h-[50px]
+            md:h-[60px]
+            object-cover
+          "
           />
         </div>
 
         {/* ==================================================
-            MAIN HEADER
-        ================================================== */}
+          MAIN HEADER
+      ================================================== */}
 
         <div
           className="
-            mt-3
+          w-full
+          bg-white
+          font-sans
+          select-none
+        "
+        >
+          <div
+            className="
+            flex
+            items-center
+            justify-between
+
+            gap-2
+            sm:gap-3
+            lg:gap-6
+
             w-full
             px-3
             sm:mt-4
             sm:px-4
             lg:px-6
           "
-        >
-          <div
-            className="
+          >
+            {/* ==============================================
+              LOGO + SEARCH
+          ============================================== */}
+
+            <div
+              className="
               flex
               w-full
               items-center
@@ -1138,30 +1157,17 @@ function Header() {
               sm:gap-3
               lg:gap-6
             "
-          >
-            {/* ==================================================
-                LOGO + SEARCH
-            ================================================== */}
-
-            <div
-              className="
-                flex
-                min-w-0
-                flex-1
-                items-center
-                gap-2
-                sm:gap-4
-                lg:gap-6
-              "
             >
+              {}
+
               <Link
                 href="/"
                 className="
-                  hidden
-                  shrink-0
-                  items-center
-                  lg:flex
-                "
+              hidden
+                shrink-0
+                lg:flex
+                items-center
+              "
               >
                 <Image
                   src="/icons/en-logo.svg"
@@ -1170,101 +1176,134 @@ function Header() {
                   alt="logo"
                   priority
                   className="
-                    h-auto
-                    w-[195px]
-                  "
+                  w-[195px]
+                  h-auto
+                "
                 />
               </Link>
 
-              <div className="min-w-0 flex-1">
+              {}
+
+              <div
+                className="
+                flex-1
+                min-w-0
+              "
+              >
                 <SearchBar />
               </div>
             </div>
 
-            {/* ==================================================
-                LOGIN + CART
-            ================================================== */}
+            {/* ==============================================
+              LOGIN + CART
+          ============================================== */}
 
             <div
-              className="
-                hidden
-                shrink-0
-                items-center
-                gap-1
-                sm:gap-2
-                lg:flex
-              "
+              className="hidden
+              lg:flex
+              items-center
+
+              gap-1
+              sm:gap-2
+
+              shrink-0
+            "
             >
+              {}
+
               <AuthForm />
 
+              {}
+
               <div
-                onMouseEnter={() =>
-                  setIsOpenMiniCart(true)
-                }
-                onMouseLeave={() =>
-                  setIsOpenMiniCart(false)
-                }
-                className="
-                  relative
-                  hidden
-                  shrink-0
-                  items-center
-                  lg:flex
-                "
+                onMouseEnter={() => setIsOpenMiniCart(true)}
+                onMouseLeave={() => setIsOpenMiniCart(false)}
+                className=" hidden
+                relative
+                lg:flex
+                items-center
+                gap-2
+                sm:gap-4
+                lg:gap-6
+              "
               >
                 <Link
                   href="/checkout/cart"
-                  className="relative block"
+                  className="
+                  relative
+                  block
+                "
                 >
                   <div
                     className="
-                      rounded-full
-                      p-1.5
-                      transition-colors
-                      hover:bg-neutral-100
-                      sm:p-2
-                    "
+                    p-1.5
+                    sm:p-2
+
+                    rounded-full
+
+                    hover:bg-neutral-100
+
+                    transition-colors
+                  "
                   >
                     <MdShoppingCartCheckout
                       className="
-                        h-[21px]
-                        w-[21px]
-                        text-neutral-700
-                        sm:h-[24px]
-                        sm:w-[24px]
-                      "
+                      w-[21px]
+                      h-[21px]
+
+                      sm:w-[24px]
+                      sm:h-[24px]
+
+                      text-neutral-700
+                    "
                     />
                   </div>
 
+                  {}
+
                   <span
                     className="
-                      absolute
-                      -right-1
-                      -top-1
-                      flex
-                      h-4
-                      w-4
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-red-500
-                      text-[9px]
-                      font-bold
-                      text-white
-                      shadow-sm
-                      sm:h-5
-                      sm:w-5
-                      sm:text-[11px]
-                    "
+                    absolute
+
+                    -top-1
+                    -right-1
+
+                    flex
+                    items-center
+                    justify-center
+
+                    h-4
+                    w-4
+
+                    sm:h-5
+                    sm:w-5
+
+                    rounded-full
+
+                    bg-red-500
+
+                    text-[9px]
+                    sm:text-[11px]
+
+                    font-bold
+                    text-white
+
+                    shadow-sm
+                  "
                   >
-                    {totalCount > 99
-                      ? "+99"
-                      : totalCount}
+                    {totalCount > 99 ? "+99" : totalCount}
                   </span>
                 </Link>
 
+                {}
+
                 {isOpenMiniCart && (
-                  <div className="hidden sm:block">
+                  <div
+                    className="
+                    hidden
+                    sm:block
+                  "
+                  >
                     <MiniCart />
                   </div>
                 )}
@@ -1274,260 +1313,157 @@ function Header() {
         </div>
 
         {/* ==================================================
-            CATEGORY + LOCATION
-        ================================================== */}
+          CATEGORY MENU
+      ================================================== */}
 
         <div
           className="
-            relative
-            mt-3
-            px-3
-            sm:mt-4
-            sm:px-4
-            lg:px-6
-          "
+          relative
+
+          mt-3
+          sm:mt-4
+
+          px-3
+          sm:px-4
+          lg:px-6
+        "
           onMouseLeave={scheduleClose}
         >
-          <div className="flex items-center gap-5">
-            {/* ==================================================
-                CATEGORIES BUTTON
-            ================================================== */}
+          {}
 
-            <button
-              type="button"
-              onMouseEnter={openMenu}
-              onClick={() =>
-                setIsOpen((prev) => !prev)
-              }
+          <button
+            type="button"
+            onMouseEnter={openMenu}
+            onClick={() => setIsOpen((prev) => !prev)}
+            className="
+          hidden
+            lg:flex
+            items-center
+
+            gap-2
+
+            cursor-pointer
+
+            py-2
+
+            text-neutral-800
+            hover:text-red-600
+
+            transition-colors
+          "
+          >
+            <RxHamburgerMenu
               className="
-                hidden
-                cursor-pointer
-                items-center
-                gap-2
+              w-5
+              h-5
+            "
+            />
+
+            <span
+              className="
+              text-xs
+              sm:text-sm
+
+              font-bold
+            "
+            >
+              Categories
+            </span>
+          </button>
+
+          {/* ==================================================
+            DESKTOP CATEGORY MEGA MENU
+        ================================================== */}
+
+          {isOpen && (
+            <div
+              onMouseEnter={clearCloseTimer}
+              className="
+              absolute
+
+              top-[calc(100%+4px)]
+              left-3
+              sm:left-4
+
+              z-[80]
+
+             flex
+              w-auto
+              
+              lg:w-[750px]
+
+              lg:h-[350px]
+
+              bg-white
+
+              rounded-xl
+
+              shadow-2xl
+
+              overflow-hidden
+
+              border
+              border-neutral-100
+            "
+            >
+              {/* ============================================
+                MAIN CATEGORIES
+            ============================================ */}
+
+              <nav
+                className="
+                flex
+                flex-col
+
+                w-[210px]
+                lg:w-[220px]
+
+                shrink-0
+
+                overflow-y-auto
+
+                border-r
+                border-neutral-100
+
                 py-2
                 text-neutral-800
                 transition-colors
                 hover:text-red-600
                 lg:flex
               "
-            >
-              <RxHamburgerMenu
-                className="h-5 w-5"
-              />
-
-              <span
-                className="
-                  text-xs
-                  font-bold
-                  sm:text-sm
-                "
               >
-                Categories
-              </span>
-            </button>
-
-            {/* ==================================================
-                SELECT LOCATION
-            ================================================== */}
-
-            <button
-              type="button"
-              onClick={() =>
-                setIsLocationModalOpen(true)
-              }
-              className="
-                hidden
-                cursor-pointer
-                items-center
-                gap-1.5
-                py-2
-                text-sm
-                font-medium
-                text-orange-500
-                transition-colors
-                hover:text-orange-600
-                lg:flex
-              "
-            >
-              <CiLocationOn
-                className="
-                  h-[20px]
-                  w-[20px]
-                  text-orange-400
-                "
-              />
-
-              <span>
-                {selectedLocation?.city?.name ||
-                  "Select Location"}
-              </span>
-            </button>
-          </div>
-
-          {/* ==================================================
-              DESKTOP MEGA MENU
-          ================================================== */}
-
-          {isOpen && (
-            <div
-              onMouseEnter={clearCloseTimer}
-              className="
-                absolute
-                left-3
-                top-[calc(100%+4px)]
-                z-[80]
-                hidden
-                h-[350px]
-                w-[750px]
-                overflow-hidden
-                rounded-xl
-                border
-                border-neutral-100
-                bg-white
-                shadow-2xl
-                lg:flex
-                sm:left-4
-              "
-            >
-              {/* ==================================================
-                  MAIN CATEGORIES
-              ================================================== */}
-
-              <nav
-                className="
-                  flex
-                  w-[220px]
-                  shrink-0
-                  flex-col
-                  overflow-y-auto
-                  border-r
-                  border-neutral-100
-                  bg-neutral-50
-                  py-2
-                "
-              >
-                {mainDataArray?.map((category) => {
-                  const isActive =
-                    activeId === category.id;
+                {mainDataArray?.map((c) => {
+                  const isActive = activeId === c.id;
 
                   return (
                     <div
-                      key={category.id}
-                      onMouseEnter={() =>
-                        setActiveId(category.id)
-                      }
+                      key={c.id}
+                      onMouseEnter={() => setActiveId(c.id)}
                       className={`
-                        flex
-                        cursor-pointer
-                        items-center
-                        justify-between
-                        px-4
-                        py-2.5
-                        text-[13px]
-                        font-semibold
-                        transition-colors
-                        ${
-                          isActive
-                            ? "border-l-4 border-l-red-500 bg-white text-red-600"
-                            : "text-neutral-900 hover:bg-neutral-100"
-                        }
-                      `}
+                      flex
+                      items-center
+                      justify-between
+
+                      px-4
+                      py-2.5
+
+                      text-[13px]
+
+                      font-semibold
+
+                      cursor-pointer
+
+                      transition-colors
+
+                      ${
+                        isActive
+                          ? "bg-white text-red-600 border-l-4 border-l-red-500"
+                          : "text-neutral-900 hover:bg-neutral-100"
+                      }
+                    `}
                     >
                       <div
                         className="
-                          flex
-                          min-w-0
-                          items-center
-                          gap-2
-                        "
-                      >
-                        <CategoryIcon
-                          iconKey={
-                            category.icon_key
-                          }
-                          className={`
-                            h-[18px]
-                            w-[18px]
-                            shrink-0
-                            ${
-                              isActive
-                                ? "text-red-600"
-                                : "text-neutral-500"
-                            }
-                          `}
-                        />
-
-                        <span className="truncate">
-                          {category.name}
-                        </span>
-                      </div>
-
-                      <TbChevronRight
-                        className={`
-                          h-3.5
-                          w-3.5
-                          shrink-0
-                          ${
-                            isActive
-                              ? "text-red-500"
-                              : "text-neutral-300"
-                          }
-                        `}
-                      />
-                    </div>
-                  );
-                })}
-              </nav>
-
-              {/* ==================================================
-                  SUB CATEGORIES
-              ================================================== */}
-
-              <div
-                className="
-                  relative
-                  flex-1
-                  overflow-y-auto
-                  bg-white
-                  px-5
-                  py-5
-                  lg:px-6
-                "
-              >
-                {isSubLoading ? (
-                  <div
-                    className="
-                      absolute
-                      inset-0
-                      flex
-                      items-center
-                      justify-center
-                      bg-white/60
-                    "
-                  >
-                    <div
-                      className="
-                        h-6
-                        w-6
-                        animate-spin
-                        rounded-full
-                        border-2
-                        border-red-500
-                        border-t-transparent
-                      "
-                    />
-                  </div>
-                ) : (
-                  <>
-                    <Link
-                      href={`/search/${
-                        targetCategory?.slug ||
-                        "all"
-                      }?category_id=${
-                        targetCategory?.id || ""
-                      }`}
-                      className="
-                        mb-4
                         flex
                         items-center
                         gap-1
@@ -1537,115 +1473,205 @@ function Header() {
                         text-red-600
                         hover:underline
                       "
-                    >
-                      All{" "}
-                      {activeCategory?.name}{" "}
-                      Products
+                      >
+                        <CategoryIcon
+                          iconKey={c.icon_key}
+                          className={`
+                          w-[18px]
+                          h-[18px]
+                          shrink-0
+
+                          ${isActive ? "text-red-600" : "text-neutral-500"}
+                        `}
+                        />
+
+                        <span className="truncate">{c.name}</span>
+                      </div>
 
                       <TbChevronRight
-                        className="h-3.5 w-3.5"
+                        className={`
+                        w-3.5
+                        h-3.5
+                        shrink-0
+
+                        ${isActive ? "text-red-500" : "text-neutral-300"}
+                      `}
+                      />
+                    </div>
+                  );
+                })}
+              </nav>
+
+              {/* ============================================
+                SUB CATEGORIES
+            ============================================ */}
+
+              <div
+                className="
+                flex-1
+
+                overflow-y-auto
+
+                px-5
+                lg:px-6
+
+                py-5
+
+                bg-white
+
+                relative
+              "
+              >
+                {isSubLoading ? (
+                  <div
+                    className="
+                    absolute
+                    inset-0
+
+                    flex
+                    items-center
+                    justify-center
+
+                    bg-white/60
+                  "
+                  >
+                    <div
+                      className="
+                      w-6
+                      h-6
+
+                      border-2
+                      border-red-500
+                      border-t-transparent
+
+                      rounded-full
+
+                      animate-spin
+                    "
+                    />
+                  </div>
+                ) : (
+                  <>
+                    {}
+
+                    <Link
+                      href={`/search/${
+                        targetCategory?.slug || "all"
+                      }?category_id=${targetCategory?.id || ""}`}
+                      className="
+                      flex
+                      items-center
+                      gap-1
+
+                      mb-4
+
+                      text-[13px]
+                      font-bold
+
+                      text-red-600
+
+                      whitespace-nowrap
+
+                      hover:underline
+                    "
+                    >
+                      All {activeCategory?.name} Products
+                      <TbChevronRight
+                        className="
+                        w-3.5
+                        h-3.5
+                      "
                       />
                     </Link>
 
+                    {}
+
                     <div
                       className="
-                        grid
-                        grid-cols-2
-                        gap-5
-                        lg:grid-cols-3
-                        lg:gap-6
-                      "
+                      grid
+
+                      grid-cols-2
+                      lg:grid-cols-3
+
+                      gap-5
+                      lg:gap-6
+                    "
                     >
-                      {finalSubList?.map(
-                        (col, idx) => (
-                          <div
-                            key={col.id || idx}
+                      {finalSubList?.map((col, idx) => (
+                        <div
+                          key={col.id || idx}
+                          className="
+                            flex
+                            flex-col
+
+                            min-w-0
+                          "
+                        >
+                          <Link
+                            href={`/search/${
+                              col.slug || "category"
+                            }?category_id=${col.id}`}
                             className="
                               flex
                               min-w-0
                               flex-col
                             "
                           >
-                            <Link
-                              href={`/search/${
-                                col.slug ||
-                                "category"
-                              }?category_id=${
-                                col.id
-                              }`}
+                            <span
                               className="
-                                group
-                                mb-2
-                                flex
-                                items-center
-                                justify-between
-                                border-b
-                                border-neutral-100
-                                py-1
-                                text-sm
-                                font-bold
-                                text-neutral-900
+                                truncate
+
+                                group-hover:text-red-600
+
+                                transition-colors
                               "
                             >
-                              <span
+                              {col.name}
+                            </span>
+
+                            <TbChevronRight
+                              className="
+                                w-3.5
+                                h-3.5
+
+                                shrink-0
+
+                                text-neutral-400
+
+                                group-hover:text-red-600
+
+                                transition-colors
+                              "
+                            />
+                          </Link>
+
+                          {(col.children || col.subs || col.leaves || []).map(
+                            (leaf, lIdx) => (
+                              <Link
+                                key={leaf.id || lIdx}
+                                href={`/search/${
+                                  leaf.slug || "child"
+                                }?category_id=${leaf.id}`}
                                 className="
-                                  truncate
+                                  py-1
+
+                                  text-[13px]
+
+                                  text-neutral-500
+
+                                  hover:text-red-600
+
                                   transition-colors
-                                  group-hover:text-red-600
+
+                                  truncate
                                 "
                               >
-                                {col.name}
-                              </span>
-
-                              <TbChevronRight
-                                className="
-                                  h-3.5
-                                  w-3.5
-                                  shrink-0
-                                  text-neutral-400
-                                  transition-colors
-                                  group-hover:text-red-600
-                                "
-                              />
-                            </Link>
-
-                            {(
-                              col.children ||
-                              col.subs ||
-                              col.leaves ||
-                              []
-                            ).map(
-                              (
-                                leaf,
-                                leafIndex
-                              ) => (
-                                <Link
-                                  key={
-                                    leaf.id ||
-                                    leafIndex
-                                  }
-                                  href={`/search/${
-                                    leaf.slug ||
-                                    "child"
-                                  }?category_id=${
-                                    leaf.id
-                                  }`}
-                                  className="
-                                    truncate
-                                    py-1
-                                    text-[13px]
-                                    text-neutral-500
-                                    transition-colors
-                                    hover:text-red-600
-                                  "
-                                >
-                                  {leaf.name}
-                                </Link>
-                              )
-                            )}
-                          </div>
-                        )
-                      )}
+                                {leaf.name}
+                              </Link>
+                            ),
+                          )}
+                        </div>
+                      ))}
                     </div>
                   </>
                 )}
@@ -1654,40 +1680,48 @@ function Header() {
           )}
 
           {/* ==================================================
-              MOBILE CATEGORY MENU
-          ================================================== */}
+            MOBILE CATEGORY MENU
+        ================================================== */}
 
           {isOpen && (
             <div
               className="
-                absolute
-                left-3
-                right-3
-                top-[calc(100%+4px)]
-                z-[80]
-                overflow-hidden
-                rounded-xl
-                border
-                border-neutral-100
-                bg-white
-                shadow-2xl
-                lg:hidden
-              "
+              md:hidden
+
+              absolute
+
+              top-[calc(100%+4px)]
+              left-3
+              right-3
+
+              z-[80]
+
+              bg-white
+
+              rounded-xl
+
+              shadow-2xl
+
+              border
+              border-neutral-100
+
+              overflow-hidden
+            "
             >
               <div
                 className="
-                  max-h-[70vh]
-                  overflow-y-auto
-                "
+                max-h-[70vh]
+
+                overflow-y-auto
+              "
               >
-                {mainDataArray?.map((category) => (
-                  <Link
-                    key={category.id}
-                    href={`/search/${category.slug}?category_id=${category.id}`}
-                    onClick={() =>
-                      setIsOpen(false)
-                    }
-                    className="
+                {mainDataArray?.map((c) => {
+                  return (
+                    <Link
+                      key={c.id}
+                      href={`/search/${c.slug}?category_id=${c.id}`}
+                      onClick={() => setIsOpen(false)}
+                      className="
                       flex
                       items-center
                       justify-between
@@ -1701,64 +1735,43 @@ function Header() {
                       hover:bg-neutral-50
                       active:bg-neutral-100
                     "
-                  >
-                    <div
-                      className="
+                    >
+                      <div
+                        className="
                         flex
                         items-center
                         gap-3
                       "
-                    >
-                      <CategoryIcon
-                        iconKey={
-                          category.icon_key
-                        }
-                        className="
+                      >
+                        <CategoryIcon
+                          iconKey={c.icon_key}
+                          className="
+                          w-5
                           h-5
                           w-5
                           text-neutral-500
                         "
-                      />
+                        />
 
-                      <span>
-                        {category.name}
-                      </span>
-                    </div>
+                        <span>{c.name}</span>
+                      </div>
 
-                    <TbChevronRight
-                      className="
+                      <TbChevronRight
+                        className="
+                        w-4
                         h-4
                         w-4
                         text-neutral-400
                       "
-                    />
-                  </Link>
-                ))}
+                      />
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           )}
         </div>
       </header>
-
-      {/* ==================================================
-          LOCATION MODAL
-      ================================================== */}
-
-      {isLocationModalOpen && (
-        <LocationModal
-          user={user}
-          onClose={() =>
-            setIsLocationModalOpen(false)
-          }
-          onLocationSaved={
-            handleLocationSaved
-          }
-        />
-      )}
-
-      {/* ==================================================
-          MOBILE BOTTOM NAV
-      ================================================== */}
 
       <MobileBottomNav
         totalCount={totalCount}

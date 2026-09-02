@@ -10,7 +10,10 @@ import { AiOutlineLike, AiTwotoneDislike } from "react-icons/ai";
 import { Trash2, Minus, Plus } from "lucide-react";
 import { RotatingLines } from "react-loader-spinner";
 import { VscCopilotSuccess } from "react-icons/vsc";
+<<<<<<< Updated upstream
 import ProductReviewModal from "../ProductReviewModal";
+=======
+>>>>>>> Stashed changes
 
 function ProductOverview({ data }) {
   console.log(data);
@@ -144,6 +147,7 @@ function RatingStars({ rating = 0, maxStars = 5 }) {
   );
 }
 
+<<<<<<< Updated upstream
 function SubmitComment({ id, data }) {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
 
@@ -169,6 +173,23 @@ function SubmitComment({ id, data }) {
         <p className="mt-7 text-sm">
           You too can leave a review for this product.
         </p>
+=======
+function SubmitComment({ id }) {
+  return (
+    <div className="px-4 sm:px-5 max-w-[1270px]">
+      <div
+        className="
+          flex
+          flex-col
+          sm:flex-row
+          sm:items-center
+          gap-4
+          sm:gap-10
+          lg:gap-64
+        "
+      >
+        <p className="font-medium">4 out of 5</p>
+>>>>>>> Stashed changes
 
         <button
           type="button"
@@ -685,7 +706,11 @@ export default function ProductMoreDetails({
 
             {}
 
+<<<<<<< Updated upstream
             <SubmitComment id={data?.id} data={data} />
+=======
+            <SubmitComment id={data?.id} />
+>>>>>>> Stashed changes
           </div>
 
           {/* =================================================

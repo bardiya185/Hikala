@@ -19,6 +19,7 @@ export default function RootLayout({ children }) {
     <html lang="en" dir="ltr">
       <body className="min-h-screen">
         <TanstackQueryProvider>
+<<<<<<< Updated upstream
           <div className="flex min-h-screen flex-col">
             {/* Header */}
             <Header />
@@ -38,6 +39,13 @@ export default function RootLayout({ children }) {
             {/* Footer */}
             <Footer />
           </div>
+=======
+          <Header />
+          <NextTopLoader color="#DC2626" showSpinner={false} />
+          <main className="min-h-screen pb-20 lg:pb-0">
+            <PageTransition>{children}</PageTransition>
+          </main>
+>>>>>>> Stashed changes
         </TanstackQueryProvider>
 
         <Toaster />

@@ -100,10 +100,15 @@ class ProductService
 
     private function applyCategoryFilter(Builder $query, Request $request): void
     {
+<<<<<<< Updated upstream
         if ($request->filled('category_ids')) {
             $raw = $request->category_ids;
             $ids = is_array($raw) ? $raw : explode(',', $raw);
             $ids = array_filter(array_map('intval', $ids));
+=======
+        if ($request->has('category_ids')) {
+            $ids = array_filter(explode(',', $request->category_ids));
+>>>>>>> Stashed changes
             if (empty($ids)) return;
     
             $allCategoryIds = $this->getCategoryWithSubcategories($ids);
@@ -117,9 +122,14 @@ class ProductService
             );
             return;
         }
+<<<<<<< Updated upstream
 
         if ($request->filled('category_id')) {
             $allCategoryIds = $this->getCategoryWithSubcategories([(int)$request->category_id]);
+=======
+        if ($request->has('category_id')) {
+            $allCategoryIds = $this->getCategoryWithSubcategories([$request->category_id]);
+>>>>>>> Stashed changes
     
             if (empty($allCategoryIds)) {
                 $query->whereRaw('1 = 0');
@@ -292,7 +302,10 @@ class ProductService
             ->filter(function ($product) use ($campaignSlug) {
                 return $product->_campaign_slug === $campaignSlug;
             });
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         if ($sortByPrice) {
             $products = $products->sortBy('_final_price', SORT_REGULAR, $sortOrder === 'desc');
         } else {

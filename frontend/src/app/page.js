@@ -2,8 +2,11 @@ import Stories from "@/components/templates/digikalstories";
 import TopBanner from "@/components/banner/Banner";
 import AmazingSliders from "@/components/organisms/AmazingSliders";
 import CardShop from "@/components/templates/cardStore";
+<<<<<<< Updated upstream
 import Categories from "@/components/home/Categories";
 import SpecialOffers from "@/components/organisms/SpecialOffers";
+=======
+>>>>>>> Stashed changes
 async function getFlashSaleCampaign() {
   try {
     const res = await fetch(
@@ -21,6 +24,7 @@ async function getFlashSaleCampaign() {
     return null;
   }
 }
+<<<<<<< Updated upstream
 
 
 async function getSpecialOffer(){
@@ -36,6 +40,8 @@ async function getSpecialOffer(){
   }
 }
 
+=======
+>>>>>>> Stashed changes
 async function getBanners() {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/banners`, {
