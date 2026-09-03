@@ -10,13 +10,17 @@ import {
   Trash2,
   X,
   Heart,
+  Loader2,
 } from "lucide-react";
 
 import { useGetWishlist } from "@/core/services/queries";
 import { formatPrice } from "@/core/utils/formatPrice";
+import { useAddToWishlist, useAddProductsBasket } from "@/core/services/mutations";
+import { QueryClient, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 
 // ============================================================
-// HELPERS - اینها رو خودت باید تعریف کنی
+// HELPERS
 // ============================================================
 
 function getProductPricing(product) {
@@ -63,9 +67,30 @@ function ProductRating({ rating }) {
 // PRODUCT CARD
 // ============================================================
 
-function WishlistProductCard({ product, index, onDelete }) {
+function WishlistProductCard({ 
+  product, 
+  index, 
+  onDelete, 
+  onAddToCart,
+  isAddingToCart 
+}) {
   const { basePrice, finalPrice, discountPercent, hasDiscount } = getProductPricing(product);
   const freeShipping = hasFreeShipping(product);
+  const [isAdding, setIsAdding] = useState(false);
+
+  const handleAddToCart = async () => {
+    if (isAdding) return;
+    
+    const variant = product?.variants?.[0];
+    if (!variant) {
+      toast.error("Product variant not available");
+      return;
+    }
+
+    setIsAdding(true);
+    await onAddToCart(product, variant);
+    setIsAdding(false);
+  };
 
   return (
     <motion.div
@@ -120,18 +145,30 @@ function WishlistProductCard({ product, index, onDelete }) {
         </div>
 
         <div className="mt-4 flex items-center gap-2">
-          <Link
-            href={`/product/${product?.id}`}
-            className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-red-600 bg-white px-3 text-xs font-bold text-red-600 transition-all hover:bg-red-600 hover:text-white sm:text-sm"
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={isAdding || isAddingToCart}
+            className="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-red-600 bg-white px-3 text-xs font-bold text-red-600 transition-all hover:bg-red-600 hover:text-white disabled:cursor-not-allowed disabled:opacity-50 sm:text-sm"
           >
-            <ShoppingCart className="h-4 w-4" />
-            <span>Add to Cart</span>
-          </Link>
+            {isAdding || isAddingToCart ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Adding...</span>
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="h-4 w-4" />
+                <span>Add to Cart</span>
+              </>
+            )}
+          </button>
 
           <button
             type="button"
             onClick={() => onDelete(product)}
-            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-neutral-300 bg-white text-neutral-500 transition-all hover:border-red-500 hover:text-red-500"
+            disabled={isAdding}
+            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-neutral-300 bg-white text-neutral-500 transition-all hover:border-red-500 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Remove from wishlist"
           >
             <Trash2 className="h-4 w-4" />
@@ -146,7 +183,13 @@ function WishlistProductCard({ product, index, onDelete }) {
 // DELETE MODAL
 // ============================================================
 
-function DeleteWishlistModal({ product, isOpen, onClose, onConfirm, isDeleting }) {
+function DeleteWishlistModal({ 
+  product, 
+  isOpen, 
+  onClose, 
+  onConfirm, 
+  isDeleting 
+}) {
   if (!isOpen || !product) return null;
 
   return (
@@ -167,7 +210,8 @@ function DeleteWishlistModal({ product, isOpen, onClose, onConfirm, isDeleting }
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-800"
+            disabled={isDeleting}
+            className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Close"
           >
             <X className="h-5 w-5" />
@@ -195,7 +239,14 @@ function DeleteWishlistModal({ product, isOpen, onClose, onConfirm, isDeleting }
             onClick={onConfirm}
             className="flex h-11 flex-1 cursor-pointer items-center justify-center rounded-lg border border-red-600 bg-red-600 px-4 text-sm font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isDeleting ? "Removing..." : "Remove Product"}
+            {isDeleting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Removing...
+              </>
+            ) : (
+              "Remove Product"
+            )}
           </button>
 
           <button
@@ -219,28 +270,70 @@ function DeleteWishlistModal({ product, isOpen, onClose, onConfirm, isDeleting }
 export default function Wishlist() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [addingToCartId, setAddingToCartId] = useState(null);
 
-  const { data, isLoading, isFetching, isError, error } = useGetWishlist(10);
+  const queryClient = useQueryClient();
 
-  console.log("WISHLIST COMPONENT DATA:", data);
+  // Queries
+  const { data: GetWishlist, isLoading, error } = useGetWishlist();
+  
+  // Mutations
+  const { 
+    mutate: toggleWishlist, 
+    isPending: isTogglingWishlist 
+  } = useAddToWishlist();
 
+  const { 
+    mutate: addToCart, 
+    isPending: isAddingToCart 
+  } = useAddProductsBasket();
+
+  console.log("WISHLIST COMPONENT DATA:", GetWishlist);
+
+  // Extract products from response
   const products = useMemo(() => {
-    if (!data) return [];
+    if (!GetWishlist) return [];
 
-    if (Array.isArray(data?.data)) return data.data;
-    if (Array.isArray(data?.data?.data)) return data.data.data;
-    if (Array.isArray(data?.wishlist)) return data.wishlist;
-    if (Array.isArray(data?.data?.wishlist)) return data.data.wishlist;
-    if (Array.isArray(data)) return data;
+    if (Array.isArray(GetWishlist?.data)) return GetWishlist.data;
+    if (Array.isArray(GetWishlist?.data?.data)) return GetWishlist.data.data;
+    if (Array.isArray(GetWishlist?.wishlist)) return GetWishlist.wishlist;
+    if (Array.isArray(GetWishlist?.data?.wishlist)) return GetWishlist.data.wishlist;
+    if (Array.isArray(GetWishlist)) return GetWishlist;
 
     return [];
-  }, [data]);
+  }, [GetWishlist]);
 
   console.log("WISHLIST PRODUCTS:", products);
+
+  // ============================================================
+  // HANDLE DELETE FROM WISHLIST
+  // ============================================================
 
   const handleDeleteClick = (product) => {
     setSelectedProduct(product);
     setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!selectedProduct) return;
+
+    setIsDeleting(true);
+
+    toggleWishlist(selectedProduct.id, {
+      onSuccess: () => {
+        toast.success("Removed from wishlist");
+        queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+        handleCloseModal();
+      },
+      onError: (error) => {
+        toast.error(error?.message || "Failed to remove from wishlist");
+        setIsDeleting(false);
+      },
+      onSettled: () => {
+        setIsDeleting(false);
+      },
+    });
   };
 
   const handleCloseModal = () => {
@@ -248,17 +341,59 @@ export default function Wishlist() {
     setSelectedProduct(null);
   };
 
-  const handleConfirmDelete = () => {
-    console.log("DELETE WISHLIST PRODUCT:", selectedProduct);
-    handleCloseModal();
+  // ============================================================
+  // HANDLE ADD TO CART
+  // ============================================================
+
+  const handleAddToCart = (product, variant) => {
+    if (!variant) {
+      toast.error("Product variant not available");
+      return;
+    }
+
+    setAddingToCartId(product.id);
+
+    addToCart(
+      {
+        product_variant_id: variant.id,
+        quantity: 1,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Added to basket successfully");
+          // Optionally remove from wishlist after adding to cart
+          // Or keep it in wishlist
+        },
+        onError: (error) => {
+          toast.error(error?.message || "Failed to add to basket");
+        },
+        onSettled: () => {
+          setAddingToCartId(null);
+        },
+      }
+    );
   };
 
+  // ============================================================
+  // REFRESH WISHLIST
+  // ============================================================
+
+  const refreshWishlist = () => {
+    queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+  };
+
+  // ============================================================
   // LOADING
+  // ============================================================
+
   if (isLoading) {
     return (
       <section className="w-full">
         <div className="rounded-2xl border border-neutral-200 bg-white p-4 sm:p-6">
-          <div className="h-7 w-44 animate-pulse rounded bg-neutral-100" />
+          <div className="flex items-center justify-between">
+            <div className="h-7 w-44 animate-pulse rounded bg-neutral-100" />
+            <div className="h-7 w-7 animate-pulse rounded-full bg-neutral-100" />
+          </div>
           <div className="mt-6 h-px w-full bg-neutral-200" />
           <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:gap-5">
             {[1, 2, 3, 4].map((item) => (
@@ -270,22 +405,35 @@ export default function Wishlist() {
     );
   }
 
+  // ============================================================
   // ERROR
-  if (isError) {
+  // ============================================================
+
+  if (error) {
     return (
       <section className="w-full">
         <div className="rounded-2xl border border-neutral-200 bg-white p-6 text-center">
-          <Heart className="mx-auto h-10 text-neutral-300" />
+          <Heart className="mx-auto h-12 w-12 text-neutral-300" />
           <h2 className="mt-3 text-base font-bold text-neutral-800">Unable to load wishlist</h2>
           <p className="mt-2 text-sm text-neutral-500">
             {error?.message || "Please try again later."}
           </p>
+          <button
+            type="button"
+            onClick={refreshWishlist}
+            className="mt-4 rounded-lg bg-red-600 px-6 py-2 text-sm font-bold text-white transition-colors hover:bg-red-700"
+          >
+            Try Again
+          </button>
         </div>
       </section>
     );
   }
 
+  // ============================================================
   // EMPTY WISHLIST
+  // ============================================================
+
   if (!products || products.length === 0) {
     return (
       <section className="w-full">
@@ -310,18 +458,44 @@ export default function Wishlist() {
             <p className="mt-2 text-sm text-neutral-500">
               Products you add to your wishlist will appear here.
             </p>
+            <Link
+              href="/"
+              className="mt-4 rounded-lg bg-red-600 px-6 py-2 text-sm font-bold text-white transition-colors hover:bg-red-700"
+            >
+              Start Shopping
+            </Link>
           </div>
         </div>
       </section>
     );
   }
 
+  // ============================================================
   // RENDER WISHLIST
+  // ============================================================
+
+  const isDeletingLoading = isTogglingWishlist || isDeleting;
+
   return (
     <>
       <section className="w-full">
         <div className="rounded-2xl border border-neutral-200 bg-white p-4 sm:p-6">
-          <h1 className="text-xl font-bold text-neutral-800 sm:text-2xl">Lists</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold text-neutral-800 sm:text-2xl">Lists</h1>
+            
+            <button
+              type="button"
+              onClick={refreshWishlist}
+              disabled={isTogglingWishlist}
+              className="flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-neutral-700 disabled:opacity-50"
+            >
+              {isTogglingWishlist ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Refresh"
+              )}
+            </button>
+          </div>
 
           <div className="mt-5">
             <button
@@ -342,12 +516,17 @@ export default function Wishlist() {
                 product={product}
                 index={index}
                 onDelete={handleDeleteClick}
+                onAddToCart={handleAddToCart}
+                isAddingToCart={addingToCartId === product?.id}
               />
             ))}
           </div>
 
-          {isFetching && !isLoading && (
-            <div className="mt-4 text-center text-xs text-neutral-400">Updating wishlist...</div>
+          {isTogglingWishlist && !isDeleting && (
+            <div className="mt-4 flex items-center justify-center gap-2 text-xs text-neutral-400">
+              <Loader2 className="h-3 w-3 animate-spin" />
+              Updating wishlist...
+            </div>
           )}
         </div>
       </section>
@@ -357,7 +536,7 @@ export default function Wishlist() {
         isOpen={isDeleteModalOpen}
         onClose={handleCloseModal}
         onConfirm={handleConfirmDelete}
-        isDeleting={false}
+        isDeleting={isDeletingLoading}
       />
     </>
   );

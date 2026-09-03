@@ -10,16 +10,9 @@ import { AiOutlineLike, AiTwotoneDislike } from "react-icons/ai";
 import { Trash2, Minus, Plus } from "lucide-react";
 import { RotatingLines } from "react-loader-spinner";
 import { VscCopilotSuccess } from "react-icons/vsc";
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 import ProductReviewModal from "../ProductReviewModal";
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 function ProductOverview({ data }) {
-  console.log(data);
   return (
     <div className="w-full">
       <div className="flex flex-col px-4 sm:px-5">
@@ -49,7 +42,7 @@ function ProductSpecifications({ data }) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 mt-4">
-        {}
+        {/* Names Column */}
         <div className="flex flex-col">
           {attr?.map((item) => (
             <div
@@ -72,7 +65,7 @@ function ProductSpecifications({ data }) {
           ))}
         </div>
 
-        {}
+        {/* Values Column */}
         <div className="flex flex-col">
           {attr?.map((item) => (
             <div key={`value-${item?.id}`}>
@@ -101,7 +94,7 @@ function ProductSpecifications({ data }) {
 
 function InDepthReview() {
   return (
-    <div id="In-depth Review-section" className="w-full mt-10">
+    <div id="In-depth-Review-section" className="w-full mt-10">
       <h1 className="px-4 sm:px-5 text-base sm:text-lg font-semibold">
         In-depth Review
       </h1>
@@ -150,39 +143,12 @@ function RatingStars({ rating = 0, maxStars = 5 }) {
   );
 }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 function SubmitComment({ id, data }) {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-
-  return (
-    <>
-      <div className="px-4 sm:px-5 max-w-[1270px]">
-        <div
-          className="
-            flex
-            flex-col
-            sm:flex-row
-            sm:items-center
-            gap-4
-            sm:gap-10
-            lg:gap-64
-          "
-        >
-          <p className="font-medium">4 out of 5</p>
-
-          <Reviews id={id} />
-        </div>
-
-        <p className="mt-7 text-sm">
-          You too can leave a review for this product.
-        </p>
-=======
-=======
->>>>>>> Stashed changes
-function SubmitComment({ id }) {
+  
   return (
     <div className="px-4 sm:px-5 max-w-[1270px]">
+      <Reviews id={id} />
       <div
         className="
           flex
@@ -195,10 +161,6 @@ function SubmitComment({ id }) {
         "
       >
         <p className="font-medium">4 out of 5</p>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
         <button
           type="button"
@@ -217,7 +179,7 @@ function SubmitComment({ id }) {
             transition-all
             hover:bg-red-50
             active:scale-[0.99]
-          "
+            "
         >
           Submit a comment
         </button>
@@ -228,7 +190,7 @@ function SubmitComment({ id }) {
         onClose={() => setIsReviewModalOpen(false)}
         product={data}
       />
-    </>
+    </div>
   );
 }
 
@@ -238,7 +200,7 @@ function Reviews({ id }) {
   return (
     <div className="w-full" id="viewpoint-section">
       <div className="w-full">
-        {}
+        {/* Sort buttons */}
         <div
           className="
             flex
@@ -262,7 +224,7 @@ function Reviews({ id }) {
           <button className="text-xs sm:text-sm shrink-0">Most useful</button>
         </div>
 
-        {}
+        {/* User info */}
         <div
           className="
             w-full
@@ -297,7 +259,7 @@ function Reviews({ id }) {
         </div>
       </div>
 
-      {}
+      {/* Comment body */}
       <div className="w-full max-w-[750px]">
         <p
           className="
@@ -310,16 +272,16 @@ function Reviews({ id }) {
         >
           {comments?.data?.body}
           My phone arrived promptly on the scheduled date. I was quite worried
-          it might have issues—I’d never bought a phone online before—but before
-          opening the box, I checked the serial number on Apple’s website. Once
+          it might have issues—I'd never bought a phone online before—but before
+          opening the box, I checked the serial number on Apple's website. Once
           I was reassured that it hadn't been previously opened or activated, I
-          unboxed and turned it on. Since it’s a dual-SIM model, I verified both
+          unboxed and turned it on. Since it's a dual-SIM model, I verified both
           the serial number and IMEI against the details shown on the phone
           itself.
         </p>
       </div>
 
-      {}
+      {/* Like/Dislike */}
       <div className="flex items-center gap-3 mt-3">
         <AiOutlineLike className="w-5 h-5 text-neutral-400" />
 
@@ -362,7 +324,7 @@ function SellerCard({
           sm:p-5
         "
       >
-        {}
+        {/* Seller header */}
         <div className="flex justify-between items-center">
           <p className="font-medium">Seller</p>
 
@@ -371,7 +333,7 @@ function SellerCard({
           </span>
         </div>
 
-        {}
+        {/* Seller name */}
         <div className="flex items-center gap-2 mt-5">
           <Image
             src="/icons/idigi.jfif"
@@ -384,7 +346,7 @@ function SellerCard({
           <span className="text-sm">Digikala</span>
         </div>
 
-        {}
+        {/* Seller performance */}
         <div className="flex items-center gap-2 mt-3 ml-7">
           <p className="text-[10px] text-neutral-400">Performance</p>
 
@@ -393,7 +355,7 @@ function SellerCard({
 
         <div className="w-full mt-4 border-t border-neutral-300" />
 
-        {}
+        {/* Price */}
         <div className="flex items-center gap-2 mt-5">
           <span
             className="
@@ -412,12 +374,11 @@ function SellerCard({
           <del className="text-xs text-neutral-400">3.500 $</del>
         </div>
 
-        {}
         <span className="mt-3 inline-block text-lg sm:text-xl font-medium">
           {selectedVariant?.base_price ?? 0} $
         </span>
 
-        {}
+        {/* Stock */}
         <div className="flex items-center gap-2 mt-3">
           <FaFire className="w-5 h-5 text-orange-600" />
 
@@ -426,7 +387,7 @@ function SellerCard({
           </span>
         </div>
 
-        {}
+        {/* Cart */}
         {cartItem ? (
           <div className="mt-5">
             <div
@@ -438,8 +399,6 @@ function SellerCard({
                 h-[42px]
                 px-3
                 bg-red-500
-                border
-                border-neutral-300
                 rounded-lg
               "
             >
@@ -500,7 +459,7 @@ function SellerCard({
           </div>
         )}
 
-        {}
+        {/* Warranty */}
         <div className="mt-5">
           <div className="flex items-center text-neutral-400 gap-3">
             <VscCopilotSuccess className="w-5 h-5 shrink-0" />
@@ -537,7 +496,7 @@ export default function ProductMoreDetails({
       id: "In-depth Review",
       label: "In-depth Review",
       actionType: "scroll",
-      targetId: "In-depth Review-section",
+      targetId: "In-depth-Review-section",
     },
     {
       id: "specifications",
@@ -564,9 +523,7 @@ export default function ProductMoreDetails({
   ];
 
   const [activeTab, setActiveTab] = useState("Introduction");
-
   const [isVisible, setIsVisible] = useState(true);
-
   const [showAllSpecs, setShowAllSpecs] = useState(false);
 
   useEffect(() => {
@@ -603,11 +560,9 @@ export default function ProductMoreDetails({
   };
 
   const allAttributes = selectedVariant?.attributes || [];
-
   const visibleAttributes = showAllSpecs
     ? allAttributes
     : allAttributes.slice(0, INITIAL_SPECS_COUNT);
-
   const hasMoreSpecs = allAttributes.length > INITIAL_SPECS_COUNT;
 
   return (
@@ -620,10 +575,7 @@ export default function ProductMoreDetails({
       "
     >
       <section className="relative" id="product-section">
-        {/* =================================================
-            TABS
-        ================================================= */}
-
+        {/* TABS */}
         <div
           className={`
             sticky
@@ -674,10 +626,7 @@ export default function ProductMoreDetails({
           ))}
         </div>
 
-        {/* =================================================
-            MAIN GRID
-        ================================================= */}
-
+        {/* MAIN GRID */}
         <div
           className="
             grid
@@ -690,18 +639,13 @@ export default function ProductMoreDetails({
             sm:mt-6
           "
         >
-          {/* =================================================
-              CONTENT
-          ================================================= */}
-
+          {/* CONTENT */}
           <div className="min-w-0 w-full">
             {activeTab === "Introduction" && <ProductOverview data={data} />}
 
             <InDepthReview />
 
             <ProductSpecifications data={data} />
-
-            {}
 
             <div
               className="
@@ -713,23 +657,10 @@ export default function ProductMoreDetails({
               "
             />
 
-            {}
-
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-            <SubmitComment id={data?.id} data={data} />
-=======
-            <SubmitComment id={data?.id} />
->>>>>>> Stashed changes
-=======
-            <SubmitComment id={data?.id} />
->>>>>>> Stashed changes
+            <SubmitComment productId={data?.id} data={data} />
           </div>
 
-          {/* =================================================
-              SELLER
-          ================================================= */}
-
+          {/* SELLER */}
           <SellerCard
             data={data}
             selectedVariant={selectedVariant}

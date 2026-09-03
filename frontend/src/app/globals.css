@@ -34,7 +34,6 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-<<<<<<< Updated upstream
 }
 
 @keyframes review-slide-in {
@@ -51,6 +50,4 @@
 
 .animate-review-slide-in {
   animation: review-slide-in 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
-=======
->>>>>>> Stashed changes
 }
