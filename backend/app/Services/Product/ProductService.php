@@ -100,18 +100,15 @@ class ProductService
 
     private function applyCategoryFilter(Builder $query, Request $request): void
     {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
+
         if ($request->filled('category_ids')) {
             $raw = $request->category_ids;
             $ids = is_array($raw) ? $raw : explode(',', $raw);
             $ids = array_filter(array_map('intval', $ids));
-=======
-=======
->>>>>>> Stashed changes
         if ($request->has('category_ids')) {
             $ids = array_filter(explode(',', $request->category_ids));
->>>>>>> Stashed changes
+
             if (empty($ids)) return;
     
             $allCategoryIds = $this->getCategoryWithSubcategories($ids);
@@ -125,17 +122,13 @@ class ProductService
             );
             return;
         }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
 
         if ($request->filled('category_id')) {
             $allCategoryIds = $this->getCategoryWithSubcategories([(int)$request->category_id]);
-=======
-=======
->>>>>>> Stashed changes
         if ($request->has('category_id')) {
             $allCategoryIds = $this->getCategoryWithSubcategories([$request->category_id]);
->>>>>>> Stashed changes
+
     
             if (empty($allCategoryIds)) {
                 $query->whereRaw('1 = 0');
@@ -151,6 +144,7 @@ class ProductService
     /**
      * گرفتن دسته + زیردسته‌های فعال
      */
+
     private function getCategoryWithSubcategories(array $categoryIds): array
     {
         $validIds = [];
