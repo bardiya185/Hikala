@@ -7,10 +7,16 @@ use App\Services\Auth\AuthService;
 use App\Http\Requests\SendOtpRequest;
 use App\Http\Requests\CheckOtpRequest;
 use App\Http\Requests\RefreshTokenRequest;
+use App\Models\User;
+use App\Models\RefreshToken;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use OpenApi\Attributes as OA;
 
 class AuthController extends Controller
@@ -22,6 +28,9 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
+    /**
+     * Send OTP code to mobile
+     */
     #[OA\Post(
         path: '/api/send-otp',
         tags: ['Auth'],
@@ -52,11 +61,10 @@ class AuthController extends Controller
                 'ip' => $request->ip(),
             ]);
             
-
             return response()->json([
+                'success' => false,
                 'message' => 'Please wait 2 minutes before requesting again.',
             ], Response::HTTP_TOO_MANY_REQUESTS);
-
         }
         
         // Create OTP
@@ -64,18 +72,19 @@ class AuthController extends Controller
         
         Log::info('OTP sent successfully', [
             'mobile' => substr($mobile, 0, 4) . '*****',
-            'code' => $otpData['otp'] ?? null,//🛑Beta🛑
+            'code' => $otpData['otp'] ?? null, // 🛑 Beta - Remove in production
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Verification code sent successfully.',
-            'code' => $otpData['otp'], //🛑Beta🛑
+            'code' => $otpData['otp'], // 🛑 Beta - Remove in production
         ]);
-     
+    }
 
-      }
-
+    /**
+     * Verify OTP and login
+     */
     #[OA\Post(
         path: '/api/check-otp',
         tags: ['Auth'],
@@ -101,7 +110,7 @@ class AuthController extends Controller
         $mobile = $request->mobile;
         $code = $request->code;
         
-        // Verify OTP
+        // Verify OTP using service
         $otp = $this->authService->verifyOtp($mobile, $code);
         
         if (!$otp) {
@@ -111,59 +120,39 @@ class AuthController extends Controller
             ]);
             
             return response()->json([
+                'success' => false,
                 'message' => 'The code entered is incorrect or has expired',
             ], Response::HTTP_UNAUTHORIZED);
         }
 
-        
-        // Mark OTP as used
-        $otp->update(['used_at' => now()]);
-        
-        // Get or create user
-        $user = $this->authService->getOrCreateUser($mobile);
-        
-        // Generate tokens
-        $fingerprint = $this->authService->generateFingerprint($request);
-        $tokens = $this->authService->loginUser($user, $request, $fingerprint);
-        
-        // Create refresh token cookie
-
-
+        // Mark OTP as used and get/create user in transaction
         $responseData = DB::transaction(function () use ($otp, $request) {
+            // Mark OTP as used
             $otp->update([
                 'used_at' => now(),
             ]);
 
-            $user = User::firstOrCreate(
-                ['mobile' => $request->mobile],
-                ['name' => null]
-            );
-            $this->limitActiveTokens($user, 5);
+            // Get or create user using service
+            $user = $this->authService->getOrCreateUser($request->mobile);
+            
+            // Generate fingerprint
+            $fingerprint = $this->authService->generateFingerprint($request);
+            
+            // Login user and generate tokens using service
+            $tokens = $this->authService->loginUser($user, $request, $fingerprint);
 
-            $accessToken = $user->createToken('access_token')->plainTextToken;
-            $refreshToken = Str::random(80);
-            $fingerprint = $this->generateFingerprint($request);
-
-            RefreshToken::create([
-                'user_id'     => $user->id,
-                'token'       => Hash::make($refreshToken),
-                'expires_at'  => now()->addDays(30),
-                'user_agent'  => $request->userAgent(),
-                'ip_address'  => $request->ip(),
-                'fingerprint' => $fingerprint,
-                'last_used_at' => now(),
-            ]);
-
-            return [
-                'access_token'  => $accessToken,
-                'refresh_token' => $refreshToken,
-                'user'          => new UserResource($user),
-            ];
+            return $tokens;
         });
+        
+        Log::info('User logged in successfully', [
+            'user_id' => $responseData['user']->id ?? null,
+            'mobile' => substr($mobile, 0, 4) . '*****',
+        ]);
 
+        // Create refresh token cookie
         $cookie = Cookie::make(
             'refresh_token',
-            $tokens['refresh_token'],
+            $responseData['refresh_token'],
             60 * 24 * 30, // 30 days
             '/',
             null,
@@ -173,19 +162,18 @@ class AuthController extends Controller
             'lax'
         );
         
-        Log::info('User logged in', [
-            'user_id' => $user->id,
-            'mobile' => substr($mobile, 0, 4) . '*****',
-        ]);
-        
         return response()->json([
+            'success' => true,
             'message' => 'Login successful.',
-            'access_token' => $tokens['access_token'],
-            'refresh_token' => $tokens['refresh_token'],
-            'user' => $tokens['user'],
+            'access_token' => $responseData['access_token'],
+            'refresh_token' => $responseData['refresh_token'],
+            'user' => $responseData['user'],
         ])->cookie($cookie);
     }
 
+    /**
+     * Refresh access token
+     */
     #[OA\Post(
         path: '/api/refresh-token',
         tags: ['Auth'],
@@ -214,13 +202,15 @@ class AuthController extends Controller
             ]);
             
             return response()->json([
+                'success' => false,
                 'message' => 'Refresh token not found.',
             ], Response::HTTP_UNAUTHORIZED);
         }
         
+        // Generate fingerprint
         $fingerprint = $this->authService->generateFingerprint($request);
         
-        // Validate refresh token
+        // Validate refresh token using service
         $validToken = $this->authService->validateRefreshToken($refreshToken, $fingerprint);
         
         if (!$validToken) {
@@ -230,6 +220,7 @@ class AuthController extends Controller
             ]);
             
             return response()->json([
+                'success' => false,
                 'message' => 'Your session has expired or is invalid. Please login again.',
             ], Response::HTTP_UNAUTHORIZED);
         }
@@ -238,6 +229,7 @@ class AuthController extends Controller
         
         if (!$user) {
             return response()->json([
+                'success' => false,
                 'message' => 'User not found.',
             ], Response::HTTP_NOT_FOUND);
         }
@@ -248,15 +240,20 @@ class AuthController extends Controller
         // Create new access token
         $accessToken = $user->createToken('access_token')->plainTextToken;
         
-        Log::info('Access token refreshed', [
+        Log::info('Access token refreshed successfully', [
             'user_id' => $user->id,
         ]);
         
         return response()->json([
+            'success' => true,
+            'message' => 'Access token refreshed successfully.',
             'access_token' => $accessToken,
         ]);
     }
 
+    /**
+     * Logout user
+     */
     #[OA\Post(
         path: '/api/logout',
         tags: ['Auth'],
@@ -271,35 +268,32 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        
         if (!$user) {
             return response()->json([
+                'success' => false,
                 'message' => 'User not authenticated.',
             ], Response::HTTP_UNAUTHORIZED);
         }
         
+        // Logout user using service
         $this->authService->logoutUser($user);
-        
+
         // Clear refresh token cookie
-        if ($user->currentAccessToken()) {
-            $user->currentAccessToken()->delete();
-        }
-        RefreshToken::where('user_id', $user->id)->delete();
-
-
-
-
         $cookie = Cookie::forget('refresh_token');
         
-        Log::info('User logged out', [
+        Log::info('User logged out successfully', [
             'user_id' => $user->id,
         ]);
         
         return response()->json([
+            'success' => true,
             'message' => 'You have been successfully logged out.',
         ])->cookie($cookie);
     }
 
+    /**
+     * Get authenticated user information
+     */
     #[OA\Get(
         path: '/api/who-am-i',
         tags: ['Auth'],
@@ -316,14 +310,17 @@ class AuthController extends Controller
         
         if (!$user) {
             return response()->json([
+                'success' => false,
                 'authenticated' => false,
+                'message' => 'Unauthenticated.',
                 'data' => null,
-            ]);
+            ], Response::HTTP_UNAUTHORIZED);
         }
         
         return response()->json([
+            'success' => true,
             'authenticated' => true,
-            'data' => new \App\Http\Resources\UserResource($user),
+            'data' => new UserResource($user),
         ]);
     }
-}
+     }
