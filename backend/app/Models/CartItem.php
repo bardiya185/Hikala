@@ -39,15 +39,7 @@ class CartItem extends Model
         return $this->belongsTo(Discount::class);
     }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
-    /**
-     * جمع این آیتم (قیمت اصلی × تعداد)
-     */
->>>>>>> Stashed changes
+
     public function getSubtotalAttribute(): float
     {
         return $this->base_price * $this->quantity;

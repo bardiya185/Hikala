@@ -146,9 +146,7 @@ Route::middleware('auth:sanctum')->group(function () {
 |==================================================================================
 */
 
-Route::prefix('admin')
-    ->middleware(['auth:sanctum', 'role:super-admin|admin'])
-    ->group(function () {
+
     Route::prefix('products')->middleware('permission:create-products')->group(function () {
         Route::post('/', [ProductController::class, 'store']);
         Route::put('/{product}', [ProductController::class, 'update']);
@@ -164,8 +162,7 @@ Route::prefix('admin')
             Route::put('/{image}/main', [ProductImageController::class, 'setMain']);
             Route::put('/reorder', [ProductImageController::class, 'reorder']);
         });
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
 
   // ===== 🗂️ Categories Management =====
 Route::prefix('categories')->group(function () {
@@ -183,9 +180,6 @@ Route::prefix('categories')->group(function () {
         middleware('permission:create-brands');
         Route::put('/{brand}', [BrandController::class, 'update'])
         ->middleware('permission:update-brands');
-=======
-=======
->>>>>>> Stashed changes
     Route::prefix('categories')->middleware('permission:create-categories')->group(function () {
         Route::post('/', [CategoryController::class, 'store']);
         Route::put('/{category}', [CategoryController::class, 'update']);
@@ -195,7 +189,6 @@ Route::prefix('categories')->group(function () {
     Route::prefix('brands')->middleware('permission:create-brands')->group(function () {
         Route::post('/', [BrandController::class, 'store']);
         Route::put('/{brand}', [BrandController::class, 'update']);
->>>>>>> Stashed changes
         Route::delete('/{brand}', [BrandController::class, 'destroy'])
             ->middleware('permission:delete-brands');
     });
@@ -283,5 +276,3 @@ Route::prefix('admin/orders')
 ->group(function () {
     Route::post('/{order}/status', [OrderController::class, 'updateStatus']);
 });
-
- 

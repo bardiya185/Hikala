@@ -19,93 +19,7 @@ class AuthController extends Controller
 
     public function __construct(AuthService $authService)
     {
-<<<<<<< Updated upstream
         $this->authService = $authService;
-=======
-        return hash('sha256', implode('|', [
-            $request->userAgent() ?? 'unknown',
-            $request->ip() ?? 'unknown',
-            $request->header('X-Device-ID') ?? 'unknown',
-        ]));
-    }
-
-    /**
-     * Limit number of active refresh tokens per user
-     */
-    private function limitActiveTokens(User $user, int $max = 5): void
-    {
-        $activeTokens = RefreshToken::where('user_id', $user->id)->count();
-        if ($activeTokens >= $max) {
-            RefreshToken::where('user_id', $user->id)
-                ->orderBy('created_at', 'asc')
-                ->limit($activeTokens - $max + 1)
-                ->delete();
-        }
-    }
-
-    #[OA\Post(
-        path: '/api/refresh-token',
-        tags: ['Auth'],
-        summary: 'Refresh access token',
-        requestBody: new OA\RequestBody(
-            required: true,
-            content: new OA\JsonContent(
-                required: ['refresh_token'],
-                properties: [
-                    new OA\Property(property: 'refresh_token', type: 'string', example: 'your_refresh_token_here'),
-                ]
-            )
-        ),
-        responses: [
-            new OA\Response(response: 200, description: 'Access token created'),
-            new OA\Response(response: 401, description: 'Invalid or expired refresh token'),
-        ]
-    )]
-    public function refreshToken(Request $request)
-    {
-        $refreshToken = $request->cookie('refresh_token') ?? $request->refresh_token;
-        
-        if (!$refreshToken) {
-            return response()->json([
-                'message' => 'Refresh token not found.',
-            ], Response::HTTP_UNAUTHORIZED);
-        }
-
-        $fingerprint = $this->generateFingerprint($request);
-        $tokens = RefreshToken::where('expires_at', '>', now())
-            ->get();
-        
-        $validToken = $tokens->first(function ($token) use ($refreshToken, $fingerprint) {
-            return Hash::check($refreshToken, $token->token) &&
-                $token->fingerprint === $fingerprint;
-        });
-
-        if (!$validToken) {
-            Log::warning('Failed refresh token attempt', [
-                'ip' => $request->ip(),
-                'user_agent' => $request->userAgent(),
-                'fingerprint' => substr($fingerprint, 0, 8),
-            ]);
-            
-            return response()->json([
-                'message' => 'Your session has expired or is invalid. Please login again.',
-            ], Response::HTTP_UNAUTHORIZED);
-        }
-
-        $user = User::find($validToken->user_id);
-
-        if (!$user) {
-            return response()->json([
-                'message' => 'User not found.',
-            ], Response::HTTP_NOT_FOUND);
-        }
-        $validToken->update(['last_used_at' => now()]);
-        $accessToken = $user->createToken('access_token')->plainTextToken;
-
-        return response()->json([
-            'access_token' => $accessToken,
-        ]);
->>>>>>> Stashed changes
     }
 
     #[OA\Post(
@@ -153,13 +67,6 @@ class AuthController extends Controller
             'code' => $otpData['otp'] ?? null,//🛑Beta🛑
         ]);
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-          
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
         return response()->json([
             'success' => true,
             'message' => 'Verification code sent successfully.',
@@ -207,7 +114,7 @@ class AuthController extends Controller
                 'message' => 'The code entered is incorrect or has expired',
             ], Response::HTTP_UNAUTHORIZED);
         }
-<<<<<<< Updated upstream
+
         
         // Mark OTP as used
         $otp->update(['used_at' => now()]);
@@ -220,7 +127,7 @@ class AuthController extends Controller
         $tokens = $this->authService->loginUser($user, $request, $fingerprint);
         
         // Create refresh token cookie
-=======
+
 
         $responseData = DB::transaction(function () use ($otp, $request) {
             $otp->update([
@@ -253,10 +160,7 @@ class AuthController extends Controller
                 'user'          => new UserResource($user),
             ];
         });
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
         $cookie = Cookie::make(
             'refresh_token',
             $tokens['refresh_token'],
@@ -366,8 +270,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $user = $request->user();
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
         
         if (!$user) {
             return response()->json([
@@ -378,17 +281,14 @@ class AuthController extends Controller
         $this->authService->logoutUser($user);
         
         // Clear refresh token cookie
-=======
-=======
->>>>>>> Stashed changes
         if ($user->currentAccessToken()) {
             $user->currentAccessToken()->delete();
         }
         RefreshToken::where('user_id', $user->id)->delete();
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
+
+
+
         $cookie = Cookie::forget('refresh_token');
         
         Log::info('User logged out', [
