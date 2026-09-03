@@ -37,6 +37,11 @@ export default function RootLayout({ children }) {
             <Footer />
           </div>
 
+          <Header />
+          <NextTopLoader color="#DC2626" showSpinner={false} />
+          <main className="min-h-screen pb-20 lg:pb-0">
+            <PageTransition>{children}</PageTransition>
+          </main>
           <Toaster />
         </TanstackQueryProvider>
       </body>
