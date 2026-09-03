@@ -100,7 +100,7 @@ Route::prefix('cart')->middleware('optional.auth')->group(function () {
 */
 
 Route::middleware('auth:sanctum')->group(function () {
-    
+
     Route::get('/user', fn(Request $request) => $request->user());
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/cart/merge', [CartController::class, 'mergeCart']);
@@ -148,16 +148,15 @@ Route::middleware('auth:sanctum')->group(function () {
 |==================================================================================
 */
 
-Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:super-admin|admin'])->group(function () {
 
-    Route::prefix('products')->middleware('permission:create-products')->group(function () {
-        Route::post('/', [ProductController::class, 'store']);
+    Route::prefix('products')->group(function () {
+        Route::post('/', [ProductController::class, 'store'])->middleware('permission:create-products');
         Route::put('/{product}', [ProductController::class, 'update']);
         Route::delete('/{product}', [ProductController::class, 'destroy'])
             ->middleware('permission:delete-products');
     });
     Route::prefix('products/{product}/images')
-        ->middleware('permission:update-products')
         ->scopeBindings()
         ->group(function () {
             Route::post('/', [ProductImageController::class, 'store']);

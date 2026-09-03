@@ -1176,29 +1176,6 @@
                 ]
             }
         },
-        "/api/logout-all": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Logout from all devices",
-                "description": "Force logout from all devices",
-                "operationId": "80c435a29536ed8ccfefb79855f570ff",
-                "responses": {
-                    "200": {
-                        "description": "Logged out from all devices"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
         "/api/banners": {
             "get": {
                 "tags": [
