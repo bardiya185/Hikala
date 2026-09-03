@@ -1,311 +1,165 @@
-
 "use client";
 
-import ModalContainer from "@/components/partials/container/ModalContainer";
-
-import React, { useState } from "react";
-
+import React, { useState, useMemo, useCallback } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { TbLogin } from "react-icons/tb";
 import { HiUser } from "react-icons/hi2";
 import { AiOutlineCaretDown } from "react-icons/ai";
-import { IoLogOutOutline } from "react-icons/io5";
 
+import ModalContainer from "@/components/partials/container/ModalContainer";
 import SendOtpForm from "./SendOtpForm";
 import CheckOtpForm from "./CheckOtpForm";
-
-import Link from "next/link";
-
+import LogoutButton from "@/components/LogoutButton/logout_button";
 import { menuItems } from "@/core/config/menu";
 import { useGetUserData } from "@/core/services/queries";
+
+// ============================================================
+// SKELETON COMPONENT
+// ============================================================
+
+const AuthSkeleton = () => (
+  <div className="h-10 w-[92px] animate-pulse rounded-xl bg-neutral-100 sm:w-[105px] md:w-[120px]" />
+);
+
+// ============================================================
+// MAIN COMPONENT
+// ============================================================
 
 function AuthForm() {
   const [step, setStep] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [mobile, setMobile] = useState("");
 
-  const {
-    data,
-    isLoading,
-  } = useGetUserData();
+  const { data, isLoading } = useGetUserData();
 
-  /*
-   * اگر useGetUserData یک Axios response برگرداند:
-   *
-   * data = {
-   *   data: ...
-   * }
-   *
-   * بنابراین اطلاعات واقعی کاربر را جدا می‌کنیم.
-   */
-  const userData = data?.data ?? null;
+  const userData = useMemo(() => data?.data ?? null, [data]);
 
-  /*
-   * بهتر است فقط وقتی اطلاعات معتبر کاربر داریم
-   * او را لاگین‌شده حساب کنیم.
-   */
-  const isAuthenticated =
-    Boolean(
-      userData &&
-      (
-        userData?.id ||
-        userData?.mobile ||
-        userData?.data?.id ||
-        userData?.data?.mobile
-      )
-    );
+  const isAuthenticated = useMemo(() => {
+    return Boolean(userData && (userData?.id || userData?.mobile));
+  }, [userData]);
 
-  /*
-   * =========================================================
-   * LOADING
-   * =========================================================
-   */
+  const handleToggleDropdown = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
 
+  const handleCloseDropdown = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  const handleOpenLogin = useCallback(() => {
+    setStep(1);
+    setIsOpen(true);
+  }, []);
+
+  const handleSetStep = useCallback((newStep) => {
+    setStep(newStep);
+  }, []);
+
+  const handleSetMobile = useCallback((newMobile) => {
+    setMobile(newMobile);
+  }, []);
+
+  // ✅ useMemo برای منوی کاربر (برای جلوگیری از رندر مجدد)
+  const renderedMenuItems = useMemo(() => {
+    return menuItems.map((item) => {
+      const IconComponent = item.icon;
+      return (
+        <li key={item.id} className="px-4 hover:bg-neutral-50">
+          <Link
+            href={item.href}
+            onClick={handleCloseDropdown}
+            className="flex w-full items-center border-b border-neutral-200 py-3 text-neutral-700"
+          >
+            <div className="flex w-8 justify-center pl-2">
+              <IconComponent className="h-5 w-5 text-neutral-600" />
+            </div>
+            <div className="flex-1 text-base font-bold">{item.label}</div>
+          </Link>
+        </li>
+      );
+    });
+  }, [handleCloseDropdown]);
+
+  // Loading State
   if (isLoading) {
-    return (
-      <div
-        className="
-          h-10
-          w-[92px]
-          animate-pulse
-          rounded-xl
-          bg-neutral-100
-          sm:w-[105px]
-          md:w-[120px]
-        "
-      />
-    );
+    return <AuthSkeleton />;
   }
 
-  /*
-   * =========================================================
-   * AUTHENTICATED USER
-   * =========================================================
-   */
+  // ============================================================
+  // AUTHENTICATED USER
+  // ============================================================
 
   if (isAuthenticated) {
     return (
       <div className="relative shrink-0">
-        {/* USER BUTTON */}
-
+        {/* User Button */}
         <button
           type="button"
-          onClick={() => setIsOpen((prev) => !prev)}
-          className="
-            flex
-            h-10
-            min-w-[44px]
-            cursor-pointer
-            items-center
-            justify-center
-            gap-1
-            rounded-xl
-            border
-            border-neutral-200
-            bg-white
-            px-2
-            transition-colors
-            hover:bg-neutral-50
-          "
+          onClick={handleToggleDropdown}
+          className="flex h-10 min-w-[44px] cursor-pointer items-center justify-center gap-1 rounded-xl border border-neutral-200 bg-white px-2 transition-colors hover:bg-neutral-50"
         >
           <HiUser className="h-5 w-5 text-neutral-700" />
-
           <AiOutlineCaretDown
-            className={`
-              h-4
-              w-4
-              text-neutral-500
-              transition-transform
-              ${
-                isOpen
-                  ? "rotate-180"
-                  : ""
-              }
-            `}
+            className={`h-4 w-4 text-neutral-500 transition-transform ${
+              isOpen ? "rotate-180" : ""
+            }`}
           />
         </button>
 
-        {/* USER DROPDOWN */}
-
+        {/* Dropdown */}
         {isOpen && (
-          <div
-            className="
-              absolute
-              right-0
-              top-full
-              z-[100]
-              mt-2
-              max-h-[80vh]
-              w-[256px]
-              max-w-[calc(100vw-24px)]
-              overflow-y-auto
-              rounded-xl
-              border
-              border-neutral-100
-              bg-white
-              shadow-xl
-            "
-          >
-            {/* USER MOBILE */}
-
+          <div className="absolute right-0 top-full z-[100] mt-2 max-h-[80vh] w-[256px] max-w-[calc(100vw-24px)] overflow-y-auto rounded-xl border border-neutral-100 bg-white shadow-xl">
+            {/* User Mobile */}
             <Link
               href="/profile"
-              className="
-                block
-                text-neutral-700
-                hover:bg-neutral-50
-              "
-              onClick={() => setIsOpen(false)}
+              className="block text-neutral-700 hover:bg-neutral-50"
+              onClick={handleCloseDropdown}
             >
-              <div
-                className="
-                  mx-4
-                  border-b
-                  border-neutral-200
-                  py-4
-                "
-              >
-                <span
-                  className="
-                    text-sm
-                    font-bold
-                    text-neutral-800
-                  "
-                >
-                  {userData?.mobile ||
-                    userData?.data?.mobile ||
-                    "User"}
+              <div className="mx-4 border-b border-neutral-200 py-4">
+                <span className="text-sm font-bold text-neutral-800">
+                  {userData?.mobile || "User"}
                 </span>
               </div>
             </Link>
 
             <ul className="flex flex-col">
-              {/* DIGICLUB */}
-
+              {/* DigiClub */}
               <li className="px-4 hover:bg-neutral-50">
                 <Link
                   href="/digiclub/"
-                  onClick={() => setIsOpen(false)}
-                  className="
-                    flex
-                    w-full
-                    items-center
-                    border-b
-                    border-neutral-200
-                    py-3
-                    text-neutral-700
-                  "
+                  onClick={handleCloseDropdown}
+                  className="flex w-full items-center border-b border-neutral-200 py-3 text-neutral-700"
                 >
                   <div className="w-8 pl-2">
-                    <img
+                    <Image
                       src="/icons/club.svg"
                       alt="DigiClub"
+                      width={24}
+                      height={24}
                     />
                   </div>
-
-                  <div
-                    className="
-                      flex
-                      flex-1
-                      items-center
-                      justify-between
-                    "
-                  >
-                    <span className="text-base font-bold">
-                      DigiClub
-                    </span>
-
+                  <div className="flex flex-1 items-center justify-between">
+                    <span className="text-base font-bold">DigiClub</span>
                     <span className="text-sm font-bold">
                       0
-                      <small className="ml-1 text-neutral-400">
-                        Score
-                      </small>
+                      <small className="ml-1 text-neutral-400">Score</small>
                     </span>
                   </div>
                 </Link>
               </li>
 
-              {/* MENU ITEMS */}
+              {/* Menu Items */}
+              {renderedMenuItems}
 
-              {menuItems.map((item) => {
-                const IconComponent = item.icon;
-
-                return (
-                  <li
-                    key={item.id}
-                    className="
-                      px-4
-                      hover:bg-neutral-50
-                    "
-                  >
-                    <Link
-                      href={item.href}
-                      onClick={() => setIsOpen(false)}
-                      className="
-                        flex
-                        w-full
-                        items-center
-                        border-b
-                        border-neutral-200
-                        py-3
-                        text-neutral-700
-                      "
-                    >
-                      <div
-                        className="
-                          flex
-                          w-8
-                          justify-center
-                          pl-2
-                        "
-                      >
-                        <IconComponent
-                          className="
-                            h-5
-                            w-5
-                            text-neutral-600
-                          "
-                        />
-                      </div>
-
-                      <div
-                        className="
-                          flex-1
-                          text-base
-                          font-bold
-                        "
-                      >
-                        {item.label}
-                      </div>
-                    </Link>
-                  </li>
-                );
-              })}
-
-              {/* LOGOUT */}
-
-              <li
-                className="
-                  px-4
-                  text-red-500
-                  hover:bg-neutral-50
-                "
-              >
+              {/* Logout */}
+              <li className="px-4 text-red-500 hover:bg-neutral-50">
                 <button
                   type="button"
-                  className="
-                    flex
-                    w-full
-                    items-center
-                    py-3
-                    text-left
-                  "
+                  className="flex w-full items-center py-3 text-left"
                 >
-                  <div className="w-8 pl-2">
-                    <IoLogOutOutline className="h-5 w-5" />
-                  </div>
-
                   <div className="flex-1 font-bold">
-                    Log out
+                    <LogoutButton />
                   </div>
                 </button>
               </li>
@@ -316,95 +170,38 @@ function AuthForm() {
     );
   }
 
-  /*
-   * =========================================================
-   * GUEST USER
-   * =========================================================
-   */
+  // ============================================================
+  // GUEST USER
+  // ============================================================
 
   return (
     <>
       <button
         type="button"
-        onClick={() => {
-          setStep(1);
-          setIsOpen(true);
-        }}
-        className="
-          group
-          flex
-          h-[38px]
-          w-[92px]
-          shrink-0
-          cursor-pointer
-          items-center
-          justify-center
-          gap-1.5
-          rounded-lg
-          border
-          border-neutral-200
-          bg-white
-          px-2
-          text-xs
-          font-medium
-          text-neutral-700
-          shadow-sm
-          transition-all
-          duration-300
-          hover:bg-neutral-900
-          hover:text-white
-          hover:shadow-md
-          sm:h-[40px]
-          sm:w-[105px]
-          sm:rounded-xl
-          sm:px-3
-          sm:text-sm
-          md:w-[120px]
-        "
+        onClick={handleOpenLogin}
+        className="group flex h-[38px] w-[92px] shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-2 text-xs font-medium text-neutral-700 shadow-sm transition-all duration-300 hover:bg-neutral-900 hover:text-white hover:shadow-md sm:h-[40px] sm:w-[105px] sm:rounded-xl sm:px-3 sm:text-sm md:w-[120px]"
       >
-        <TbLogin
-          className="
-            h-4
-            w-4
-            shrink-0
-            text-neutral-500
-            transition-colors
-            group-hover:text-white
-            sm:h-5
-            sm:w-5
-          "
-        />
-
-        <span className="whitespace-nowrap">
-          Sign In
-        </span>
+        <TbLogin className="h-4 w-4 shrink-0 text-neutral-500 transition-colors group-hover:text-white sm:h-5 sm:w-5" />
+        <span className="whitespace-nowrap">Sign In</span>
       </button>
 
-      {/* SEND OTP */}
-
+      {/* Send OTP Modal */}
       {step === 1 && (
-        <ModalContainer
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-        >
+        <ModalContainer isOpen={isOpen} setIsOpen={setIsOpen}>
           <SendOtpForm
-            setStep={setStep}
+            setStep={handleSetStep}
             mobile={mobile}
-            setMobile={setMobile}
+            setMobile={handleSetMobile}
           />
         </ModalContainer>
       )}
 
-      {/* CHECK OTP */}
-
+      {/* Check OTP Modal */}
       {step === 2 && (
-        <ModalContainer
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-        >
+        <ModalContainer isOpen={isOpen} setIsOpen={setIsOpen}>
           <CheckOtpForm
             mobile={mobile}
-            setStep={setStep}
+            setStep={handleSetStep}
             setIsOpen={setIsOpen}
           />
         </ModalContainer>
@@ -414,4 +211,3 @@ function AuthForm() {
 }
 
 export default AuthForm;
-

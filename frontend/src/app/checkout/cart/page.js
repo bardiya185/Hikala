@@ -11,7 +11,7 @@ export default function Cart() {
         min-h-screen
 
         mx-auto
-
+    
         flex
         flex-col
 

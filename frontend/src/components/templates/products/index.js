@@ -10,9 +10,14 @@ import { formatPrice } from "@/core/utils/formatPrice";
 import { FreeShippingBadge } from "@/components/atom/FreeShippingBadge.";
 import WishlistButton from "@/components/WishlistButton";
 import { useWishlistIds } from "@/core/services/queries";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
 const SORT_OPTIONS = [
+  {
+    label: "Newest",
+    sortBy: "created_at",
+    sortOrder: "asc",
+  },
   {
     label: "The cheapest",
     sortBy: "base_price",
@@ -24,6 +29,10 @@ const SORT_OPTIONS = [
     sortOrder: "desc",
   },
 ];
+
+// ============================================================
+// SORT BUTTON
+// ============================================================
 
 function SortButton({ active, onClick, children }) {
   return (
@@ -51,6 +60,10 @@ function SortButton({ active, onClick, children }) {
     </button>
   );
 }
+
+// ============================================================
+// SORT BAR
+// ============================================================
 
 function SortBar({ currentSort, currentSortOrder, onSortChange }) {
   return (
@@ -80,6 +93,10 @@ function SortBar({ currentSort, currentSortOrder, onSortChange }) {
     </div>
   );
 }
+
+// ============================================================
+// HELPERS
+// ============================================================
 
 function getProductVariant(product) {
   const variants = product?.variants;
@@ -113,6 +130,10 @@ export function hasFreeShipping(product) {
   );
 }
 
+// ============================================================
+// DISCOUNT BADGE
+// ============================================================
+
 function DiscountBadge({ discountPercent }) {
   if (!discountPercent || discountPercent <= 0) return null;
 
@@ -129,6 +150,10 @@ function DiscountBadge({ discountPercent }) {
     </div>
   );
 }
+
+// ============================================================
+// PRODUCT RATING
+// ============================================================
 
 export function ProductRating({ rating }) {
   const productRating = rating || 0;
@@ -148,6 +173,10 @@ export function ProductRating({ rating }) {
   );
 }
 
+// ============================================================
+// PRODUCT IMAGE
+// ============================================================
+
 export function ProductImage({ product, priority }) {
   return (
     <div className="relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-xl bg-white sm:rounded-2xl">
@@ -162,6 +191,43 @@ export function ProductImage({ product, priority }) {
     </div>
   );
 }
+
+// ============================================================
+// PRODUCT SKELETON (LOADING)
+// ============================================================
+
+function ProductSkeleton() {
+  return (
+    <div className="group relative min-w-0 rounded-2xl border border-neutral-100 bg-white p-1.5 sm:rounded-[20px] sm:p-2 lg:p-3">
+      <div className="relative flex h-full flex-col justify-between rounded-xl border border-neutral-100 p-2 sm:rounded-[10px] sm:p-3 lg:p-4">
+        {/* Image Skeleton */}
+        <div className="aspect-[4/5] w-full animate-pulse rounded-xl bg-neutral-200 sm:rounded-2xl" />
+
+        {/* Title Skeleton */}
+        <div className="mt-3 space-y-2">
+          <div className="h-4 w-3/4 animate-pulse rounded bg-neutral-200" />
+          <div className="h-4 w-1/2 animate-pulse rounded bg-neutral-200" />
+        </div>
+
+        {/* Price Skeleton */}
+        <div className="mt-3 flex items-center justify-between">
+          <div className="h-5 w-20 animate-pulse rounded bg-neutral-200" />
+          <div className="h-5 w-16 animate-pulse rounded bg-neutral-200" />
+        </div>
+
+        {/* Bottom Skeleton */}
+        <div className="mt-3 flex items-center justify-between">
+          <div className="h-4 w-16 animate-pulse rounded bg-neutral-200" />
+          <div className="h-6 w-6 animate-pulse rounded-full bg-neutral-200" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// PRODUCT CARD
+// ============================================================
 
 function ProductCard({ product, index, isInWishlist }) {
   const { basePrice, finalPrice, discountPercent, hasDiscount } =
@@ -225,35 +291,64 @@ function ProductCard({ product, index, isInWishlist }) {
   );
 }
 
+// ============================================================
+// MAIN PRODUCTS COMPONENT
+// ============================================================
+
 function Products({
   data,
   current_sort,
   current_sortorder,
   isFromBanner,
   bannerId,
+  isLoading = false, // ✅ اضافه کردن isLoading
 }) {
   const searchParams = useSearchParams();
   const router = useRouter();
+
+  // Set default sort to "newest" (created_at desc)
+  // useEffect(() => {
+  //   const sortBy = searchParams.get("sort_by");
+  //   const sortOrder = searchParams.get("sort_order");
+
+  //   if (!sortBy || !sortOrder) {
+  //     const params = new URLSearchParams(searchParams.toString());
+  //     params.set("sort_by", "create_at");
+  //     params.set("sort_order", "asc");
+  //     router.push(`?${params.toString()}`);
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    const sortBy = searchParams.get("sort_by");
+    const sortOrder = searchParams.get("sort_order");
+  
+    // اگر پارامتر سورت وجود نداشت، سورت پیش‌فرض رو اعمال کن
+    if (!sortBy || !sortOrder) {
+      handleSortChange("created_at", "asc"); // ✅ اینجوری
+    }
+  }, []);
+  
   const { data: wishlistIds = [] } = useWishlistIds();
 
   const wishlistSet = useMemo(
     () => new Set(wishlistIds.map(String)),
     [wishlistIds]
   );
-
+  
   const urlBannerId =
     searchParams.get("bannerId") || searchParams.get("banner_id");
 
   const clientBannerId = bannerId || urlBannerId;
 
   const clientIsFromBanner =
-    isFromBanner ||
-    searchParams.get("source") === "banner" ||
-    Boolean(clientBannerId);
-
+  isFromBanner ||
+  searchParams.get("source") === "banner" ||
+  Boolean(clientBannerId);
+  
   const handleSortChange = (sortBy, sortOrder) => {
     const params = new URLSearchParams(searchParams.toString());
-
+    
     if (sortBy && sortOrder) {
       params.set("sort_by", sortBy);
       params.set("sort_order", sortOrder);
@@ -261,12 +356,85 @@ function Products({
       params.delete("sort_by");
       params.delete("sort_order");
     }
-
+    
     const queryString = params.toString();
     router.push(queryString ? `?${queryString}` : "?");
   };
 
   const products = Array.isArray(data) ? data : [];
+
+
+  // ============================================================
+  // ✅ LOADING STATE
+  // ============================================================
+
+  if (isLoading) {
+    return (
+      <>
+        {clientIsFromBanner && (
+          <div className="mb-3 px-1 sm:px-0">
+            <div className="h-7 w-32 animate-pulse rounded bg-neutral-200" />
+          </div>
+        )}
+
+        {/* Sort Bar Skeleton */}
+        <div className="mb-3 flex w-full items-center gap-2 px-1 pb-1 sm:mb-4 sm:px-0">
+          <div className="flex shrink-0 items-center gap-1.5">
+            <div className="h-4 w-4 animate-pulse rounded bg-neutral-200" />
+            <div className="h-4 w-10 animate-pulse rounded bg-neutral-200" />
+          </div>
+          <div className="flex gap-2">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-8 w-20 animate-pulse rounded-lg bg-neutral-200"
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Products Grid Skeleton */}
+        <div
+          dir="ltr"
+          className="grid w-full grid-cols-2 gap-2 sm:grid-cols-2 sm:gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4"
+        >
+          {Array.from({ length: 8 }).map((_, index) => (
+            <ProductSkeleton key={index} />
+          ))}
+        </div>
+      </>
+    );
+  }
+
+  // ============================================================
+  // EMPTY STATE
+  // ============================================================
+
+  if (products.length === 0) {
+    return (
+      <>
+        <SortBar
+          currentSort={current_sort}
+          currentSortOrder={current_sortorder}
+          onSortChange={handleSortChange}
+        />
+
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <div className="text-5xl mb-4">🔍</div>
+          <h3 className="text-lg font-semibold text-neutral-800">
+            No products found
+          </h3>
+          <p className="mt-1 text-sm text-neutral-500">
+            Try adjusting your filters or search terms
+          </p>
+        </div>
+      </>
+    );
+  }
+
+  // ============================================================
+  // RENDER PRODUCTS
+  // ============================================================
 
   return (
     <>

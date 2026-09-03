@@ -146,7 +146,7 @@ function Header() {
                 className="hidden shrink-0 lg:flex items-center"
               >
                 <Image
-                  src="/icons/en-logo.svg"
+                  src={`/icons/en-logo.svg`}
                   width={195}
                   height={30}
                   alt="logo"
