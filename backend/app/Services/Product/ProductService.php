@@ -48,6 +48,7 @@ class ProductService
         if (!$sortByPrice) {
             $query->orderBy($sortBy, $sortOrder);
         }
+        
         if ($request->filled('campaign')) {
             return $this->filterByCampaign($query, $request, $sortByPrice, $sortOrder);
         }
@@ -91,7 +92,7 @@ class ProductService
         $this->applyCategoryFilter($query, $request);
         $this->applyBrandFilter($query, $request);
         $this->applyPriceFilter($query, $request);
-        $this->applyInStockFilter($query, $request); // ✅ فیلتر کالاهای موجود
+        $this->applyInStockFilter($query, $request);
         $this->applyAttributesFilter($query, $request);
         $this->applySearchFilter($query, $request);
 
@@ -104,6 +105,7 @@ class ProductService
             $raw = $request->category_ids;
             $ids = is_array($raw) ? $raw : explode(',', $raw);
             $ids = array_filter(array_map('intval', $ids));
+            
             if (empty($ids)) return;
     
             $allCategoryIds = $this->getCategoryWithSubcategories($ids);
@@ -112,9 +114,9 @@ class ProductService
                 return;
             }
             
-            $query->whereHas('categories', fn($q) =>
-                $q->whereIn('category_id', $allCategoryIds)
-            );
+            $query->whereHas('categories', function($q) use ($allCategoryIds) {
+                $q->whereIn('category_id', $allCategoryIds);
+            });
             return;
         }
 
@@ -126,9 +128,9 @@ class ProductService
                 return;
             }
     
-            $query->whereHas('categories', fn($q) =>
-                $q->whereIn('category_id', $allCategoryIds)
-            );
+            $query->whereHas('categories', function($q) use ($allCategoryIds) {
+                $q->whereIn('category_id', $allCategoryIds);
+            });
         }
     }
     
@@ -146,6 +148,7 @@ class ProductService
         }
     
         if (empty($validIds)) return [];
+        
         $allIds = $validIds;
         $currentIds = $validIds;
     
@@ -210,11 +213,9 @@ class ProductService
         $minPrice = $hasMin ? (float) $request->min_price : null;
         $maxPrice = $hasMax ? (float) $request->max_price : null;
     
-        // فیلتر روی واریانت پیش‌فرض (Default Variant) که توی کارت محصول نمایش داده میشه
         $query->whereHas('variants', function ($q) use ($minPrice, $maxPrice) {
             $q->where('is_active', 1);
             
-            // اگر واریانت پیش‌فرض وجود دارد، روی قیمت اون فیلتر بزند
             $q->where(function ($variantQuery) use ($minPrice, $maxPrice) {
                 $variantQuery->where('is_default', 1);
     
@@ -234,7 +235,9 @@ class ProductService
     private function applyInStockFilter(Builder $query, Request $request): void
     {
         if ($request->boolean('in_stock_only') || $request->boolean('has_stock') || $request->boolean('in_stock')) {
-            $query->whereHas('variants', fn($q) => $q->where('stock', '>', 0)->where('is_active', 1));
+            $query->whereHas('variants', function($q) {
+                $q->where('stock', '>', 0)->where('is_active', 1);
+            });
         }
     }
 
@@ -273,11 +276,11 @@ class ProductService
         if (!$request->filled('search')) return;
 
         $search = trim($request->search);
-        $query->where(fn($q) =>
+        $query->where(function($q) use ($search) {
             $q->where('title', 'LIKE', "%{$search}%")
               ->orWhere('short_description', 'LIKE', "%{$search}%")
-              ->orWhere('description', 'LIKE', "%{$search}%")
-        );
+              ->orWhere('description', 'LIKE', "%{$search}%");
+        });
     }
     
     /**
@@ -288,7 +291,9 @@ class ProductService
         $campaignSlug = $request->get('campaign');
 
         $products = $query->get()
-            ->map(fn($product) => $this->attachPricingData($product))
+            ->map(function($product) {
+                return $this->attachPricingData($product);
+            })
             ->filter(function ($product) use ($campaignSlug) {
                 return $product->_campaign_slug === $campaignSlug;
             });
@@ -307,7 +312,9 @@ class ProductService
     private function filterByDiscount(Builder $query, Request $request, bool $sortByPrice, string $sortOrder): array
     {
         $products = $query->get()
-            ->map(fn($product) => $this->attachPricingData($product))
+            ->map(function($product) {
+                return $this->attachPricingData($product);
+            })
             ->filter(function ($product) use ($request) {
                 if ($product->_discount_percent <= 0) return false;
 
@@ -341,7 +348,9 @@ class ProductService
     {
         if ($sortByPrice) {
             $sorted = $query->get()
-                ->map(fn($product) => $this->attachEffectivePrice($product))
+                ->map(function($product) {
+                    return $this->attachEffectivePrice($product);
+                })
                 ->sortBy('_effective_price', SORT_REGULAR, $sortOrder === 'desc')
                 ->values();
 
@@ -414,7 +423,9 @@ class ProductService
     private function cursorPaginateByPrice(Builder $query, string $sortOrder, int $limit, ?string $cursor): array
     {
         $allProducts = $query->get()
-            ->map(fn($product) => $this->attachEffectivePrice($product))
+            ->map(function($product) {
+                return $this->attachEffectivePrice($product);
+            })
             ->sortBy('_effective_price', SORT_REGULAR, $sortOrder === 'desc')
             ->values();
 
@@ -484,6 +495,7 @@ class ProductService
 
         $pricing = $this->discountService->calculate($variant);
         $campaign = $pricing->discount?->campaign;
+        
         $product->_campaign_slug = $campaign?->slug;
         $product->_campaign_name = $campaign?->name;
         $product->_campaign_icon = $campaign?->icon;
@@ -528,7 +540,6 @@ class ProductService
     {
         $sortBy = $request->get('sort_by', 'created_at');
         
-        // پشتیبانی از اسامی مختلف سورت قیمت برای فرانت‌کار
         if (in_array($sortBy, ['price', 'final_price', 'cheapest', 'most_expensive'])) {
             return 'base_price';
         }

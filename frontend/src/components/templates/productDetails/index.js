@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import ProductReviewModal from "@/components/ProductReviewModal";
 
 import { FcRating } from "react-icons/fc";
@@ -40,7 +40,6 @@ import { RotatingLines } from "react-loader-spinner";
 import { formatPrice } from "@/core/utils/formatPrice";
 import WishlistButton from "@/components/WishlistButton";
 import { useParams } from "next/navigation";
-import { useMemo } from "react";
 import Link from "next/link";
 
 gsap.registerPlugin(SplitText);
@@ -90,10 +89,7 @@ function getVariantPrice(variant) {
    MAIN COMPONENT
 ========================================================= */
 
-
 function ProductsDe({ data }) {
-
-
   /* =======================================================
      PRODUCT DATA
   ======================================================= */
@@ -101,8 +97,6 @@ function ProductsDe({ data }) {
   const variants = Array.isArray(data?.variants)
     ? data.variants
     : [];
-
-
 
   const [selectedVariant, setSelectedVariant] =
     useState(() =>
@@ -119,10 +113,10 @@ function ProductsDe({ data }) {
   const [isFavorite, setIsFavorite] =
     useState(false);
 
-    const {
-      mutate: toggleWishlist, 
-      isPending: isWishlistLoading,
-    } = useAddToWishlist();
+  const {
+    mutate: toggleWishlist,
+    isPending: isWishlistLoading,
+  } = useAddToWishlist();
 
   /* =======================================================
      CART
@@ -714,12 +708,7 @@ function ProductsDe({ data }) {
                 "product"
               }
               priority
-              className="
-                object-contain
-                p-4
-                sm:p-6
-                lg:p-8
-              "
+              className="object-contain p-4 sm:p-6 lg:p-8"
             />
           </div>
         </section>
@@ -1076,41 +1065,18 @@ function ProductsDe({ data }) {
                   lg:text-lg
                 "
               >
-                Free shipping for
-                Plus members
+                Free shipping for Plus members
               </p>
             </div>
 
-            <div
-              className="
-                mt-3
-                space-y-2
-              "
-            >
+            <div className="mt-3 space-y-2">
+              <PlusItem>4 Free digital delivery</PlusItem>
+              <PlusItem>2 Supermarket delivery</PlusItem>
+              <PlusItem>4 free 45-minute deliveries</PlusItem>
+              <PlusItem>Dedicated support</PlusItem>
               <PlusItem>
-                4 Free digital
-                delivery
-              </PlusItem>
-
-              <PlusItem>
-                2 Supermarket
-                delivery
-              </PlusItem>
-
-              <PlusItem>
-                4 free 45-minute
-                deliveries
-              </PlusItem>
-
-              <PlusItem>
-                Dedicated support
-              </PlusItem>
-
-              <PlusItem>
-                Fast and free
-                delivery of digital
-                goods (Tehran and
-                Karaj only)
+                Fast and free delivery of digital goods (Tehran and Karaj
+                only)
               </PlusItem>
             </div>
 
@@ -1126,13 +1092,7 @@ function ProductsDe({ data }) {
               Buy a subscription
             </button>
 
-            <div
-              className="
-                mt-2
-                flex
-                justify-end
-              "
-            >
+            <div className="mt-2 flex justify-end">
               <Image
                 src="/icons/free-delivery.svg"
                 width={80}
@@ -1144,7 +1104,7 @@ function ProductsDe({ data }) {
         </section>
 
         {/* =================================================
-            SELLER
+            SELLER BOX
         ================================================= */}
 
         <SellerBox
@@ -1227,13 +1187,7 @@ function ProductsDe({ data }) {
         </div>
       </div>
 
-      <div
-        className="
-          mt-8
-          border-b
-          border-neutral-200
-        "
-      />
+      <div className="mt-8 border-b border-neutral-200" />
 
       {/* ===================================================
           MORE DETAILS
@@ -1665,10 +1619,6 @@ function CartQuantityControl({
     </div>
   );
 }
-
-/* =========================================================
-   FEATURE BOX
-========================================================= */
 
 function FeatureBox({
   title,

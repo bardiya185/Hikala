@@ -39,6 +39,7 @@ class CartItem extends Model
         return $this->belongsTo(Discount::class);
     }
 
+
     public function getSubtotalAttribute(): float
     {
         return $this->base_price * $this->quantity;

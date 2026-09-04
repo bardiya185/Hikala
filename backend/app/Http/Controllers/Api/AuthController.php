@@ -67,7 +67,6 @@ class AuthController extends Controller
             'code' => $otpData['otp'] ?? null,//🛑Beta🛑
         ]);
 
-          
         return response()->json([
             'success' => true,
             'message' => 'Verification code sent successfully.',
@@ -115,6 +114,7 @@ class AuthController extends Controller
                 'message' => 'The code entered is incorrect or has expired',
             ], Response::HTTP_UNAUTHORIZED);
         }
+
         
         // Mark OTP as used
         $otp->update(['used_at' => now()]);
@@ -127,6 +127,40 @@ class AuthController extends Controller
         $tokens = $this->authService->loginUser($user, $request, $fingerprint);
         
         // Create refresh token cookie
+
+
+        $responseData = DB::transaction(function () use ($otp, $request) {
+            $otp->update([
+                'used_at' => now(),
+            ]);
+
+            $user = User::firstOrCreate(
+                ['mobile' => $request->mobile],
+                ['name' => null]
+            );
+            $this->limitActiveTokens($user, 5);
+
+            $accessToken = $user->createToken('access_token')->plainTextToken;
+            $refreshToken = Str::random(80);
+            $fingerprint = $this->generateFingerprint($request);
+
+            RefreshToken::create([
+                'user_id'     => $user->id,
+                'token'       => Hash::make($refreshToken),
+                'expires_at'  => now()->addDays(30),
+                'user_agent'  => $request->userAgent(),
+                'ip_address'  => $request->ip(),
+                'fingerprint' => $fingerprint,
+                'last_used_at' => now(),
+            ]);
+
+            return [
+                'access_token'  => $accessToken,
+                'refresh_token' => $refreshToken,
+                'user'          => new UserResource($user),
+            ];
+        });
+
         $cookie = Cookie::make(
             'refresh_token',
             $tokens['refresh_token'],
@@ -236,6 +270,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $user = $request->user();
+
         
         if (!$user) {
             return response()->json([
@@ -246,6 +281,14 @@ class AuthController extends Controller
         $this->authService->logoutUser($user);
         
         // Clear refresh token cookie
+        if ($user->currentAccessToken()) {
+            $user->currentAccessToken()->delete();
+        }
+        RefreshToken::where('user_id', $user->id)->delete();
+
+
+
+
         $cookie = Cookie::forget('refresh_token');
         
         Log::info('User logged out', [

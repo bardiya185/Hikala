@@ -17,27 +17,13 @@ export default function RootLayout({ children }) {
     <html lang="en" dir="ltr">
       <body className="min-h-screen">
         <TanstackQueryProvider>
-          <div className="flex min-h-screen flex-col">
-            {/* Header */}
-            <Header />
-
-            <NextTopLoader
-              color="#DC2626"
-              showSpinner={false}
-            />
-
-            {/* Main Content */}
-            <main className="flex-1 min-h-0 pb-20 lg:pb-0">
-              <PageTransition>
-                {children}
-              </PageTransition>
-            </main>
-
-            {/* Footer */}
-            <Footer />
-          </div>
-
+             <Header />
+          <NextTopLoader color="#DC2626" showSpinner={false} />
+          <main className="min-h-screen pb-20 lg:pb-0">
+            <PageTransition>{children}</PageTransition>
+          </main>
           <Toaster />
+          <Footer />
         </TanstackQueryProvider>
       </body>
     </html>

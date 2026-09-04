@@ -187,16 +187,12 @@ export const useWishlistIds = () => {
   return useQuery({
     queryKey: ["wishlist_ids"],
     queryFn: async () => {
-      // یکی از این دو، بسته به API شما:
-      // 1) لیست کامل wishlist
+
       const response = await api.get("/api/wishlist");
-      // 2) یا یک endpoint سبک‌تر فقط برای idها
-      // const response = await api.get("/api/wishlist/ids");
 
       const items = response?.data?.data ?? response?.data ?? [];
 
-      // خروجی را به Set از id تبدیل می‌کنیم تا چک O(1) باشد
-      const ids = Array.isArray(items)
+         const ids = Array.isArray(items)
         ? items.map((item) => item?.product_id ?? item?.id ?? item)
         : [];
 

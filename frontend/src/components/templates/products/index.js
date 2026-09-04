@@ -163,7 +163,7 @@ export function ProductImage({ product, priority }) {
   );
 }
 
-function ProductCard({ product, index , isInWishlist  }) {
+function ProductCard({ product, index, isInWishlist }) {
   const { basePrice, finalPrice, discountPercent, hasDiscount } =
     getProductPricing(product);
 
@@ -181,8 +181,8 @@ function ProductCard({ product, index , isInWishlist  }) {
       className="group relative min-w-0 rounded-2xl border border-neutral-100 bg-white p-1.5 sm:rounded-[20px] sm:p-2 lg:p-3"
     >
       <div className="relative flex h-full flex-col justify-between rounded-xl border border-neutral-100 p-2 sm:rounded-[10px] sm:p-3 lg:p-4">
-        {/* دکمه لایک */}
-        <WishlistButton productId={product?.id}  isInWishlist={isInWishlist} />
+        {/* Wishlist Button */}
+        <WishlistButton productId={product?.id} isInWishlist={isInWishlist} />
 
         <Link href={`/product/${product?.id}`} className="block">
           <ProductImage product={product} priority={index < 4} />
@@ -273,7 +273,7 @@ function Products({
       {clientIsFromBanner && (
         <div className="mb-3 px-1 sm:px-0">
           <h1 className="text-base font-bold text-neutral-800 sm:text-lg">
-            sobhan
+            Products
           </h1>
         </div>
       )}

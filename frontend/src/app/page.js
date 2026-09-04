@@ -4,6 +4,7 @@ import AmazingSliders from "@/components/organisms/AmazingSliders";
 import CardShop from "@/components/templates/cardStore";
 import Categories from "@/components/home/Categories";
 import SpecialOffers from "@/components/organisms/SpecialOffers";
+
 async function getFlashSaleCampaign() {
   try {
     const res = await fetch(
@@ -23,6 +24,7 @@ async function getFlashSaleCampaign() {
 }
 
 
+
 async function getSpecialOffer(){
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/campaigns/special/products`, {
@@ -35,6 +37,7 @@ async function getSpecialOffer(){
     return null
   }
 }
+
 
 async function getBanners() {
   try {
