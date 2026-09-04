@@ -4,18 +4,37 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { CiMobile1, CiSearch } from "react-icons/ci";
+import {
+  CiMobile1,
+  CiSearch,
+  CiLocationOn,
+} from "react-icons/ci";
+
 import {
   TbDeviceLaptop,
   TbFridge,
   TbShirt,
   TbChevronRight,
+  TbMapPin,
 } from "react-icons/tb";
+
 import { GiGoldBar, GiCarKey } from "react-icons/gi";
+
 import { MdShoppingCartCheckout } from "react-icons/md";
+
 import { RxHamburgerMenu } from "react-icons/rx";
 
-import { useRouter, usePathname } from "next/navigation";
+import { IoClose } from "react-icons/io5";
+
+import {
+  FaFire,
+  FaStore,
+  FaGem,
+  FaChartLine,
+  FaShoppingBag,
+  FaTag,
+  FaChevronRight,
+} from "react-icons/fa";
 
 import AuthForm from "../AuthForm";
 
@@ -23,11 +42,16 @@ import {
   useCart,
   useGetMainCategories,
   useGetSubCategory,
+  useGetUserData,
 } from "@/core/services/queries";
 
 import SearchBar from "@/components/atom/SearchBar";
+
 import MiniCart from "../miniCart";
+
 import MobileBottomNav from "./MobileBottomNav";
+
+import LocationModal from "./location/LocationModal";
 
 const iconMap = {
   mobile: CiMobile1,
@@ -37,12 +61,19 @@ const iconMap = {
   fashion: TbShirt,
   "gold-jewelry": GiGoldBar,
   vehicles: GiCarKey,
+  "home-appliances": TbFridge,
+  "beauty-health": GiLipstick,
+  "health-medical": TbHeartbeat,
+  "tools-equipment": TbTools,
+  "sports-travel": TbTrophy,
 };
 
 function CategoryIcon({ iconKey, className }) {
   const IconComponent = iconMap[iconKey];
 
-  if (!IconComponent) return null;
+  if (!IconComponent) {
+    return null;
+  }
 
   return <IconComponent className={className} />;
 }
@@ -52,89 +83,219 @@ function Header() {
   const [activeId, setActiveId] = useState(null);
   const [isOpenMiniCart, setIsOpenMiniCart] = useState(false);
 
+  const [isLocationModalOpen, setIsLocationModalOpen] =
+    useState(false);
+
+  const [selectedAddress, setSelectedAddress] =
+    useState(null);
+
   const closeTimer = useRef(null);
 
-  const router = useRouter();
-  const pathname = usePathname();
+  // =========================
+  // Cart
+  // =========================
 
   const { data: cart } = useCart();
 
-  const totalCount =  cart?.data ?  cart?.data.items_count : 0 ;
+  const totalCount =
+    cart?.data?.items_count || 0;
 
-  const { data: categoriess } = useGetMainCategories();
+  // =========================
+  // User
+  // =========================
 
-  const mainDataArray = categoriess?.data?.data || [];
+  const { data: user } = useGetUserData();
 
-  const { data: categoryMenu, isLoading: isSubLoading } =
-    useGetSubCategory(activeId);
+  // =========================
+  // Categories
+  // =========================
 
-  const subDataArray = categoryMenu?.data?.data || [];
+  const { data: categoriess } =
+    useGetMainCategories();
+
+  const mainDataArray =
+    categoriess?.data?.data || [];
+
+  const {
+    data: categoryMenu,
+    isLoading: isSubLoading,
+  } = useGetSubCategory(activeId);
+
+  const subDataArray =
+    categoryMenu?.data?.data || [];
+
+  // =========================
+  // Default Category
+  // =========================
 
   useEffect(() => {
-    if (mainDataArray.length > 0 && !activeId) {
-      const targetCategory = mainDataArray.find((c) => c.slug === "mobile");
+    if (
+      mainDataArray.length > 0 &&
+      !activeId
+    ) {
+      const targetCategory =
+        mainDataArray.find(
+          (category) =>
+            category.slug === "mobile"
+        );
 
-      setActiveId(targetCategory?.id || mainDataArray[0]?.id);
+      setActiveId(
+        targetCategory?.id ||
+          mainDataArray[0]?.id
+      );
     }
   }, [mainDataArray, activeId]);
 
-  const clearCloseTimer = useCallback(() => {
-    if (closeTimer.current) {
-      clearTimeout(closeTimer.current);
-      closeTimer.current = null;
-    }
+  // =========================
+  // Mega Menu
+  // =========================
+
+  const clearCloseTimer =
+    useCallback(() => {
+      if (closeTimer.current) {
+        clearTimeout(
+          closeTimer.current
+        );
+
+        closeTimer.current = null;
+      }
+    }, []);
+
+  const scheduleClose =
+    useCallback(() => {
+      clearCloseTimer();
+
+      closeTimer.current =
+        setTimeout(() => {
+          setIsOpen(false);
+        }, 150);
+    }, [clearCloseTimer]);
+
+  const openMenu =
+    useCallback(() => {
+      clearCloseTimer();
+      setIsOpen(true);
+    }, [clearCloseTimer]);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimer.current) {
+        clearTimeout(
+          closeTimer.current
+        );
+      }
+    };
   }, []);
 
-  const scheduleClose = useCallback(() => {
-    clearCloseTimer();
-
-    closeTimer.current = setTimeout(() => {
-      setIsOpen(false);
-    }, 150);
-  }, [clearCloseTimer]);
-
-  const openMenu = useCallback(() => {
-    clearCloseTimer();
-
-    setIsOpen(true);
-  }, [clearCloseTimer]);
+  // =========================
+  // Active Category
+  // =========================
 
   const activeCategory =
-    mainDataArray?.find((c) => c.id === activeId) || mainDataArray[0];
+    mainDataArray?.find(
+      (category) =>
+        category.id === activeId
+    ) || mainDataArray[0];
 
-  const getTargetCategory = (category) => {
-    if (!category) return null;
+  // =========================
+  // Target Category
+  // =========================
 
-    if (category.children && category.children.length > 0) {
+  const getTargetCategory = (
+    category
+  ) => {
+    if (!category) {
+      return null;
+    }
+
+    if (
+      category.children &&
+      category.children.length > 0
+    ) {
       return category.children[0];
     }
 
     return category;
   };
 
-  const targetCategory = getTargetCategory(activeCategory);
+  const targetCategory =
+    getTargetCategory(activeCategory);
 
-  const finalSubList = Array.isArray(subDataArray)
-    ? subDataArray
-    : subDataArray?.children ||
-      subDataArray?.subs ||
-      subDataArray?.subcategories ||
-      [];
+  // =========================
+  // Sub Categories
+  // =========================
+
+  const finalSubList =
+    Array.isArray(subDataArray)
+      ? subDataArray
+      : subDataArray?.children ||
+        subDataArray?.subs ||
+        subDataArray?.subcategories ||
+        [];
+
+  // =========================
+  // Location
+  // =========================
+
+  const handleLocationSaved = (
+    address
+  ) => {
+    console.log(
+      "Saved address:",
+      address
+    );
+
+    setSelectedAddress(address);
+
+    setIsLocationModalOpen(false);
+  };
+
+  // =========================
+  // Extra Navigation Items
+  // =========================
+
+  const navigationItems = [
+    {
+      label: "Amazing Offers",
+      icon: FaFire,
+      href: "/",
+    },
+    {
+      label: "Supermarket",
+      icon: FaStore,
+      href: "/",
+    },
+    {
+      label: "Digital Gold & Silver",
+      icon: FaGem,
+      href: "/",
+    },
+    {
+      label: "Best Sellers",
+      icon: FaChartLine,
+      href: "/",
+    },
+    {
+      label: "Digistyle",
+      icon: FaShoppingBag,
+      href: "/",
+    },
+    {
+      label: "Sell on Gandom",
+      icon: FaTag,
+      href: "/",
+    },
+  ];
 
   return (
     <>
       <header
         dir="ltr"
-        className="
-        w-full
-        bg-white
-        font-sans
-        select-none
-      "
+        className="w-full select-none bg-white font-sans"
       >
-        {/* ==================================================
-          TOP BANNER
-      ================================================== */}
+        {/* =====================================
+            Top Banner
+        ====================================== */}
 
         <div className="w-full overflow-hidden">
           <Image
@@ -143,581 +304,319 @@ function Header() {
             height={60}
             alt="banner"
             priority
-            className="
-            block
-            w-full
-            h-[45px]
-            sm:h-[50px]
-            md:h-[60px]
-            object-cover
-          "
+            className="block h-[45px] w-full object-cover sm:h-[50px] md:h-[60px]"
           />
         </div>
 
-        {/* ==================================================
-          MAIN HEADER
-      ================================================== */}
+        {/* =====================================
+            Main Header
+        ====================================== */}
 
-        <div
-          className="
-          w-full
-          px-3
-          sm:px-4
-          lg:px-6
+        <div className="flex items-center gap-3 px-3 py-3 sm:gap-4 sm:px-4 md:py-4 lg:gap-6 lg:px-6">
 
-          mt-3
-          sm:mt-4
-        "
-        >
-          <div
-            className="
-            flex
-            items-center
-            justify-between
+          {/* Logo */}
 
-            gap-2
-            sm:gap-3
-            lg:gap-6
-
-            w-full
-          "
+          <Link
+            href="/"
+            className="hidden shrink-0 items-center lg:flex"
           >
-            {/* ==============================================
-              LOGO + SEARCH
-          ============================================== */}
+            <Image
+              src="/icons/en-logo.svg"
+              width={195}
+              height={30}
+              alt="logo"
+              priority
+              className="h-auto w-[195px]"
+            />
+          </Link>
 
-            <div
-              className="
-              flex
-              items-center
+          {/* Search */}
 
-              gap-2
-              sm:gap-4
-              lg:gap-6
+          <div className="min-w-0 flex-1">
+            <SearchBar />
+          </div>
 
-              flex-1
-              min-w-0
-            "
+          {/* Desktop Auth */}
+
+          <div className="hidden shrink-0 items-center lg:flex">
+            <AuthForm />
+          </div>
+
+          {/* Desktop Cart */}
+
+          <div
+            onMouseEnter={() =>
+              setIsOpenMiniCart(true)
+            }
+            onMouseLeave={() =>
+              setIsOpenMiniCart(false)
+            }
+            className="relative hidden shrink-0 items-center lg:flex"
+          >
+            <Link
+              href="/checkout/cart"
+              className="relative block"
             >
-              {}
-
-              <Link
-                href="/"
-                className="
-              hidden
-                shrink-0
-                lg:flex
-                items-center
-              "
-              >
-                <Image
-                  src="/icons/en-logo.svg"
-                  width={195}
-                  height={30}
-                  alt="logo"
-                  priority
-                  className="
-                  w-[195px]
-                  h-auto
-                "
-                />
-              </Link>
-
-              {}
-
-              <div
-                className="
-                flex-1
-                min-w-0
-              "
-              >
-                <SearchBar />
+              <div className="rounded-full p-1.5 transition-colors hover:bg-neutral-100 sm:p-2">
+                <MdShoppingCartCheckout className="h-[21px] w-[21px] text-neutral-700 sm:h-[24px] sm:w-[24px]" />
               </div>
-            </div>
 
-            {/* ==============================================
-              LOGIN + CART
-          ============================================== */}
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white shadow-sm sm:h-5 sm:w-5 sm:text-[11px]">
+                {totalCount > 99
+                  ? "+99"
+                  : totalCount}
+              </span>
+            </Link>
 
-            <div
-              className="hidden
-              lg:flex
-              items-center
-
-              gap-1
-              sm:gap-2
-
-              shrink-0
-            "
-            >
-              {}
-
-              <AuthForm />
-
-              {}
-
-              <div
-                onMouseEnter={() => setIsOpenMiniCart(true)}
-                onMouseLeave={() => setIsOpenMiniCart(false)}
-                className=" hidden
-                relative
-                lg:flex
-                items-center
-                shrink-0
-              "
-              >
-                <Link
-                  href="/checkout/cart"
-                  className="
-                  relative
-                  block
-                "
-                >
-                  <div
-                    className="
-                    p-1.5
-                    sm:p-2
-
-                    rounded-full
-
-                    hover:bg-neutral-100
-
-                    transition-colors
-                  "
-                  >
-                    <MdShoppingCartCheckout
-                      className="
-                      w-[21px]
-                      h-[21px]
-
-                      sm:w-[24px]
-                      sm:h-[24px]
-
-                      text-neutral-700
-                    "
-                    />
-                  </div>
-
-                  {}
-
-                  <span
-                    className="
-                    absolute
-
-                    -top-1
-                    -right-1
-
-                    flex
-                    items-center
-                    justify-center
-
-                    h-4
-                    w-4
-
-                    sm:h-5
-                    sm:w-5
-
-                    rounded-full
-
-                    bg-red-500
-
-                    text-[9px]
-                    sm:text-[11px]
-
-                    font-bold
-                    text-white
-
-                    shadow-sm
-                  "
-                  >
-                    {totalCount > 99 ? "+99" : totalCount}
-                  </span>
-                </Link>
-
-                {}
-
-                {isOpenMiniCart && (
-                  <div
-                    className="
-                    hidden
-                    sm:block
-                  "
-                  >
-                    <MiniCart />
-                  </div>
-                )}
+            {isOpenMiniCart && (
+              <div className="hidden sm:block">
+                <MiniCart />
               </div>
-            </div>
+            )}
           </div>
         </div>
 
-        {/* ==================================================
-          CATEGORY MENU
-      ================================================== */}
+        {/* =====================================
+            Categories + Navigation + Location
+        ====================================== */}
 
         <div
-          className="
-          relative
-
-          mt-3
-          sm:mt-4
-
-          px-3
-          sm:px-4
-          lg:px-6
-        "
+          className="relative mt-3 px-3 sm:mt-4 sm:px-4 lg:px-6"
           onMouseLeave={scheduleClose}
         >
-          {}
+          <div className="flex items-center gap-5">
 
-          <button
-            type="button"
-            onMouseEnter={openMenu}
-            onClick={() => setIsOpen((prev) => !prev)}
-            className="
-          hidden
-            lg:flex
-            items-center
+            {/* =========================
+                Categories
+            ========================== */}
 
-            gap-2
-
-            cursor-pointer
-
-            py-2
-
-            text-neutral-800
-            hover:text-red-600
-
-            transition-colors
-          "
-          >
-            <RxHamburgerMenu
-              className="
-              w-5
-              h-5
-            "
-            />
-
-            <span
-              className="
-              text-xs
-              sm:text-sm
-
-              font-bold
-            "
+            <button
+              type="button"
+              onMouseEnter={openMenu}
+              onClick={() =>
+                setIsOpen(
+                  (prev) => !prev
+                )
+              }
+              className="hidden cursor-pointer items-center gap-2 whitespace-nowrap border-r border-neutral-200 py-2 pr-5 text-neutral-800 transition-colors hover:text-red-600 lg:flex"
             >
-              Categories
-            </span>
-          </button>
+              <RxHamburgerMenu className="h-5 w-5" />
 
-          {/* ==================================================
-            DESKTOP CATEGORY MEGA MENU
-        ================================================== */}
+              <span className="text-xs font-bold sm:text-sm">
+                Categories
+              </span>
+            </button>
+
+            {/* =========================
+                Extra Navigation
+            ========================== */}
+
+            <nav className="hidden min-w-0 flex-1 items-center gap-5 lg:flex">
+
+              {navigationItems.map(
+                (item) => {
+                  const Icon =
+                    item.icon;
+
+                  return (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      className="group flex shrink-0 cursor-pointer items-center gap-1.5 whitespace-nowrap py-2 text-xs font-medium text-neutral-600 transition-colors hover:text-red-600"
+                    >
+                      <Icon className="h-[15px] w-[15px] text-neutral-500 transition-colors group-hover:text-red-600" />
+
+                      <span>
+                        {item.label}
+                      </span>
+                    </Link>
+                  );
+                }
+              )}
+            </nav>
+
+            {/* =========================
+                Location - Last / Right
+            ========================== */}
+
+            <button
+              type="button"
+              onClick={() =>
+                setIsLocationModalOpen(
+                  true
+                )
+              }
+              className="ml-auto hidden shrink-0 cursor-pointer items-center gap-1.5 py-2 text-sm font-medium text-orange-500 transition-colors hover:text-orange-600 lg:flex"
+            >
+              <CiLocationOn className="h-[20px] w-[20px] shrink-0 text-orange-400" />
+
+              <span className="max-w-[250px] truncate">
+                {selectedAddress?.address ||
+                  "Select Location"}
+              </span>
+            </button>
+          </div>
+
+          {/* =====================================
+              Desktop Mega Menu
+          ====================================== */}
 
           {isOpen && (
             <div
-              onMouseEnter={clearCloseTimer}
-              className="
-              absolute
-
-              top-[calc(100%+4px)]
-              left-3
-              sm:left-4
-
-              z-[80]
-
-             flex
-              w-auto
-              
-              lg:w-[750px]
-
-              lg:h-[350px]
-
-              bg-white
-
-              rounded-xl
-
-              shadow-2xl
-
-              overflow-hidden
-
-              border
-              border-neutral-100
-            "
+              className="absolute left-3 top-[calc(100%+4px)] z-[80] hidden h-[350px] w-[750px] overflow-hidden rounded-xl border border-neutral-100 bg-white shadow-2xl lg:flex"
+              onMouseEnter={openMenu}
             >
-              {/* ============================================
-                MAIN CATEGORIES
-            ============================================ */}
+              {/* Left Categories */}
 
-              <nav
-                className="
-                flex
-                flex-col
+              <div className="w-[220px] shrink-0 overflow-y-auto border-r border-neutral-100 bg-neutral-50">
+                {mainDataArray?.map(
+                  (category) => {
+                    const isActive =
+                      activeId ===
+                      category.id;
 
-                w-[210px]
-                lg:w-[220px]
-
-                shrink-0
-
-                overflow-y-auto
-
-                border-r
-                border-neutral-100
-
-                py-2
-
-                bg-neutral-50
-              "
-              >
-                {mainDataArray?.map((c) => {
-                  const isActive = activeId === c.id;
-
-                  return (
-                    <div
-                      key={c.id}
-                      onMouseEnter={() => setActiveId(c.id)}
-                      className={`
-                      flex
-                      items-center
-                      justify-between
-
-                      px-4
-                      py-2.5
-
-                      text-[13px]
-
-                      font-semibold
-
-                      cursor-pointer
-
-                      transition-colors
-
-                      ${
-                        isActive
-                          ? "bg-white text-red-600 border-l-4 border-l-red-500"
-                          : "text-neutral-900 hover:bg-neutral-100"
-                      }
-                    `}
-                    >
-                      <div
-                        className="
-                        flex
-                        items-center
-                        gap-2
-                        min-w-0
-                      "
+                    return (
+                      <button
+                        key={
+                          category.id
+                        }
+                        type="button"
+                        onMouseEnter={() =>
+                          setActiveId(
+                            category.id
+                          )
+                        }
+                        className={`flex w-full cursor-pointer items-center justify-between px-4 py-3 text-left transition-colors ${
+                          isActive
+                            ? "bg-white text-red-600"
+                            : "text-neutral-700 hover:bg-white hover:text-red-600"
+                        }`}
                       >
-                        <CategoryIcon
-                          iconKey={c.icon_key}
-                          className={`
-                          w-[18px]
-                          h-[18px]
-                          shrink-0
+                        <div className="flex min-w-0 items-center gap-3">
+                          <CategoryIcon
+                            iconKey={
+                              category.icon_key
+                            }
+                            className={`h-5 w-5 shrink-0 ${
+                              isActive
+                                ? "text-red-600"
+                                : "text-neutral-500"
+                            }`}
+                          />
 
-                          ${isActive ? "text-red-600" : "text-neutral-500"}
-                        `}
+                          <span className="truncate text-xs font-medium">
+                            {
+                              category.name
+                            }
+                          </span>
+                        </div>
+
+                        <TbChevronRight
+                          className={`h-4 w-4 shrink-0 ${
+                            isActive
+                              ? "text-red-600"
+                              : "text-neutral-400"
+                          }`}
                         />
+                      </button>
+                    );
+                  }
+                )}
+              </div>
 
-                        <span className="truncate">{c.name}</span>
-                      </div>
+              {/* Right Sub Categories */}
 
-                      <TbChevronRight
-                        className={`
-                        w-3.5
-                        h-3.5
-                        shrink-0
-
-                        ${isActive ? "text-red-500" : "text-neutral-300"}
-                      `}
-                      />
-                    </div>
-                  );
-                })}
-              </nav>
-
-              {/* ============================================
-                SUB CATEGORIES
-            ============================================ */}
-
-              <div
-                className="
-                flex-1
-
-                overflow-y-auto
-
-                px-5
-                lg:px-6
-
-                py-5
-
-                bg-white
-
-                relative
-              "
-              >
+              <div className="min-w-0 flex-1 overflow-y-auto bg-white p-5">
                 {isSubLoading ? (
-                  <div
-                    className="
-                    absolute
-                    inset-0
-
-                    flex
-                    items-center
-                    justify-center
-
-                    bg-white/60
-                  "
-                  >
-                    <div
-                      className="
-                      w-6
-                      h-6
-
-                      border-2
-                      border-red-500
-                      border-t-transparent
-
-                      rounded-full
-
-                      animate-spin
-                    "
-                    />
+                  <div className="flex h-full items-center justify-center">
+                    <div className="h-7 w-7 animate-spin rounded-full border-2 border-neutral-200 border-t-red-500" />
                   </div>
                 ) : (
                   <>
-                    {}
+                    {/* All Products */}
 
                     <Link
                       href={`/search/${
-                        targetCategory?.slug || "all"
-                      }?category_id=${targetCategory?.id || ""}`}
-                      className="
-                      flex
-                      items-center
-                      gap-1
-
-                      mb-4
-
-                      text-[13px]
-                      font-bold
-
-                      text-red-600
-
-                      whitespace-nowrap
-
-                      hover:underline
-                    "
+                        targetCategory?.slug ||
+                        "all"
+                      }?category_id=${
+                        targetCategory?.id ||
+                        ""
+                      }`}
+                      className="mb-4 flex items-center gap-1 whitespace-nowrap text-[13px] font-bold text-red-600 hover:underline"
                     >
-                      All {activeCategory?.name} Products
-                      <TbChevronRight
-                        className="
-                        w-3.5
-                        h-3.5
-                      "
-                      />
+                      All{" "}
+                      {
+                        activeCategory?.name
+                      }{" "}
+                      Products
+
+                      <TbChevronRight className="h-3.5 w-3.5" />
                     </Link>
 
-                    {}
+                    {/* Sub Category Grid */}
 
-                    <div
-                      className="
-                      grid
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-3">
+                      {finalSubList?.map(
+                        (col) => {
+                          const nestedItems =
+                            col.children ||
+                            col.subs ||
+                            col.leaves ||
+                            [];
 
-                      grid-cols-2
-                      lg:grid-cols-3
-
-                      gap-5
-                      lg:gap-6
-                    "
-                    >
-                      {finalSubList?.map((col, idx) => (
-                        <div
-                          key={col.id || idx}
-                          className="
-                            flex
-                            flex-col
-
-                            min-w-0
-                          "
-                        >
-                          <Link
-                            href={`/search/${
-                              col.slug || "category"
-                            }?category_id=${col.id}`}
-                            className="
-                              flex
-                              items-center
-                              justify-between
-
-                              mb-2
-                              py-1
-
-                              text-sm
-                              font-bold
-
-                              text-neutral-900
-
-                              border-b
-                              border-neutral-100
-
-                              group
-                            "
-                          >
-                            <span
-                              className="
-                                truncate
-
-                                group-hover:text-red-600
-
-                                transition-colors
-                              "
+                          return (
+                            <div
+                              key={col.id}
+                              className="min-w-0"
                             >
-                              {col.name}
-                            </span>
+                              {/* Column Title */}
 
-                            <TbChevronRight
-                              className="
-                                w-3.5
-                                h-3.5
-
-                                shrink-0
-
-                                text-neutral-400
-
-                                group-hover:text-red-600
-
-                                transition-colors
-                              "
-                            />
-                          </Link>
-
-                          {(col.children || col.subs || col.leaves || []).map(
-                            (leaf, lIdx) => (
                               <Link
-                                key={leaf.id || lIdx}
                                 href={`/search/${
-                                  leaf.slug || "child"
-                                }?category_id=${leaf.id}`}
-                                className="
-                                  py-1
-
-                                  text-[13px]
-
-                                  text-neutral-500
-
-                                  hover:text-red-600
-
-                                  transition-colors
-
-                                  truncate
-                                "
+                                  col.slug ||
+                                  "category"
+                                }?category_id=${
+                                  col.id
+                                }`}
+                                className="mb-2 block truncate text-[12px] font-bold text-neutral-800 transition-colors hover:text-red-600"
                               >
-                                {leaf.name}
+                                {col.name}
                               </Link>
-                            ),
-                          )}
-                        </div>
-                      ))}
+
+                              {/* Leaves */}
+
+                              {nestedItems?.length >
+                                0 && (
+                                <div className="flex flex-col gap-1.5">
+                                  {nestedItems.map(
+                                    (
+                                      leaf
+                                    ) => (
+                                      <Link
+                                        key={
+                                          leaf.id
+                                        }
+                                        href={`/search/${
+                                          leaf.slug ||
+                                          "child"
+                                        }?category_id=${
+                                          leaf.id
+                                        }`}
+                                        className="block truncate text-[11px] text-neutral-500 transition-colors hover:text-red-500"
+                                      >
+                                        {
+                                          leaf.name
+                                        }
+                                      </Link>
+                                    )
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        }
+                      )}
                     </div>
                   </>
                 )}
@@ -725,109 +624,77 @@ function Header() {
             </div>
           )}
 
-          {/* ==================================================
-            MOBILE CATEGORY MENU
-        ================================================== */}
+          {/* =====================================
+              Mobile Category Menu
+          ====================================== */}
 
           {isOpen && (
-            <div
-              className="
-              md:hidden
-
-              absolute
-
-              top-[calc(100%+4px)]
-              left-3
-              right-3
-
-              z-[80]
-
-              bg-white
-
-              rounded-xl
-
-              shadow-2xl
-
-              border
-              border-neutral-100
-
-              overflow-hidden
-            "
-            >
-              <div
-                className="
-                max-h-[70vh]
-
-                overflow-y-auto
-              "
-              >
-                {mainDataArray?.map((c) => {
-                  return (
+            <div className="absolute left-3 right-3 top-[calc(100%+4px)] z-[80] overflow-hidden rounded-xl border border-neutral-100 bg-white shadow-2xl lg:hidden">
+              <div className="max-h-[70vh] overflow-y-auto">
+                {mainDataArray?.map(
+                  (category) => (
                     <Link
-                      key={c.id}
-                      href={`/search/${c.slug}?category_id=${c.id}`}
-                      onClick={() => setIsOpen(false)}
-                      className="
-                      flex
-                      items-center
-                      justify-between
-
-                      px-4
-                      py-3
-
-                      border-b
-                      border-neutral-100
-
-                      text-sm
-                      font-medium
-
-                      text-neutral-800
-
-                      hover:bg-neutral-50
-
-                      active:bg-neutral-100
-                    "
+                      key={category.id}
+                      href={`/search/${category.slug}?category_id=${category.id}`}
+                      onClick={() =>
+                        setIsOpen(false)
+                      }
+                      className="flex items-center justify-between border-b border-neutral-100 px-4 py-3 text-sm font-medium text-neutral-800 hover:bg-neutral-50 active:bg-neutral-100"
                     >
-                      <div
-                        className="
-                        flex
-                        items-center
-                        gap-3
-                      "
-                      >
+                      <div className="flex items-center gap-3">
                         <CategoryIcon
-                          iconKey={c.icon_key}
-                          className="
-                          w-5
-                          h-5
-
-                          text-neutral-500
-                        "
+                          iconKey={
+                            category.icon_key
+                          }
+                          className="h-5 w-5 text-neutral-500"
                         />
 
-                        <span>{c.name}</span>
+                        <span>
+                          {
+                            category.name
+                          }
+                        </span>
                       </div>
 
-                      <TbChevronRight
-                        className="
-                        w-4
-                        h-4
-
-                        text-neutral-400
-                      "
-                      />
+                      <TbChevronRight className="h-4 w-4 text-neutral-400" />
                     </Link>
-                  );
-                })}
+                  )
+                )}
               </div>
             </div>
           )}
         </div>
       </header>
 
+      {/* =====================================
+          Location Modal
+      ====================================== */}
+
+      {isLocationModalOpen && (
+        <LocationModal
+          isOpen={
+            isLocationModalOpen
+          }
+          onClose={() =>
+            setIsLocationModalOpen(
+              false
+            )
+          }
+          onSuccess={
+            handleLocationSaved
+          }
+        />
+      )}
+
+      {/* =====================================
+          Mobile Bottom Navigation
+      ====================================== */}
+
       <MobileBottomNav
         totalCount={totalCount}
-        openMenu={() => setIsOpen(true)}
+        openMenu={() =>
+          setIsOpen(true)
+        }
       />
     </>
   );
