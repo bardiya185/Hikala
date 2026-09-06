@@ -100,6 +100,7 @@ Route::prefix('cart')->middleware('optional.auth')->group(function () {
 */
 
 Route::middleware('auth:sanctum')->group(function () {
+
     Route::get('/user', fn(Request $request) => $request->user());
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/cart/merge', [CartController::class, 'mergeCart']);
@@ -109,6 +110,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
     Route::get('/products/{product}/my-review', [ReviewController::class, 'myReview']);
     Route::post('/reviews/{review}/react', [ReviewController::class, 'react']);
+
     Route::prefix('orders')->group(function () {
         Route::post('/checkout', [OrderController::class, 'checkout']);
         Route::get('/', [OrderController::class, 'index']);
@@ -146,15 +148,15 @@ Route::middleware('auth:sanctum')->group(function () {
 |==================================================================================
 */
 
+Route::middleware(['auth:sanctum', 'role:super-admin|admin'])->group(function () {
 
-    Route::prefix('products')->middleware('permission:create-products')->group(function () {
-        Route::post('/', [ProductController::class, 'store']);
+    Route::prefix('products')->group(function () {
+        Route::post('/', [ProductController::class, 'store'])->middleware('permission:create-products');
         Route::put('/{product}', [ProductController::class, 'update']);
         Route::delete('/{product}', [ProductController::class, 'destroy'])
             ->middleware('permission:delete-products');
     });
     Route::prefix('products/{product}/images')
-        ->middleware('permission:update-products')
         ->scopeBindings()
         ->group(function () {
             Route::post('/', [ProductImageController::class, 'store']);
@@ -180,18 +182,16 @@ Route::prefix('categories')->group(function () {
         middleware('permission:create-brands');
         Route::put('/{brand}', [BrandController::class, 'update'])
         ->middleware('permission:update-brands');
+        Route::delete('/{brand}', [BrandController::class, 'destroy'])
+            ->middleware('permission:delete-brands');
+    });
     Route::prefix('categories')->middleware('permission:create-categories')->group(function () {
         Route::post('/', [CategoryController::class, 'store']);
         Route::put('/{category}', [CategoryController::class, 'update']);
         Route::delete('/{category}', [CategoryController::class, 'destroy'])
             ->middleware('permission:delete-categories');
     });
-    Route::prefix('brands')->middleware('permission:create-brands')->group(function () {
-        Route::post('/', [BrandController::class, 'store']);
-        Route::put('/{brand}', [BrandController::class, 'update']);
-        Route::delete('/{brand}', [BrandController::class, 'destroy'])
-            ->middleware('permission:delete-brands');
-    });
+
     Route::prefix('attributes')->middleware('permission:create-products')->group(function () {
         Route::post('/', [AttributeController::class, 'store']);
         Route::put('/{attribute}', [AttributeController::class, 'update']);

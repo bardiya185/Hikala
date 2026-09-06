@@ -12,7 +12,7 @@ export default function WishlistButton({
     isInWishlist: explicitIsInWishlist,
     className = "",
 }) {
-    const { data: wishlistIds = [] } = useWishlistIds();
+    const { data: wishlistIds = [] , isLoading } = useWishlistIds();
     const { mutate, isPending , isError } = useAddToWishlist();
 
     // بررسی دقیق و هوشمندانه وضعیت لایک
@@ -47,11 +47,11 @@ export default function WishlistButton({
         <button
             type="button"
             onClick={handleWishlist}
-            disabled={isPending}
+            disabled={isPending || isLoading}
             className={`absolute top-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full 
             bg-[#f0f0f0b3] shadow-sm backdrop-blur-sm transition-all duration-300 
-            hover:text-red-500 hover:scale-95 active:scale-100
-            ${isPending ? "opacity-75 hover:scale-100 bg-[#bfbfbfb3]" : "hover:bg-[#f0f0f0b3]"}`}
+             hover:scale-95 active:scale-100
+            ${isPending || isLoading ? "opacity-75 hover:scale-100 bg-[#bfbfbfb3]" : "hover:bg-[#f0f0f0b3] hover:text-red-500"}`}
         >
             {/* حالت پر شده (HeartFilled) */}
             <TbHeartFilled
