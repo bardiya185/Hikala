@@ -1,6 +1,6 @@
 
 
-function setCookie(name, value, days) {
+export function setCookie(name, value, days) {
     if (typeof document === "undefined") return;
   var expires = "";
   if (days) {
@@ -11,11 +11,21 @@ function setCookie(name, value, days) {
   document.cookie = name + "=" + (value || "") + expires + "; path=/";
 }
 
-function getCookie(name) {
+export function getCookie(name) {
     
   const value = `; ${document?.cookie}`;
   const parts = value?.split(`; ${name}=`);
   if (parts?.length === 2) return parts?.pop()?.split(";")?.shift();
 }
 
-export { setCookie, getCookie };
+export function removeCookie(name) {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
+
+export function getGuestSessionId() {
+  return getCookie('guest_session_id');
+}
+
+export function clearGuestSessionId() {
+  removeCookie('guest_session_id');
+}

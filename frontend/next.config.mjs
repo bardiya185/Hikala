@@ -1,5 +1,12 @@
 
 const nextConfig = {
+  experimental: {
+    optimizePackageImports: [
+      'framer-motion',
+      'react-icons',
+      'lucide-react',
+    ],
+  },
   images: {
     remotePatterns: [
       {
