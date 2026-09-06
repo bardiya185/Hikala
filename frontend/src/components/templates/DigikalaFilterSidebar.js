@@ -15,7 +15,7 @@ import {
 
 import { LuMessageSquareWarning } from "react-icons/lu";
 
-import { usegetBrandsFilter } from "@/core/services/queries";
+import { useGetBrandsFilter } from "@/core/services/queries";
 
 import {
   useRouter,
@@ -106,7 +106,7 @@ export default function DigikalaFilterSidebar({
   const {
     data: allBrandsFromApi,
     isLoading,
-  } = usegetBrandsFilter();
+  } = useGetBrandsFilter();
 
   const [searchTerm, setSearchTerm] = useState("");
 

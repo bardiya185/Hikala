@@ -123,6 +123,7 @@ function getProductVariant(product) {
 }
 
 export function getProductPricing(product) {
+
   const variant = getProductVariant(product);
   const basePrice = variant?.base_price ?? 0;
   const finalPrice = variant?.final_price ?? 0;
@@ -193,14 +194,18 @@ export function ProductRating({ rating }) {
 export function ProductImage({ product, priority }) {
   return (
     <div className="relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-xl bg-white sm:rounded-2xl">
+      {product.images[0].image_url ?
       <Image
-        src="/icons/images.jfif"
+        src={product.images[0].image_url}
         width={200}
         height={250}
         alt={product?.title || "product"}
         priority={priority}
         className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
       />
+
+
+: <div  cla ></div>   } 
     </div>
   );
 }
@@ -318,6 +323,7 @@ function Products({
   bannerId,
   isLoading = false,
 }) {
+  console.log(data);
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();

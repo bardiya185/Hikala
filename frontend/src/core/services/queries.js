@@ -29,14 +29,13 @@ export const useGetSubCategory = (activeId) => {
 };
 
 
-export const usegetBrandsFilter = () => {
+export const useGetBrandsFilter = () => {  
   const queryFn = () => api.get("/api/brands");
   const queryKey = ["brands-filter"];
   
   return useQuery({
     queryFn,
     queryKey,
-    
     select: (response) => response?.data?.data || [], 
   });
 };

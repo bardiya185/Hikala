@@ -11,7 +11,7 @@ function CardShop({ data }) {
       {banners?.map((banner) =>{
         const hasQuery = banner.url?.includes('?');
         const href = `${banner.url}${hasQuery ? '&' : '?'}source=banner&bannerId=${banner.id}`;
-        
+        console.log();
        return (
           <Link
           key={banner.id}
