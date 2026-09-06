@@ -105,6 +105,8 @@ export const useGetWishlist = (perPage = 10) => {
   return useQuery({
     queryKey,
     queryFn,
+    retry:3,
+    refetchOnWindowFocus: true,
   });
 };
 
@@ -164,21 +166,7 @@ export const useGetAddresses = () => {
 };
 
 
-// export const useToggleWishlist  = () => {
-//   return useQuery({
-//     queryKey: ["wishlist"],
-//     queryFn: async () => {
-//       const response = await api.get("/api/wishlist", {
-//         params: {
-//           page: 1,
-//           per_page: 50,
-//         },
-//       });
 
-//       return response?.data;
-//     },
-//   });
-// };
 
 
 
@@ -204,4 +192,47 @@ export const useWishlistIds = () => {
   });
 };
 
+
+// ============================================================
+// GET ORDERS LIST
+// ============================================================
+
+export function useGetOrders() {
+  return useQuery({
+    queryKey: ["orders"],
+    queryFn: async () => {
+      const response = await api.get("/api/orders");
+      return response.data;
+    },
+  });
+}
+
+// ============================================================
+// GET SINGLE ORDER
+// ============================================================
+
+export function useGetOrder(orderId) {
+  return useQuery({
+    queryKey: ["order", orderId],
+    queryFn: async () => {
+      const response = await api.get(`/api/orders/${orderId}`);
+      return response.data;
+    },
+    enabled: !!orderId,
+  });
+}
+
+// ============================================================
+// GET DELIVERY OPTIONS (based on cart items)
+// ============================================================
+
+export function useGetDeliveryOptions() {
+  return useQuery({
+    queryKey: ["delivery-options"],
+    queryFn: async () => {
+      const response = await api.get("/api/orders/delivery/options");
+      return response.data;
+    },
+  });
+}
 

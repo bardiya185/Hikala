@@ -377,7 +377,7 @@ export default function Wishlist() {
   // ============================================================
   // REFRESH WISHLIST
   // ============================================================
-
+  queryClient.invalidateQueries({ queryKey: ["wishlist"] });
   const refreshWishlist = () => {
     queryClient.invalidateQueries({ queryKey: ["wishlist"] });
   };

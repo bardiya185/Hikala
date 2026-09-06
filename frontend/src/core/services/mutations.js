@@ -3,11 +3,12 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { setCookie } from "../utils/cookie";
+import { removeCookie, setCookie } from "../utils/cookie";
 import api from "../config/api";
 import { data } from "autoprefixer";
-
+import  toast  from "react-hot-toast";
 import { getGuestSessionId, clearGuestSessionId } from "../utils/gustSession";
+
 
 export const useSendOtp = () => {
   const mutationFn = (data) => api.post("/api/send-otp", data);
@@ -22,7 +23,7 @@ export const useCheckOtp = () => {
 
     if (!res?.data?.access_token) {
       throw new Error(
-        res?.data?.message || "کد وارد شده صحیح نیست"
+        res?.data?.message
       );
     }
 
@@ -61,7 +62,50 @@ export const useCheckOtp = () => {
     onSuccess,
   });
 };
+export const useLogOut = () => {
+  const queryClient = useQueryClient();
 
+  return useMutation({
+    mutationFn: async () => {
+      const response = await api.post("/api/logout");
+      return response.data;
+    },
+
+    onSuccess: () => {
+
+      removeCookie("access_token");
+      removeCookie("refresh_token");
+      clearGuestSessionId();
+
+
+      queryClient.clear();
+
+      toast.success("Logged out successfully");
+
+  
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
+    },
+
+    onError: (error) => {
+      console.error("Logout error:", error);
+
+   
+      removeCookie("access_token");
+      removeCookie("refresh_token");
+      clearGuestSessionId();
+
+      queryClient.clear();
+
+      toast.error(error?.response?.data?.message || "Logout failed");
+
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
+    },
+  });
+};
 export const useAddProductsBasket = () => {
   const queryClient = useQueryClient();
 
@@ -215,4 +259,74 @@ export const useAddToWishlist = () => {
   });
 };
 
+// ============================================================
+// CANCEL ORDER
+// ============================================================
 
+export function useCancelOrder() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ orderId, reason }) => {
+      const response = await api.post(`/api/orders/${orderId}/cancel`, { reason });
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      toast.success("Order cancelled successfully");
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["order", variables.orderId] });
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Failed to cancel order");
+    },
+  });
+}
+
+// ============================================================
+// REQUEST REFUND
+// ============================================================
+
+export function useRequestRefund() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ orderId, reason, description }) => {
+      const response = await api.post(`/api/orders/${orderId}/refund`, {
+        reason,
+        description,
+      });
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      toast.success("Refund request submitted successfully");
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["order", variables.orderId] });
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Failed to submit refund request");
+    },
+  });
+}
+
+// ============================================================
+// PAY ORDER (Fake payment)
+// ============================================================
+
+export function usePayOrder() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (orderId) => {
+      const response = await api.post(`/api/orders/${orderId}/pay`);
+      return response.data;
+    },
+    onSuccess: (data, variables) => {
+      toast.success("Payment successful!");
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["order", variables] });
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.message || "Payment failed");
+    },
+  });
+}

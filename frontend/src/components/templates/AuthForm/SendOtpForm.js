@@ -21,8 +21,8 @@ function SendOtpForm({ setStep, mobile, setMobile }) {
   }
 
   return (
-
-    <form onSubmit={submitHandler} className="w-full flex items-center justify-center min-h-[450px]">
+    
+    <form onSubmit={submitHandler} className="w-full z-10 flex items-center justify-center min-h-[450px]">
       <div className="w-full lg:max-w-[360px] p-6 bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-neutral-100 flex flex-col justify-between transition-all duration-300">
 
 

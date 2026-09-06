@@ -1017,6 +1017,7 @@
                     "Auth"
                 ],
                 "summary": "Send OTP code",
+                "description": "Send OTP code to mobile",
                 "operationId": "f23a700e9df831a8a1af7bd4c092fcf7",
                 "requestBody": {
                     "required": true,
@@ -1056,6 +1057,7 @@
                     "Auth"
                 ],
                 "summary": "Verify OTP and login",
+                "description": "Verify OTP and login",
                 "operationId": "25b81e0ec7fc1574f497502269bdbd30",
                 "requestBody": {
                     "required": true,
@@ -1100,6 +1102,7 @@
                     "Auth"
                 ],
                 "summary": "Refresh access token",
+                "description": "Refresh access token",
                 "operationId": "beea51bdb8817484efefd18932d1b642",
                 "requestBody": {
                     "required": true,
@@ -1133,6 +1136,7 @@
                     "Auth"
                 ],
                 "summary": "Logout",
+                "description": "Logout user",
                 "operationId": "ad65cbbd4e9f201619eae184a5961a98",
                 "responses": {
                     "200": {
@@ -1155,6 +1159,7 @@
                     "Auth"
                 ],
                 "summary": "Get authenticated user information",
+                "description": "Get authenticated user information",
                 "operationId": "df5ae5103354bd83da5161c94dcd772b",
                 "responses": {
                     "200": {
