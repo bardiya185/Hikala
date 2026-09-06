@@ -257,7 +257,7 @@ function ProductsDe({ data }) {
 
         toast.error(
           error?.message ||
-            "Failed to update wishlist",
+          "Failed to update wishlist",
         );
       },
     });
@@ -644,10 +644,9 @@ function ProductsDe({ data }) {
                     w-5
                     transition-all
                     duration-200
-                    ${
-                      isFavorite
-                        ? "scale-110 text-red-500"
-                        : "text-neutral-400"
+                    ${isFavorite
+                      ? "scale-110 text-red-500"
+                      : "text-neutral-400"
                     }
                   `}
                 />
@@ -1012,8 +1011,8 @@ function ProductsDe({ data }) {
               returning goods in
               the mobile category
               with the reason
-              "cancellation of
-              purchase" is only
+              &quot;cancellation of
+              purchase&quot; is only
               accepted if the
               product seal has not
               been opened. All
@@ -1403,8 +1402,8 @@ function SellerBox({
         >
           {finalPrice > 0
             ? `${formatPrice(
-                finalPrice,
-              )} $`
+              finalPrice,
+            )} $`
             : "-"}
         </span>
 
@@ -1438,11 +1437,10 @@ function SellerBox({
             "
           >
             {stock > 0
-              ? `Only ${stock} item${
-                  stock > 1
-                    ? "s"
-                    : ""
-                } left in stock.`
+              ? `Only ${stock} item${stock > 1
+                ? "s"
+                : ""
+              } left in stock.`
               : "Out of stock"}
           </span>
         </div>
