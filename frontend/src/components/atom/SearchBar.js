@@ -390,7 +390,7 @@ const handleSelectProduct = (product) => {
                 text-neutral-400
               "
             >
-              No products found for "{debouncedQuery}"
+              No products found for {debouncedQuery}
             </div>
           )}
         </div>

@@ -145,7 +145,7 @@ function RatingStars({ rating = 0, maxStars = 5 }) {
 
 function SubmitComment({ id, data }) {
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  
+
   return (
     <div className="px-4 sm:px-5 max-w-[1270px]">
       <Reviews id={id} />
@@ -272,10 +272,10 @@ function Reviews({ id }) {
         >
           {comments?.data?.body}
           My phone arrived promptly on the scheduled date. I was quite worried
-          it might have issues—I'd never bought a phone online before—but before
-          opening the box, I checked the serial number on Apple's website. Once
-          I was reassured that it hadn't been previously opened or activated, I
-          unboxed and turned it on. Since it's a dual-SIM model, I verified both
+          it might have issues—I&apos;d never bought a phone online before—but before
+          opening the box, I checked the serial number on Apple&apos;s website. Once
+          I was reassured that it hadn&apos;t been previously opened or activated, I
+          unboxed and turned it on. Since it&apos;s a dual-SIM model, I verified both
           the serial number and IMEI against the details shown on the phone
           itself.
         </p>
@@ -592,10 +592,9 @@ export default function ProductMoreDetails({
             transition-all
             duration-300
             scrollbar-hide
-            ${
-              isVisible
-                ? "opacity-100 pointer-events-auto"
-                : "opacity-0 pointer-events-none -translate-y-4"
+            ${isVisible
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none -translate-y-4"
             }
           `}
         >
@@ -614,10 +613,9 @@ export default function ProductMoreDetails({
                 border-b-2
                 -mb-px
                 transition-colors
-                ${
-                  activeTab === tab.id
-                    ? "border-red-600 text-neutral-900"
-                    : "border-transparent text-neutral-500 hover:text-neutral-700"
+                ${activeTab === tab.id
+                  ? "border-red-600 text-neutral-900"
+                  : "border-transparent text-neutral-500 hover:text-neutral-700"
                 }
               `}
             >
