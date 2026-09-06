@@ -13,7 +13,7 @@ export default function WishlistButton({
     className = "",
 }) {
     const { data: wishlistIds = [] , isLoading } = useWishlistIds();
-    const { mutate, isPending , isError } = useAddToWishlist();
+    const { mutate, isPending , isError , isSuccess } = useAddToWishlist();
 
     // بررسی دقیق و هوشمندانه وضعیت لایک
     const isFav = useMemo(() => {
@@ -31,17 +31,15 @@ export default function WishlistButton({
     const handleWishlist = (e) => {
         e.preventDefault();
         e.stopPropagation();
-
-        if (!productId || isPending) return;
         mutate(productId);
-        if (isError) {
+        if (!productId || isPending) return;
+        if (isError || isSuccess) {
             toast.error("Failed to update wishlist");
         } else if (isFav) {
             toast.success("Removed from Wishlist");
         } else {
             toast.success("Added to Wishlist");
         }
-
     };
     return (
         <button
