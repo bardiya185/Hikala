@@ -12,7 +12,7 @@ namespace FG\ASN1;
 
 class UnknownObject extends ASNObject
 {
-    /** @var string */
+    
     private $value;
 
     private $identifier;

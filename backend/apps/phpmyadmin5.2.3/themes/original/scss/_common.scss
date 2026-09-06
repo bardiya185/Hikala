@@ -79,8 +79,6 @@ textarea.charField {
     font-size: 1em;
   }
 }
-
-// buttons in some browsers (eg. Konqueror) are block elements, this breaks design
 button {
   display: inline;
 }
@@ -91,8 +89,6 @@ select,
 button {
   vertical-align: middle;
 }
-
-// classes
 .clearfloat {
   clear: both;
 }
@@ -107,7 +103,7 @@ div.tools {
   margin-top: 0;
   margin-bottom: 0.5em;
 
-  /* avoid a thick line since this should be used under another fieldset */
+  
   border-top: 0;
   text-align: right;
   float: none;
@@ -118,7 +114,7 @@ div.tools {
   margin-top: 0;
   margin-bottom: 0.5em;
 
-  /* avoid a thick line since this should be used under another fieldset */
+  
   border-top: 0;
   text-align: right;
   float: none;
@@ -138,8 +134,6 @@ div.null_div {
     margin-right: 0.5em;
     white-space: nowrap;
   }
-
-  // revert for Gecko
   div[class="formelement"] {
     white-space: normal;
   }
@@ -205,14 +199,14 @@ img.lightbulb {
   border: 1px dashed #000;
 }
 
-/* Doc links in SQL */
+
 .cm-sql-doc {
   text-decoration: none;
   border-bottom: 1px dotted #000;
   color: inherit !important;
 }
 
-/* leave some space between icons and text */
+
 .icon {
   image-rendering: pixelated;
   vertical-align: middle;
@@ -230,7 +224,7 @@ img.lightbulb {
   margin-left: 2em;
 }
 
-/* message boxes: error, confirmation */
+
 #pma_errors,
 #pma_demo,
 #pma_footer {
@@ -251,7 +245,7 @@ img.lightbulb {
     font-weight: bold;
     background-image: url("../img/s_really.png");
     background-repeat: no-repeat;
-    background-position: 5px 50% #{"/* rtl:97% 50% */"};
+    background-position: 5px 50% #{""};
     padding: 0.2em 0.2em 0.2em 25px;
   }
 }
@@ -266,7 +260,7 @@ label.error {
   margin-left: 4px;
 }
 
-/* end messageboxes */
+
 
 .new_central_col {
   width: 100%;
@@ -327,7 +321,7 @@ div.tools a {
   }
 }
 
-/* disabled text */
+
 
 .disabled {
   color: #666;
@@ -464,11 +458,10 @@ div#modalOverlay {
 }
 
 li.last.database {
-  // Avoid having the last item of the tree hidden behind the scroll bar
   margin-bottom: 15px !important;
 }
 
-/* specific elements */
+
 
 ul.tabs {
   font-weight: bold;
@@ -477,7 +470,7 @@ ul.tabs {
   padding: 0;
 }
 
-/* zoom search */
+
 div#dataDisplay {
   input,
   select {
@@ -721,7 +714,7 @@ div#logTable {
   padding-left: 7px;
 }
 
-/* profiling */
+
 div#profilingchart {
   width: 850px;
   height: 370px;
@@ -746,9 +739,9 @@ textarea {
   }
 }
 
-/* end querybox */
 
-/* main page */
+
+
 
 #maincontainer {
   background-image: url("../img/logo_right.png");
@@ -877,7 +870,7 @@ textarea#partitiondefinition {
   height: 3em;
 }
 
-/* for elements that should be revealed only via js */
+
 .hide {
   display: none;
 }
@@ -964,18 +957,15 @@ select.invalid_value,
   *  Ajax notification styling
   */
 .ajax_notification {
-  // The notification needs to be shown on the top of the page
   top: 0;
   position: fixed;
   margin-top: 0;
   margin-right: auto;
   margin-bottom: 0;
   margin-left: auto;
-  // Keep a little space on the sides of the text
   padding: 3px 5px;
   width: 350px;
   background-color: #ffd700;
-  // If this is not kept at a high z-index, the jQueryUI modal dialogs (z-index:1000) might hide this
   z-index: 1100;
   text-align: center;
   display: block;
@@ -987,7 +977,7 @@ select.invalid_value,
 }
 
 #loading_parent {
-  /** Need this parent to properly center the notification division */
+  
   position: relative;
   width: 100%;
 }
@@ -1094,7 +1084,7 @@ table#index_columns {
   }
 }
 
-/* config forms */
+
 
 .config-form {
   .card {
@@ -1118,7 +1108,7 @@ table#index_columns {
       background: $bg-two;
     }
 
-    /* form error list */
+    
     .errors {
       margin: 0 -2px 1em -2px;
       padding: 0.5em 1.5em;
@@ -1131,7 +1121,7 @@ table#index_columns {
       font-size: small;
     }
 
-    /* field error list */
+    
     .inline_errors {
       margin: 0.3em 0.3em 0.3em 0;
       padding: 0;
@@ -1229,7 +1219,7 @@ fieldset {
     display: inline-block;
   }
 
-  /* customized field */
+  
   .custom {
     background: #ffc;
   }
@@ -1732,7 +1722,7 @@ input#auto_increment_opt {
   padding-left: 20px;
 }
 
-/* css for timepicker */
+
 
 .ui-timepicker-div {
   .ui-widget-header {
@@ -1871,7 +1861,7 @@ table.show_create {
   font-size: smaller;
 }
 
-/* Console styles */
+
 #pma_console_container {
   width: 100%;
   position: fixed;
@@ -2324,7 +2314,7 @@ textarea {
   }
 }
 
-/* Code mirror console style */
+
 
 .cm-s-pma {
   .CodeMirror-code {
@@ -2354,7 +2344,7 @@ textarea {
   }
 }
 
-/* PMA drop-improt style */
+
 
 .pma_drop_handler {
   display: none;
@@ -2500,7 +2490,7 @@ span.drag_icon {
   margin-top: 1em;
 }
 
-/* styles for jQuery-ui to support rtl languages */
+
 
 body {
   .ui-dialog {
@@ -2581,7 +2571,7 @@ body {
   }
 }
 
-/* templates/database/multi_table_query */
+
 
 .multi_table_query_form {
   .query-form__tr--hide {
@@ -2606,9 +2596,9 @@ body {
   }
 }
 
-/* templates/database/designer */
 
-/* side menu */
+
+
 #name-panel {
   overflow: hidden;
 }
@@ -2708,14 +2698,10 @@ body {
 .ui_tpicker_time_input {
   width: 100%;
 }
-
-// Enable scrollable blocks of code
 .pre-scrollable {
   max-height: 340px;
   overflow-y: scroll;
 }
-
-// Extra large devices (large desktops, 1200px and up)
 @include media-breakpoint-up(xl) {
   div.tools {
     text-align: left;

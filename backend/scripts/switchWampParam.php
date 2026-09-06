@@ -27,21 +27,17 @@ else {
   				$errorMessage .= "No version of MariaDB is installed.\nAt least one version of MariaDB must be installed in Wampserver.\n";
   			}
   			else {
-  				//Check if mariadb version installed is that in wampmanager.conf
   				$versionsAll = ListAllVersions();
   				$versionsMariadb = $versionsAll['mariadb'];
   				array_walk($versionsMariadb,function(&$value, $key){$value = str_replace(['USED','mariadb'],'',$value);});
    				if(!in_array($wampConf['mariadbVersion'], $versionsMariadb)) {
-  					//MariaDB version in wampmanager.conf does not exist - Correct it
   					$wampIniNewContents['mariadbVersion'] = $versionsMariadb[0];
   					$c_mariadbExe = str_replace($wampConf['mariadbVersion'],$versionsMariadb[0],$c_mariadbExe);
   					$c_mariadbConfFile = str_replace($wampConf['mariadbVersion'],$versionsMariadb[0],$c_mariadbConfFile);
   				}
-  				//Check if mariadb service is installed and create it if not
 					$command = 'CMD /D /C sc query state= all | FINDSTR /C:"SERVICE_NAME: wamp"';
 					$output = shell_exec($command);
 					if(preg_match("~.*".$c_mariadbService."\s?$~m",$output) === 0) {
-						//Service does not exists
 							$command = 'CMD /D /C '.$c_mariadbExe." ".$c_mariadbServiceInstallParams;
 							$output = shell_exec($command);
 							if(strpos($output, 'successfully installed') === false) {
@@ -52,7 +48,6 @@ else {
   			}
   		}
   		if($goodParam) {
-				//Check if port is not that used by Mysql or default port in case off and change it if necessary
 				$mariaIniFileContents = @file_get_contents($c_mariadbConfFile) or die ("my.ini file not found");
 				preg_match_all("~^port[ \t]*=[ \t]*([0-9]{4})\s?$~m",$mariaIniFileContents, $matches);
 				if(in_array($c_UsedMysqlPort,$matches[1]) || ($_SERVER['argv'][2] == 'off' && in_array($c_DefaultMysqlPort,$matches[1]))) {
@@ -85,12 +80,10 @@ else {
 		}
 		if($goodParam) {
 			if($_SERVER['argv'][2] == 'on') {
-				//Start mariadb service in case of not started
 				$command = 'CMD /D /C net start '.$c_mariadbService;
 				shell_exec($command);
 			}
 			elseif($_SERVER['argv'][2] == 'off') {
-				//Stop mariadb service in case of started
 				$command = 'CMD /D /C net stop '.$c_mariadbService;
 				shell_exec($command);
 				$command = 'CMD /C /D sc delete '.$c_mariadbService;
@@ -107,22 +100,17 @@ else {
   				$errorMessage .= "No version of MySQL is installed.\nAt least one version of MySQL must be installed in Wampserver.\n";
   			}
   			else {
-  				//Check if mysql version installed is that in wampmanager.conf
   				$versionsAll = ListAllVersions();
   				$versionsMySQL = $versionsAll['mysql'];
   				array_walk($versionsMySQL,function(&$value, $key){$value = str_replace(['USED','mysql'],'',$value);});
    				if(!in_array($wampConf['mysqlVersion'], $versionsMySQL)) {
-  					//MySQL version in wampmanager.conf does not exist - Correct it
   					$wampIniNewContents['mysqlVersion'] = $versionsMySQL[0];
   					$c_mysqlExe = str_replace($wampConf['mysqlVersion'],$versionsMySQL[0],$c_mysqlExe);
   					$c_mysqlConfFile = str_replace($wampConf['mysqlVersion'],$versionsMySQL[0],$c_mysqlConfFile);
   				}
-
-  				//Check if mysql service is installed and create it if not
 					$command = 'CMD /D /C sc query state= all | FINDSTR /C:"SERVICE_NAME: wamp"';
 					$output = shell_exec($command);
 					if(preg_match("~.*".$c_mysqlService."\s?$~m",$output) === 0) {
-						//Service does not exists
 							$command = 'CMD /D /C '.$c_mysqlExe." ".$c_mysqlServiceInstallParams;
 							$output = shell_exec($command);
 							if(strpos($output, 'successfully installed') === false) {
@@ -133,7 +121,6 @@ else {
   			}
   		}
   		if($goodParam) {
-				//Check if port is not that used by MariaDB and change it if necessary
 				$mySqlIniFileContents = @file_get_contents($c_mysqlConfFile) or die ("my.ini file not found");
 				preg_match_all("~^port[ \t]*=[ \t]*([0-9]{4})\s?$~m",$mySqlIniFileContents, $matches);
 				if(in_array($c_UsedMariaPort,$matches[1]) || ($_SERVER['argv'][2] == 'off' && in_array($c_DefaultMysqlPort,$matches[1]))) {
@@ -166,12 +153,10 @@ else {
 		}
 		if($goodParam) {
 			if($_SERVER['argv'][2] == 'on') {
-				//Start mysql service in case of not started
 				$command = 'CMD /D /C net start '.$c_mysqlService;
 				shell_exec($command);
 			}
 			elseif($_SERVER['argv'][2] == 'off') {
-				//Stop mysql service in case of started
 				$command = 'CMD /D /C net stop '.$c_mysqlService;
 				shell_exec($command);
 				$command = 'CMD /D /C sc delete '.$c_mysqlService;
@@ -188,7 +173,6 @@ else {
 				$goodParam = false;
 			}
 			else {
-				//Suppress Certs directory
 				$installDir = str_replace('/','\\',$c_installDir);
 				$command = <<<EOF
 Rem Wampserver installation variables
@@ -201,21 +185,18 @@ EOF;
 				write_file('batch.bat',$command);
 				shell_exec('batch.bat');
 				unlink('batch.bat');
-				//Replace httpd-ssl.conf;
 				$source = $c_installDir.'/bin/apache/apache'.$c_apacheVersion.'/conf/original/extra/httpd-ssl.conf';
 				$dest   = $c_installDir.'/bin/apache/apache'.$c_apacheVersion.'/conf/extra/httpd-ssl.conf';
 				if(copy($source,$dest) === false){
 					$goodParam = false;
 					$errorMessage .= "Error in copy https-ssl file\n";
 				}
-				//Replace openssl.cnf;
 				$source = $c_installDir.'/scripts/httpsFiles/openssl.cnf';
 				$dest   = $c_installDir.'/bin/apache/apache'.$c_apacheVersion.'/conf/openssl.cnf';
 				if(copy($source,$dest) === false){
 					$goodParam = false;
 					$errorMessage .= "Error in copy openssl.cnf file\n";
 				}
-				//Unload https ssl Apache modules and includes
 				$counts = $count = 0;
 				$contents = file_get_contents($c_apacheConfFile);
 				if(strpos($contents,'#LoadModule ssl_module') === false) {
@@ -252,29 +233,23 @@ EOF;
 				goto errorend;
 			}
 			$reinstallhttps = true;
-			// ***** Preparing Wampserver to support HTTPS SSL *****
-			// Replace https-ssl.conf if necessary
 			$contents_ssl_conf = file_get_contents($c_apacheConfDir.'\extra\httpd-ssl.conf');
 			$write_ssl_conf_needed = $write_ssl_conf = false;
 			$message = '';
 			if(strpos($contents_ssl_conf,'Define CERTIFS ${INSTALL_DIR}/bin/Certs') === false) {
-				//It is original Apache file - Need to be replaced
 				$write_ssl_conf_needed = true;
 			}
 			else {
 				$message .= 'File: '.$c_apacheConfDir."/extra/httpd-ssl.conf already modified for Wampserver https\n";
 			}
-			// Replace openssl.cnf if necessary
 			$contents_ssl_cnf = file_get_contents($c_apacheConfDir.'\openssl.cnf');
 			$write_ssl_cnf_needed = $write_ssl_cnf = false;
 			if(strpos($contents_ssl_cnf,'Wampserver') === false) {
-				//It is original Apache file - Need to be replaced
 				$write_ssl_cnf_needed = true;
 			}
 			else {
 				$message .= 'File: '.$c_apacheConfDir."/openssl.cnf already modified for Wampserver https\n";
 			}
-			//Check if Certs directory already exists
 			$Certs_dir = false;
 			if(file_exists($c_installDir.'/bin/Certs')) {
 				$Certs_dir = true;
@@ -296,22 +271,14 @@ EOF;
 				}
 			}
 			if($reinstallhttps === true) {
-				// Begin httpd-ssl_conf write
-				// Get $httpd_ssl_conf contents
 				include 'httpsFiles/httpd_ssl_conf.php';
 				$rename_ssl_conf = false;
 				$rename_ssl_conf = rename($c_apacheConfDir.'\extra\httpd-ssl.conf',$c_apacheConfDir.'\extra\httpd-ssl_sav.conf');
 				$write_ssl_conf = write_file($c_apacheConfDir.'\extra\httpd-ssl.conf',$httpd_ssl_conf);
-				//End write ssl_conf
-
-				//Begin openssl.cnf write
-				// Get $openssl_cnf contents
 				include 'httpsFiles/open_ssl_cnf.php';
 				$rename_ssl_cnf = false;
 				$rename_ssl_cnf = rename($c_apacheConfDir.'\openssl.cnf',$c_apacheConfDir.'\openssl_sav.cnf');
 				$write_ssl_cnf = write_file($c_apacheConfDir.'\openssl.cnf',$openssl_cnf);
-
-				// Create wamp64\bin\Certs\ directory by command lines
 				$rename_certs = false;
 				if($Certs_dir === true) {
 					$rename_certs = rename($c_installDir.'/bin/Certs',$c_installDir.'/bin/Certs_sav');
@@ -368,7 +335,6 @@ EOF;
 				write_file('batch.bat',$command);
 				$result = exec('batch.bat',$output,$result_code);
 				unlink('batch.bat');
-				//Verify if https ssl Apache modules and includes are OK
 				$counts = $count = 0;
 				$contents = file_get_contents($c_apacheConfFile);
 				if(strpos($contents,'#LoadModule ssl_module') !== false) {
@@ -391,7 +357,6 @@ EOF;
 				if($result === false || $result_code !== 0 || $write_httpd_conf === false
 				|| ($write_ssl_cnf_needed === true && $write_ssl_cnf === false)
 				|| ($write_ssl_conf_needed === true && $write_ssl_conf === false)) {
-					//Incorrect result - Return to previous
 					$goodParam = false;
 					if($write_ssl_cnf_needed === true && $write_ssl_cnf === false) {
 						$error_message .= "Error in writing file openssl.cnf\n";

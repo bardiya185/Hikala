@@ -68,7 +68,6 @@ final class MacroAutoImportNodeVisitor implements NodeVisitorInterface
 
     public function getPriority(): int
     {
-        // we must be ran before auto-escaping
         return -10;
     }
 }

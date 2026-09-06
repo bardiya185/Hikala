@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* modals/unhide_nav_item.twig */
+
 class __TwigTemplate_28cf7dc70c3d7db104e0ddffbf05f7ba extends Template
 {
     private $source;
@@ -34,25 +34,21 @@ class __TwigTemplate_28cf7dc70c3d7db104e0ddffbf05f7ba extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<div class=\"modal fade\" id=\"unhideNavItemModal\" tabindex=\"-1\" aria-labelledby=\"unhideNavItemModalLabel\" aria-hidden=\"true\">
   <div class=\"modal-dialog\">
     <div class=\"modal-content\">
       <div class=\"modal-header\">
         <h5 class=\"modal-title\" id=\"unhideNavItemModalLabel\">";
 yield _gettext("Show hidden navigation tree items.");
-        // line 5
         yield "</h5>
         <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"";
 yield _gettext("Close");
-        // line 6
         yield "\"></button>
       </div>
       <div class=\"modal-body\"></div>
       <div class=\"modal-footer\">
         <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">";
 yield _gettext("Close");
-        // line 10
         yield "</button>
       </div>
     </div>

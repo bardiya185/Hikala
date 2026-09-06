@@ -200,7 +200,6 @@ final class CoreExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            // formatting filters
             new TwigFilter('date', [$this, 'formatDate']),
             new TwigFilter('date_modify', [$this, 'modifyDate']),
             new TwigFilter('format', [self::class, 'sprintf']),
@@ -208,13 +207,9 @@ final class CoreExtension extends AbstractExtension
             new TwigFilter('number_format', [$this, 'formatNumber']),
             new TwigFilter('abs', 'abs'),
             new TwigFilter('round', [self::class, 'round']),
-
-            // encoding
             new TwigFilter('url_encode', [self::class, 'urlencode']),
             new TwigFilter('json_encode', 'json_encode'),
             new TwigFilter('convert_encoding', [self::class, 'convertEncoding']),
-
-            // string filters
             new TwigFilter('title', [self::class, 'titleCase'], ['needs_charset' => true]),
             new TwigFilter('capitalize', [self::class, 'capitalize'], ['needs_charset' => true]),
             new TwigFilter('upper', [self::class, 'upper'], ['needs_charset' => true]),
@@ -223,8 +218,6 @@ final class CoreExtension extends AbstractExtension
             new TwigFilter('trim', [self::class, 'trim']),
             new TwigFilter('nl2br', [self::class, 'nl2br'], ['pre_escape' => 'html', 'is_safe' => ['html']]),
             new TwigFilter('spaceless', [self::class, 'spaceless'], ['is_safe' => ['html']]),
-
-            // array helpers
             new TwigFilter('join', [self::class, 'join']),
             new TwigFilter('split', [self::class, 'split'], ['needs_charset' => true]),
             new TwigFilter('sort', [self::class, 'sort'], ['needs_environment' => true]),
@@ -235,16 +228,12 @@ final class CoreExtension extends AbstractExtension
             new TwigFilter('map', [self::class, 'map'], ['needs_environment' => true]),
             new TwigFilter('reduce', [self::class, 'reduce'], ['needs_environment' => true]),
             new TwigFilter('find', [self::class, 'find'], ['needs_environment' => true]),
-
-            // string/array filters
             new TwigFilter('reverse', [self::class, 'reverse'], ['needs_charset' => true]),
             new TwigFilter('shuffle', [self::class, 'shuffle'], ['needs_charset' => true]),
             new TwigFilter('length', [self::class, 'length'], ['needs_charset' => true]),
             new TwigFilter('slice', [self::class, 'slice'], ['needs_charset' => true]),
             new TwigFilter('first', [self::class, 'first'], ['needs_charset' => true]),
             new TwigFilter('last', [self::class, 'last'], ['needs_charset' => true]),
-
-            // iteration and runtime
             new TwigFilter('default', [self::class, 'default'], ['node_class' => DefaultFilter::class]),
             new TwigFilter('keys', [self::class, 'keys']),
         ];
@@ -400,9 +389,6 @@ final class CoreExtension extends AbstractExtension
             if ('UTF-8' !== $charset) {
                 $values = self::convertEncoding($values, 'UTF-8', $charset);
             }
-
-            // unicode version of str_split()
-            // split at all positions, but not after the start and not before the end
             $values = preg_split('/(?<!^)(?!$)/u', $values);
 
             if ('UTF-8' !== $charset) {
@@ -500,7 +486,6 @@ final class CoreExtension extends AbstractExtension
      */
     public function convertDate($date = null, $timezone = null)
     {
-        // determine the timezone
         if (false !== $timezone) {
             if (null === $timezone) {
                 $timezone = $this->getTimezone();
@@ -508,8 +493,6 @@ final class CoreExtension extends AbstractExtension
                 $timezone = new \DateTimeZone($timezone);
             }
         }
-
-        // immutable dates
         if ($date instanceof \DateTimeImmutable) {
             return false !== $timezone ? $date->setTimezone($timezone) : $date;
         }
@@ -819,10 +802,6 @@ final class CoreExtension extends AbstractExtension
 
         return $r;
     }
-
-    // The '_default' filter is used internally to avoid using the ternary operator
-    // which costs a lot for big contexts (before PHP 5.4). So, on average,
-    // a function call is cheaper.
     /**
      * @internal
      */
@@ -1034,7 +1013,6 @@ final class CoreExtension extends AbstractExtension
      */
     public static function compare($a, $b)
     {
-        // int <=> string
         if (\is_int($a) && \is_string($b)) {
             $bTrim = trim($b, " \t\n\r\v\f");
             if (!is_numeric($bTrim)) {
@@ -1057,8 +1035,6 @@ final class CoreExtension extends AbstractExtension
                 return (float) $aTrim <=> (float) $b;
             }
         }
-
-        // float <=> string
         if (\is_float($a) && \is_string($b)) {
             if (is_nan($a)) {
                 return 1;
@@ -1081,8 +1057,6 @@ final class CoreExtension extends AbstractExtension
 
             return (float) $aTrim <=> $b;
         }
-
-        // fallback to <=>
         return $a <=> $b;
     }
 
@@ -1563,12 +1537,10 @@ final class CoreExtension extends AbstractExtension
      *
      * @internal
      */
-    public static function getAttribute(Environment $env, Source $source, $object, $item, array $arguments = [], $type = /* Template::ANY_CALL */ 'any', $isDefinedTest = false, $ignoreStrictCheck = false, $sandboxed = false, int $lineno = -1)
+    public static function getAttribute(Environment $env, Source $source, $object, $item, array $arguments = [], $type =  'any', $isDefinedTest = false, $ignoreStrictCheck = false, $sandboxed = false, int $lineno = -1)
     {
         $propertyNotAllowedError = null;
-
-        // array
-        if (/* Template::METHOD_CALL */ 'method' !== $type) {
+        if ( 'method' !== $type) {
             $arrayItem = \is_bool($item) || \is_float($item) ? (int) $item : $item;
 
             if ($sandboxed && $object instanceof \ArrayAccess && !\in_array(get_class($object), self::ARRAY_LIKE_CLASSES, true)) {
@@ -1589,7 +1561,7 @@ final class CoreExtension extends AbstractExtension
                 return $object[$arrayItem];
             }
 
-            if (/* Template::ARRAY_CALL */ 'array' === $type || !\is_object($object)) {
+            if ( 'array' === $type || !\is_object($object)) {
                 if ($isDefinedTest) {
                     return false;
                 }
@@ -1608,7 +1580,7 @@ final class CoreExtension extends AbstractExtension
                     } else {
                         $message = \sprintf('Key "%s" for sequence/mapping with keys "%s" does not exist.', $arrayItem, implode(', ', array_keys($object)));
                     }
-                } elseif (/* Template::ARRAY_CALL */ 'array' === $type) {
+                } elseif ( 'array' === $type) {
                     if (null === $object) {
                         $message = \sprintf('Impossible to access a key ("%s") on a null variable.', $item);
                     } else {
@@ -1647,9 +1619,7 @@ final class CoreExtension extends AbstractExtension
         if ($object instanceof Template) {
             throw new RuntimeError('Accessing \Twig\Template attributes is forbidden.', $lineno, $source);
         }
-
-        // object property
-        if (/* Template::METHOD_CALL */ 'method' !== $type) {
+        if ( 'method' !== $type) {
             if ($sandboxed) {
                 try {
                     $env->getExtension(SandboxExtension::class)->checkPropertyAllowed($object, $item, $lineno, $source);
@@ -1672,9 +1642,6 @@ final class CoreExtension extends AbstractExtension
         static $cache = [];
 
         $class = \get_class($object);
-
-        // object method
-        // precedence: getXxx() > isXxx() > hasXxx()
         if (!isset($cache[$class])) {
             $methods = get_class_methods($object);
             sort($methods);
@@ -1699,8 +1666,6 @@ final class CoreExtension extends AbstractExtension
                 } else {
                     continue;
                 }
-
-                // skip get() and is() methods (in which case, $name is empty)
                 if ($name) {
                     if (!isset($classCache[$name])) {
                         $classCache[$name] = $method;
@@ -1757,9 +1722,6 @@ final class CoreExtension extends AbstractExtension
         if ($isDefinedTest) {
             return true;
         }
-
-        // Some objects throw exceptions when they have __call, and the method we try
-        // to call is not supported. If ignoreStrictCheck is true, we should return null.
         try {
             $ret = $object->$method(...$arguments);
         } catch (\BadMethodCallException $e) {
@@ -1816,8 +1778,6 @@ final class CoreExtension extends AbstractExtension
         if (\is_array($array)) {
             return array_filter($array, $arrow, \ARRAY_FILTER_USE_BOTH);
         }
-
-        // the IteratorIterator wrapping is needed as some internal PHP classes are \Traversable but do not implement \Iterator
         return new \CallbackFilterIterator(new \IteratorIterator($array), $arrow);
     }
 

@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* display/results/null_display.twig */
+
 class __TwigTemplate_c1d784e46e5c1a10a445bb2de20ef9fd extends Template
 {
     private $source;
@@ -34,16 +34,13 @@ class __TwigTemplate_c1d784e46e5c1a10a445bb2de20ef9fd extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<td data-decimals=\"";
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["data_decimals"] ?? null), "html", null, true);
         yield "\"
     data-type=\"";
-        // line 2
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["data_type"] ?? null), "html", null, true);
         yield "\"
     ";
-        // line 4
         yield "    class=\"";
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["classes"] ?? null), "html", null, true);
         yield " null\">

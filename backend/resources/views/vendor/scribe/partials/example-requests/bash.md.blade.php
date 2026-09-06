@@ -1,6 +1,6 @@
 @php
     use Knuckles\Scribe\Tools\WritingUtils as u;
-    /** @var  Knuckles\Camel\Output\OutputEndpointData $endpoint */
+    
 @endphp
 ```bash
 curl --request {{$endpoint->httpMethods[0]}} \

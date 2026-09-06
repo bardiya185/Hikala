@@ -23,10 +23,6 @@ class BannerController extends Controller
     public function __construct(
         private BannerService $bannerService
     ) {}
-
-    // ================================================================
-    // 📋 SCHEMA: Banner (متد dummy فقط برای Schema)
-    // ================================================================
     #[OA\Schema(
         schema: "Banner",
         title: "Banner",
@@ -45,10 +41,6 @@ class BannerController extends Controller
         ]
     )]
     private function bannerSchema() {}
-
-    // ================================================================
-    // 📋 SCHEMA: BannerPosition (متد dummy فقط برای Schema)
-    // ================================================================
     #[OA\Schema(
         schema: "BannerPosition",
         title: "BannerPosition",
@@ -68,10 +60,6 @@ class BannerController extends Controller
         ]
     )]
     private function bannerPositionSchema() {}
-
-    // ================================================================
-    // 🌐 PUBLIC: All Banners Grouped by Position
-    // ================================================================
     #[OA\Get(
         path: '/api/banners',
         tags: ['Banners'],
@@ -105,10 +93,6 @@ class BannerController extends Controller
             'data' => BannerPositionResource::collection($positions),
         ]);
     }
-
-    // ================================================================
-    // 🌐 PUBLIC: Get Banners by Position Key
-    // ================================================================
     #[OA\Get(
         path: '/api/banners/position/{key}',
         tags: ['Banners'],
@@ -149,10 +133,6 @@ class BannerController extends Controller
             'data' => new BannerPositionResource($position),
         ]);
     }
-
-    // ================================================================
-    // 🌐 PUBLIC: Track Banner Click
-    // ================================================================
     #[OA\Post(
         path: '/api/banners/{banner}/click',
         tags: ['Banners'],
@@ -188,10 +168,6 @@ class BannerController extends Controller
             'url' => $banner->url,
         ]);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: List All Banners (with pagination)
-    // ================================================================
     #[OA\Get(
         path: '/api/admin/banners',
         tags: ['Banners'],
@@ -228,10 +204,6 @@ class BannerController extends Controller
 
         return BannerResource::collection($banners);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Create Banner
-    // ================================================================
     #[OA\Post(
         path: '/api/admin/banners',
         tags: ['Banners'],
@@ -287,10 +259,6 @@ class BannerController extends Controller
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Show Single Banner
-    // ================================================================
     #[OA\Get(
         path: '/api/admin/banners/{banner}',
         tags: ['Banners'],
@@ -313,10 +281,6 @@ class BannerController extends Controller
     {
         return new BannerResource($banner->load('position', 'linkable'));
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Update Banner
-    // ================================================================
     #[OA\Put(
         path: '/api/admin/banners/{banner}',
         tags: ['Banners'],
@@ -369,10 +333,6 @@ class BannerController extends Controller
 
         return new BannerResource($banner);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Delete Banner
-    // ================================================================
     #[OA\Delete(
         path: '/api/admin/banners/{banner}',
         tags: ['Banners'],

@@ -26,7 +26,7 @@ return new class extends Migration
                 $table->decimal('base_price', 15, 0);
             
                 $table->unsignedInteger('stock')
-                    ->default(0);
+                    ->default(0)->lockForUpdate();
 
                 $table->unsignedInteger('max_order_quantity')
                 ->default(5);

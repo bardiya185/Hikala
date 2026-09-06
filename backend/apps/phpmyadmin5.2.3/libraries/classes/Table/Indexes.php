@@ -18,13 +18,13 @@ use function __;
 
 final class Indexes
 {
-    /** @var ResponseRenderer */
+    
     protected $response;
 
-    /** @var Template */
+    
     protected $template;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, DatabaseInterface $dbi)
@@ -70,8 +70,6 @@ final class Indexes
             $sql_query = $this->dbi->getTable($db, $table)
                 ->getSqlQueryForIndexCreateOrEdit($index, $error);
         }
-
-        // If there is a request for SQL previewing.
         if (isset($_POST['preview_sql'])) {
             $this->response->addJSON(
                 'sql_data',
@@ -105,7 +103,7 @@ final class Indexes
                     ])
                 );
             } else {
-                /** @var StructureController $controller */
+                
                 $controller = $containerBuilder->get(StructureController::class);
                 $controller();
             }

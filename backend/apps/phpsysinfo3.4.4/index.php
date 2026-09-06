@@ -27,8 +27,6 @@ if (!extension_loaded("pcre")) {
 }
 
 require_once PSI_APP_ROOT.'/includes/autoloader.inc.php';
-
-// Load configuration
 require_once PSI_APP_ROOT.'/read_config.php';
 
 if (!defined('PSI_CONFIG_FILE') || !defined('PSI_DEBUG')) {
@@ -36,8 +34,6 @@ if (!defined('PSI_CONFIG_FILE') || !defined('PSI_DEBUG')) {
     echo $tpl->fetch();
     die();
 }
-
-// redirect to page with and without javascript
 $display = strtolower(isset($_GET['disp']) ? $_GET['disp'] : PSI_DEFAULT_DISPLAY_MODE);
 switch ($display) {
 case "static":

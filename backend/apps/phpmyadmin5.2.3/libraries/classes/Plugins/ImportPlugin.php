@@ -27,7 +27,7 @@ abstract class ImportPlugin implements Plugin
      */
     protected $properties;
 
-    /** @var Import */
+    
     protected $import;
 
     final public function __construct()

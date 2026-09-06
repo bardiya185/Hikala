@@ -1930,19 +1930,15 @@ system, the following work:</p>
 <p>Examples:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>$cfg[&#39;Servers&#39;][$i][&#39;AllowDeny&#39;][&#39;order&#39;] = &#39;allow,deny&#39;;
 $cfg[&#39;Servers&#39;][$i][&#39;AllowDeny&#39;][&#39;rules&#39;] = [&#39;allow bob from all&#39;];
-// Allow only &#39;bob&#39; to connect from any host
 
 $cfg[&#39;Servers&#39;][$i][&#39;AllowDeny&#39;][&#39;order&#39;] = &#39;allow,deny&#39;;
 $cfg[&#39;Servers&#39;][$i][&#39;AllowDeny&#39;][&#39;rules&#39;] = [&#39;allow mary from 192.168.100.[50-100]&#39;];
-// Allow only &#39;mary&#39; to connect from host 192.168.100.50 through 192.168.100.100
 
 $cfg[&#39;Servers&#39;][$i][&#39;AllowDeny&#39;][&#39;order&#39;] = &#39;allow,deny&#39;;
 $cfg[&#39;Servers&#39;][$i][&#39;AllowDeny&#39;][&#39;rules&#39;] = [&#39;allow % from 192.168.[5-6].10&#39;];
-// Allow any user to connect from host 192.168.5.10 or 192.168.6.10
 
 $cfg[&#39;Servers&#39;][$i][&#39;AllowDeny&#39;][&#39;order&#39;] = &#39;allow,deny&#39;;
 $cfg[&#39;Servers&#39;][$i][&#39;AllowDeny&#39;][&#39;rules&#39;] = [&#39;allow root from 192.168.5.50&#39;,&#39;allow % from 192.168.6.10&#39;];
-// Allow any user to connect from 192.168.6.10, and additionally allow root to connect from 192.168.5.50
 </pre></div>
 </div>
 </dd></dl>
@@ -2012,7 +2008,7 @@ empty). See <code class="file docutils literal notranslate"><span class="pre">ex
 <span class="sd"> */</span>
 <span class="k">function</span> <span class="nf">get_login_credentials</span><span class="p">(</span><span class="nv">$user</span><span class="p">)</span>
 <span class="p">{</span>
-    <span class="cm">/* Optionally we can use passed username */</span>
+    <span class="cm"></span>
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="k">empty</span><span class="p">(</span><span class="nv">$user</span><span class="p">))</span> <span class="p">{</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="nv">$user</span><span class="p">,</span>
@@ -2020,7 +2016,7 @@ empty). See <code class="file docutils literal notranslate"><span class="pre">ex
         <span class="p">];</span>
     <span class="p">}</span>
 
-    <span class="cm">/* Here we would retrieve the credentials */</span>
+    <span class="cm"></span>
     <span class="k">return</span> <span class="p">[</span>
         <span class="s1">&#39;root&#39;</span><span class="p">,</span>
         <span class="s1">&#39;&#39;</span><span class="p">,</span>
@@ -4411,7 +4407,7 @@ listed in <span class="target" id="index-153"></span><a class="reference interna
 </dl>
 <p>Defines the default language to use, if not browser-defined or user-
 defined. The corresponding language file needs to be in
-<code class="docutils literal notranslate"><span class="pre">locale/*code*/LC_MESSAGES/phpmyadmin.mo</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">localeLC_MESSAGES/phpmyadmin.mo</span></code>.</p>
 </dd></dl>
 
 <dl class="config option">
@@ -4442,7 +4438,7 @@ for list of possible values.</p>
 </dd>
 </dl>
 <p>Force language to use. The corresponding language file needs to be in
-<code class="docutils literal notranslate"><span class="pre">locale/*code*/LC_MESSAGES/phpmyadmin.mo</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">localeLC_MESSAGES/phpmyadmin.mo</span></code>.</p>
 </dd></dl>
 
 <dl class="config option">
@@ -5996,7 +5992,7 @@ configuration options, only the most frequently used ones.</p>
 <span class="sd"> * This is needed for cookie based authentication to encrypt the cookie.</span>
 <span class="sd"> * Needs to be a 32-bytes long string of random bytes. See FAQ 2.10.</span>
 <span class="sd"> */</span>
-<span class="nv">$cfg</span><span class="p">[</span><span class="s1">&#39;blowfish_secret&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span> <span class="cm">/* YOU MUST FILL IN THIS FOR COOKIE AUTH! */</span>
+<span class="nv">$cfg</span><span class="p">[</span><span class="s1">&#39;blowfish_secret&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span> <span class="cm"></span>
 
 <span class="sd">/**</span>
 <span class="sd"> * Servers configuration</span>
@@ -6007,9 +6003,9 @@ configuration options, only the most frequently used ones.</p>
 <span class="sd"> * First server</span>
 <span class="sd"> */</span>
 <span class="nv">$i</span><span class="o">++</span><span class="p">;</span>
-<span class="cm">/* Authentication type */</span>
+<span class="cm"></span>
 <span class="nv">$cfg</span><span class="p">[</span><span class="s1">&#39;Servers&#39;</span><span class="p">][</span><span class="nv">$i</span><span class="p">][</span><span class="s1">&#39;auth_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;cookie&#39;</span><span class="p">;</span>
-<span class="cm">/* Server parameters */</span>
+<span class="cm"></span>
 <span class="nv">$cfg</span><span class="p">[</span><span class="s1">&#39;Servers&#39;</span><span class="p">][</span><span class="nv">$i</span><span class="p">][</span><span class="s1">&#39;host&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;localhost&#39;</span><span class="p">;</span>
 <span class="nv">$cfg</span><span class="p">[</span><span class="s1">&#39;Servers&#39;</span><span class="p">][</span><span class="nv">$i</span><span class="p">][</span><span class="s1">&#39;compress&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
 <span class="nv">$cfg</span><span class="p">[</span><span class="s1">&#39;Servers&#39;</span><span class="p">][</span><span class="nv">$i</span><span class="p">][</span><span class="s1">&#39;AllowNoPassword&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
@@ -6018,13 +6014,13 @@ configuration options, only the most frequently used ones.</p>
 <span class="sd"> * phpMyAdmin configuration storage settings.</span>
 <span class="sd"> */</span>
 
-<span class="cm">/* User used to manipulate with storage */</span>
+<span class="cm"></span>
 <span class="c1">// $cfg[&#39;Servers&#39;][$i][&#39;controlhost&#39;] = &#39;&#39;;</span>
 <span class="c1">// $cfg[&#39;Servers&#39;][$i][&#39;controlport&#39;] = &#39;&#39;;</span>
 <span class="c1">// $cfg[&#39;Servers&#39;][$i][&#39;controluser&#39;] = &#39;pma&#39;;</span>
 <span class="c1">// $cfg[&#39;Servers&#39;][$i][&#39;controlpass&#39;] = &#39;pmapass&#39;;</span>
 
-<span class="cm">/* Storage database and tables */</span>
+<span class="cm"></span>
 <span class="c1">// $cfg[&#39;Servers&#39;][$i][&#39;pmadb&#39;] = &#39;phpmyadmin&#39;;</span>
 <span class="c1">// $cfg[&#39;Servers&#39;][$i][&#39;bookmarktable&#39;] = &#39;pma__bookmark&#39;;</span>
 <span class="c1">// $cfg[&#39;Servers&#39;][$i][&#39;relation&#39;] = &#39;pma__relation&#39;;</span>

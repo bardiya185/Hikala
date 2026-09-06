@@ -60,16 +60,16 @@ final class LazyUuidFromString implements UuidInterface
      * @psalm-var non-empty-string
      */
     private $uuid;
-    /** @var UuidInterface|null */
+    
     private $unwrapped;
 
-    /** @psalm-param non-empty-string $uuid */
+    
     public function __construct(string $uuid)
     {
         $this->uuid = $uuid;
     }
 
-    /** @psalm-pure */
+    
     public static function fromBytes(string $bytes): self
     {
         $base16Uuid = bin2hex($bytes);
@@ -121,16 +121,14 @@ final class LazyUuidFromString implements UuidInterface
      */
     public function __unserialize(array $data): void
     {
-        // @codeCoverageIgnoreStart
         if (!isset($data['string'])) {
             throw new ValueError(sprintf('%s(): Argument #1 ($data) is invalid', __METHOD__));
         }
-        // @codeCoverageIgnoreEnd
 
         $this->unserialize($data['string']);
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getNumberConverter(): NumberConverterInterface
     {
         return ($this->unwrapped ?? $this->unwrap())
@@ -148,98 +146,98 @@ final class LazyUuidFromString implements UuidInterface
             ->getFieldsHex();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getClockSeqHiAndReservedHex(): string
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getClockSeqHiAndReservedHex();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getClockSeqLowHex(): string
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getClockSeqLowHex();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getClockSequenceHex(): string
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getClockSequenceHex();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getDateTime(): DateTimeInterface
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getDateTime();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getLeastSignificantBitsHex(): string
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getLeastSignificantBitsHex();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getMostSignificantBitsHex(): string
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getMostSignificantBitsHex();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getNodeHex(): string
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getNodeHex();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getTimeHiAndVersionHex(): string
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getTimeHiAndVersionHex();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getTimeLowHex(): string
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getTimeLowHex();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getTimeMidHex(): string
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getTimeMidHex();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getTimestampHex(): string
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getTimestampHex();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getUrn(): string
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getUrn();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getVariant(): ?int
     {
         return ($this->unwrapped ?? $this->unwrap())
             ->getVariant();
     }
 
-    /** @psalm-suppress DeprecatedMethod */
+    
     public function getVersion(): ?int
     {
         return ($this->unwrapped ?? $this->unwrap())
@@ -270,7 +268,7 @@ final class LazyUuidFromString implements UuidInterface
      */
     public function getBytes(): string
     {
-        /** @phpstan-ignore-next-line PHPStan complains that this is not a non-empty-string. */
+        
         return (string) hex2bin(str_replace('-', '', $this->uuid));
     }
 

@@ -50,16 +50,8 @@ final class Encoder
         string $encoding = self::DEFAULT_BYTE_MODE_ECODING,
         ?Version $forcedVersion = null
     ) : QrCode {
-        // Pick an encoding mode appropriate for the content. Note that this
-        // will not attempt to use multiple modes / segments even if that were
-        // more efficient. Would be nice.
         $mode = self::chooseMode($content, $encoding);
-
-        // This will store the header information, like mode and length, as well
-        // as "header" segments like an ECI segment.
         $headerBits = new BitArray();
-
-        // Append ECI segment if applicable
         if (Mode::BYTE() === $mode && self::DEFAULT_BYTE_MODE_ECODING !== $encoding) {
             $eci = CharacterSetEci::getCharacterSetEciByName($encoding);
 
@@ -67,34 +59,20 @@ final class Encoder
                 self::appendEci($eci, $headerBits);
             }
         }
-
-        // (With ECI in place,) Write the mode marker
         self::appendModeInfo($mode, $headerBits);
-
-        // Collect data within the main segment, separately, to count its size
-        // if needed. Don't add it to main payload yet.
         $dataBits = new BitArray();
         self::appendBytes($content, $mode, $dataBits, $encoding);
-
-        // Hard part: need to know version to know how many bits length takes.
-        // But need to know how many bits it takes to know version. First we
-        // take a guess at version by assuming version will be the minimum, 1:
         $provisionalBitsNeeded = $headerBits->getSize()
             + $mode->getCharacterCountBits(Version::getVersionForNumber(1))
             + $dataBits->getSize();
         $provisionalVersion = self::chooseVersion($provisionalBitsNeeded, $ecLevel);
-
-        // Use that guess to calculate the right version. I am still not sure
-        // this works in 100% of cases.
         $bitsNeeded = $headerBits->getSize()
             + $mode->getCharacterCountBits($provisionalVersion)
             + $dataBits->getSize();
         $version = self::chooseVersion($bitsNeeded, $ecLevel);
 
         if (null !== $forcedVersion) {
-            // Forced version check
             if ($version->getVersionNumber() <= $forcedVersion->getVersionNumber()) {
-                // Calculated minimum version is same or equal as forced version
                 $version = $forcedVersion;
             } else {
                 throw new WriterException(
@@ -108,33 +86,21 @@ final class Encoder
 
         $headerAndDataBits = new BitArray();
         $headerAndDataBits->appendBitArray($headerBits);
-
-        // Find "length" of main segment and write it.
         $numLetters = (Mode::BYTE() === $mode ? $dataBits->getSizeInBytes() : strlen($content));
         self::appendLengthInfo($numLetters, $version, $mode, $headerAndDataBits);
-
-        // Put data together into the overall payload.
         $headerAndDataBits->appendBitArray($dataBits);
         $ecBlocks = $version->getEcBlocksForLevel($ecLevel);
         $numDataBytes = $version->getTotalCodewords() - $ecBlocks->getTotalEcCodewords();
-
-        // Terminate the bits properly.
         self::terminateBits($numDataBytes, $headerAndDataBits);
-
-        // Interleave data bits with error correction code.
         $finalBits = self::interleaveWithEcBytes(
             $headerAndDataBits,
             $version->getTotalCodewords(),
             $numDataBytes,
             $ecBlocks->getNumBlocks()
         );
-
-        // Choose the mask pattern.
         $dimension = $version->getDimensionForVersion();
         $matrix = new ByteMatrix($dimension, $dimension);
         $maskPattern = self::chooseMaskPattern($finalBits, $ecLevel, $version, $matrix);
-
-        // Build the matrix.
         MatrixUtil::buildMatrix($finalBits, $ecLevel, $version, $maskPattern, $matrix);
 
         return new QrCode($mode, $ecLevel, $version, $maskPattern, $matrix);
@@ -548,18 +514,15 @@ final class Encoder
             $num1 = (int) $content[$i];
 
             if ($i + 2 < $length) {
-                // Encode three numeric letters in ten bits.
                 $num2 = (int) $content[$i + 1];
                 $num3 = (int) $content[$i + 2];
                 $bits->appendBits($num1 * 100 + $num2 * 10 + $num3, 10);
                 $i += 3;
             } elseif ($i + 1 < $length) {
-                // Encode two numeric letters in seven bits.
                 $num2 = (int) $content[$i + 1];
                 $bits->appendBits($num1 * 10 + $num2, 7);
                 $i += 2;
             } else {
-                // Encode one numeric letter in four bits.
                 $bits->appendBits($num1, 4);
                 ++$i;
             }
@@ -589,12 +552,9 @@ final class Encoder
                 if (-1 === $code2) {
                     throw new WriterException('Invalid alphanumeric code');
                 }
-
-                // Encode two alphanumeric letters in 11 bits.
                 $bits->appendBits($code1 * 45 + $code2, 11);
                 $i += 2;
             } else {
-                // Encode one alphanumeric letter in six bits.
                 $bits->appendBits($code1, 6);
                 ++$i;
             }
@@ -630,8 +590,6 @@ final class Encoder
     private static function appendKanjiBytes(string $content, BitArray $bits) : void
     {
         if (strlen($content) % 2 > 0) {
-            // We just do a simple length check here. The for loop will check
-            // individual characters.
             throw new WriterException('Content does not seem to be encoded in SHIFT-JIS');
         }
 

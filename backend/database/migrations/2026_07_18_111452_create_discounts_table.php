@@ -10,29 +10,17 @@ return new class extends Migration
     {
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
-            
-            // Campaign Relation (اختیاری)
             $table->foreignId('campaign_id')
                   ->nullable()
                   ->constrained('discount_campaigns')
                   ->nullOnDelete();
-            
-            // Internal Name
             $table->string('name');
-            
-            // Discount Rule (قانون تخفیف)
             $table->enum('type', ['percent', 'fixed']);
             $table->decimal('value', 12, 2);
             $table->boolean('stackable')->default(false);
-            
-            // Usage Limits
             $table->unsignedInteger('quantity_limit')->nullable();
             $table->unsignedInteger('used_quantity')->default(0);
-            
-            // Application Priority (اولویت اعمال)
             $table->unsignedInteger('priority')->default(0);
-            
-            // Status
             $table->boolean('is_active')->default(true);
             
             $table->timestamps();

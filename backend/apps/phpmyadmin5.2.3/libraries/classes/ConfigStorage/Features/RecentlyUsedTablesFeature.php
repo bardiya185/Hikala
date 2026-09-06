@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class RecentlyUsedTablesFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $recent;
 
     public function __construct(DatabaseName $database, TableName $recent)

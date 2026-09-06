@@ -22,8 +22,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => RoleOrPermissionMiddleware::class,
             'optional.auth' => \App\Http\Middleware\OptionalAuth::class,
         ]);
+
+        $middleware->api(prepend: [
+            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+        ]);
     
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
     })->create();

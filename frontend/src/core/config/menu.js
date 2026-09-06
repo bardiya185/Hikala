@@ -7,25 +7,25 @@
  export const menuItems = [
     {
       id: "orders",
-      label: "سفارش ها",
+      label: "orders",
       href: "/profile/orders",
       icon: BsBag,
     },
     {
       id: "address",
-      label: "ادرس ها",
+      label: "address",
       href: "/profile/addresess",
       icon: SiGooglestreetview,
     },
     {
       id: "lists",
-      label: "لیست ها",
+      label: "lists",
       href: "/profile/lists/",
       icon: GrFavorite,
     },
     {
       id: "comments",
-      label: "دیدگاه و پرسش ها",
+      label: "comments",
       href: "/profile/comments",
       icon: FaRegComment,
     },

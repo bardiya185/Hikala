@@ -25,16 +25,10 @@ class HomeController extends AbstractController
         $formset = isset($params['formset']) && is_string($params['formset']) ? $params['formset'] : '';
 
         $pages = $this->getPages();
-
-        // message handling
         Index::messagesBegin();
-
-        // Check phpMyAdmin version
         if (isset($params['version_check'])) {
             Index::versionCheck();
         }
-
-        // Perform various security, compatibility and consistency checks
         $configChecker = new ServerConfigChecks($this->config);
         $configChecker->performConfigChecks();
 
@@ -52,8 +46,6 @@ class HomeController extends AbstractController
 
         Index::messagesEnd();
         $messages = Index::messagesShowHtml();
-
-        // prepare unfiltered language list
         $sortedLanguages = LanguageManager::getInstance()->sortedLanguages();
         $languages = [];
         foreach ($sortedLanguages as $language) {

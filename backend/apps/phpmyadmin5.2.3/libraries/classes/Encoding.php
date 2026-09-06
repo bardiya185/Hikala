@@ -122,7 +122,7 @@ class Encoding
             $engine = $GLOBALS['cfg']['RecodingEngine'];
         }
 
-        /* Use user configuration */
+        
         if (isset(self::$enginemap[$engine])) {
             if (function_exists(self::$enginemap[$engine][0])) {
                 self::$engine = self::$enginemap[$engine][1];
@@ -133,7 +133,7 @@ class Encoding
             Core::warnMissingExtension(self::$enginemap[$engine][2]);
         }
 
-        /* Autodetection */
+        
         foreach (self::$engineorder as $engine) {
             if (function_exists(self::$enginemap[$engine][0])) {
                 self::$engine = self::$enginemap[$engine][1];
@@ -142,7 +142,7 @@ class Encoding
             }
         }
 
-        /* Fallback to none conversion */
+        
         self::$engine = self::ENGINE_NONE;
     }
 
@@ -356,13 +356,10 @@ class Encoding
             self::initEngine();
         }
 
-        /* Most engines do not support listing */
+        
         if (self::$engine != self::ENGINE_MB) {
             return array_filter($GLOBALS['cfg']['AvailableCharsets'], static function (string $charset): bool {
-                // Removes any ignored character
                 $normalizedCharset = strtoupper((string) preg_replace(['/[^A-Za-z0-9\-\/]/'], '', $charset));
-
-                // The character set ISO-2022-CN-EXT can be vulnerable (CVE-2024-2961).
                 return ! str_contains($normalizedCharset, 'ISO-2022-CN-EXT')
                     && ! str_contains($normalizedCharset, 'ISO2022CNEXT');
             });

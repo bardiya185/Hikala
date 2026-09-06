@@ -28,8 +28,6 @@ elseif($action == 'change') {
 	$ApacheHttpdContents = preg_replace('~'.$parameter.'[ \t]+'.$value.'~m',$new_parameter.' '.$newvalue,$ApacheHttpdContents, -1, $count);
 }
 
-//error_log("parameter=".$parameter."| - new parameter=".$new_parameter."| value=".$value."| newvalue=".$newvalue."| action=".$action."| count=".$count);
-
 if($count > 0) {
 	write_file($c_apacheConfFile,$ApacheHttpdContents);
 }

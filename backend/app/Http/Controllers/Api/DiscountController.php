@@ -8,7 +8,6 @@ use App\Http\Requests\UpdateDiscountRequest;
 use App\Models\Discount;
 use App\Services\Discount\DiscountManagementService;
 use Illuminate\Http\JsonResponse;
-//use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
 
 class DiscountController extends Controller

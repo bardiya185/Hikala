@@ -6,18 +6,13 @@ use PhpMyAdmin\Common;
 use PhpMyAdmin\UrlRedirector;
 
 if (! defined('ROOT_PATH')) {
-    // phpcs:disable PSR1.Files.SideEffects
     define('ROOT_PATH', __DIR__ . DIRECTORY_SEPARATOR);
-    // phpcs:enable
 }
 
 if (PHP_VERSION_ID < 70205) {
     die('<p>PHP 7.2.5+ is required.</p><p>Currently installed version is: ' . PHP_VERSION . '</p>');
 }
-
-// phpcs:disable PSR1.Files.SideEffects
 define('PHPMYADMIN', true);
-// phpcs:enable
 
 require_once ROOT_PATH . 'libraries/constants.php';
 

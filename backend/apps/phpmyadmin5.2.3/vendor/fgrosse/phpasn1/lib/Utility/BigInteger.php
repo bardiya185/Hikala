@@ -113,7 +113,7 @@ abstract class BigInteger
      */
     abstract public function __toString();
 
-    /* INFORMATIONAL FUNCTIONS */
+    
 
     /**
      * Return integer, if possible. Throws an exception if the number can not be represented as a native integer.
@@ -136,7 +136,7 @@ abstract class BigInteger
      */
     abstract public function compare($number);
 
-    /* MODIFY */
+    
 
     /**
      * Add another integer $b and returns the result.

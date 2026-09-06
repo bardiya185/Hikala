@@ -17,44 +17,51 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-//
-// $Id: psstatus.js 679 2012-09-04 10:10:11Z namiltd $
-//
-
-/*global $, jQuery, buildBlock, datetime, plugin_translate, genlang */
 
 "use strict";
 
-var psstatus_show = false, psstatus_table;
-
-//appendcss("./plugins/PSStatus/css/PSStatus.css");
+var psstatus_show = false,
+    psstatus_table;
 
 /**
  * insert content into table
  * @param {jQuery} xml plugin-XML
  */
 function psstatus_populate(xml) {
-    var name = "", status = 0, state = "", hostname = "";
+    var name = "",
+        status = 0,
+        state = "",
+        hostname = "";
 
     psstatus_table.fnClearTable();
 
-    hostname = $("Plugins Plugin_PSStatus", xml).attr('Hostname');
+    hostname = $("Plugins Plugin_PSStatus", xml).attr("Hostname");
     if (hostname !== undefined) {
-        $('span[class=Hostname_PSStatus]').html(hostname);
+        $("span[class=Hostname_PSStatus]").html(hostname);
     }
 
-    $("Plugins Plugin_PSStatus Process", xml).each(function psstatus_getprocess(idp) {
-        name = $(this).attr("Name");
-        status = parseInt($(this).attr("Status"), 10);
-        if (!isNaN(status) && (status === 1)) {
-            state = "<span style=\"display:none;\">" + status.toString() + "</span><img src=\"./plugins/psstatus/gfx/online.gif\" alt=\"online\" title=\"\" style=\"width:18px;\" />";
-        }
-        else {
-            state = "<span style=\"display:none;\">" + status.toString() + "</span><img src=\"./plugins/psstatus/gfx/offline.gif\" alt=\"offline\" title=\"\" style=\"width:18px;\" />";
-        }
-        psstatus_table.fnAddData(["<span style=\"display:none;\">" + name + "</span>" + name, state]);
-        psstatus_show = true;
-    });
+    $("Plugins Plugin_PSStatus Process", xml).each(
+        function psstatus_getprocess(idp) {
+            name = $(this).attr("Name");
+            status = parseInt($(this).attr("Status"), 10);
+            if (!isNaN(status) && status === 1) {
+                state =
+                    '<span style="display:none;">' +
+                    status.toString() +
+                    '</span><img src="./plugins/psstatus/gfx/online.gif" alt="online" title="" style="width:18px;" />';
+            } else {
+                state =
+                    '<span style="display:none;">' +
+                    status.toString() +
+                    '</span><img src="./plugins/psstatus/gfx/offline.gif" alt="offline" title="" style="width:18px;" />';
+            }
+            psstatus_table.fnAddData([
+                '<span style="display:none;">' + name + "</span>" + name,
+                state,
+            ]);
+            psstatus_show = true;
+        },
+    );
 }
 
 /**
@@ -63,8 +70,9 @@ function psstatus_populate(xml) {
 function psstatus_buildTable() {
     var html = "";
 
-    html += "<div style=\"overflow-x:auto;\">\n";
-    html += "  <table id=\"Plugin_PSStatusTable\" style=\"border-collapse:collapse;\">\n";
+    html += '<div style="overflow-x:auto;">\n';
+    html +=
+        '  <table id="Plugin_PSStatusTable" style="border-collapse:collapse;">\n';
     html += "    <thead>\n";
     html += "      <tr>\n";
     html += "        <th>" + genlang(2, "PSStatus") + "</th>\n";
@@ -79,19 +87,22 @@ function psstatus_buildTable() {
     $("#Plugin_PSStatus").append(html);
 
     psstatus_table = $("#Plugin_PSStatusTable").dataTable({
-        "bPaginate": false,
-        "bLengthChange": false,
-        "bFilter": false,
-        "bSort": true,
-        "bInfo": false,
-        "bProcessing": true,
-        "bAutoWidth": false,
-        "bStateSave": true,
-        "aoColumns": [{
-            "sType": 'span-string'
-        }, {
-            "sType": 'span-number'
-        }]
+        bPaginate: false,
+        bLengthChange: false,
+        bFilter: false,
+        bSort: true,
+        bInfo: false,
+        bProcessing: true,
+        bAutoWidth: false,
+        bStateSave: true,
+        aoColumns: [
+            {
+                sType: "span-string",
+            },
+            {
+                sType: "span-number",
+            },
+        ],
     });
 }
 
@@ -113,7 +124,7 @@ function psstatus_request() {
                 plugin_translate("PSStatus");
                 $("#Plugin_PSStatus").show();
             }
-        }
+        },
     });
 }
 

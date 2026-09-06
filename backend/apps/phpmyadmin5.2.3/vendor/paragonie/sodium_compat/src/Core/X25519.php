@@ -156,13 +156,13 @@ abstract class ParagonIE_Sodium_Core_X25519 extends ParagonIE_Sodium_Core_Curve2
         $z3 = self::fe_1();
 
         # swap = 0;
-        /** @var int $swap */
+        
         $swap = 0;
 
         # for (pos = 254;pos >= 0;--pos) {
         for ($pos = 254; $pos >= 0; --$pos) {
             # b = e[pos / 8] >> (pos & 7);
-            /** @var int $b */
+            
             $b = self::chrToInt(
                     $e[(int) floor($pos / 8)]
                 ) >> ($pos & 7);

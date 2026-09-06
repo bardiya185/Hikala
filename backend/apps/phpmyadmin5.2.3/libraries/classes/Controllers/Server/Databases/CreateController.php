@@ -23,7 +23,7 @@ use function str_contains;
 
 final class CreateController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, DatabaseInterface $dbi)
@@ -46,8 +46,6 @@ final class CreateController extends AbstractController
 
             return;
         }
-
-        // lower_case_table_names=1 `DB` becomes `db`
         if ($this->dbi->getLowerCaseNames() === '1') {
             $params['new_db'] = mb_strtolower($params['new_db']);
         }
@@ -74,7 +72,6 @@ final class CreateController extends AbstractController
         $result = $this->dbi->tryQuery($sqlQuery);
 
         if (! $result) {
-            // avoid displaying the not-created db name in header or navi panel
             $db = '';
 
             $message = Message::rawError($this->dbi->getError());

@@ -322,7 +322,7 @@ class AuthenticationCookie extends AuthenticationPlugin
                 $GLOBALS['pma_auth_server'] = Core::sanitizeMySQLHost($_REQUEST['pma_servername']);
             }
 
-            /* Secure current session on login to avoid session fixation */
+            
             Session::secure();
 
             return true;
@@ -423,7 +423,7 @@ class AuthenticationCookie extends AuthenticationPlugin
         global $cfg;
 
         if ($GLOBALS['cfg']['AllowArbitraryServer'] && ! empty($GLOBALS['pma_auth_server'])) {
-            /* Allow to specify 'host port' */
+            
             $parts = explode(' ', $GLOBALS['pma_auth_server']);
             if (count($parts) === 2) {
                 $tmp_host = $parts[0];
@@ -587,7 +587,7 @@ class AuthenticationCookie extends AuthenticationPlugin
      */
     private function getEncryptionSecret(): string
     {
-        /** @var mixed $key */
+        
         $key = $GLOBALS['cfg']['blowfish_secret'] ?? null;
         if (! is_string($key)) {
             return $this->getSessionEncryptionSecret();
@@ -610,7 +610,7 @@ class AuthenticationCookie extends AuthenticationPlugin
      */
     private function getSessionEncryptionSecret(): string
     {
-        /** @var mixed $key */
+        
         $key = $_SESSION['encryption_key'] ?? null;
         if (is_string($key) && mb_strlen($key, '8bit') === SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
             return $key;

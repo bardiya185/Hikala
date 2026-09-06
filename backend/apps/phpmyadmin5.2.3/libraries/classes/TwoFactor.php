@@ -30,7 +30,7 @@ use function ucfirst;
  */
 class TwoFactor
 {
-    /** @var string */
+    
     public $user;
 
     /**
@@ -39,16 +39,16 @@ class TwoFactor
      */
     public $config;
 
-    /** @var bool */
+    
     protected $writable;
 
-    /** @var TwoFactorPlugin */
+    
     protected $backend;
 
-    /** @var array */
+    
     protected $available;
 
-    /** @var UserPreferences */
+    
     private $userPreferences;
 
     /**
@@ -194,7 +194,7 @@ class TwoFactor
     {
         $result = TwoFactorPlugin::class;
         if (in_array($name, $this->available)) {
-            /** @psalm-var class-string $result */
+            
             $result = 'PhpMyAdmin\\Plugins\\TwoFactor\\' . ucfirst($name);
         } elseif (! empty($name)) {
             $result = Invalid::class;

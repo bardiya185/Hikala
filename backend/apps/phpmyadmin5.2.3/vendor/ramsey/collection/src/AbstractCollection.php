@@ -110,10 +110,10 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
         $temp = [];
 
         foreach ($this->data as $item) {
-            /** @var mixed $value */
+            
             $value = $this->extractValue($item, $propertyOrMethod);
 
-            /** @psalm-suppress MixedAssignment */
+            
             $temp[] = $value;
         }
 
@@ -131,7 +131,7 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
 
         reset($this->data);
 
-        /** @var T $first */
+        
         $first = current($this->data);
 
         return $first;
@@ -146,7 +146,7 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
             throw new OutOfBoundsException('Can\'t determine last item. Collection is empty');
         }
 
-        /** @var T $item */
+        
         $item = end($this->data);
         reset($this->data);
 
@@ -168,10 +168,10 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
              * @param T $b
              */
             function ($a, $b) use ($propertyOrMethod, $order): int {
-                /** @var mixed $aValue */
+                
                 $aValue = $this->extractValue($a, $propertyOrMethod);
 
-                /** @var mixed $bValue */
+                
                 $bValue = $this->extractValue($b, $propertyOrMethod);
 
                 return ($aValue <=> $bValue) * ($order === self::SORT_DESC ? -1 : 1);
@@ -195,7 +195,7 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
     public function where(string $propertyOrMethod, $value): CollectionInterface
     {
         return $this->filter(function ($item) use ($propertyOrMethod, $value) {
-            /** @var mixed $accessorValue */
+            
             $accessorValue = $this->extractValue($item, $propertyOrMethod);
 
             return $accessorValue === $value;
@@ -214,7 +214,7 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
         $diffAtoB = array_udiff($this->data, $other->toArray(), $this->getComparator());
         $diffBtoA = array_udiff($other->toArray(), $this->data, $this->getComparator());
 
-        /** @var array<array-key, T> $diff */
+        
         $diff = array_merge($diffAtoB, $diffBtoA);
 
         $collection = clone $this;
@@ -227,7 +227,7 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
     {
         $this->compareCollectionTypes($other);
 
-        /** @var array<array-key, T> $intersect */
+        
         $intersect = array_uintersect($this->data, $other->toArray(), $this->getComparator());
 
         $collection = clone $this;
@@ -271,7 +271,7 @@ abstract class AbstractCollection extends AbstractArray implements CollectionInt
      */
     public function unserialize($serialized): void
     {
-        /** @var array<array-key, T> $data */
+        
         $data = unserialize($serialized, ['allowed_classes' => [$this->getType()]]);
 
         $this->data = $data;

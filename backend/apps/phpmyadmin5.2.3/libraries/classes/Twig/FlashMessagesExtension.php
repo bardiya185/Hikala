@@ -10,7 +10,7 @@ use Twig\TwigFunction;
 
 final class FlashMessagesExtension extends AbstractExtension
 {
-    /** @return TwigFunction[] */
+    
     public function getFunctions(): array
     {
         return [new TwigFunction('flash', [FlashMessages::class, 'getMessages'])];

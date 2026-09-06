@@ -81,7 +81,7 @@ class AuthenticationConfig extends AuthenticationPlugin
             $conn_error = __('Cannot connect: invalid settings.');
         }
 
-        /* HTML header */
+        
         $response = ResponseRenderer::getInstance();
         $response->getFooter()
             ->setMinimal();

@@ -101,7 +101,6 @@ final class EscaperNodeVisitor implements NodeVisitorInterface
 
     private function unwrapConditional(ConditionalExpression $expression, Environment $env, string $type): ConditionalExpression
     {
-        // convert "echo a ? b : c" to "a ? echo b : echo c" recursively
         $expr2 = $expression->getNode('expr2');
         if ($expr2 instanceof ConditionalExpression && $this->shouldUnwrapConditional($expr2, $env, $type)) {
             $expr2 = $this->unwrapConditional($expr2, $env, $type);

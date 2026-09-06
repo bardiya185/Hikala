@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 return [
-    // Queries
     [
         'id' => 'Uptime below one day',
         'name' => __('Uptime below one day'),
@@ -100,7 +99,6 @@ return [
         ),
         'justification' => __('slow_query_log is set to \'OFF\''),
     ],
-    // Versions
     [
         'id' => 'Release Series',
         'name' => __('Release Series'),
@@ -178,7 +176,6 @@ return [
         'justification' => __('Available memory on this host: %s'),
         'justification_formula' => 'ADVISOR_formatByteDown(value*1024, 2, 2)',
     ],
-    // Query cache
     [
         'id' => 'Query caching method',
         'name' => __('Query caching method'),
@@ -198,7 +195,6 @@ return [
         ),
         'justification_formula' => 'round(value,1)',
     ],
-    // Sorts
     [
         'id' => 'Percentage of sorts that cause temporary tables',
         'name' => __('Percentage of sorts that cause temporary tables'),
@@ -240,7 +236,6 @@ return [
         'justification' => __('Sorted rows average: %s'),
         'justification_formula' => 'ADVISOR_bytime(value,2)',
     ],
-    // Joins, scans
     [
         'id' => 'Rate of joins without indexes',
         'name' => __('Rate of joins without indexes'),
@@ -295,7 +290,6 @@ return [
         'justification' => __('Rate of reading next table row: %s, this value should be less than 1 per hour'),
         'justification_formula' => 'ADVISOR_bytime(value,2)',
     ],
-    // Temp tables
     [
         'id' => 'Different tmp_table_size and max_heap_table_size',
         'name' => __('Different tmp_table_size and max_heap_table_size'),
@@ -353,7 +347,6 @@ return [
         ),
         'justification_formula' => 'ADVISOR_bytime(value,2)',
     ],
-    // MyISAM index cache
     [
         'id' => 'MyISAM key buffer size',
         'name' => __('MyISAM key buffer size'),
@@ -367,12 +360,12 @@ return [
     ],
     [
         'id' => 'Max % MyISAM key buffer ever used',
-        /* xgettext:no-php-format */
+        
         'name' => __('Max % MyISAM key buffer ever used'),
         'precondition' => 'key_buffer_size > 0',
         'formula' => 'Key_blocks_used * key_cache_block_size / key_buffer_size * 100',
         'test' => 'value < 95',
-        /* xgettext:no-php-format */
+        
         'issue' => __('MyISAM key buffer (index cache) % used is low.'),
         'recommendation' => __(
             'You may need to decrease the size of {key_buffer_size}, re-examine your tables to see'
@@ -385,11 +378,10 @@ return [
     [
         'id' => 'Percentage of MyISAM key buffer used',
         'name' => __('Percentage of MyISAM key buffer used'),
-        // Don't fire if above rule fired - we don't need the same advice twice
         'precondition' => 'key_buffer_size > 0 && !fired(\'Max % MyISAM key buffer ever used\')',
         'formula' => '( 1 - Key_blocks_unused * key_cache_block_size / key_buffer_size) * 100',
         'test' => 'value < 95',
-        /* xgettext:no-php-format */
+        
         'issue' => __('MyISAM key buffer (index cache) % used is low.'),
         'recommendation' => __(
             'You may need to decrease the size of {key_buffer_size}, re-examine your tables to see'
@@ -405,13 +397,12 @@ return [
         'precondition' => 'Key_read_requests > 0',
         'formula' => '100 - (Key_reads / Key_read_requests * 100)',
         'test' => 'value < 95',
-        /* xgettext:no-php-format */
+        
         'issue' => __('The % of indexes that use the MyISAM key buffer is low.'),
         'recommendation' => __('You may need to increase {key_buffer_size}.'),
         'justification' => __('Index reads from memory: %s%%, this value should be above 95%%'),
         'justification_formula' => 'round(value,1)',
     ],
-    // Other caches
     [
         'id' => 'Rate of table open',
         'name' => __('Rate of table open'),
@@ -455,7 +446,7 @@ return [
     ],
     [
         'id' => 'Immediate table locks %',
-        /* xgettext:no-php-format */
+        
         'name' => __('Immediate table locks %'),
         'precondition' => 'Table_locks_waited + Table_locks_immediate > 0',
         'formula' => 'Table_locks_immediate / (Table_locks_waited + Table_locks_immediate) * 100',
@@ -486,7 +477,7 @@ return [
     ],
     [
         'id' => 'Thread cache hit rate %',
-        /* xgettext:no-php-format */
+        
         'name' => __('Thread cache hit rate %'),
         'precondition' => 'thread_cache_size > 0',
         'formula' => '100 - Threads_created / Connections',
@@ -522,7 +513,6 @@ return [
         'justification' => __('slow_launch_time is set to %s'),
         'justification_formula' => 'value',
     ],
-    // Connections
     [
         'id' => 'Percentage of used connections',
         'name' => __('Percentage of used connections'),
@@ -593,7 +583,6 @@ return [
         'justification' => __('Aborted client rate is at %s, this value should be less than 1 per hour'),
         'justification_formula' => 'ADVISOR_bytime(value,2)',
     ],
-    // InnoDB
     [
         'id' => 'Is InnoDB disabled?',
         'name' => __('Is InnoDB disabled?'),
@@ -611,7 +600,7 @@ return [
         'formula' => '(innodb_log_file_size * innodb_log_files_in_group)/ innodb_buffer_pool_size * 100',
         'test' => 'value < 20 && innodb_log_file_size / (1024 * 1024) < 256',
         'issue' => __('The InnoDB log file size is not an appropriate size, in relation to the InnoDB buffer pool.'),
-        'recommendation' => __(/* xgettext:no-php-format */
+        'recommendation' => __(
             'Especially on a system with a lot of writes to InnoDB tables you should set'
             . ' {innodb_log_file_size} to 25% of {innodb_buffer_pool_size}. However the bigger this value,'
             . ' the longer the recovery time will be when database crashes, so this value should not be set'
@@ -632,13 +621,10 @@ return [
         'id' => 'InnoDB log size',
         'name' => __('InnoDB log size'),
         'precondition' => 'innodb_buffer_pool_size > 0 && IS_MARIADB && PMA_MYSQL_INT_VERSION > 100500',
-        // From MariaDB 10.5, there is 1 redo log.
-        // For MariaDB 10.4 and before, the number of redo log files is configured
-        // by the innodb_log_files_in_group system variable.
         'formula' => 'innodb_log_file_size / innodb_buffer_pool_size * 100',
         'test' => 'value < 20 && innodb_log_file_size / (1024 * 1024) < 256',
         'issue' => __('The InnoDB log file size is not an appropriate size, in relation to the InnoDB buffer pool.'),
-        'recommendation' => __(/* xgettext:no-php-format */
+        'recommendation' => __(
             'Especially on a system with a lot of writes to InnoDB tables you should set'
             . ' {innodb_log_file_size} to 25% of {innodb_buffer_pool_size}. However the bigger this value,'
             . ' the longer the recovery time will be when database crashes, so this value should not be set'
@@ -662,7 +648,7 @@ return [
         'formula' => 'innodb_log_file_size / (1024 * 1024)',
         'test' => 'value > 256',
         'issue' => __('The InnoDB log file size is inadequately large.'),
-        'recommendation' => __(/* xgettext:no-php-format */
+        'recommendation' => __(
             'It is usually sufficient to set {innodb_log_file_size} to 25% of the size of'
             . ' {innodb_buffer_pool_size}. A very big {innodb_log_file_size} slows down the recovery'
             . ' time after a database crash considerably. See also '
@@ -683,7 +669,7 @@ return [
         'formula' => 'innodb_buffer_pool_size / system_memory * 100',
         'test' => 'value < 60',
         'issue' => __('Your InnoDB buffer pool is fairly small.'),
-        'recommendation' => __(/* xgettext:no-php-format */
+        'recommendation' => __(
             'The InnoDB buffer pool has a profound impact on performance for InnoDB tables.'
             . ' Assign all your remaining memory to this buffer. For database servers that use solely InnoDB'
             . ' as storage engine and have no other services (e.g. a web server) running, you may set this'
@@ -701,7 +687,6 @@ return [
         ),
         'justification_formula' => 'value',
     ],
-    // Other
     [
         'id' => 'MyISAM concurrent inserts',
         'name' => __('MyISAM concurrent inserts'),

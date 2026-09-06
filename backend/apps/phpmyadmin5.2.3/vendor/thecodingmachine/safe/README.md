@@ -21,9 +21,6 @@ do not throw exceptions. Instead, they return `false` in case of error.
 But most of us are too lazy to check explicitly for every single return of every core PHP function.
 
 ```php
-// This code is incorrect. Twice.
-// "file_get_contents" can return false if the file does not exists
-// "json_decode" can return false if the file content is not valid JSON
 $content = file_get_contents('foobar.json');
 $foobar = json_decode($content);
 ```
@@ -54,8 +51,6 @@ functions, except they are in the `Safe` namespace.
 ```php
 use function Safe\file_get_contents;
 use function Safe\json_decode;
-
-// This code is both safe and simple!
 $content = file_get_contents('foobar.json');
 $foobar = json_decode($content);
 ```
@@ -138,7 +133,6 @@ Especially, you should look for error handling that was already performed, like:
 
 ```php
 if (!mkdir($dirPath)) {
-    // Do something on error
 }
 ```
 
@@ -146,7 +140,6 @@ This code will be refactored by Rector to:
 
 ```php
 if (!\Safe\mkdir($dirPath)) {
-    // Do something on error
 }
 ```
 
@@ -156,7 +149,6 @@ You should then (manually) refactor it to:
 try {
     \Safe\mkdir($dirPath));
 } catch (\Safe\FilesystemException $e) {
-    // Do something on error
 }
 ```
 

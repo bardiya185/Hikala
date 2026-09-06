@@ -14,8 +14,6 @@ class ImageService
         Str::uuid()
         . '.'
         . $file->extension();
-        
-        // ✅ ذخیره در دیسک public (storage/app/public/...)
         $storedPath = $file->storeAs($path, $fileName, 'public');
         
         if (!$storedPath) {

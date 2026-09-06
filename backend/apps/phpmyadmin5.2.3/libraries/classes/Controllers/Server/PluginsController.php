@@ -21,10 +21,10 @@ use function preg_replace;
  */
 class PluginsController extends AbstractController
 {
-    /** @var Plugins */
+    
     private $plugins;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(

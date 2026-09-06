@@ -17,10 +17,10 @@ use function is_array;
 
 final class IndexRenameController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var Indexes */
+    
     private $indexes;
 
     public function __construct(
@@ -52,7 +52,6 @@ final class IndexRenameController extends AbstractController
 
         if (isset($_POST['index'])) {
             if (is_array($_POST['index'])) {
-                // coming already from form
                 $oldIndex = is_array($_POST['old_index']) ? $_POST['old_index']['Key_name'] : $_POST['old_index'];
                 $index = clone $this->dbi->getTable($this->db, $this->table)->getIndex($oldIndex);
                 $index->setName($_POST['index']['Key_name']);

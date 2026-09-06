@@ -26,73 +26,73 @@ use function ksort;
  */
 class Pdf extends PdfLib
 {
-    /** @var array */
+    
     public $tablewidths;
 
-    /** @var array */
+    
     public $headerset;
 
-    /** @var int|float */
+    
     private $dataY;
 
-    /** @var int|float */
+    
     private $cellFontSize;
 
-    /** @var int */
+    
     private $titleFontSize;
 
-    /** @var string */
+    
     private $titleText;
 
-    /** @var string */
+    
     private $dbAlias;
 
-    /** @var string */
+    
     private $tableAlias;
 
-    /** @var string */
+    
     private $purpose;
 
-    /** @var array */
+    
     private $colTitles;
 
-    /** @var ResultInterface */
+    
     private $results;
 
-    /** @var array */
+    
     private $colAlign;
 
-    /** @var mixed */
+    
     private $titleWidth;
 
-    /** @var mixed */
+    
     private $colFits;
 
-    /** @var array */
+    
     private $displayColumn;
 
-    /** @var int */
+    
     private $numFields;
 
-    /** @var FieldMetadata[] */
+    
     private $fields;
 
-    /** @var int|float */
+    
     private $sColWidth;
 
-    /** @var string */
+    
     private $currentDb;
 
-    /** @var string */
+    
     private $currentTable;
 
-    /** @var array */
+    
     private $aliases;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Transformations */
+    
     private $transformations;
 
     /**
@@ -138,12 +138,9 @@ class Pdf extends PdfLib
         }
 
         $current_page = $this->page;
-        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
         if ($y + $h > $this->PageBreakTrigger && ! $this->InFooter && $this->AcceptPageBreak()) {
             if ($addpage) {
-                //Automatic page break
                 $x = $this->x;
-                // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
                 $this->AddPage($this->CurOrientation);
                 $this->y = $this->dataY;
                 $oldpage = $this->page - 1;
@@ -169,25 +166,16 @@ class Pdf extends PdfLib
 
             return true;
         }
-
-        // account for columns mode
         return $current_page != $this->page;
     }
 
     /**
      * This method is used to render the page header.
      */
-    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     public function Header(): void
     {
         global $maxY;
-        // We don't want automatic page breaks while generating header
-        // as this can lead to infinite recursion as auto generated page
-        // will want header as well causing another page break
-        // FIXME: Better approach might be to try to compact the content
         $this->setAutoPageBreak(false);
-        // Check if header for this page already exists
-        // phpcs:disable Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
         if (! isset($this->headerset[$this->page])) {
             $this->setY($this->tMargin - ($this->FontSizePt / $this->k) * 5);
             $this->cellFontSize = $this->FontSizePt;
@@ -225,11 +213,8 @@ class Pdf extends PdfLib
             }
 
             $this->setFillColor(255, 255, 255);
-            // set headerset
             $this->headerset[$this->page] = 1;
         }
-
-        // phpcs:enable
 
         $this->dataY = $maxY;
         $this->setAutoPageBreak(true);
@@ -242,27 +227,20 @@ class Pdf extends PdfLib
      */
     public function morepagestable($lineheight = 8): void
     {
-        // some things to set and 'remember'
         $l = $this->lMargin;
         $startheight = $h = $this->dataY;
         $startpage = $currpage = $this->page;
-
-        // calculate the whole width
         $fullwidth = 0;
         foreach ($this->tablewidths as $width) {
             $fullwidth += $width;
         }
-
-        // Now let's start to write the table
         $row = 0;
         $tmpheight = [];
         $maxpage = $this->page;
 
         while ($data = $this->results->fetchRow()) {
             $this->page = $currpage;
-            // write the horizontal borders
             $this->Line($l, $h, $fullwidth + $l, $h);
-            // write the content and remember the height of the highest col
             foreach ($data as $col => $txt) {
                 $this->page = $currpage;
                 $this->setXY($l, $h);
@@ -285,22 +263,14 @@ class Pdf extends PdfLib
 
                 unset($data[$col]);
             }
-
-            // get the height we were in the last used page
             $h = $tmpheight[$row . '-' . $maxpage];
-            // set the "pointer" to the left margin
             $l = $this->lMargin;
-            // set the $currpage to the last page
             $currpage = $maxpage;
             unset($data[$row]);
             $row++;
         }
-
-        // draw the borders
-        // we start adding a horizontal line on the last page
         $this->page = $maxpage;
         $this->Line($l, $h, $fullwidth + $l, $h);
-        // now we start at the top of the document and walk down
         for ($i = $startpage; $i <= $maxpage; $i++) {
             $this->page = $i;
             $l = $this->lMargin;
@@ -312,8 +282,6 @@ class Pdf extends PdfLib
                 $this->Line($l, $t, $l, $lh);
             }
         }
-
-        // set it to the last page, if not it'll cause some problems
         $this->page = $maxpage;
     }
 
@@ -370,8 +338,6 @@ class Pdf extends PdfLib
             $this->displayColumn[$columns_cnt] = true;
         }
 
-        // Starting to fill table with required info
-
         $this->setY($this->tMargin);
         $this->AddPage();
         $this->setFont(PdfLib::PMA_PDF_FONT, '', 9);
@@ -379,8 +345,6 @@ class Pdf extends PdfLib
         $l = $this->lMargin;
         $startheight = $h = $this->dataY;
         $startpage = $currpage = $this->page;
-
-        // calculate the whole width
         $fullwidth = 0;
         foreach ($this->tablewidths as $width) {
             $fullwidth += $width;
@@ -397,16 +361,13 @@ class Pdf extends PdfLib
             $data[] = $trigger['event_manipulation'];
             $data[] = $trigger['definition'];
             $this->page = $currpage;
-            // write the horizontal borders
             $this->Line($l, $h, $fullwidth + $l, $h);
-            // write the content and remember the height of the highest col
             foreach ($data as $col => $txt) {
                 $this->page = $currpage;
                 $this->setXY($l, $h);
                 if ($this->tablewidths[$col] > 0) {
                     $this->MultiCell(
                         $this->tablewidths[$col],
-                        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
                         $this->FontSizePt,
                         $txt ?? 'NULL',
                         0,
@@ -429,22 +390,14 @@ class Pdf extends PdfLib
 
                 $maxpage = $this->page;
             }
-
-            // get the height we were in the last used page
             $h = $tmpheight[$row . '-' . $maxpage];
-            // set the "pointer" to the left margin
             $l = $this->lMargin;
-            // set the $currpage to the last page
             $currpage = $maxpage;
             unset($data);
             $row++;
         }
-
-        // draw the borders
-        // we start adding a horizontal line on the last page
         $this->page = $maxpage;
         $this->Line($l, $h, $fullwidth + $l, $h);
-        // now we start at the top of the document and walk down
         for ($i = $startpage; $i <= $maxpage; $i++) {
             $this->page = $i;
             $l = $this->lMargin;
@@ -456,8 +409,6 @@ class Pdf extends PdfLib
                 $this->Line($l, $t, $l, $lh);
             }
         }
-
-        // set it to the last page, if not it'll cause some problems
         $this->page = $maxpage;
     }
 
@@ -510,17 +461,12 @@ class Pdf extends PdfLib
          * But when, methods to take user input will be developed,
          * it will be of use
          */
-        // Check if we can use Relations
         if ($do_relation) {
-            // Find which tables are related with the current one and write it in
-            // an array
             $res_rel = $this->relation->getForeigners($db, $table);
             $have_rel = ! empty($res_rel);
         } else {
             $have_rel = false;
         }
-
-        //column count and table heading
 
         $this->colTitles[0] = __('Column');
         $this->tablewidths[0] = 90;
@@ -559,13 +505,9 @@ class Pdf extends PdfLib
             $this->tablewidths[$columns_cnt] = 120;
         }
 
-        // Starting to fill table with required info
-
         $this->setY($this->tMargin);
         $this->AddPage();
         $this->setFont(PdfLib::PMA_PDF_FONT, '', 9);
-
-        // Now let's start to write the table structure
 
         if ($do_comments) {
             $comments = $this->relation->getComments($db, $table);
@@ -576,12 +518,9 @@ class Pdf extends PdfLib
         }
 
         $columns = $dbi->getColumns($db, $table);
-
-        // some things to set and 'remember'
         $l = $this->lMargin;
         $startheight = $h = $this->dataY;
         $startpage = $currpage = $this->page;
-        // calculate the whole width
         $fullwidth = 0;
         foreach ($this->tablewidths as $width) {
             $fullwidth += $width;
@@ -591,8 +530,6 @@ class Pdf extends PdfLib
         $tmpheight = [];
         $maxpage = $this->page;
         $data = [];
-
-        // fun begin
         foreach ($columns as $column) {
             $extracted_columnspec = Util::extractColumnSpec($column['Type']);
 
@@ -635,16 +572,13 @@ class Pdf extends PdfLib
             }
 
             $this->page = $currpage;
-            // write the horizontal borders
             $this->Line($l, $h, $fullwidth + $l, $h);
-            // write the content and remember the height of the highest col
             foreach ($data as $col => $txt) {
                 $this->page = $currpage;
                 $this->setXY($l, $h);
                 if (isset($this->tablewidths[$col]) && $this->tablewidths[$col] > 0) {
                     $this->MultiCell(
                         $this->tablewidths[$col],
-                        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
                         $this->FontSizePt,
                         $txt ?? 'NULL',
                         0,
@@ -667,22 +601,14 @@ class Pdf extends PdfLib
 
                 $maxpage = $this->page;
             }
-
-            // get the height we were in the last used page
             $h = $tmpheight[$row . '-' . $maxpage];
-            // set the "pointer" to the left margin
             $l = $this->lMargin;
-            // set the $currpage to the last page
             $currpage = $maxpage;
             unset($data);
             $row++;
         }
-
-        // draw the borders
-        // we start adding a horizontal line on the last page
         $this->page = $maxpage;
         $this->Line($l, $h, $fullwidth + $l, $h);
-        // now we start at the top of the document and walk down
         for ($i = $startpage; $i <= $maxpage; $i++) {
             $this->page = $i;
             $l = $this->lMargin;
@@ -694,8 +620,6 @@ class Pdf extends PdfLib
                 $this->Line($l, $t, $l, $lh);
             }
         }
-
-        // set it to the last page, if not it'll cause some problems
         $this->page = $maxpage;
     }
 
@@ -723,16 +647,9 @@ class Pdf extends PdfLib
         $this->results = $dbi->query($query, DatabaseInterface::CONNECT_USER, DatabaseInterface::QUERY_UNBUFFERED);
         $this->numFields = $this->results->numFields();
         $this->fields = $dbi->getFieldsMeta($this->results);
-
-        // sColWidth = starting col width (an average size width)
         $availableWidth = $this->w - $this->lMargin - $this->rMargin;
         $this->sColWidth = $availableWidth / $this->numFields;
         $totalTitleWidth = 0;
-
-        // loop through results header and set initial
-        // col widths/ titles/ alignment
-        // if a col title is less than the starting col width,
-        // reduce that column size
         $colFits = [];
         $titleWidth = [];
         for ($i = 0; $i < $this->numFields; $i++) {
@@ -743,15 +660,11 @@ class Pdf extends PdfLib
                 $col_as = $this->aliases[$db]['tables'][$table]['columns'][$col_as];
             }
 
-            /** @var float $stringWidth */
+            
             $stringWidth = $this->GetStringWidth($col_as);
             $stringWidth += 6;
-            // save the real title's width
             $titleWidth[$i] = $stringWidth;
             $totalTitleWidth += $stringWidth;
-
-            // set any column titles less than the start width to
-            // the column title width
             if ($stringWidth < $this->sColWidth) {
                 $colFits[$i] = $stringWidth;
             }
@@ -780,37 +693,25 @@ class Pdf extends PdfLib
 
             $this->colAlign[$i] = 'L';
         }
-
-        // title width verification
         if ($totalTitleWidth > $availableWidth) {
             $adjustingMode = true;
         } else {
             $adjustingMode = false;
-            // we have enough space for all the titles at their
-            // original width so use the true title's width
             foreach ($titleWidth as $key => $val) {
                 $colFits[$key] = $val;
             }
         }
-
-        // loop through the data; any column whose contents
-        // is greater than the column size is resized
         /**
          * @todo force here a LIMIT to avoid reading all rows
          */
         while ($row = $this->results->fetchRow()) {
             foreach ($colFits as $key => $val) {
-                /** @var float $stringWidth */
+                
                 $stringWidth = $this->GetStringWidth($row[$key] ?? 'NULL');
                 $stringWidth += 6;
                 if ($adjustingMode && ($stringWidth > $this->sColWidth)) {
-                    // any column whose data's width is bigger than
-                    // the start width is now discarded
                     unset($colFits[$key]);
                 } else {
-                    // if data's width is bigger than the current column width,
-                    // enlarge the column (but avoid enlarging it if the
-                    // data's width is very big)
                     if ($stringWidth > $val && $stringWidth < $this->sColWidth * 3) {
                         $colFits[$key] = $stringWidth;
                     }
@@ -820,9 +721,7 @@ class Pdf extends PdfLib
 
         $totAlreadyFitted = 0;
         foreach ($colFits as $key => $val) {
-            // set fitted columns to smallest size
             $this->tablewidths[$key] = $val;
-            // to work out how much (if any) space has been freed up
             $totAlreadyFitted += $val;
         }
 
@@ -847,13 +746,10 @@ class Pdf extends PdfLib
 
         ksort($this->tablewidths);
 
-        // Pass 2
-
         $this->results = $dbi->query($query, DatabaseInterface::CONNECT_USER, DatabaseInterface::QUERY_UNBUFFERED);
         $this->setY($this->tMargin);
         $this->AddPage();
         $this->setFont(PdfLib::PMA_PDF_FONT, '', 9);
-        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
         $this->morepagestable($this->FontSizePt);
     }
 

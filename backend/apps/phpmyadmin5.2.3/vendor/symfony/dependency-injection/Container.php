@@ -213,7 +213,7 @@ class Container implements ContainerInterface, ResetInterface
      *
      * @see Reference
      */
-    public function get(string $id, int $invalidBehavior = /* self::EXCEPTION_ON_INVALID_REFERENCE */ 1)
+    public function get(string $id, int $invalidBehavior =  1)
     {
         return $this->services[$id]
             ?? $this->services[$id = $this->aliases[$id] ?? $id]
@@ -235,9 +235,9 @@ class Container implements ContainerInterface, ResetInterface
 
         try {
             if (isset($this->fileMap[$id])) {
-                return /* self::IGNORE_ON_UNINITIALIZED_REFERENCE */ 4 === $invalidBehavior ? null : $this->load($this->fileMap[$id]);
+                return  4 === $invalidBehavior ? null : $this->load($this->fileMap[$id]);
             } elseif (isset($this->methodMap[$id])) {
-                return /* self::IGNORE_ON_UNINITIALIZED_REFERENCE */ 4 === $invalidBehavior ? null : $this->{$this->methodMap[$id]}();
+                return  4 === $invalidBehavior ? null : $this->{$this->methodMap[$id]}();
             }
         } catch (\Exception $e) {
             unset($this->services[$id]);
@@ -247,7 +247,7 @@ class Container implements ContainerInterface, ResetInterface
             unset($this->loading[$id]);
         }
 
-        if (/* self::EXCEPTION_ON_INVALID_REFERENCE */ 1 === $invalidBehavior) {
+        if ( 1 === $invalidBehavior) {
             if (!$id) {
                 throw new ServiceNotFoundException($id);
             }

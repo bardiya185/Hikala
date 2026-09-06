@@ -18,7 +18,7 @@ use function __;
  */
 class Simple extends TwoFactorPlugin
 {
-    /** @var string */
+    
     public static $id = 'simple';
 
     /**

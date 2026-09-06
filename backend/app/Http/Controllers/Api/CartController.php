@@ -58,10 +58,6 @@ class CartController extends Controller
     public function __construct(
         private CartService $cartService
     ) {}
-
-    // ================================================================
-    // 🛒 GET CART
-    // ================================================================
     #[OA\Get(
         path: '/api/cart',
         tags: ['Cart'],
@@ -104,10 +100,6 @@ class CartController extends Controller
             'data' => new CartResource($cart),
         ]);
     }
-
-    // ================================================================
-    // ➕ ADD ITEM
-    // ================================================================
     #[OA\Post(
         path: '/api/cart/items',
         tags: ['Cart'],
@@ -168,10 +160,6 @@ class CartController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
-
-    // ================================================================
-    // ✏️ UPDATE QUANTITY
-    // ================================================================
     #[OA\Put(
         path: '/api/cart/items/{item}',
         tags: ['Cart'],
@@ -229,10 +217,6 @@ class CartController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
-
-    // ================================================================
-    // ❌ REMOVE ITEM
-    // ================================================================
     #[OA\Delete(
         path: '/api/cart/items/{item}',
         tags: ['Cart'],
@@ -280,10 +264,6 @@ class CartController extends Controller
             ], Response::HTTP_FORBIDDEN);
         }
     }
-
-    // ================================================================
-    // 🗑️ CLEAR CART
-    // ================================================================
     #[OA\Delete(
         path: '/api/cart',
         tags: ['Cart'],
@@ -316,10 +296,6 @@ class CartController extends Controller
             'data' => new CartResource($cart->fresh()->load('items')),
         ]);
     }
-
-    // ================================================================
-    // 🎟️ APPLY COUPON
-    // ================================================================
     #[OA\Post(
         path: '/api/cart/coupon',
         tags: ['Cart'],
@@ -376,10 +352,6 @@ class CartController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
-
-    // ================================================================
-    // ❌ REMOVE COUPON
-    // ================================================================
     #[OA\Delete(
         path: '/api/cart/coupon',
         tags: ['Cart'],
@@ -414,10 +386,6 @@ class CartController extends Controller
             'data' => new CartResource($cart),
         ]);
     }
-
-    // ================================================================
-    // 🔀 MERGE GUEST CART (after login)
-    // ================================================================
     #[OA\Post(
         path: '/api/cart/merge',
         tags: ['Cart'],
@@ -464,10 +432,6 @@ class CartController extends Controller
             'data' => new CartResource($cart),
         ]);
     }
-
-    // ================================================================
-    // 🔒 Helper: Check Cart Access
-    // ================================================================
     private function authorizeCartAccess(Request $request, CartItem $item): void
     {
         $cart = $item->cart;

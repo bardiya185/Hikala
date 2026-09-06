@@ -17,10 +17,10 @@ use function __;
 
 final class CollationController extends AbstractController
 {
-    /** @var Operations */
+    
     private $operations;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(

@@ -68,11 +68,11 @@ class Darwin extends BSDCommon
     private function _grabioreg($key)
     {
         if (CommonFunctions::executeProgram('ioreg', '-c "'.$key.'"', $s, PSI_DEBUG)) {
-            /* delete newlines */
+            
             $s = preg_replace("/\s+/", " ", $s);
-            /* new newlines */
+            
             $s = preg_replace("/[\|\t ]*\+\-o/", "\n", $s);
-            /* combine duplicate whitespaces and some chars */
+            
             $s = preg_replace("/[\|\t ]+/", " ", $s);
 
             $lines = preg_split("/\n/", $s, -1, PREG_SPLIT_NO_EMPTY);
@@ -267,12 +267,10 @@ class Darwin extends BSDCommon
         if (($s = $this->grabkey('hw.memsize')) > 0) {
             $this->sys->setMemTotal($s);
             if (CommonFunctions::executeProgram('vm_stat', '', $pstat, PSI_DEBUG)) {
-                // calculate free memory from page sizes (each page = 4096)
                 if (preg_match('/^Pages free:\s+(\S+)/m', $pstat, $free_buf)) {
                     if (preg_match('/^Anonymous pages:\s+(\S+)/m', $pstat, $anon_buf)
                        && preg_match('/^Pages wired down:\s+(\S+)/m', $pstat, $wire_buf)
                        && preg_match('/^File-backed pages:\s+(\S+)/m', $pstat, $fileb_buf)) {
-                            // OS X 10.9 or never
                             $this->sys->setMemFree($free_buf[1] * 4 * 1024);
                             $this->sys->setMemApplication(($anon_buf[1]+$wire_buf[1]) * 4 * 1024);
                             $this->sys->setMemCache($fileb_buf[1] * 4 * 1024);

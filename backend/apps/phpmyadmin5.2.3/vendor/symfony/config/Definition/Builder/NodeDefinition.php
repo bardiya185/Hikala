@@ -168,7 +168,7 @@ abstract class NodeDefinition implements NodeParentInterface
      *
      * @return $this
      */
-    public function setDeprecated(/* string $package, string $version, string $message = 'The child node "%node%" at path "%path%" is deprecated.' */)
+    public function setDeprecated()
     {
         $args = \func_get_args();
 

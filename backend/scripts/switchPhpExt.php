@@ -38,8 +38,6 @@ if(strpos($mode,'zend') !== false) {
 	$dll = '.dll';
 	$reg_dll = '\.dll';
 }
-
-// on remplace la ligne
 if($mode == 'on') {
 	if(preg_match('~^;'.$zend.'extension\s*=\s*"?'.$_SERVER['argv'][1].$reg_dll.'"?~im',$phpIniFileContents,$matchesOFF) !== false)
 		$findTxt = $matchesOFF[0];
@@ -57,9 +55,6 @@ elseif($mode == 'off') {
 else
 	exit;
 $phpIniFileContents2 = str_replace($findTxt,$replaceTxt,$phpIniFileContents);
-
-
-// on ajoute la ligne si elle n'existe pas
 if($phpIniFileContents2 == $phpIniFileContents) {
 	$findTxt  = <<< EOF
 ;;;;;;;;;;;;;;;;;;;

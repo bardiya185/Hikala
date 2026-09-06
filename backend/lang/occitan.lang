@@ -1,6 +1,5 @@
 <?php
-// Tòni Galhard - tony.gaillard@supinfo.com
-//3.2.10  $file_charset
+// Tï¿½ni Galhard - tony.gaillard@supinfo.com
 
 $file_charset = 'iso-8859-1';
 

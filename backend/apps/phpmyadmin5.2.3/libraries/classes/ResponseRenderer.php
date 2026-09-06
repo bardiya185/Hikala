@@ -83,12 +83,10 @@ class ResponseRenderer
      * @var array<int, string>
      */
     protected static $httpStatusMessages = [
-        // Informational
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
         103 => 'Early Hints',
-        // Success
         200 => 'OK',
         201 => 'Created',
         202 => 'Accepted',
@@ -99,7 +97,6 @@ class ResponseRenderer
         207 => 'Multi-Status',
         208 => 'Already Reported',
         226 => 'IM Used',
-        // Redirection
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
         302 => 'Found',
@@ -108,7 +105,6 @@ class ResponseRenderer
         305 => 'Use Proxy',
         307 => 'Temporary Redirect',
         308 => 'Permanent Redirect',
-        // Client Error
         400 => 'Bad Request',
         401 => 'Unauthorized',
         402 => 'Payment Required',
@@ -139,7 +135,6 @@ class ResponseRenderer
         430 => 'Unassigned',
         431 => 'Request Header Fields Too Large',
         451 => 'Unavailable For Legal Reasons',
-        // Server Error
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway',
@@ -286,10 +281,6 @@ class ResponseRenderer
      */
     private function getDisplay(): string
     {
-        // The header may contain nothing at all,
-        // if its content was already rendered
-        // and, in this case, the header will be
-        // in the content part of the request
         $retval = '';
         if ($this->header !== null) {
             $retval .= $this->header->getDisplay();
@@ -311,7 +302,7 @@ class ResponseRenderer
     {
         global $dbi;
 
-        /* Avoid wrapping in case we're disabled */
+        
         if ($this->isDisabled) {
             return $this->getDisplay();
         }
@@ -357,8 +348,6 @@ class ResponseRenderer
             $this->addJSON('promptPhpErrors', $promptPhpErrors);
 
             if (empty($GLOBALS['error_message'])) {
-                // set current db, table and sql query in the querywindow
-                // (this is for the bottom console)
                 $query = '';
                 $maxChars = $GLOBALS['cfg']['MaxCharactersInDisplayedSQL'];
                 if (isset($GLOBALS['sql_query']) && mb_strlen($GLOBALS['sql_query']) < $maxChars) {
@@ -386,9 +375,6 @@ class ResponseRenderer
                 $this->addJSON('params', $this->getHeader()->getJsParams());
             }
         }
-
-        // Set the Content-Type header to JSON so that jQuery parses the
-        // response correctly.
         Core::headerJSON();
 
         $result = json_encode($this->JSON);
@@ -429,7 +415,6 @@ class ResponseRenderer
      */
     public function header($text): void
     {
-        // phpcs:ignore SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly
         \header($text);
     }
 
@@ -494,10 +479,9 @@ class ResponseRenderer
      */
     public function loginPage(): bool
     {
-        /* Handle AJAX redirection */
+        
         if ($this->isAjax()) {
             $this->setRequestStatus(false);
-            // redirect_flag redirects to the login page
             $this->addJSON('redirect_flag', '1');
 
             return true;

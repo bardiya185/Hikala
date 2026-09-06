@@ -17,7 +17,7 @@ use function in_array;
 
 final class DropFormController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, string $db, DatabaseInterface $dbi)

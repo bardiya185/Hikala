@@ -13,7 +13,7 @@ use function sprintf;
 
 final class TemplateModel
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(DatabaseInterface $dbi)

@@ -6,7 +6,7 @@
  * @requires    jQueryUI
  */
 
-/* global Console */ // js/console.js
+// js/console.js
 
 /**
  * Register key events on load
@@ -23,13 +23,19 @@ $(function () {
     var keyH = 72;
     var keyC = 67;
     var keyBackSpace = 8;
-    $(document).on('keyup', function (e) {
-        // is a string but is also a boolean according to https://api.jquery.com/prop/
-        if ($(e.target).prop('contenteditable') === 'true' || $(e.target).prop('contenteditable') === true) {
+    $(document).on("keyup", function (e) {
+        if (
+            $(e.target).prop("contenteditable") === "true" ||
+            $(e.target).prop("contenteditable") === true
+        ) {
             return;
         }
 
-        if (e.target.nodeName === 'INPUT' || e.target.nodeName === 'TEXTAREA' || e.target.nodeName === 'SELECT') {
+        if (
+            e.target.nodeName === "INPUT" ||
+            e.target.nodeName === "TEXTAREA" ||
+            e.target.nodeName === "SELECT"
+        ) {
             return;
         }
 
@@ -43,14 +49,14 @@ $(function () {
             }, 2000);
         }
     });
-    $(document).on('keydown', function (e) {
-        // is a string but is also a boolean according to https://api.jquery.com/prop/
-        if ($(e.target).prop('contenteditable') === 'true' || $(e.target).prop('contenteditable') === true) {
+    $(document).on("keydown", function (e) {
+        if (
+            $(e.target).prop("contenteditable") === "true" ||
+            $(e.target).prop("contenteditable") === true
+        ) {
             return;
         }
-
-        // disable the shortcuts when session has timed out.
-        if ($('#modalOverlay').length > 0) {
+        if ($("#modalOverlay").length > 0) {
             return;
         }
         if (e.ctrlKey && e.altKey && e.keyCode === keyC) {
@@ -62,7 +68,11 @@ $(function () {
             Console.toggle();
         }
 
-        if (e.target.nodeName === 'INPUT' || e.target.nodeName === 'TEXTAREA' || e.target.nodeName === 'SELECT') {
+        if (
+            e.target.nodeName === "INPUT" ||
+            e.target.nodeName === "TEXTAREA" ||
+            e.target.nodeName === "SELECT"
+        ) {
             return;
         }
 
@@ -75,42 +85,42 @@ $(function () {
             Console.toggle();
         } else if (e.keyCode === keyS) {
             if (databaseOp === true) {
-                isTable = CommonParams.get('table');
-                isDb = CommonParams.get('db');
-                if (isDb && ! isTable) {
-                    $('.nav-link .ic_b_props').first().trigger('click');
+                isTable = CommonParams.get("table");
+                isDb = CommonParams.get("db");
+                if (isDb && !isTable) {
+                    $(".nav-link .ic_b_props").first().trigger("click");
                 }
             } else if (tableOp === true) {
-                isTable = CommonParams.get('table');
-                isDb = CommonParams.get('db');
+                isTable = CommonParams.get("table");
+                isDb = CommonParams.get("db");
                 if (isDb && isTable) {
-                    $('.nav-link .ic_b_props').first().trigger('click');
+                    $(".nav-link .ic_b_props").first().trigger("click");
                 }
             } else {
-                $('#pma_navigation_settings_icon').trigger('click');
+                $("#pma_navigation_settings_icon").trigger("click");
             }
         } else if (e.keyCode === keyF) {
             if (databaseOp === true) {
-                isTable = CommonParams.get('table');
-                isDb = CommonParams.get('db');
-                if (isDb && ! isTable) {
-                    $('.nav-link .ic_b_search').first().trigger('click');
+                isTable = CommonParams.get("table");
+                isDb = CommonParams.get("db");
+                if (isDb && !isTable) {
+                    $(".nav-link .ic_b_search").first().trigger("click");
                 }
             } else if (tableOp === true) {
-                isTable = CommonParams.get('table');
-                isDb = CommonParams.get('db');
+                isTable = CommonParams.get("table");
+                isDb = CommonParams.get("db");
                 if (isDb && isTable) {
-                    $('.nav-link .ic_b_search').first().trigger('click');
+                    $(".nav-link .ic_b_search").first().trigger("click");
                 }
             }
         } else if (e.keyCode === keyT) {
             tableOp = true;
         } else if (e.keyCode === keyE) {
-            $('.ic_b_export').first().trigger('click');
+            $(".ic_b_export").first().trigger("click");
         } else if (e.keyCode === keyBackSpace) {
             window.history.back();
         } else if (e.keyCode === keyH) {
-            $('.ic_b_home').first().trigger('click');
+            $(".ic_b_home").first().trigger("click");
         }
     });
 });

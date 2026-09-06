@@ -11,8 +11,6 @@ if(WAMPTRACE_PROCESS) {
 
 require 'config.inc.php';
 require 'wampserver.lib.php';
-
-// **** Search for different browsers installed on the system
 clearstatcache(true);
 $commandStr = 'HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet';
 $command = 'CMD /D /C reg query '.$commandStr;
@@ -27,7 +25,6 @@ foreach($output as $value) {
 	}
 }
 unset($value);
-//Search for the names and paths of the various installed browsers
 foreach($clients as $value) {
 	unset($output);
 	$command = 'CMD /D /C reg query "'.$commandStr.'\\'.$value.'" /ve';

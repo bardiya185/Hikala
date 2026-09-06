@@ -17,10 +17,10 @@ use PhpMyAdmin\Url;
  */
 class SqlController extends AbstractController
 {
-    /** @var SqlQueryForm */
+    
     private $sqlQueryForm;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(

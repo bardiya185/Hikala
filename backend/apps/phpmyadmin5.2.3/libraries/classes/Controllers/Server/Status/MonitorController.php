@@ -16,7 +16,7 @@ use function microtime;
 
 class MonitorController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, Data $data, DatabaseInterface $dbi)

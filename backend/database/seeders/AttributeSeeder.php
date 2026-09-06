@@ -10,10 +10,6 @@ class AttributeSeeder extends Seeder
     public function run()
     {
         $this->command->info('🚀 Creating attributes and values...');
-
-        // ================================================================
-        // 1. ATTRIBUTES
-        // ================================================================
         $attributes = [
             ['name' => 'Color',            'slug' => 'color',            'type' => 'select', 'unit' => null,    'is_filterable' => 1, 'is_variant' => 1, 'sort_order' => 1],
             ['name' => 'Size',             'slug' => 'size',             'type' => 'select', 'unit' => null,    'is_filterable' => 1, 'is_variant' => 1, 'sort_order' => 2],
@@ -63,7 +59,6 @@ class AttributeSeeder extends Seeder
 
         $attributeIds = [];
         foreach ($attributes as $attr) {
-            // جلوگیری از duplicate
             $existing = DB::table('attributes')->where('slug', $attr['slug'])->first();
             if ($existing) {
                 $attributeIds[$attr['slug']] = $existing->id;
@@ -87,10 +82,6 @@ class AttributeSeeder extends Seeder
         }
 
         $this->command->info('✅ ' . count($attributeIds) . ' attributes created!');
-
-        // ================================================================
-        // 2. ATTRIBUTE VALUES
-        // ================================================================
         $attributeValues = [
             'color' => [
                 ['value' => 'Black',    'slug' => 'black',     'color_code' => '#1a1a1a'],
@@ -463,18 +454,11 @@ class AttributeSeeder extends Seeder
         }
 
         $this->command->info('✅ ' . $totalValues . ' attribute values created!');
-
-        // ================================================================
-        // 3. LINK ATTRIBUTES TO CATEGORIES
-        // ================================================================
         $this->command->info('🔗 Linking attributes to categories...');
 
         $categories   = DB::table('categories')->get();
         $allAttrs     = DB::table('attributes')->get()->keyBy('slug');
-
-        // map از نام دسته به slug های attribute
         $categoryAttributeMap = [
-            // Mobile
             'Mobile'             => ['color', 'storage', 'ram', 'processor', 'battery', 'display-size', 'display-type', 'water-resistant', 'camera-mp', 'sim-type', '5g-support', 'year'],
             'Select Mobile'      => ['color', 'storage', 'ram', 'processor', 'battery', 'display-size', 'display-type', '5g-support', 'camera-mp', 'sim-type', 'water-resistant', 'year'],
             'Apple Phones'       => ['color', 'storage', 'ram', 'processor', 'battery', 'display-size', 'display-type', 'water-resistant', 'camera-mp', '5g-support', 'sim-type', 'year'],
@@ -510,8 +494,6 @@ class AttributeSeeder extends Seeder
             'Motorola'           => ['color', 'storage', 'ram', 'processor', 'battery', 'display-size', 'display-type', '5g-support', 'sim-type', 'year'],
             'Nothing Phone'      => ['color', 'storage', 'ram', 'processor', 'battery', 'display-size', 'display-type', '5g-support', 'sim-type', 'year'],
             'Realme'             => ['color', 'storage', 'ram', 'processor', 'battery', 'display-size', 'display-type', '5g-support', 'sim-type', 'year'],
-
-            // Laptops
             'Laptops'            => ['color', 'ram', 'processor', 'screen-size', 'graphics-card', 'operating-system', 'ssd-storage', 'cpu-model', 'refresh-rate', 'weight', 'year'],
             'Select Laptop'      => ['color', 'ram', 'processor', 'screen-size', 'graphics-card', 'operating-system', 'ssd-storage', 'cpu-model', 'refresh-rate', 'weight', 'year'],
             'Apple MacBooks'     => ['color', 'ram', 'processor', 'screen-size', 'operating-system', 'ssd-storage', 'cpu-model', 'weight', 'battery-life', 'year'],
@@ -536,8 +518,6 @@ class AttributeSeeder extends Seeder
             'HP Omen'            => ['color', 'ram', 'cpu-model', 'ssd-storage', 'screen-size', 'graphics-card', 'refresh-rate', 'weight', 'operating-system', 'year'],
             'Acer Aspire 5'      => ['color', 'ram', 'cpu-model', 'ssd-storage', 'screen-size', 'operating-system', 'weight', 'year'],
             'LG Gram'            => ['color', 'ram', 'cpu-model', 'ssd-storage', 'screen-size', 'operating-system', 'weight', 'battery-life', 'year'],
-
-            // Digital
             'Digital Products'   => ['color', 'connectivity', 'battery-life', 'bluetooth-version', 'waterproof', 'weight', 'year'],
             'Select Digital'     => ['color', 'connectivity', 'battery-life', 'bluetooth-version', 'waterproof', 'weight', 'year'],
             'Gaming Consoles'    => ['color', 'storage', 'connectivity', 'weight', 'year'],
@@ -575,8 +555,6 @@ class AttributeSeeder extends Seeder
             'Google Nest Hub 2'  => ['color', 'connectivity', 'weight', 'year'],
             'Samsung 1TB SSD'    => ['storage', 'connectivity', 'weight', 'year'],
             'TP-Link Router'     => ['connectivity', 'weight', 'year'],
-
-            // Home
             'Home & Kitchen'     => ['color', 'material', 'capacity', 'power-usage', 'weight', 'year'],
             'Select Home'        => ['color', 'material', 'capacity', 'power-usage', 'weight'],
             'Cookware'           => ['color', 'material', 'capacity', 'weight'],
@@ -589,8 +567,6 @@ class AttributeSeeder extends Seeder
             'Electric Kettle'    => ['color', 'material', 'capacity', 'power-usage', 'weight'],
             'Sofa Set'           => ['color', 'material', 'weight', 'size', 'style'],
             'Chandelier'         => ['color', 'material', 'power-usage', 'weight'],
-
-            // Home Appliances
             'Home Appliances'    => ['color', 'material', 'capacity', 'power-usage', 'weight', 'year'],
             'Select Appliance'   => ['color', 'material', 'capacity', 'power-usage', 'weight'],
             'Refrigerators'      => ['color', 'material', 'capacity', 'power-usage', 'weight', 'year'],
@@ -609,8 +585,6 @@ class AttributeSeeder extends Seeder
             'Sony OLED TV'       => ['color', 'screen-size', 'display-type', 'refresh-rate', 'connectivity', 'weight', 'year'],
             'Samsung QLED TV'    => ['color', 'screen-size', 'display-type', 'refresh-rate', 'connectivity', 'weight', 'year'],
             'LG OLED TV'         => ['color', 'screen-size', 'display-type', 'refresh-rate', 'connectivity', 'weight', 'year'],
-
-            // Beauty
             'Beauty & Health'    => ['color', 'weight', 'year'],
             'Select Beauty'      => ['color', 'weight', 'year'],
             'Skin Care'          => ['weight', 'year'],
@@ -626,8 +600,6 @@ class AttributeSeeder extends Seeder
             'Dior Sauvage'       => ['weight', 'year'],
             'Chanel No.5'        => ['weight', 'year'],
             'Electric Toothbrush'=> ['color', 'power-usage', 'weight'],
-
-            // Fashion
             'Fashion'            => ['color', 'clothing-size', 'fabric-type', 'season', 'style', 'gender'],
             'Select Fashion'     => ['color', 'clothing-size', 'fabric-type', 'season', 'style', 'gender'],
             'Men\'s Clothing'    => ['color', 'clothing-size', 'fabric-type', 'season', 'style', 'gender'],
@@ -641,8 +613,6 @@ class AttributeSeeder extends Seeder
             'Nike Air Max'       => ['color', 'shoe-size', 'material', 'gender', 'sport-type', 'year'],
             'Adidas Ultraboost'  => ['color', 'shoe-size', 'material', 'gender', 'sport-type', 'year'],
             'Rolex Watch'        => ['color', 'material', 'watch-movement', 'water-resistant', 'weight', 'year'],
-
-            // Jewelry
             'Gold & Jewelry'     => ['gold-karat', 'metal-type', 'gemstone', 'weight', 'year'],
             'Select Jewelry'     => ['gold-karat', 'metal-type', 'gemstone', 'weight', 'year'],
             'Gold Jewelry'       => ['gold-karat', 'metal-type', 'weight', 'year'],
@@ -652,8 +622,6 @@ class AttributeSeeder extends Seeder
             'Gold Ring'          => ['gold-karat', 'metal-type', 'weight', 'year'],
             'Silver Necklace'    => ['metal-type', 'weight', 'year'],
             'Diamond Ring'       => ['gold-karat', 'metal-type', 'gemstone', 'weight', 'year'],
-
-            // Vehicles
             'Vehicles'           => ['engine-type', 'transmission', 'fuel-type', 'color', 'weight', 'year'],
             'Select Vehicle'     => ['engine-type', 'transmission', 'fuel-type', 'color', 'year'],
             'Cars'               => ['engine-type', 'transmission', 'fuel-type', 'color', 'year'],
@@ -663,8 +631,6 @@ class AttributeSeeder extends Seeder
             'Toyota Camry'       => ['color', 'engine-type', 'transmission', 'fuel-type', 'year'],
             'Honda Civic'        => ['color', 'engine-type', 'transmission', 'fuel-type', 'year'],
             'Honda CBR 500R'     => ['color', 'engine-type', 'transmission', 'fuel-type', 'year'],
-
-            // Health
             'Health & Medical'   => ['weight', 'year', 'material'],
             'Select Medical'     => ['weight', 'year'],
             'Medical Equipment'  => ['weight', 'power-usage', 'year'],
@@ -675,8 +641,6 @@ class AttributeSeeder extends Seeder
             'Omega-3'            => ['weight', 'year'],
             'Treadmill'          => ['material', 'weight', 'power-usage', 'year'],
             'Yoga Mat'           => ['material', 'weight', 'size', 'year'],
-
-            // Tools
             'Tools & Equipment'  => ['tool-type', 'power-source', 'material', 'weight', 'year'],
             'Select Tool'        => ['tool-type', 'power-source', 'material', 'weight'],
             'Power Tools'        => ['tool-type', 'power-source', 'weight', 'year'],
@@ -684,8 +648,6 @@ class AttributeSeeder extends Seeder
             'Makita Drill'       => ['color', 'tool-type', 'power-source', 'weight', 'year'],
             'DeWalt Grinder'     => ['color', 'tool-type', 'power-source', 'weight', 'year'],
             'Screwdriver Set'    => ['color', 'tool-type', 'material', 'weight'],
-
-            // Sports
             'Sports & Travel'    => ['sport-type', 'gender', 'size', 'material', 'weight', 'year'],
             'Select Sport'       => ['sport-type', 'material', 'weight', 'year'],
             'Sports Equipment'   => ['sport-type', 'material', 'weight', 'year'],

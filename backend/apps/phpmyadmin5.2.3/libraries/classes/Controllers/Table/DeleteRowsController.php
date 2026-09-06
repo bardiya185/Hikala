@@ -21,7 +21,7 @@ use function sprintf;
 
 final class DeleteRowsController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(

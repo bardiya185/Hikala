@@ -287,7 +287,7 @@ final class UriString
         $uri = (string) $uri;
 
         if (isset(self::URI_SCHORTCUTS[$uri])) {
-            /** @var array{scheme:?string, user:?string, pass:?string, host:?string, port:?int, path:string, query:?string, fragment:?string} $components */
+            
             $components = array_merge(self::URI_COMPONENTS, self::URI_SCHORTCUTS[$uri]);
 
             return $components;
@@ -332,7 +332,7 @@ final class UriString
             throw new SyntaxError(sprintf('The uri `%s` contains an invalid path.', $uri));
         }
 
-        /** @var array{scheme:?string, user:?string, pass:?string, host:?string, port:?int, path:string, query:?string, fragment:?string} $components */
+        
         $components = array_merge(
             self::URI_COMPONENTS,
             '' === $parts['authority'] ? [] : self::parseAuthority($parts['acontent']),

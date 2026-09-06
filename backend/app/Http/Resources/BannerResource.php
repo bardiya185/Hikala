@@ -19,8 +19,6 @@ class BannerResource extends JsonResource
             'background_color' => $this->background_color,
             'text_color' => $this->text_color,
             'sort_order' => $this->sort_order,
-
-            // ✅ فقط برای ادمین
             'is_active' => $this->when(
                 $request->is('api/admin/*'),
                 $this->is_active

@@ -1,5 +1,7 @@
 import "./globals.css";
+
 import Header from "@/components/templates/header";
+import Footer from "@/components/templates/footer/Footer";
 import TanstackQueryProvider from "@/components/partials/provider/TanstackQueryProvider";
 import { Toaster } from "react-hot-toast";
 import NextTopLoader from "nextjs-toploader";
@@ -13,15 +15,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" dir="ltr">
-      <body className={``}>
+      <body className="min-h-screen">
         <TanstackQueryProvider>
-          <Header />
+             <Header />
           <NextTopLoader color="#DC2626" showSpinner={false} />
-          <main>
+          <main className="min-h-screen pb-20 lg:pb-0">
             <PageTransition>{children}</PageTransition>
           </main>
+          <Toaster />
+          <Footer />
         </TanstackQueryProvider>
-        <Toaster />
       </body>
     </html>
   );

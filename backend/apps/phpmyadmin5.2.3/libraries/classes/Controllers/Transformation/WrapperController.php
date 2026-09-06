@@ -30,13 +30,13 @@ use function substr;
  */
 class WrapperController extends AbstractController
 {
-    /** @var Transformations */
+    
     private $transformations;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -99,7 +99,7 @@ class WrapperController extends AbstractController
         $this->dbi->selectDb($db);
         if (isset($where_clause)) {
             if (! Core::checkSqlQuerySignature($where_clause, $_GET['where_clause_sign'] ?? '')) {
-                /* l10n: In case a SQL query did not pass a security check  */
+                
                 Core::fatalError(__('There is an issue with your request.'));
 
                 return;
@@ -116,8 +116,6 @@ class WrapperController extends AbstractController
             );
             $row = $result->fetchAssoc();
         }
-
-        // No row returned
         if ($row === []) {
             return;
         }
@@ -142,12 +140,8 @@ class WrapperController extends AbstractController
                 $mime_options['charset'] = $option;
             }
         }
-
-        // Disabling standard response, we are sending binary here
         $this->response->disable();
         $this->response->getHeader()->sendHttpHeaders();
-
-        // [MIME]
         if (isset($ct) && ! empty($ct)) {
             $mime_type = $ct;
         } else {
@@ -166,8 +160,6 @@ class WrapperController extends AbstractController
                 echo htmlspecialchars($row[$transform_key]);
             }
         } else {
-            // if image_*__inline.inc.php finds that we can resize,
-            // it sets the resize parameter to jpeg or png
 
             $srcImage = ImageWrapper::fromString($row[$transform_key]);
             if ($srcImage === null) {
@@ -176,10 +168,6 @@ class WrapperController extends AbstractController
 
             $srcWidth = $srcImage->width();
             $srcHeight = $srcImage->height();
-
-            // Check to see if the width > height or if width < height
-            // if so adjust accordingly to make sure the image
-            // stays smaller than the new width and new height
 
             $ratioWidth = $srcWidth / $_REQUEST['newWidth'];
             $ratioHeight = $srcHeight / $_REQUEST['newHeight'];
@@ -199,10 +187,6 @@ class WrapperController extends AbstractController
 
                     return;
                 }
-
-                // ImageCopyResized($destImage, $srcImage, 0, 0, 0, 0,
-                // $destWidth, $destHeight, $srcWidth, $srcHeight);
-                // better quality but slower:
                 $destImage->copyResampled($srcImage, 0, 0, 0, 0, $destWidth, $destHeight, $srcWidth, $srcHeight);
                 if ($_REQUEST['resize'] === 'jpeg') {
                     $destImage->jpeg(null, 75);

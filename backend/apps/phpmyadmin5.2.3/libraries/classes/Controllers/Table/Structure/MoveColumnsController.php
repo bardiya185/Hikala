@@ -26,7 +26,7 @@ use function is_array;
 
 final class MoveColumnsController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -92,9 +92,9 @@ final class MoveColumnsController extends AbstractController
     private function generateAlterTableSql(string $createTableSql, array $moveColumns): ?string
     {
         $parser = new Parser($createTableSql);
-        /** @var CreateStatement $statement */
+        
         $statement = $parser->statements[0];
-        /** @var CreateDefinition[] $fields For CREATE TABLE statement the type is CreateDefinition[] */
+        
         $fields = $statement->fields;
         $columns = [];
         foreach ($fields as $field) {
@@ -106,7 +106,6 @@ final class MoveColumnsController extends AbstractController
         }
 
         $columnNames = array_keys($columns);
-        // Ensure the columns from client match the columns from the table
         if (
             count($columnNames) !== count($moveColumns) ||
             array_diff($columnNames, $moveColumns) !== []
@@ -115,11 +114,8 @@ final class MoveColumnsController extends AbstractController
         }
 
         $changes = [];
-
-        // move columns from first to last
-        /** @psalm-var list<string> $moveColumns */
+        
         foreach ($moveColumns as $i => $columnName) {
-            // is this column already correctly placed?
             if ($columnNames[$i] == $columnName) {
                 continue;
             }
@@ -127,9 +123,7 @@ final class MoveColumnsController extends AbstractController
             $changes[] =
                 'CHANGE ' . Util::backquote($columnName) . ' ' . CreateDefinition::build($columns[$columnName]) .
                 ($i === 0 ? ' FIRST' : ' AFTER ' . Util::backquote($columnNames[$i - 1]));
-
-            // Move column to its new position
-            /** @var int $j */
+            
             $j = array_search($columnName, $columnNames, true);
             array_splice($columnNames, $j, 1);
             array_splice($columnNames, $i, 0, $columnName);

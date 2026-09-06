@@ -51,11 +51,8 @@ class RelationStatsEps extends RelationStats
      */
     public function relationDraw(): void
     {
-        // draw a line like -- to foreign field
         $this->diagram->line($this->xSrc, $this->ySrc, $this->xSrc + $this->srcDir * $this->wTick, $this->ySrc, 1);
-        // draw a line like -- to master field
         $this->diagram->line($this->xDest + $this->destDir * $this->wTick, $this->yDest, $this->xDest, $this->yDest, 1);
-        // draw a line that connects to master field line and foreign field line
         $this->diagram->line(
             $this->xSrc + $this->srcDir * $this->wTick,
             $this->ySrc,

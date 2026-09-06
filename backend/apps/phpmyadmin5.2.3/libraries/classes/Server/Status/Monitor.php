@@ -31,7 +31,7 @@ use function strlen;
  */
 class Monitor
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     /**
@@ -56,7 +56,7 @@ class Monitor
         $serverVars = [];
         $sysinfo = $cpuload = $memory = 0;
 
-        /* Accumulate all required variables and data */
+        
         [$serverVars, $statusVars, $ret] = $this->getJsonForChartingDataGet(
             $ret,
             $serverVars,
@@ -65,8 +65,6 @@ class Monitor
             $cpuload,
             $memory
         );
-
-        // Retrieve all required status variables
         $statusVarValues = [];
         if (count($statusVars)) {
             $statusVarValues = $this->dbi->fetchResult(
@@ -76,8 +74,6 @@ class Monitor
                 1
             );
         }
-
-        // Retrieve all required server variables
         $serverVarValues = [];
         if (count($serverVars)) {
             $serverVarValues = $this->dbi->fetchResult(
@@ -87,8 +83,6 @@ class Monitor
                 1
             );
         }
-
-        // ...and now assign them
         $ret = $this->getJsonForChartingDataSet($ret, $statusVarValues, $serverVarValues);
 
         $ret['x'] = (int) (microtime(true) * 1000);
@@ -148,11 +142,8 @@ class Monitor
         $cpuload,
         $memory
     ) {
-        // For each chart
         foreach ($ret as $chartId => $chartNodes) {
-            // For each data series
             foreach ($chartNodes as $nodeId => $nodeDataPoints) {
-                // For each data point in the series (usually just 1)
                 foreach ($nodeDataPoints as $pointId => $dataPoint) {
                     [$serverVars, $statusVars, $ret[$chartId][$nodeId][$pointId]] = $this->getJsonForChartingDataSwitch(
                         $dataPoint['type'],
@@ -164,8 +155,8 @@ class Monitor
                         $cpuload,
                         $memory
                     );
-                } /* foreach */
-            } /* foreach */
+                } 
+            } 
         }
 
         return [
@@ -277,7 +268,6 @@ class Monitor
         $query .= 'COUNT(sql_text) AS \'#\' ';
         $query .= 'FROM `mysql`.`slow_log` ';
         $query .= 'WHERE start_time > FROM_UNIXTIME(' . $start . ') ';
-        // See: mode = ONLY_FULL_GROUP_BY
         $query .= 'AND start_time < FROM_UNIXTIME(' . $end . ') GROUP BY start_time, user_host, db, sql_text';
 
         $result = $this->dbi->tryQuery($query);
@@ -302,7 +292,6 @@ class Monitor
             switch ($type) {
                 case 'insert':
                 case 'update':
-                    //Cut off big inserts and updates, but append byte count instead
                     if (mb_strlen($row['sql_text']) > 220) {
                         $implodeSqlText = implode(
                             ' ',
@@ -360,7 +349,6 @@ class Monitor
         $query .= 'WHERE command_type=\'Query\' ';
         $query .= 'AND event_time > FROM_UNIXTIME(' . $start . ') ';
         $query .= 'AND event_time < FROM_UNIXTIME(' . $end . ') ';
-        // See: mode = ONLY_FULL_GROUP_BY
         $query .= $limitTypes . 'GROUP by event_time, user_host, thread_id, server_id, argument'; // HAVING count > 1';
 
         $result = $this->dbi->tryQuery($query);
@@ -387,9 +375,8 @@ class Monitor
             $return['sum'][$type] += $row['#'];
 
             switch ($type) {
-                /** @noinspection PhpMissingBreakStatementInspection */
+                
                 case 'insert':
-                    // Group inserts if selected
                     if (
                         $removeVariables && preg_match(
                             '/^INSERT INTO (`|\'|"|)([^\s\\1]+)\\1/i',
@@ -404,15 +391,10 @@ class Monitor
                         $insertTables[$matches[2]]++;
                         if ($insertTables[$matches[2]] > 1) {
                             $return['rows'][$insertTablesFirst]['#'] = $insertTables[$matches[2]];
-
-                            // Add a ... to the end of this query to indicate that
-                            // there's been other queries
                             $temp = $return['rows'][$insertTablesFirst]['argument'];
                             $return['rows'][$insertTablesFirst]['argument'] .= $this->getSuspensionPoints(
                                 $temp[strlen($temp) - 1]
                             );
-
-                            // Group this value, thus do not add to the result list
                             continue 2;
                         }
 
@@ -420,11 +402,7 @@ class Monitor
                         $insertTables[$matches[2]] += $row['#'] - 1;
                     }
 
-                    // No break here
-
                 case 'update':
-                    // Cut off big inserts and updates,
-                    // but append byte count therefor
                     if (mb_strlen($row['argument']) > 220) {
                         $row['argument'] = mb_substr($row['argument'], 0, 200)
                         . '... ['
@@ -525,8 +503,6 @@ class Monitor
         if ($profiling) {
             $this->dbi->query('SET PROFILING=1;');
         }
-
-        // Do not cache query
         $sqlQuery = preg_replace('/^(\s*SELECT)/i', '\\1 SQL_NO_CACHE', $query);
 
         $this->dbi->tryQuery($sqlQuery);
@@ -536,8 +512,6 @@ class Monitor
         if ($result !== false) {
             $return['explain'] = $result->fetchAllAssoc();
         }
-
-        // In case an error happened
         $return['error'] = $this->dbi->getError();
 
         if ($profiling) {

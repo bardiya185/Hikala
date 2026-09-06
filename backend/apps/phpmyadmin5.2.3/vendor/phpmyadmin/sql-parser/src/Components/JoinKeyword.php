@@ -181,7 +181,7 @@ class JoinKeyword extends Component
                             break;
                         default:
                             if (empty(static::$JOINS[$token->keyword])) {
-                                /* Next clause is starting */
+                                
                                 break 2;
                             }
 

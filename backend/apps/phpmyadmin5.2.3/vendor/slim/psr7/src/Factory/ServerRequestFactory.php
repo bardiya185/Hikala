@@ -97,8 +97,6 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 
         $headers = Headers::createFromGlobals();
         $cookies = Cookies::parseHeader($headers->getHeader('Cookie', []));
-
-        // Cache the php://input stream as it cannot be re-read
         $cacheResource = fopen('php://temp', 'wb+');
         $cache = $cacheResource ? new Stream($cacheResource) : null;
 

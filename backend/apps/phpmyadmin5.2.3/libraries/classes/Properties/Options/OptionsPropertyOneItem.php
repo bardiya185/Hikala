@@ -43,7 +43,7 @@ abstract class OptionsPropertyOneItem extends OptionsPropertyItem
      * @var int
      */
     private $size;
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the force parameter

@@ -35,10 +35,10 @@ use const PHP_URL_QUERY;
 
 class ServerRequestFactory
 {
-    /** @var ServerRequestFactoryInterface */
+    
     private $serverRequestFactory;
 
-    /** @var UriFactoryInterface */
+    
     private $uriFactory;
 
     public function __construct(
@@ -52,13 +52,13 @@ class ServerRequestFactory
     private function createServerRequestFactory(): ServerRequestFactoryInterface
     {
         if (class_exists(Psr17Factory::class)) {
-            /** @var ServerRequestFactoryInterface $factory */
+            
             $factory = new Psr17Factory();
         } elseif (class_exists(HttpFactory::class)) {
-            /** @var ServerRequestFactoryInterface $factory */
+            
             $factory = new HttpFactory();
         } elseif (class_exists(LaminasServerRequestFactory::class)) {
-            /** @var ServerRequestFactoryInterface $factory */
+            
             $factory = new LaminasServerRequestFactory();
         } else {
             $factory = new SlimServerRequestFactory();
@@ -70,13 +70,13 @@ class ServerRequestFactory
     private function createUriFactory(): UriFactoryInterface
     {
         if (class_exists(Psr17Factory::class)) {
-            /** @var UriFactoryInterface $factory */
+            
             $factory = new Psr17Factory();
         } elseif (class_exists(HttpFactory::class)) {
-            /** @var UriFactoryInterface $factory */
+            
             $factory = new HttpFactory();
         } elseif (class_exists(LaminasUriFactory::class)) {
-            /** @var UriFactoryInterface $factory */
+            
             $factory = new LaminasUriFactory();
         } else {
             $factory = new SlimUriFactory();
@@ -88,10 +88,10 @@ class ServerRequestFactory
     public static function createFromGlobals(): ServerRequest
     {
         if (class_exists(SlimServerRequestFactory::class)) {
-            /** @psalm-suppress InternalMethod */
+            
             $serverRequest = SlimServerRequestFactory::createFromGlobals();
         } elseif (class_exists(LaminasServerRequestFactory::class)) {
-            /** @var ServerRequestInterface $serverRequest */
+            
             $serverRequest = LaminasServerRequestFactory::fromGlobals();
         } else {
             $creator = new self();
@@ -106,7 +106,7 @@ class ServerRequestFactory
      */
     protected function getallheaders(): array
     {
-        /** @var array<string, string> $headers */
+        
         $headers = function_exists('getallheaders') ? getallheaders() : [];
 
         return $headers;

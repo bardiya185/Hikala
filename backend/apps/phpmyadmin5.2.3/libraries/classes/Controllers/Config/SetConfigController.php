@@ -15,7 +15,7 @@ use function json_decode;
 
 final class SetConfigController extends AbstractController
 {
-    /** @var Config */
+    
     private $config;
 
     public function __construct(ResponseRenderer $response, Template $template, Config $config)
@@ -26,9 +26,9 @@ final class SetConfigController extends AbstractController
 
     public function __invoke(ServerRequest $request): void
     {
-        /** @var string|null $key */
+        
         $key = $request->getParsedBodyParam('key');
-        /** @var string|null $value */
+        
         $value = $request->getParsedBodyParam('value');
 
         if (! isset($key, $value)) {

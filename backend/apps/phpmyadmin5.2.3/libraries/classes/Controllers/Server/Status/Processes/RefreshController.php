@@ -12,7 +12,7 @@ use PhpMyAdmin\Template;
 
 final class RefreshController extends AbstractController
 {
-    /** @var Processes */
+    
     private $processes;
 
     public function __construct(ResponseRenderer $response, Template $template, Data $data, Processes $processes)

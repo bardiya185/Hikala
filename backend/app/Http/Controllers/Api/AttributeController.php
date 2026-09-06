@@ -147,13 +147,10 @@ class AttributeController extends Controller
             $attribute->update($request->safe()->except('values'));
         
             $submittedIds = [];
-            
-            // بهینه‌سازی کُشنده: گرفتن تمام مقادیر فعلی در یک کوئری واحد و ذخیره در کالکشن جهت دسترسی سریع سرور
             $existingValues = $attribute->values()->get()->keyBy('id');
         
             foreach ($request->input('values', []) as $item) {
                 if (!empty($item['id']) && $existingValues->has($item['id'])) {
-                    // بدون کوئری دیتابیس، آبجکت را از رم سرور می‌خوانیم و آپدیت میکنیم
                     $value = $existingValues->get($item['id']);
                     $value->update([
                         'value'       => $item['value'],
@@ -165,7 +162,6 @@ class AttributeController extends Controller
                     ]);
                     $submittedIds[] = $value->id;
                 } else {
-                    // مقدار جدید ایجاد می‌شود
                     $newValue = $attribute->values()->create([
                         'value'       => $item['value'],
                         'code'        => $item['code'] ?? null,
@@ -177,11 +173,8 @@ class AttributeController extends Controller
                     $submittedIds[] = $newValue->id;
                 }
             }
-        
-            // گارد امنیتی: قبل از حذف مقادیر تیک نخورده، مطمئن شویم به محصولی وصل نباشند
             $valuesToDelete = $attribute->values()->whereNotIn('id', $submittedIds)->get();
             foreach ($valuesToDelete as $valueToDelete) {
-                // فرض بر این است که در مدل AttributeValue رابطه products یا productItems تعریف شده است
                 if (method_exists($valueToDelete, 'products') && $valueToDelete->products()->exists()) {
                     continue; // اگر متصل به محصول است، حذف نشود تا فروشگاه کرش نکند
                 }
@@ -209,7 +202,6 @@ class AttributeController extends Controller
     )]
     public function destroy(Attribute $attribute)
     {
-        // گارد امنیتی هنگام حذف کل ویژگی
         if ($attribute->values()->whereHas('products')->exists()) { // فرض وجود رابطه محصولات در مقادیر
             return response()->json([
                 'success' => false,

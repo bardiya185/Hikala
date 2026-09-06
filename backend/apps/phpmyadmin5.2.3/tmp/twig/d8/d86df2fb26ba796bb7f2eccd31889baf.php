@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* modals/create_view.twig */
+
 class __TwigTemplate_0ade0d6443784c7df4eab27bbf81bda0 extends Template
 {
     private $source;
@@ -34,29 +34,24 @@ class __TwigTemplate_0ade0d6443784c7df4eab27bbf81bda0 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<div class=\"modal fade\" id=\"createViewModal\" tabindex=\"-1\" aria-labelledby=\"createViewModalLabel\" aria-hidden=\"true\">
   <div class=\"modal-dialog modal-lg\" id=\"createViewModalDialog\">
     <div class=\"modal-content\">
       <div class=\"modal-header\">
         <h5 class=\"modal-title\" id=\"createViewModalLabel\">";
 yield _gettext("Create view");
-        // line 5
         yield "</h5>
         <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"";
 yield _gettext("Close");
-        // line 6
         yield "\"></button>
       </div>
       <div class=\"modal-body\"></div>
       <div class=\"modal-footer\">
         <button type=\"button\" class=\"btn btn-secondary\" id=\"createViewModalGoButton\">";
 yield _gettext("Go");
-        // line 10
         yield "</button>
         <button type=\"button\" class=\"btn btn-secondary\" data-bs-dismiss=\"modal\">";
 yield _gettext("Close");
-        // line 11
         yield "</button>
       </div>
     </div>

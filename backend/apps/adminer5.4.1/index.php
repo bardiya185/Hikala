@@ -95,7 +95,6 @@ if(!empty($files)) {
       unset($adminerContents);
     }
   }
-  // include Adminer
   include $file;
 }
 

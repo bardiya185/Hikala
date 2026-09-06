@@ -261,7 +261,6 @@ abstract class BSDCommon extends OS
                 $novm = false;
                 break;
             }
-            // Detect QEMU cpu
             if ($novm && isset($testvirt["cpuid:QEMU"])) {
                 $this->sys->setVirtualizer('qemu'); // QEMU
                 $novm = false;
@@ -284,13 +283,9 @@ abstract class BSDCommon extends OS
             $this->_cpu_loads = array();
             if (PSI_OS != 'Darwin') {
                 if ($fd = $this->grabkey('kern.cp_time')) {
-                    // Find out the CPU load
-                    // user + sys = load
-                    // total = total
                     if (preg_match($this->_CPURegExp2, $fd, $res) && (sizeof($res) > 4)) {
                         $load = $res[2] + $res[3] + $res[4]; // cpu.user + cpu.sys
                         $total = $res[2] + $res[3] + $res[4] + $res[5]; // cpu.total
-                        // we need a second value, wait 1 second befor getting (< 1 second no good value will occour)
                         sleep(1);
                         $fd = $this->grabkey('kern.cp_time');
                         if (preg_match($this->_CPURegExp2, $fd, $res) && (sizeof($res) > 4)) {
@@ -515,7 +510,7 @@ abstract class BSDCommon extends OS
                 $dev->setName($ar_buf[1].": ".trim($ar_buf[2]));
                 $this->sys->setScsiDevices($dev);
             } elseif (preg_match($this->_SCSIRegExp2, $line, $ar_buf) && (sizeof($ar_buf) > 1)) {
-                /* duplication security */
+                
                 $notwas = true;
                 foreach ($this->sys->getScsiDevices() as $finddev) {
                     if ($notwas && (substr($finddev->getName(), 0, strpos($finddev->getName(), ': ')) == $ar_buf[1])) {
@@ -543,7 +538,7 @@ abstract class BSDCommon extends OS
                     $this->sys->setScsiDevices($dev);
                 }
             } elseif (preg_match($this->_SCSIRegExp3, $line, $ar_buf) && (sizeof($ar_buf) > 1)) {
-                /* duplication security */
+                
                 $notwas = true;
                 foreach ($this->sys->getScsiDevices() as $finddev) {
                     if ($notwas && (substr($finddev->getName(), 0, strpos($finddev->getName(), ': ')) == $ar_buf[1])) {
@@ -566,7 +561,7 @@ abstract class BSDCommon extends OS
                 }
             }
         }
-        /* cleaning */
+        
         foreach ($this->sys->getScsiDevices() as $finddev) {
             if (strpos($finddev->getName(), ': ') !== false)
                 $finddev->setName(substr(strstr($finddev->getName(), ': '), 2));
@@ -670,7 +665,7 @@ abstract class BSDCommon extends OS
                 $dev->setName($ar_buf[1].": ".trim($ar_buf[2]));
                 $this->sys->setIdeDevices($dev);
             } elseif (preg_match('/^(ada[0-9]+): (.*)MB \((.*)\)/', $line, $ar_buf)) {
-                /* duplication security */
+                
                 $notwas = true;
                 foreach ($this->sys->getIdeDevices() as $finddev) {
                     if ($notwas && (substr($finddev->getName(), 0, strpos($finddev->getName(), ': ')) == $ar_buf[1])) {
@@ -690,7 +685,7 @@ abstract class BSDCommon extends OS
                     $this->sys->setIdeDevices($dev);
                 }
             } elseif (preg_match('/^(ada[0-9]+): Serial Number (.*)/', $line, $ar_buf)) {
-                /* duplication security */
+                
                 $notwas = true;
                 foreach ($this->sys->getIdeDevices() as $finddev) {
                     if ($notwas && (substr($finddev->getName(), 0, strpos($finddev->getName(), ': ')) == $ar_buf[1])) {
@@ -713,7 +708,7 @@ abstract class BSDCommon extends OS
                 }
             }
         }
-        /* cleaning */
+        
         foreach ($this->sys->getIdeDevices() as $finddev) {
                     if (strpos($finddev->getName(), ': ') !== false)
                         $finddev->setName(substr(strstr($finddev->getName(), ': '), 2));
@@ -728,9 +723,6 @@ abstract class BSDCommon extends OS
     protected function memory()
     {
         if (PSI_OS == 'FreeBSD' || PSI_OS == 'OpenBSD') {
-            // vmstat on fbsd 4.4 or greater outputs kbytes not hw.pagesize
-            // I should probably add some version checking here, but for now
-            // we only support fbsd 4.4
             $pagesize = 1024;
         } else {
             $pagesize = $this->grabkey('hw.pagesize');
@@ -786,8 +778,6 @@ abstract class BSDCommon extends OS
             }
         }
         if ($notwas) foreach ($this->readdmesg() as $line) {
-//            if (preg_match('/^(ugen[0-9\.]+): <(.*)> (.*) (.*)/', $line, $ar_buf)) {
-//                    $dev->setName($ar_buf[1].": ".$ar_buf[2]);
             if (preg_match('/^(u[a-z]+[0-9]+): <([^,]*)(.*)> on (usbus[0-9]+)/', $line, $ar_buf)) {
                     $dev = new HWDevice();
                     $dev->setName($ar_buf[2]);

@@ -25,7 +25,7 @@ use function trim;
  */
 class VariablesController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, DatabaseInterface $dbi)
@@ -57,8 +57,6 @@ class VariablesController extends AbstractController
             unset($serverVarsResult);
 
             $serverVars = $this->dbi->fetchResult('SHOW GLOBAL VARIABLES;', 0, 1);
-
-            // list of static (i.e. non-editable) system variables
             $staticVariables = ServerVariablesProvider::getImplementation()->getStaticVariables();
 
             foreach ($serverVars as $name => $value) {
@@ -113,7 +111,7 @@ class VariablesController extends AbstractController
 
             if ($variableType === 'byte') {
                 $isHtmlFormatted = true;
-                /** @var string[] $bytes */
+                
                 $bytes = Util::formatByteDown($value, 3, 3);
                 $formattedValue = trim(
                     $this->template->render(

@@ -54,16 +54,16 @@ use const ENT_COMPAT;
  */
 class Export
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var mixed */
+    
     public $dumpBuffer = '';
 
-    /** @var int */
+    
     public $dumpBufferLength = 0;
 
-    /** @var array */
+    
     public $dumpBufferObjects = [];
 
     /**
@@ -93,7 +93,7 @@ class Export
      */
     public function isGzHandlerEnabled(): bool
     {
-        /** @var string[] $handlers */
+        
         $handlers = ob_list_handlers();
 
         return in_array('ob_gzhandler', $handlers);
@@ -988,7 +988,7 @@ class Export
         if (! $exportPlugin->exportRawQuery($errorUrl, $db, $sqlQuery, $crlf)) {
             $GLOBALS['message'] = Message::error(
                 // phpcs:disable Generic.Files.LineLength.TooLong
-                /* l10n: A query written by the user is a "raw query" that could be using no tables or databases in particular */
+                
                 __('Exporting a raw query is not supported for this export method.')
             );
 
@@ -1168,7 +1168,7 @@ class Export
 
         if ($exportType === 'server') {
             $active_page = Url::getFromRoute('/server/export');
-            /** @var ServerExportController $controller */
+            
             $controller = $containerBuilder->get(ServerExportController::class);
             $controller();
 
@@ -1177,7 +1177,7 @@ class Export
 
         if ($exportType === 'database') {
             $active_page = Url::getFromRoute('/database/export');
-            /** @var DatabaseExportController $controller */
+            
             $controller = $containerBuilder->get(DatabaseExportController::class);
             $controller();
 
@@ -1185,7 +1185,7 @@ class Export
         }
 
         $active_page = Url::getFromRoute('/table/export');
-        /** @var TableExportController $controller */
+        
         $controller = $containerBuilder->get(TableExportController::class);
         $controller();
     }
@@ -1337,7 +1337,7 @@ class Export
         $exportType = Core::securePath($exportType);
 
         // get the specific plugin
-        /** @var SchemaPlugin $exportPlugin */
+        
         $exportPlugin = Plugins::getPlugin('schema', $exportType);
 
         // Check schema export type

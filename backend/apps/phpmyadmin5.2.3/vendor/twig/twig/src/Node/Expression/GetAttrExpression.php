@@ -32,8 +32,6 @@ class GetAttrExpression extends AbstractExpression
     {
         $env = $compiler->getEnvironment();
         $arrayAccessSandbox = false;
-
-        // optimize array calls
         if (
             $this->getAttribute('optimizable')
             && (!$env->isStrictVariables() || $this->getAttribute('ignore_strict_check'))

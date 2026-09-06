@@ -8,10 +8,6 @@ if(WAMPTRACE_PROCESS) {
 	$errorTxt .= ' - Elapsed time='.((microtime(true)-$start_time));
 	error_log($errorTxt."\n",3,WAMPTRACE_FILE);
 }
-
-// Write string ($string) into file ($file)
-// If $clipboard == true copy contents into the clipoard
-// WARNING In case of clipborad copy, file will be deleted unless $delete = false
 function write_file($file, $string, $clipboard = false, $delete = true, $mode = 'wb') {
 	if(WAMPTRACE_PROCESS) error_log("function ".__FUNCTION__.' file='.$file."\n",3,WAMPTRACE_FILE);
 	$writeFileOK = true;
@@ -62,8 +58,6 @@ function write_file($file, $string, $clipboard = false, $delete = true, $mode = 
 	}
 	return $writeFileOK;
 }
-
-//Function to modify an ini file like wampmanager.conf
 function wampIniSet($iniFile, $params) {
 	if(WAMPTRACE_PROCESS) error_log("function ".__FUNCTION__."\n",3,WAMPTRACE_FILE);
 	$iniFileContents = @file_get_contents($iniFile);
@@ -110,8 +104,6 @@ function listDir($dir,$toCheck = '',$racine='',$withoutracine = false) {
 	}
 	return $list;
 }
-
-//Recursive function to completely delete a folder
 function rrmdir($dir) {
 	if(is_dir($dir)) {
 		$objects = scandir($dir);
@@ -164,20 +156,15 @@ function linkPhpDllToApacheBin($php_version) {
 	global $phpDllToCopy, $php820_DllToCopy, $phpN820_DllToCopy, $c_phpVersionDir, $c_apacheVersionDir, $wampConf, $phpConfFileForApache;
 	if(WAMPTRACE_PROCESS) error_log("function ".__FUNCTION__." - php_version=".$php_version."\n",3,WAMPTRACE_FILE);
 	$errorTxt = '';
-	//Suppress all symbolic links of apache/bin directory
 	$dir = $c_apacheVersionDir.'/apache'.$wampConf['apacheVersion'].'/'.$wampConf['apacheExeDir'];
  	$dir = str_replace('/','\\',$dir);
 	$command = 'del /F /Q /AL '.$dir.'\\*.*';
 	$output = proc_open_output($command);
-
-	//Create symbolic link to dll's files
 	clearstatcache();
 	foreach($phpDllToCopy as $dll)	{
 		$target = $c_phpVersionDir.'/php'.$php_version.'/'.$dll;
 		$link = $c_apacheVersionDir.'/apache'.$wampConf['apacheVersion'].'/'.$wampConf['apacheExeDir'].'/'.$dll;
-		//file deleted if exists
 		if(is_file($link)) unlink($link);
-		//Symlink created if file exists in phpx.y.z directory
 		if(is_file($target)) {
 			if(symlink($target, $link) === false) {
 				$errorTxt .= "Error while creating symlink '".$link."' to '".$target."' using php symlink function\n";
@@ -185,12 +172,10 @@ function linkPhpDllToApacheBin($php_version) {
 		}
 	}
 	unset($dll);
-	//Check if new PHP version is >= 8.2.0
 	if(version_compare($php_version, '8.2.0', '>=')) {
 		foreach($php820_DllToCopy as $dll)	{
 			$target = $c_phpVersionDir.'/php'.$php_version.'/'.$dll;
 			$link = $c_apacheVersionDir.'/apache'.$wampConf['apacheVersion'].'/'.$wampConf['apacheExeDir'].'/'.$dll;
-			//Symlink created if file exists in phpx.y.z directory and is not a file in Apache bin directory
 			if(is_file($target) && !is_file($link)) {
 				if(symlink($target, $link) === false) {
 					$errorTxt .= "Error while creating symlink '".$link."' to '".$target."' using php symlink function\n";
@@ -202,7 +187,6 @@ function linkPhpDllToApacheBin($php_version) {
 		foreach($phpN820_DllToCopy as $dll)	{
 			$target = $c_phpVersionDir.'/php'.$php_version.'/'.$dll;
 			$link = $c_apacheVersionDir.'/apache'.$wampConf['apacheVersion'].'/'.$wampConf['apacheExeDir'].'/'.$dll;
-			//Symlink created if file exists in phpx.y.z directory and doesn't exist in Apache bin directory
 			if(is_file($target)) {
 				if(!file_exists($link)) {
 					if(symlink($target, $link) === false) {
@@ -213,11 +197,8 @@ function linkPhpDllToApacheBin($php_version) {
 		}
 	}
 	unset($dll);
-
-	//Create apache/apachex.y.z/bin/php.ini link to phpForApache.ini file of active version of PHP
 	$target = $c_phpVersionDir."/php".$php_version."/".$phpConfFileForApache;
 	$link = $c_apacheVersionDir."/apache".$wampConf['apacheVersion']."/".$wampConf['apacheExeDir']."/php.ini";
-	//php.ini deleted if exists as file
 	if(is_file($link)) unlink($link);
 	if(symlink($target, $link) === false) {
 		$errorTxt .= "Error while creating symlink '".$link."' to '".$target."' using php symlink function\n";
@@ -236,9 +217,7 @@ function CheckSymlink($php_version) {
 	global $phpDllToCopy, $php820_DllToCopy, $phpN820_DllToCopy, $c_phpVersionDir, $c_apacheVersionDir, $wampConf, $phpConfFileForApache;
 	if(WAMPTRACE_PROCESS) error_log("function ".__FUNCTION__."\n",3,WAMPTRACE_FILE);
 	$errorTxt = '';
-	//Check if necessary symlinks exists
 	clearstatcache();
-	//Check if PHP version is >= 8.2.0
 	if(version_compare($php_version, '8.2.0', '>=')) {
 		$phpDllToCopy = array_unique(array_merge($phpDllToCopy,$php820_DllToCopy));
 	}
@@ -248,7 +227,6 @@ function CheckSymlink($php_version) {
 	foreach ($phpDllToCopy as $dll)	{
 		$target = $c_phpVersionDir.'/php'.$php_version.'/'.$dll;
 		$link = $c_apacheVersionDir.'/apache'.$wampConf['apacheVersion'].'/'.$wampConf['apacheExeDir'].'/'.$dll;
-		//Check Symlink if file exists in phpx.y.z directory
 		if(is_file($target  && !is_file($link))) {
 			if(is_link($link)) {
 				$real_link = str_replace("\\", "/",readlink($link));
@@ -264,8 +242,6 @@ function CheckSymlink($php_version) {
 			}
 		}
 	}
-
-	//Verify apache/apachex.y.z/bin/php.ini link to phpForApache.ini file of active version of PHP
 	$target = $c_phpVersionDir."/php".$php_version."/".$phpConfFileForApache;
 	$link = $c_apacheVersionDir."/apache".$wampConf['apacheVersion']."/".$wampConf['apacheExeDir']."/php.ini";
 	if(is_link($link)) {
@@ -296,18 +272,12 @@ function switchPhpVersion($newPhpVersion) {
 	       $c_apacheConfFile, $phpDllToCopy, $php820_DllToCopy, $phpN820_DllToCopy;
 
 	if(WAMPTRACE_PROCESS) error_log("function ".__FUNCTION__." ".$newPhpVersion."\n",3,WAMPTRACE_FILE);
-
-	//loading the configuration file of the new version
 	require $c_phpVersionDir.'/php'.$newPhpVersion.'/'.$wampBinConfFiles;
-
-	//the httpd.conf texts depending on the version of apache is determined
 	$apacheVersion = $wampConf['apacheVersion'];
 	while (!isset($phpConf['apache'][$apacheVersion]) && $apacheVersion != '') {
 		$pos = strrpos($apacheVersion,'.');
 		$apacheVersion = substr($apacheVersion,0,$pos);
 	}
-
-	// modifying httpd.conf apache file for LoadModule php5_module or php7_module or php_module
 	$httpdFileContents = file_get_contents_dos($c_apacheConfFile);
 	$c_phpVersionDirA = str_replace($c_installDir, '${INSTALL_DIR}',$c_phpVersionDir);
 	$search = '~^(LoadModule[ \t]+)(php_module|php7_module|php5_module)([ \t]+".+/bin/php/)(.+)(/)(.+\.dll)"~mi';
@@ -320,31 +290,17 @@ function switchPhpVersion($newPhpVersion) {
 		}
 	}
 	unset($httpdFileContents);
-
-	//modifying the conf of WampServer
 	$wampIniNewContents['phpIniDir'] = $phpConf['phpIniDir'];
 	$wampIniNewContents['phpExeDir'] = $phpConf['phpExeDir'];
 	$wampIniNewContents['phpConfFile'] = $phpConf['phpConfFile'];
 	$wampIniNewContents['phpVersion'] = $newPhpVersion;
 	wampIniSet($configurationFile, $wampIniNewContents);
-
-	//Symbolic links to be created in apache/bin folder
-	//on certain dlls and icu*.dll of the PHP version used as an Apache module
 	$c_phpBinDirNew = $c_phpVersionDir.'/php'.$newPhpVersion.'/';
-	//icu*.dll of new PHP version
 	$php_icu_dllNew = str_replace($c_phpBinDirNew,'',glob($c_phpBinDirNew."icu??*[5-9][0-9].dll"));
 	$phpDllToCopy = array_merge($php_icu_dllNew,$phpDllToCopy);
-
-	//require 'config.inc.php';
-
-	//Create symbolic link to php dll's and to phpForApache.ini of new version
 	linkPhpDllToApacheBin($newPhpVersion);
 
 }
-
-// Create parameter in $configurationFile file
-// $name = parameter name -- $value = parameter value
-// $section = name of the section to add parameter after
 function createWampConfParam($name, $value, $section, $configurationFile) {
 	if(WAMPTRACE_PROCESS) error_log("function ".__FUNCTION__."\n",3,WAMPTRACE_FILE);
 	$wampConfFileContents = @file_get_contents($configurationFile) or die ($configurationFile."file not found");
@@ -352,8 +308,6 @@ function createWampConfParam($name, $value, $section, $configurationFile) {
 	$wampConfFileContents = str_replace($section,$section."\r\n".$addTxt,$wampConfFileContents);
 	write_file($configurationFile,$wampConfFileContents);
 }
-
-//**** Functions to check if IP is valid and/or in a range ****
 /*
  * ip_in_range.php - Function to determine if an IP is located in a
  * specific range as specified via several alternative formats.
@@ -373,37 +327,17 @@ function createWampConfParam($name, $value, $section, $configurationFile) {
  * Version 1.2
  * Please do not remove this header, or source attibution from this file.
  */
-
-// decbin32
-// In order to simplify working with IP addresses (in binary) and their
-// netmasks, it is easier to ensure that the binary strings are padded
-// with zeros out to 32 characters - IP addresses are 32 bit numbers
 function decbin32 ($dec) {
   return str_pad(decbin($dec), 32, '0', STR_PAD_LEFT);
 }
-
-// ip_in_range
-// This function takes 2 arguments, an IP address and a "range" in several
-// different formats.
-// Network ranges can be specified as:
-// 1. Wildcard format:     1.2.3.*
-// 2. CIDR format:         1.2.3/24  OR  1.2.3.4/255.255.255.0
-// 3. Start-End IP format: 1.2.3.0-1.2.3.255
-// The function will return true if the supplied IP is within the range.
-// Note little validation is done on the range inputs - it expects you to
-// use one of the above 3 formats.
 function ip_in_range($ip, $range) {
   if(strpos($range, '/') !== false) {
-    // $range is in IP/NETMASK format
     list($range, $netmask) = explode('/', $range, 2);
     if(strpos($netmask, '.') !== false) {
-      // $netmask is a 255.255.0.0 format
       $netmask = str_replace('*', '0', $netmask);
       $netmask_dec = ip2long($netmask);
       return ( (ip2long($ip) & $netmask_dec) == (ip2long($range) & $netmask_dec) );
     } else {
-      // $netmask is a CIDR size block
-      // fix the range argument
       $x = explode('.', $range);
       while(count($x)<4) $x[] = '0';
       list($a,$b,$c,$d) = $x;
@@ -421,9 +355,7 @@ function ip_in_range($ip, $range) {
       return (($ip_dec & $netmask_dec) == ($range_dec & $netmask_dec));
     }
   } else {
-    // range might be 255.255.*.* or 1.2.3.0-1.2.3.255
     if(strpos($range, '*') !==false) { // a.b.*.* format
-      // Just convert to A-B format by setting * to 0 for A and 255 for B
       $lower = str_replace('*', '0', $range);
       $upper = str_replace('*', '255', $range);
       $range = "$lower-$upper";
@@ -444,7 +376,6 @@ function ip_in_range($ip, $range) {
 function check_IP_local($ip) {
 	global $wampConf;
 	$valid = false;
-	//Check if valid IPv4
 	if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
 		$ranges = array('127.0.0.0/8', '10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16');
 		foreach($ranges as $value) {
@@ -456,10 +387,6 @@ function check_IP_local($ip) {
 	}
 	return $valid;
 }
-
-//Function to retrieve the Apache variables (Define)
-//Default from wamp(64)\bin\apache\apache2.4.xx\wampdefineapache.conf file.
-//With $apacheItself true, from command httpd.exe -t -D DUMP_RUN_CFG
 function retrieve_apache_define($c_apacheDefineConf,$apacheItself = false) {
 	global $c_apacheExe, $c_apacheError;
 	$c_apacheError = '';
@@ -470,8 +397,6 @@ function retrieve_apache_define($c_apacheDefineConf,$apacheItself = false) {
 		}
 	}
 	else{
-		//$command = 'CMD /D /C '.$c_apacheExe." -t -D DUMP_RUN_CFG";
-		//$output = shell_exec($command);
 		$command = $c_apacheExe." -t -D DUMP_RUN_CFG";
 		$output = proc_open_output($command);
 		if(!empty($output)) {
@@ -487,8 +412,6 @@ function retrieve_apache_define($c_apacheDefineConf,$apacheItself = false) {
 	}
 	return $c_ApacheDefine;
 }
-
-//Function to check if it is Apache variable
 function is_apache_var($a_var) {
 	global $c_ApacheDefine;
 	if(preg_match('~\${(.+)}~',$a_var,$var) > 0) {
@@ -497,7 +420,6 @@ function is_apache_var($a_var) {
 	}
   return false;
 }
-//Function to replace Apache variable name by it contents
 function replace_apache_var($chemin) {
 	global $c_ApacheDefine,$c_apacheService;
 	if(preg_match('~\${(.+)}~',$chemin,$var) > 0) {
@@ -512,7 +434,6 @@ function replace_apache_var($chemin) {
 	}
 	return $chemin;
 }
-// Function to retrieve Apache Listen ports
 function listen_ports($ApacheHttpdConfFile) {
 	if(WAMPTRACE_PROCESS) error_log("function ".__FUNCTION__."\n",3,WAMPTRACE_FILE);
 	$c_listenPort = array();
@@ -522,8 +443,6 @@ function listen_ports($ApacheHttpdConfFile) {
 	sort($c_listenPort);
 	return (array)$c_listenPort;
 }
-
-// Function to check if VirtualHost exist and are valid
 function check_virtualhost($check_files_only = false) {
 	if(WAMPTRACE_PROCESS) error_log("function ".__FUNCTION__."\n",3,WAMPTRACE_FILE);
 	global $wampConf, $c_apacheConfFile, $c_apacheVhostConfFile, $c_DefaultPort, $c_UsedPort, $wwwDir, $c_phpVersion,
@@ -590,12 +509,10 @@ function check_virtualhost($check_files_only = false) {
 	);
 
 	$httpConfFileContents = file_get_contents($c_apacheConfFile);
-	//is Include conf/extra/httpd-vhosts.conf uncommented?
 	if(preg_match("~^[ \t]*#[ \t]*Include[ \t]+conf/extra/httpd-vhosts.conf.*$~m",$httpConfFileContents) > 0) {
 		$virtualHost['include_vhosts'] = false;
 		return $virtualHost;
 	}
-	//
 	$virtualHost['vhosts_file'] = $c_apacheVhostConfFile;
 	if(!file_exists($virtualHost['vhosts_file'])) {
 		$virtualHost['vhosts_exist'] = false;
@@ -606,16 +523,13 @@ function check_virtualhost($check_files_only = false) {
 	}
 	$myHostsContents = file_get_contents($c_hostsFile);
 	$myVhostsContents = file_get_contents($virtualHost['vhosts_file']);
-	//Extract values of Alias into VirtualHost
 	$nb_Alias= preg_match_all("~^[ \t]*Alias[ \t]+(.*)[ \t](.*)\R~mi", $myVhostsContents, $Alias_matches);
 	if($nb_Alias > 0) {
 		$virtualHost['nb_Alias'] = $nb_Alias;
 		$virtualHost['alias'] = $Alias_matches[1];
 		$virtualHost['aliasDir'] = $Alias_matches[2];
 	}
-	// Extract values of ServerName (without # at the beginning of the line)
 	$nb_Server = preg_match_all("/^[ \t]*ServerName[ \t]+(.*)\R/m", $myVhostsContents, $Server_matches);
-	//error_log("Server_matches=".print_r($Server_matches,true));
 	foreach($Server_matches[1] as $key => $value) {
 		$with_quote = false;
 		$value = trim($value);
@@ -627,7 +541,6 @@ function check_virtualhost($check_files_only = false) {
 		}
 		$virtualHost['ServerNameQuoted'][$value] = $with_quote;
 	}
-	// Extract values of <VirtualHost *:xx> or <VirtualHost ip:xx> port number
 	$nb_Virtual = preg_match_all("/^(?![ \t]*#).*\<VirtualHost[ \t]+(?:\*|([0-9.]*|_default_)):(.*)\>\R/m", $myVhostsContents, $Virtual_matches);
 	foreach($Virtual_matches[1] as $key => $value) {
 		if($value == '_default_') {
@@ -635,9 +548,7 @@ function check_virtualhost($check_files_only = false) {
 			break;
 		}
 	}
-	// Extract values of DocumentRoot path
 	$nb_Document = preg_match_all("/^(?![ \t]*#).*DocumentRoot[ \t]+(.*?\r?)$/m", $myVhostsContents, $Document_matches);
-	// Count number of <Directory that has to match the number of ServerName
 	$nb_Directory = preg_match_all("/^(?![ \t]*#).*\<Directory[ \t]+(.*)\>\R/m", $myVhostsContents, $Dir_matches);
 	$nb_End_Directory = preg_match_all("~^(?![ \t]*#).*\</Directory.*\R~m", $myVhostsContents, $end_Dir_matches);
 	$server_name = array();
@@ -651,7 +562,6 @@ function check_virtualhost($check_files_only = false) {
 	$virtualHost['nb_Document'] = $nb_Document;
 	$virtualHost['nb_Directory'] = $nb_Directory;
 	$virtualHost['nb_End_Directory'] = $nb_End_Directory;
-	//Check validity of port number
 	$virtualHost['virtual_port'] = array_merge($Virtual_matches[2]);
 
 	$virtualHost['virtual_ip'] = array_merge($Virtual_matches[1]);
@@ -663,7 +573,6 @@ function check_virtualhost($check_files_only = false) {
 		$virtualHost['virtual_port'][$i] = replace_apache_var($virtualHost['virtual_port'][$i]);
 		$port = $virtualHost['virtual_port'][$i];
 		$virtualHost['Server'][$i]['Port'] = $port;
-		//if($port <> '80') $value .= ':'.$port;
 		$virtualHost['ServerNamePort'][$value] = $port;
 		$virtualHost['ServerNamePortValid'][$value]	= true;
 		$virtualHost['ServerNamePortListen'][$value]	= true;
@@ -675,8 +584,6 @@ function check_virtualhost($check_files_only = false) {
 			$virtualHost['port_number'] = false;
 		}
 	}
-
-	//Check validity of DocumentRoot
 	for($i = 0 ; $i < $nb_Document ; $i++) {
 		$chemin = trim($Document_matches[1][$i], " \t\n\r\0\x0B\"");
 		$chemin = replace_apache_var($chemin);
@@ -695,8 +602,6 @@ function check_virtualhost($check_files_only = false) {
 			}
 		}
 	}
-
-	//Check validity of Directory path
 	for($i = 0 ; $i < $nb_Directory ; $i++) {
 		$chemin = trim($Dir_matches[1][$i], " \t\n\r\0\x0B\"");
 		$chemin = replace_apache_var($chemin);
@@ -708,7 +613,6 @@ function check_virtualhost($check_files_only = false) {
 		}
 		else
 			$virtualHost['directoryPathValid'][$chemin] = true;
-		//Check Directory path ended with slash
 		if(substr($chemin,-1) != '/') {
 			$virtualHost['directoryPathSlashEnded'][$chemin] = false;
 			$virtualHost['directorySlash'] = false;
@@ -716,15 +620,12 @@ function check_virtualhost($check_files_only = false) {
 		else
 			$virtualHost['directoryPathSlashEnded'][$chemin] = true;
 	}
-
-	//Check validity of ServerName
 	$TempServerName = array();
 	$TempServerIp = array();
 	for($i = 0 ; $i < $nb_Server ; $i++) {
 		$value = trim($Server_matches[1][$i]);
 		$virtualHost['Server'][$i]['ServerName'] = $value;
 		$nameToCheck = $value;
-		//First server name
 		if($i == 0)	$virtualHost['FirstServerName'] = $value;
 		/*if($virtualHost['virtual_port'][$i] <> '80') {
 			$value .= ':'.$virtualHost['virtual_port'][$i];
@@ -736,11 +637,7 @@ function check_virtualhost($check_files_only = false) {
 		$virtualHost['ServerNameIp'][$value] = false;
 		$virtualHost['ServerNameIpValid'][$value] = false;
 		$virtualHost['ServerNameIntoHosts'][$value] = true;
-
-		//Validity of ServerName (Like domain name)
-		// IDNA (Punycode) - 3.2.3 improve regex
 		$regexIDNA = '#^([\w-]+://?|www[\.])?xn--[a-z0-9]+[a-z0-9\-\.]*[a-z0-9]+(\.[a-z]{2,7})?$#';
-		// Not IDNA  /^[A-Za-z]+([-.](?![-.])|[A-Za-z0-9]){1,60}[A-Za-z0-9]$/
 		if(
 			(preg_match($regexIDNA,$nameToCheck,$matchesIDNA) == 0)
 			&& (preg_match('/^
@@ -754,11 +651,8 @@ function check_virtualhost($check_files_only = false) {
 			$/x',$nameToCheck) == 0)
 			&& $wampConf['NotCheckVirtualHost'] == 'off') {
 			$virtualHost['ServerNameValid'][$value] = false;
-			//$virtualHost['ServerNameQuoted'][$value] = false;
-			//if(strpos($value,'"') !== false) {
 			if($virtualHost['ServerNameQuoted'][$value]) {
 				$virtualHost['ServerNameValid'][$value] = false;
-				//$virtualHost['ServerNameQuoted'][$value] = true;
 				$virtualHost['ServerNameIDNA'][$value] = false;
 				$virtualHost['ServerNameUTF8'][$value] = $value;
 			}
@@ -768,7 +662,6 @@ function check_virtualhost($check_files_only = false) {
 		}
 		else {
 			$virtualHost['ServerNameValid'][$value] = true;
-			//$virtualHost['ServerNameQuoted'][$value] = false;
 			if(empty($matchesIDNA[0])) {
 				$virtualHost['ServerNameIDNA'][$value] = false;
 				$virtualHost['ServerNameUTF8'][$value] = $value;
@@ -780,7 +673,6 @@ function check_virtualhost($check_files_only = false) {
 				else
 					$virtualHost['ServerNameUTF8'][$value] = idn_to_utf8($value,IDNA_DEFAULT,INTL_IDNA_VARIANT_UTS46);
 			}
-			//Check optionnal IP
 			if(!empty($virtualHost['virtual_ip'][$i])) {
 				$Virtual_IP = $virtualHost['virtual_ip'][$i];
 				$virtualHost['Server'][$i]['ip'] = $Virtual_IP;
@@ -794,12 +686,9 @@ function check_virtualhost($check_files_only = false) {
 				$virtualHost['Server'][$i]['ip'] = '';
 			}
 		}
-	//Check ServerName into hosts file
 	if(stripos($myHostsContents, $value) === false && $wampConf['NotCheckVirtualHost'] =='off')
 		$virtualHost['ServerNameIntoHosts'][$value] = false;
 	} //End for
-
-	//Check if tld is .dev
 	if($wampConf['NotVerifyTLD'] == 'off') {
 		foreach($virtualHost['ServerNameDev'] as $keydev => &$valuedev) {
 			$tld = substr($keydev,-4);
@@ -807,8 +696,6 @@ function check_virtualhost($check_files_only = false) {
 				$valuedev = true;
 		}
 	}
-
-	//Check if duplicate ServerName
 	if($wampConf['NotCheckDuplicate'] == 'off' && $wampConf['NotCheckVirtualHost'] == 'off') {
 		$array_unique = array_unique($TempServerName);
 		if(count($TempServerName) - count($array_unique) != 0 ){
@@ -818,7 +705,6 @@ function check_virtualhost($check_files_only = false) {
       		$virtualHost['duplicate'][] = $TempServerName[$i];
     	}
 		}
-		//Check duplicate Ip
 		$array_unique = array_unique($TempServerIp);
 		if(count($TempServerIp) - count($array_unique) != 0 ){
 			$virtualHost['nb_duplicateIp'] = count($TempServerIp) - count($array_unique);
@@ -828,8 +714,6 @@ function check_virtualhost($check_files_only = false) {
     	}
 		}
 	}
-
-	//Check VirtualHost port not Listen port in httpd.conf
 	$diffVL = array_diff(array_values(array_unique(array_values($virtualHost['ServerNamePort']))),listen_ports($c_apacheConfFile));
 	if(count($diffVL) > 0) {
 		$virtualHost['port_listen'] = false;
@@ -839,7 +723,6 @@ function check_virtualhost($check_files_only = false) {
 	foreach($virtualHost['NotListenPort'] as $key => $value)
 		$virtualHost['ServerNamePortListen'][$key] = $value;
 	}
-	//Check if some VirtualHost use $wwwDir DocumentRoot reserved for localhost
 	foreach($virtualHost['ServerName'] as $value) {
 		$SerName = $value;
 		$DocRoot = $virtualHost['documentRoot'][$value];
@@ -848,7 +731,6 @@ function check_virtualhost($check_files_only = false) {
 			$virtualHost['DocRootNotwww'][$SerName] = false;
 		}
 	}
-	//Check if VirtualHost use Apache fcgid_module & PHP version used.
 	$myVhostsContents = file_get_contents($c_apacheVhostConfFile);
 	$phpVersionList = listDir($c_phpVersionDir,'checkPhpConf','php',true);
 	if(!isset($phpFcgiVersionList)) GetAliasVersions();
@@ -857,7 +739,6 @@ function check_virtualhost($check_files_only = false) {
 		$virtualHost['ServerNameFcgidPHP'][$value] = '0.0.0';
 		$virtualHost['ServerNameFcgidPHPOK'][$value] = false;
 		$p_value = preg_quote($value);
-		//Extract <VirtualHost... </VirtualHost>
 		$mask = "~
 			<VirtualHost                         # beginning of VirtualHost
 			[^<]*(?:<(?!/VirtualHost)[^<]*)*     # avoid premature end
@@ -866,21 +747,16 @@ function check_virtualhost($check_files_only = false) {
 			</VirtualHost\>\s*\n                 # end of VirtualHost
 			~isx";
 		if(preg_match($mask,$myVhostsContents,$matches) === 1) {
-			//Check if VirtualHost use <IfModule fcgid_module> not commented
-			//if(strpos($matches[0],'<IfModule fcgid_module>') !== false) {
 				if(preg_match("~^(#)?[ \t]*\<IfModule fcgid_module\>\r?$~m",$matches[0],$comment) === 1) {
 				if(!isset($comment[1])) {
 					$virtualHost['ServerNameFcgid'][$value] = true;
-					//Check if VirtualHost use Define FCGIPHPVERSION
 					if(strpos($matches[0],'Define FCGIPHPVERSION') !== false) {
 						if(preg_match('~Define FCGIPHPVERSION "([0-9\.]+)"~im',$matches[0],$matches_fcgi) === 1) {
-							//PHP version used is $matches_fcgi[1]
 							$virtualHost['ServerNameFcgidPHP'][$value] = $matches_fcgi[1];
 							$phpFcgiVersionList[] = $matches_fcgi[1];
 							$phpFcgiVersionListUsed[$matches_fcgi[1]][] = $value;
 						}
 					}
-					//Check ifPHP version used exists as Wampserver addon
 					if(in_array($virtualHost['ServerNameFcgidPHP'][$value],$phpVersionList) !== false) {
 						$virtualHost['ServerNameFcgidPHPOK'][$value] = true;
 					}
@@ -892,43 +768,34 @@ function check_virtualhost($check_files_only = false) {
 			}
 		}
 	}
-	//Are there any https VirtualHosts ?
 	if(preg_match("~^Include[ \t]+conf/extra/httpd-ssl.conf.*$~mi",$httpConfFileContents) > 0
 		&& preg_match("~^LoadModule[ \t]+ssl_module modules/mod_ssl.so.*$~mi",$httpConfFileContents) > 0
 		&& preg_match("~^LoadModule[ \t]+socache_shmcb_module modules/mod_socache_shmcb.so.*$~mi",$httpConfFileContents) > 0) {
-		//Requirements for VirtualHost https OK
 		$httpdsslFileContents = file_get_contents($c_apacheConfDir.'/extra/httpd-ssl.conf');
 		preg_match_all('~^Define SERVERNAMEVHOSTSSL ([a-z0-9\.\-]+).*$~mi',$httpdsslFileContents,$matches);
 		foreach($matches[1] as $value) {
 			$virtualHost['ServerNameHttps'][] = $value;
 		}
 	}
-	//Check if https VirtualHost use Apache fcgid_module & PHP version used.
 	if(count($virtualHost['ServerNameHttps']) > 0){
 		$httpdsslFileContents = file_get_contents($c_apacheConfDir.'/extra/httpd-ssl.conf');
 		foreach($virtualHost['ServerNameHttps'] as $value) {
-			//Extract Define SERVERNAMEVHOSTSSL ... </VirtualHost>
 			$p_value = preg_quote($value);
 			$mask = "~^Define SERVERNAMEVHOSTSSL {$p_value}.*?</VirtualHost>\r?$~mis";
 			if(preg_match($mask,$httpdsslFileContents,$matches) !== 1) continue;
-			//Check if there is FCGI PHP used in https vhost
 			$virtualHost['ServerNameHttpsFcgid'][$value] = false;
 			$virtualHost['ServerNameHttpsFcgidPHP'][$value] = '';
 			$virtualHost['ServerNameHttpsFcgidPHPOK'][$value] = false;
-			//Check if VirtualHost use <IfModule fcgid_module> not commented
 			if(preg_match("~^(#)?[ \t]*\<IfModule fcgid_module\>\r?$~m",$matches[0],$comment) === 1) {
 				if(!isset($comment[1])) {
 					$virtualHost['ServerNameHttpsFcgid'][$value] = true;
-					//Check if VirtualHost use Define FCGIPHPVERSION
 					if(strpos($matches[0],'Define FCGIPHPVERSION') !== false) {
 						if(preg_match('~Define FCGIPHPVERSION "([0-9\.]+)"~im',$matches[0],$matches_fcgi) === 1) {
-							//PHP version used is $matches_fcgi[1]
 							$virtualHost['ServerNameHttpsFcgidPHP'][$value] = $matches_fcgi[1];
 							$phpFcgiVersionList[] = $matches_fcgi[1];
 							$phpFcgiVersionListUsed[$matches_fcgi[1]][] = $value;
 						}
 					}
-					//Check ifPHP version used exists as Wampserver addon
 					if(in_array($virtualHost['ServerNameHttpsFcgidPHP'][$value],$phpVersionList) !== false) {
 						$virtualHost['ServerNameHttpsFcgidPHPOK'][$value] = true;
 					}
@@ -954,13 +821,8 @@ function check_virtualhost($check_files_only = false) {
 	if(!empty($virtualHost['ServerNameHttps'])) {
 		$virtualHost['ServerNameUseHttps'] = true;
 	}
-	//error_log("virtualHost=\n".print_r($virtualHost, true));
 	return $virtualHost;
 }
-
-// List all versions PHP, MySQL, MariaDB, Apache into array
-// with USED or CLI or FCGI added to version number
-// like  5.6.40CLI - 7.3.10USED - 2.4.41USED - 5.7.27USED - 7.4.27FCGI
 function ListAllVersions() {
 	global $c_phpVersionDir, $c_phpVersion,$c_phpCliVersion,$phpVersionList,$phpFcgiVersionList,$phpFcgiVersionListUsed,
 		$c_apacheVersionDir,$c_apacheVersion, $apacheVersionList,
@@ -974,7 +836,6 @@ function ListAllVersions() {
 		'mysql' => array(),
 		'mariadb' => array(),
 	);
-	//Apache versions
 	if(!isset($apacheVersionList)) {
 		$apacheVersionList = listDir($c_apacheVersionDir,'checkApacheConf','apache',true);
 	}
@@ -983,7 +844,6 @@ function ListAllVersions() {
   		$oneApacheVersion .= 'USED';
   	$Versions['apache'][] = $oneApacheVersion;
 	}
-	//PHP versions
 	if(!isset($phpVersionList)) {
 		$phpVersionList = listDir($c_phpVersionDir,'checkPhpConf','php',true);
 	}
@@ -1002,7 +862,6 @@ function ListAllVersions() {
 			$onePhpVersionTemp .= 'FCGI';
 		$Versions['php'][] = $onePhpVersionTemp;
 	}
-	//MySQL versions
 	if(!isset($mysqlVersionList)) {
 		$mysqlVersionList = listDir($c_mysqlVersionDir,'checkMysqlConf','mysql',true);
 	}
@@ -1011,7 +870,6 @@ function ListAllVersions() {
   		$oneMysqlVersion .= 'USED';
   	$Versions['mysql'][] = $oneMysqlVersion;
 	}
-	//MariaDB versions
 	if(!isset($mariadbVersionList)) {
 		$mariadbVersionList = listDir($c_mariadbVersionDir,'checkMariaDBConf','mariadb',true);
 	}
@@ -1022,9 +880,6 @@ function ListAllVersions() {
 	}
 	return $Versions;
 }
-
-// Callback function must exist and return true or false
-// False to delete array item - True to not delete
 function array_filter_recursive($array, $callback) {
 	foreach ($array as $key => &$value) { // Warning, $value is by reference
 		if(is_array($value))
@@ -1034,18 +889,14 @@ function array_filter_recursive($array, $callback) {
 	unset($value); // Suppress the reference
 	return $array;
 }
-
-// Get content of file and set lines end to DOS (CR/LF) if needed
 function file_get_contents_dos($file, $retour = true) {
 	if(WAMPTRACE_PROCESS) error_log("function ".__FUNCTION__.' - '.$file." - return=".($retour ? 'true' : 'false')."\n",3,WAMPTRACE_FILE);
 	$check_DOS = @file_get_contents($file) or die ($file."file not found");
-	//Check if there is \n without previous \r
 		$count = $counts = 0;
 	if(preg_match("/(?<!\r)\n/",$check_DOS) > 0) {
 		$check_DOS = preg_replace(array('/\r\n?/','/\n/'),array("\n","\r\n"), $check_DOS, -1, $count);
 		$counts += $count;
 	}
-	//suppress spaces or tabs at the end of lines
 	$check_DOS = preg_replace('~[ \t]+(\r?)$~m',"$1",$check_DOS, -1, $count);
 	$counts += $count;
 	if($counts > 0) {
@@ -1054,29 +905,20 @@ function file_get_contents_dos($file, $retour = true) {
 	}
 	if($retour) return $check_DOS;
 }
-
-// Clean file contents
 function clean_file_contents($contents, $twoToNone = array(2,0), $all_spaces = false, $hashlines = false, $save=false, $file='') {
 	global $clean_count;
 	if(WAMPTRACE_PROCESS) error_log("function ".__FUNCTION__.' '.$file."\n",3,WAMPTRACE_FILE);
 	$clean_count = false;
 	if($all_spaces) {
-		//more than one space into one space
 		$contents = preg_replace("~[ \t]{2,}~",' ',$contents,-1, $count);
 		if($count > 0) $clean_count = true;
 	}
-	//suppress spaces or tabs at the end of lines
 	$contents = preg_replace('~[ \t]+(\r?)$~m',"$1",$contents, -1, $count);
 	if($count > 0) $clean_count = true;
-	//suppress more than $twoToNone[0] empty line into $twoToNone[1] empty lines
-	// For Unix, Windows, Mac OS X & old Mac OS Classic
-	/* "/^(?:[\t ]*(?>\r?\n|\r)){2,}/m" */
-	// For Unix, Windows & Mac OS X (Without old Mac OS Classic)
-	// "/^(?:[\t\r ]*\n){2,}/m"
+	
 	$contents = preg_replace("/^(?:[\t\r ]*\n){".$twoToNone[0].",}/m",str_repeat("\r\n",$twoToNone[1]),$contents,-1, $count);
 	if($count > 0) $clean_count = true;
 	if($hashlines) {
-		//Replace more than 2 lines with # and no comment into only one line
 		$contents = preg_replace("/^(?:[\t ]*#[\t \r]*\n){2,}/m",str_repeat("#\r\n",1),$contents,-1, $count);
 		if($count > 0) $clean_count = true;
 	}
@@ -1086,31 +928,17 @@ function clean_file_contents($contents, $twoToNone = array(2,0), $all_spaces = f
 	}
 	return $contents;
 }
-
-//Clean variable string
 function clean_string_var($contents, $twoToNone = array(1,0), $all_spaces = false) {
 	if(WAMPTRACE_PROCESS) error_log("function ".__FUNCTION__."\n",3,WAMPTRACE_FILE);
-	//Check if there is \n without previous \r
 	if(preg_match("/(?<!\r)\n/",$contents) > 0) {
 		$contents = preg_replace(array('/\r\n?/','/\n/'),array("\n","\r\n"), $contents, -1);
 	}
-	//more than one space into one space
 	if($all_spaces) $contents = preg_replace("~[ \t]{2,}~",' ',$contents,-1);
-	//suppress spaces or tabs at the end of lines
 	$contents = preg_replace('~[ \t]+(\r?)$~m',"$1",$contents, -1);
-	//suppress more than $twoToNone[0] empty line into $twoToNone[1] empty lines
-	// For Unix, Windows, Mac OS X & old Mac OS Classic
-	/* "/^(?:[\t ]*(?>\r?\n|\r)){2,}/m" */
-	// For Unix, Windows & Mac OS X (Without old Mac OS Classic)
-	// "/^(?:[\t\r ]*\n){2,}/m"
+	
 	$contents = preg_replace("/^(?:[\t\r ]*\n){".$twoToNone[0].",}/m",str_repeat("\r\n",$twoToNone[1]),$contents,-1);
 	return $contents;
 }
-
-//Check alias and paths in httpd-autoindex.conf
-// Alias /icons/ "c:/Apache24/icons/" => Alias /icons/ "icons/"
-// <Directory "c:/Apache24/icons"> => <Directory "icons">
-// Don't modify if there is ${SRVROOT} variable (Apache 2.4.35)
 function check_autoindex() {
 	global $c_apacheAutoIndexConfFile;
 	$autoindexContents = @file_get_contents($c_apacheAutoIndexConfFile) or die ("httpd-autoindex.conf file not found");
@@ -1123,8 +951,6 @@ function check_autoindex() {
 		}
 	}
 }
-
-//Check if a folder exists then create it if not
 function checkDir($dir) {
 	$message = '';
 	if(!file_exists($dir)) {
@@ -1155,17 +981,12 @@ function checkDir($dir) {
 	}
 	return 'OK';
 }
-
-//Return error_reporting from integer into string
 function errorLevel($error_number) {
 	$error_description = $error_comment = array();
 	if(is_string($error_number)) {
-		// To convert error_reporting value from string for example: 'E_ALL & ~E_WARNING'
-		// into integer from constant value.
 		$newpara = parse_ini_string('error_reporting = '.$error_number);
 		$error_number = $newpara['error_reporting'];
 	}
-	//The ampersand "&" are doubled into strings to be displayed and not to be considered as a key prefix by Aestran Tray Menu.
 	$error_codes = array(
 	E_ALL => array('str' => "E_ALL", 'comment' => "Development value^Show all errors, warnings and notices including coding standards."),	//32767 - Development value
 	(E_ALL & ~E_ERROR) => array('str' => "E_ALL && ~E_ERROR", 'comment' =>'Show all errors, except for fatal run-time errors'), //32766
@@ -1203,8 +1024,6 @@ function errorLevel($error_number) {
 	}
 	return $error_description;
 }
-
-// Wrap texte into multi lines for Aestran Menu's
 function menu_multi_lines($texte, $limit = 70) {
 	$ConfTextInfo = '';
 	$lines_report = explode('^',wordwrap($texte,$limit,'^'));
@@ -1214,8 +1033,6 @@ function menu_multi_lines($texte, $limit = 70) {
 	}
 	return $ConfTextInfo;
 }
-
-//Function to convert filesize bytes into human units
 function FileSizeConvert($bytes) {
 	$bytes = floatval($bytes);
 	$arBytes = array(
@@ -1235,8 +1052,6 @@ function FileSizeConvert($bytes) {
   }
   return $result;
 }
-//Send command function via cmd.exe
-//retrieve the result of stdout AND stderr
 function proc_open_output($command) {
 	global $c_apacheError;
 	$descriptorspec = array(
@@ -1259,11 +1074,6 @@ function proc_open_output($command) {
 
 	return $output;
 }
-
-//Function to create colored string for command windows
-//Color supported: black, red, green, yellow, blue, magenta,
-//  cyan, white, bold, underline, inverse
-//Color 'clean' suppress all color codes and return a cleaned string
 function color($color,$string = '') {
 	if(php_uname('r') == '6.1' ) return $string;
 	$seq = array(
@@ -1287,13 +1097,10 @@ function color($color,$string = '') {
 	elseif($color == 'inverse' || $color == 'bold' || $color == 'underline') $seq['normal'] = $seq['reset'];
 	return $seq[$color].$string.$seq['normal'];
 }
-
-//Function to output a command window, clears it and displays a message
 function Command_Windows($message,$nbCols=-1,$nbLines=-1,$linesSup=0,$title='Wampserver',$readLine = '') {
 	if($nbCols < 0) {
 		$array = explode("\n",$message);
 		foreach($array as $value) {
-			//Number of escape sequences
 			$Cols = strlen($value) - (substr_count($value,chr(27).'[')*5);
 			if($Cols > $nbCols) $nbCols = $Cols;
 		}
@@ -1316,7 +1123,6 @@ function Command_Windows($message,$nbCols=-1,$nbLines=-1,$linesSup=0,$title='Wam
 	}
 
 }
-//Function to create $wamp_versions_here items with last version
 function create_wamp_versions($versionList,$soft) {
 	global $wamp_versions_here;
 	$racine = '00';
@@ -1332,8 +1138,6 @@ function create_wamp_versions($versionList,$soft) {
 		}
 	}
 }
-
-//Function to read the content of a dir
 	function read_dir($dir) {
 		if(substr($dir,-1,1) == '/') $dir = substr($dir,0,-1);
 		$array = array();
@@ -1352,9 +1156,6 @@ function create_wamp_versions($versionList,$soft) {
 		$d->close();
 		return $array;
 	}
-
-// Function to create definitions of XXXXMenuColor
-// From $AesXXXXMenuColor in config.inc.php
 function AestanMenuColor($AesMenuColor,$AesMenuText) {
 	$MenuColorText = '';
 	foreach($AesMenuColor as $key => $value) {
@@ -1378,11 +1179,6 @@ function AestanMenuColor($AesMenuColor,$AesMenuText) {
 	$MenuColorText .="\r\n";
 	return $MenuColorText;
 }
-
-//Function to replace some characters by entities
-//for Aestan Tray Menu PromptText fields and Text menu items
-//$What = 'all'  : \r\n by #13 and , by &#44;
-//        else   : \r\n by nothing and , by space
 function ReplaceAestan($value,$What = 'all') {
 	if($What == 'all') {
 		$search  = array("\r\n","\r","\n",',');
@@ -1395,17 +1191,6 @@ function ReplaceAestan($value,$What = 'all') {
 	return str_replace($search,$replace,$value);
 }
 
-// Function to get PhpMyAdmin version's and other alias (adminer, phpsysinfo, etc.)
-// Retrieving the different aliases and versions for PhpMyAdmin
-// $Alias_Contents['alias'] = alias for example phpmyadmin or phpmyadmin4.9.7 or adminer or phpsysinfo
-// $Alias_Contents[x]['version'] = version for example 5.0.4 or 4.9.7 or 5.1.0rc1
-// $Alias_Contents[x]['compat'] = true Compatible with PHP version used
-//   if false $Alias_Contents[x]['notcompat'] = incompatibily text
-// $Alias_Contents[x]['fcgid'] = true Use fcgid Apache module
-// $Alias_Contents[x]['fcgidPHP'] = PHP version used with fcgid
-// $Alias_Contents[x]['fcgidPHPOK'] = true PHP version exists
-// $phmyadOK = true if at least one version of PhpMyAdmin
-
 function GetAliasVersions(){
 	global $c_installDir, $aliasDir, $phmyadOK, $c_phpVersion, $c_phpExe, $Alias_Contents, $wamp_versions_here,
 	$WarningMenuPMA, $WarningTextPMA, $WarningsPMA, $c_ApacheDefine, $c_phpVersionDir,$phpFcgiVersionList,$phpFcgiVersionListUsed;
@@ -1414,8 +1199,6 @@ function GetAliasVersions(){
 	$phmyadOK = false;
 	if(!isset($phpFcgiVersionList)) $phpFcgiVersionList = $phpFcgiVersionListUsed = array();
 	$temp = array_merge(glob($aliasDir.'phpmyadmin*.conf'),glob($aliasDir.'adminer*.conf'),glob($aliasDir.'phpsysinfo*.conf'));
-	//$temp1 = glob($aliasDir.'adminer*.conf');
-	//error_log("temp=".print_r($temp,true));
 	if(!empty($temp)) {
 		$phmyadOK = false;
 		$Alias_Contents['PMyAd'] = $Alias_Contents['PMyAdVer'] = array();
@@ -1437,25 +1220,19 @@ function GetAliasVersions(){
 			$Alias_Contents[$matches[1]]['fcgidPHP'] = '0.0.0';
 			$Alias_Contents[$matches[1]]['fcgidPHPOK'] = false;
 			$Alias_Contents[$matches[1]]['fcgiaff'] = '';
-			//Retrieve php_admin_value's and php_admin_flag's
 			$key_admin = -1;
 			if(preg_match_all("/php_admin_value[ \t]+(.*)[ \t]+(.*)/mi",$alias_contents,$matches_admin,PREG_SET_ORDER) > 0) {
-				//error_log("matches_admin=".print_r($matches_admin,true));
 				foreach($matches_admin as $value_admin) {
 					$Alias_Contents[$matches[1]]['php_admin_value'][++$key_admin]['param'] = trim($value_admin[1]);
 					$Alias_Contents[$matches[1]]['php_admin_value'][$key_admin]['value'] = trim($value_admin[2]);
 				}
 			}
 			if(preg_match_all("/php_admin_flag[ \t]+(.*)[ \t]+(.*)/mi",$alias_contents,$matches_admin,PREG_SET_ORDER) > 0) {
-				//error_log("matches_admin=".print_r($matches_admin,true));
 				foreach($matches_admin as $value_admin) {
 					$Alias_Contents[$matches[1]]['php_admin_value'][++$key_admin]['param'] = trim($value_admin[1]);
 					$Alias_Contents[$matches[1]]['php_admin_value'][$key_admin]['value'] = trim($value_admin[2]);
 				}
 			}
-
-			//Check if PhpMyAdmin config hide mysql native databases - line commented or not
-			// //$cfg['Servers'][$i]['hide_db'] = '(information_schema|mysql|performance_schema|sys)';
 			$Alias_Contents[$matches[1]]['hide'] = $Alias_Contents[$matches[1]]['nopassword'] = true;
 			$config_contents = @file_get_contents($Alias_Contents[$matches[1]]['path'].'/config.inc.php');
 			if(stripos($config_contents,'//$cfg[\'Servers\'][$i][\'hide_db\']') !== false) {
@@ -1469,9 +1246,7 @@ function GetAliasVersions(){
 				if(preg_match("~^(#)?[ \t]*\<IfModule fcgid_module\>\r?$~m",$alias_contents,$comment) === 1) {
 					if(!isset($comment[1])) {
 						$Alias_Contents[$matches[1]]['fcgid'] = true;
-						//Search PHP version
 						if(preg_match('~Define FCGIPHPVERSION "([0-9\.]+)"~im',$alias_contents,$matches_fcgi) === 1) {
-							//PHP version used is $matches_fcgi[1]
 							$Alias_Contents[$matches[1]]['fcgidPHP'] = $phpFcgiVersionList[] = $matches_fcgi[1];
 							$phpFcgiVersionListUsed[$matches_fcgi[1]][] = 'phpmyadmin'.$matches[3];
 							$Alias_Contents[$matches[1]]['fcgiaff'] = '';
@@ -1483,7 +1258,6 @@ function GetAliasVersions(){
 				}
 			}
 		}//End foreach phpmyadmin
-		//Check if PhpMyAdmin version is compatible with PHP version
 		if(file_exists($c_installDir.'/scripts/appsversusphp.ini')) {
 			$WarningsPMA = false;
 			$WarningMenuPMA = ';WAMPMULTIPLEPHPMYADMINEND
@@ -1496,14 +1270,12 @@ function GetAliasVersions(){
 				$VersionPhpMyAdmin = $Alias_Contents[$version]['version'];
 				foreach($phpVerPhpMyAdmin as $key => $value) {
 					$php_used = $c_phpVersion;
-					//Change PHP version used if alias use fcgid_module
 					if(isset($c_ApacheDefine['PHPROOT']) && $Alias_Contents[$version]['fcgid'] && $Alias_Contents[$version]['fcgidPHPOK']) {
 						$php_used = $Alias_Contents[$version]['fcgidPHPOK'];
 					}
 					if(version_compare($php_used,$key,'>=')) {
 						if(!(version_compare($VersionPhpMyAdmin,$value[0],'>=') && version_compare($VersionPhpMyAdmin,$value[1],'<='))) {
 							$Alias_Contents[$version]['compat']= false;
-							//$Alias_Contents[$version]['notcompat'] = 'PhpMyAdmin '.$VersionPhpMyAdmin.' not compatible with PHP '.$php_used;
 							$Alias_Contents[$version]['notcompat'] = 'Not compatible with PHP '.$php_used;
 							$WarningsPMA = true;
 							$WarningMenuPMA .= 'Type: item; Caption: "PhpMyAdmin '.$VersionPhpMyAdmin.' - '.$Alias_Contents[$version]['notcompat'].'"; Glyph: 23; Action: multi; Actions: warning_phpmyadmin'.$VersionPhpMyAdmin.'
@@ -1520,26 +1292,20 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($
 			}
 		}
 	}//End !empty($temp)
-
-	// Adminer Version and parameters
 	$Alias_Contents['adminer']['OK'] = true;
 	$Alias_Contents['adminer']['hide'] = 'none';
 	$Alias_Contents['adminer']['nopassword'] = 'none';
-
-	//Get PhpSysInfo version and parameter
 	$Alias_Contents['phpsysinfo']['OK'] = false;
 	$Alias_Contents['phpsysinfo']['version'] = $Alias_Contents['phpsysinfo']['fcgiaff'] = '';
 	if(file_exists($aliasDir.'phpsysinfo.conf')) {
 		$Alias_Contents['alias'][] = 'phpsysinfo';
 		$Alias_Contents['phpsysinfo']['OK'] = true;
 		$myalias = @file_get_contents($aliasDir.'phpsysinfo.conf');
-		//Alias /phpsysinfo "J:/wamp/apps/phpsysinfo3.4.0/"
 		preg_match('~^Alias\s*/phpsysinfo\s*".*apps/phpsysinfo([0-9\.]*)/"\s?$~m',$myalias,$matches);
 		$Alias_Contents['phpsysinfo']['alias'] = '/phpsysinfo';
 		$Alias_Contents['phpsysinfo']['name'] = 'phpsysinfo';
 		$Alias_Contents['phpsysinfo']['version'] = $matches[1];
 		$wamp_versions_here += array('wamp_phpsysinfo' => $matches[1]);
-		//Check if FCGI PHP used
 		$Alias_Contents['phpsysinfo']['fcgid'] = false;
 		$Alias_Contents['phpsysinfo']['fcgidPHP'] = '0.0.0';
 		$Alias_Contents['phpsysinfo']['fcgidPHPOK'] = false;
@@ -1547,9 +1313,7 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($
 			if(preg_match("~^(#)?[ \t]*\<IfModule fcgid_module\>\r?$~m",$myalias,$comment) === 1) {
 				if(!isset($comment[1])) {
 					$Alias_Contents['phpsysinfo']['fcgid'] = true;
-					//Search PHP version
 					if(preg_match('~Define FCGIPHPVERSION "([0-9\.]+)"~im',$myalias,$matches_fcgi) === 1) {
-						//PHP version used is $matches_fcgi[1]
 						$Alias_Contents['phpsysinfo']['fcgidPHP'] = $phpFcgiVersionList[] = $matches_fcgi[1];
 						$phpFcgiVersionListUsed[$matches_fcgi[1]][] = 'phpsysinfo';
 						if(in_array($Alias_Contents['phpsysinfo']['fcgidPHP'],$phpVersionList)) {
@@ -1561,7 +1325,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($
 			}
 		}
 	}
-	//Get alias other than phpmyadmin, adminer or phpsysinfo
 	$temp = glob($aliasDir.'*.conf');
 	if(!empty($temp)) {
 		foreach($temp as $key => $value) {
@@ -1577,7 +1340,6 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($
 					$Alias_Contents[$aliasName]['name'] = str_replace('/','',$matches[1]);
 					$Alias_Contents[$aliasName]['path'] = $matches[2];
 				}
-				//Check if FCGI PHP used
 				$Alias_Contents[$aliasName]['OK'] = true;
 				$Alias_Contents[$aliasName]['fcgid'] = false;
 				$Alias_Contents[$aliasName]['fcgidPHP'] = '0.0.0';
@@ -1587,9 +1349,7 @@ Action: run; FileName: "'.$c_phpExe.'";Parameters: "msg.php 11 '.base64_encode($
 					if(preg_match("~^(#)?[ \t]*\<IfModule fcgid_module\>\r?$~m",$myalias,$comment) === 1) {
 						if(!isset($comment[1])) {
 							$Alias_Contents[$aliasName]['fcgid'] = true;
-							//Search PHP version
 							if(preg_match('~Define FCGIPHPVERSION "([0-9\.]+)"~im',$myalias,$matches_fcgi) === 1) {
-								//PHP version used is $matches_fcgi[1]
 								$Alias_Contents[$aliasName]['fcgidPHP'] = $phpFcgiVersionList[] = $matches_fcgi[1];
 								$phpFcgiVersionListUsed[$matches_fcgi[1]][] = $aliasName;
 								if(in_array($Alias_Contents[$aliasName]['fcgidPHP'],$phpVersionList)) {
@@ -1627,12 +1387,10 @@ function GetPhpLoadedExtensions($PhpExtVersion, $nbLines = 8,$modeWeb = true,$do
 	foreach(array('apachemodule','clifcgi') as $value) {
 		if($value == 'apachemodule') {
 			if($PhpExtVersion != $c_phpVersion) continue;
-			// For PHP used as Apache module
 			$message .= ($modeWeb) ? '<u>PHP '.$PhpExtVersion.' -> Apache module'."</u>\n" : color('blue','-- For PHP '.$PhpExtVersion.' used as Apache module')."\n";
 			$command = $c_phpWebExe.' -c '.$c_phpConfFile.' -r print(var_export(get_loaded_extensions(),true));';
 		}
 		elseif($value == 'clifcgi') {
-			//For PHP used as CLI or FCGI
 			$message .= ($modeWeb) ? "<u>PHP ".$PhpExtVersion." -> CLI - FCGI</u>\n".$NoFcgiModule : "\n".color('blue','-- For PHP '.$PhpExtVersion.' used as CLI or FCGI')."\n".$NoFcgiModule;
 			$phpToCheckExt = $wampConf['installDir'].'/bin/php/php'.$PhpExtVersion.'/'.$wampConf['phpExeFile'];
 			$command = $phpToCheckExt.' -r print(var_export(get_loaded_extensions(),true));';
@@ -1690,16 +1448,13 @@ function GetPhpLoadedExtensions($PhpExtVersion, $nbLines = 8,$modeWeb = true,$do
 function GetPhpVersionsUsage($modeWeb = true, $doReport = false){
 	global $phpFcgiVersionListUsed, $fcgid_module_loaded, $Alias_Contents, $wampConf;
 	if(WAMPTRACE_PROCESS) error_log("function ".__FUNCTION__."\n",3,WAMPTRACE_FILE);
-	//Verify if Apache module fcgid_module is loaded
 	$fcgid_module_loaded = is_apache_var('${PHPROOT}');
 	$message = ($doReport ? "--------------------------------------------------\n" : '');
 	$virtualHost = check_virtualhost();
 	GetAliasVersions();
-	//All PHP versions with CLI and/or USED and/or FCGI added
 	$Versions = ListAllVersions();
 	$PHP_versions = $Versions['php'];
 	foreach($phpFcgiVersionListUsed as $key => $value) $phpFcgiVersionListUsed[$key] = array_unique($phpFcgiVersionListUsed[$key]);
-	//PHP versions usage
 	$message .= ($modeWeb) ? "<b>-- Use of PHP versions</b>\n" : color('blue',"-- Use of PHP versions")."\n\n";
 	foreach($PHP_versions as $PhpUsed) {
 		$Used = $ModeFCGI = $usedTxt = false;
@@ -1809,21 +1564,16 @@ function GetApacheLoadedModules($ApacheVersion, $nbLines=8,$modeWeb = true, $doR
 		}
 		return $message;
 }
-
-// Function test of IPv6 support
 function test_IPv6() {
 	if(extension_loaded('sockets')) {
-		//Create socket IPv6
 		$socket = socket_create(AF_INET6, SOCK_STREAM, SOL_TCP);
 		if($socket === false) {
 			$errorcode = socket_last_error() ;
 			$errormsg = socket_strerror($errorcode);
-			//echo "<p>Error socket IPv6: ".$errormsg."</p>\n" ;
 			error_log("For information only: IPv6 not supported");
 			return false;
 		}
 		else {
-			//echo "<p>IPv6 supported</p>\n" ;
 			socket_close($socket);
 			error_log("For information only: IPv6 supported");
 			return true;

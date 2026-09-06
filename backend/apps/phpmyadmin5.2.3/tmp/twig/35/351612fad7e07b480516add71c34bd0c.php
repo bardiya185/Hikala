@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* display/results/page_selector.twig */
+
 class __TwigTemplate_113b0306080cacb0a0905b0ee03a6192 extends Template
 {
     private $source;
@@ -34,18 +34,14 @@ class __TwigTemplate_113b0306080cacb0a0905b0ee03a6192 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<td>
   <form action=\"";
-        // line 2
         yield PhpMyAdmin\Url::getFromRoute("/sql");
         yield "\" method=\"post\">
     ";
-        // line 3
         yield PhpMyAdmin\Url::getHiddenInputs(($context["url_params"] ?? null));
         yield "
     ";
-        // line 4
         yield ($context["page_selector"] ?? null);
         yield "
   </form>

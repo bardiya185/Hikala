@@ -17,11 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-//
-// $Id: diskload.js 661 2012-08-27 11:26:39Z namiltd $
-//
-
-/*global $, jQuery, buildBlock, datetime, plugin_translate, genlang */
 
 "use strict";
 
@@ -33,11 +28,13 @@ var diskload_show = false;
  */
 
 function diskload_populate(xml) {
-    var html = "", datetimeFormat = "", hostname = "";
+    var html = "",
+        datetimeFormat = "",
+        hostname = "";
 
-    hostname = $("Plugins Plugin_DiskLoad", xml).attr('Hostname');
+    hostname = $("Plugins Plugin_DiskLoad", xml).attr("Hostname");
     if (hostname !== undefined) {
-        $('span[class=Hostname_diskload]').html(hostname);
+        $("span[class=Hostname_diskload]").html(hostname);
     }
 
     $("Options", xml).each(function getByteFormat(id) {
@@ -46,14 +43,20 @@ function diskload_populate(xml) {
 
     $("Plugins Plugin_DiskLoad Disk", xml).each(function diskload_getDisk(idp) {
         html += "      <tr>\n";
-        html += "        <td style=\"font-weight:normal\">" +  $(this).attr("Name") + "</td>\n";
-        html += "        <td style=\"font-weight:normal\">" +  createBar($(this).attr("Load")) + "</td>\n";
+        html +=
+            '        <td style="font-weight:normal">' +
+            $(this).attr("Name") +
+            "</td>\n";
+        html +=
+            '        <td style="font-weight:normal">' +
+            createBar($(this).attr("Load")) +
+            "</td>\n";
         html += "      </tr>\n";
         diskload_show = true;
     });
 
     $("#Plugin_DiskLoadTable-tbody").empty().append(html);
-    $('#Plugin_DiskLoadTable tr:nth-child(even)').addClass('even');
+    $("#Plugin_DiskLoadTable tr:nth-child(even)").addClass("even");
 }
 
 /**
@@ -63,15 +66,17 @@ function diskload_populate(xml) {
 function diskload_buildTable(xml) {
     var html = "";
 
-    html += "<div style=\"overflow-x:auto;\">\n";
-    html += "  <table id=\"Plugin_DiskLoadTable\" class=\"stripeMe\" style=\"border-collapse:collapse;\">\n";
+    html += '<div style="overflow-x:auto;">\n';
+    html +=
+        '  <table id="Plugin_DiskLoadTable" class="stripeMe" style="border-collapse:collapse;">\n';
     html += "    <thead>\n";
     html += "      <tr>\n";
     html += "        <th>" + genlang(2, "diskload") + "</th>\n";
-    html += "        <th style=\"width:37%;\">" + genlang(3, "diskload") + "</th>\n";
+    html +=
+        '        <th style="width:37%;">' + genlang(3, "diskload") + "</th>\n";
     html += "      </tr>\n";
     html += "    </thead>\n";
-    html += "    <tbody id=\"Plugin_DiskLoadTable-tbody\">\n";
+    html += '    <tbody id="Plugin_DiskLoadTable-tbody">\n';
     html += "    </tbody>\n";
     html += "  </table>\n";
     html += "</div>\n";
@@ -96,7 +101,7 @@ function diskload_request() {
                 plugin_translate("DiskLoad");
                 $("#Plugin_DiskLoad").show();
             }
-        }
+        },
     });
 }
 

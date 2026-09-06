@@ -20,12 +20,8 @@ final class UrlRedirector
     public static function redirect(): void
     {
         global $containerBuilder, $dbi;
-
-        // Load database service because services.php is not available here
         $dbi = DatabaseInterface::load();
         $containerBuilder->set(DatabaseInterface::class, $dbi);
-
-        // Only output the http headers
         $response = ResponseRenderer::getInstance();
         $response->getHeader()->sendHttpHeaders();
         $response->disable();
@@ -50,8 +46,6 @@ final class UrlRedirector
         echo $template->render('javascript/redirect', [
             'url' => Sanitize::escapeJsString((string) $_GET['url']),
         ]);
-        // Display redirecting msg on screen.
-        // Do not display the value of $_GET['url'] to avoid showing injected content
         echo __('Taking you to the target site.');
 
         exit;

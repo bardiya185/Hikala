@@ -15,10 +15,10 @@ use function strlen;
 
 final class EventsController extends AbstractController
 {
-    /** @var Events */
+    
     private $events;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(

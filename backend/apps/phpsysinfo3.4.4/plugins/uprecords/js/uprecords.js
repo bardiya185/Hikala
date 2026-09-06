@@ -18,11 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-//$Id: uprecords.js 661 2014-01-08 11:26:39 aolah76 $
-
-
-/*global $, jQuery, buildBlock, datetime, plugin_translate, genlang */
-
 "use strict";
 
 var uprecords_show = false;
@@ -33,23 +28,35 @@ var uprecords_show = false;
  */
 
 function uprecords_populate(xml) {
-    var html = "", datetimeFormat = "", hostname = "";
+    var html = "",
+        datetimeFormat = "",
+        hostname = "";
 
-    hostname = $("Plugins Plugin_uprecords", xml).attr('Hostname');
+    hostname = $("Plugins Plugin_uprecords", xml).attr("Hostname");
     if (hostname !== undefined) {
-        $('span[class=Hostname_uprecords]').html(hostname);
+        $("span[class=Hostname_uprecords]").html(hostname);
     }
 
     $("Options", xml).each(function getByteFormat(id) {
         datetimeFormat = $(this).attr("datetimeFormat");
     });
 
-    $("Plugins Plugin_uprecords uprecords Item", xml).each(function uprecords_getitem(idp) {
-        html += "      <tr>\n";
-        html += "        <td style=\"font-weight:normal\">" +  $(this).attr("hash") + "</td>\n";
-        html += "        <td style=\"font-weight:normal\">" +  $(this).attr("Uptime") + "</td>\n";
-        html += "        <td style=\"font-weight:normal\">" +  $(this).attr("System") + "</td>\n";
-/*
+    $("Plugins Plugin_uprecords uprecords Item", xml).each(
+        function uprecords_getitem(idp) {
+            html += "      <tr>\n";
+            html +=
+                '        <td style="font-weight:normal">' +
+                $(this).attr("hash") +
+                "</td>\n";
+            html +=
+                '        <td style="font-weight:normal">' +
+                $(this).attr("Uptime") +
+                "</td>\n";
+            html +=
+                '        <td style="font-weight:normal">' +
+                $(this).attr("System") +
+                "</td>\n";
+            /*
         var lastboot = new Date($(this).attr("Bootup"));
         if (typeof(lastboot.toUTCString)==="function") {
             html += "        <td style=\"font-weight:normal\">" +  lastboot.toUTCString() + "</td>\n";
@@ -57,26 +64,36 @@ function uprecords_populate(xml) {
             html += "        <td style=\"font-weight:normal\">" +  lastboot.toGMTString() + "</td>\n";
         }
 */
-        if ((datetimeFormat !== undefined) && (datetimeFormat.toLowerCase() === "locale")) {
-            var lastboot = new Date($(this).attr("Bootup"));
-            html += "        <td style=\"font-weight:normal\">" +  lastboot.toLocaleString() + "</td>\n";
-        } else {
-            html += "        <td style=\"font-weight:normal\">" +  $(this).attr("Bootup") + "</td>\n";
-        }
-        html += "      </tr>\n";
-        uprecords_show = true;
-    });
+            if (
+                datetimeFormat !== undefined &&
+                datetimeFormat.toLowerCase() === "locale"
+            ) {
+                var lastboot = new Date($(this).attr("Bootup"));
+                html +=
+                    '        <td style="font-weight:normal">' +
+                    lastboot.toLocaleString() +
+                    "</td>\n";
+            } else {
+                html +=
+                    '        <td style="font-weight:normal">' +
+                    $(this).attr("Bootup") +
+                    "</td>\n";
+            }
+            html += "      </tr>\n";
+            uprecords_show = true;
+        },
+    );
 
     $("#Plugin_uprecordsTable-tbody").empty().append(html);
-    $('#Plugin_uprecordsTable tr:nth-child(even)').addClass('even');
-
+    $("#Plugin_uprecordsTable tr:nth-child(even)").addClass("even");
 }
 
 function uprecords_buildTable() {
     var html = "";
 
-    html += "<div style=\"overflow-x:auto;\">\n";
-    html += "  <table id=\"Plugin_uprecordsTable\" class=\"stripeMe\" style=\"border-collapse:collapse;\">\n";
+    html += '<div style="overflow-x:auto;">\n';
+    html +=
+        '  <table id="Plugin_uprecordsTable" class="stripeMe" style="border-collapse:collapse;">\n';
     html += "    <thead>\n";
     html += "      <tr>\n";
     html += "        <th>" + genlang(101, "uprecords") + "</th>\n";
@@ -85,7 +102,7 @@ function uprecords_buildTable() {
     html += "        <th>" + genlang(104, "uprecords") + "</th>\n";
     html += "      </tr>\n";
     html += "    </thead>\n";
-    html += "    <tbody id=\"Plugin_uprecordsTable-tbody\">\n";
+    html += '    <tbody id="Plugin_uprecordsTable-tbody">\n';
     html += "    </tbody>\n";
     html += "  </table>\n";
     html += "</div>\n";
@@ -111,7 +128,7 @@ function uprecords_request() {
                 plugin_translate("uprecords");
                 $("#Plugin_uprecords").show();
             }
-        }
+        },
     });
 }
 

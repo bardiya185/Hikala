@@ -18,7 +18,7 @@ if (false === @include_once 'OpenID/RelyingParty.php') {
     exit;
 }
 
-/* Change this to true if using phpMyAdmin over https */
+
 $secure_cookie = false;
 
 /**
@@ -30,8 +30,6 @@ $AUTH_MAP = [
         'password' => '',
     ],
 ];
-
-// phpcs:disable PSR1.Files.SideEffects,Squiz.Functions.GlobalFunction
 
 /**
  * Simple function to show HTML page with given content.
@@ -76,16 +74,12 @@ function Die_error($e): void
     exit;
 }
 
-// phpcs:enable
 
-/* Need to have cookie visible from parent directory */
 session_set_cookie_params(0, '/', '', $secure_cookie, true);
-/* Create signon session */
+
 $session_name = 'SignonSession';
 session_name($session_name);
 @session_start();
-
-// Determine realm and return_to
 $base = 'http';
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
     $base .= 's';
@@ -101,9 +95,9 @@ if ($returnTo[strlen($returnTo) - 1] !== '/') {
 
 $returnTo .= 'openid.php';
 
-/* Display form */
+
 if ((! count($_GET) && ! count($_POST)) || isset($_GET['phpMyAdmin'])) {
-    /* Show simple form */
+    
     $content = '<form action="openid.php" method="post">
 OpenID: <input type="text" name="identifier"><br>
 <input type="submit" name="start">
@@ -112,7 +106,7 @@ OpenID: <input type="text" name="identifier"><br>
     exit;
 }
 
-/* Grab identifier */
+
 $identifier = null;
 if (isset($_POST['identifier']) && is_string($_POST['identifier'])) {
     $identifier = $_POST['identifier'];
@@ -120,14 +114,14 @@ if (isset($_POST['identifier']) && is_string($_POST['identifier'])) {
     $identifier = $_SESSION['identifier'];
 }
 
-/* Create OpenID object */
+
 try {
     $o = new OpenID_RelyingParty($returnTo, $realm, $identifier);
 } catch (Throwable $e) {
     Die_error($e);
 }
 
-/* Redirect to OpenID provider */
+
 if (isset($_POST['start'])) {
     try {
         $authRequest = $o->prepare();
@@ -141,15 +135,14 @@ if (isset($_POST['start'])) {
     exit;
 }
 
-/* Grab query string */
+
 if (! count($_POST)) {
     [, $queryString] = explode('?', $_SERVER['REQUEST_URI']);
 } else {
-    // Fetch the raw query body
     $queryString = file_get_contents('php://input');
 }
 
-/* Check reply */
+
 try {
     $message = new OpenID_Message($queryString, OpenID_Message::FORMAT_HTTP);
 } catch (Throwable $e) {
@@ -167,5 +160,5 @@ $_SESSION['PMA_single_signon_user'] = $AUTH_MAP[$id]['user'];
 $_SESSION['PMA_single_signon_password'] = $AUTH_MAP[$id]['password'];
 $_SESSION['PMA_single_signon_HMAC_secret'] = hash('sha1', uniqid(strval(random_int(0, mt_getrandmax())), true));
 session_write_close();
-/* Redirect to phpMyAdmin (should use absolute URL here!) */
+
 header('Location: ../index.php');

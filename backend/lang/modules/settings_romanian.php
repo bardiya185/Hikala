@@ -1,224 +1,161 @@
 <?php
-// Romanian language file for
-// Projects and VirtualHosts sub-menus
-// Settings and Tools right-click sub-menus
-// Translated by Ciprian Murariu <ciprianmp[at]yahoo[dot]com>
-// 3.0.7 add $w_listenForApache - $w_AddListenPort - $w_deleteListenPort - $w_settings['SupportMariaDB']
-// $w_settings['DaredevilOptions']
-// $w_Size - $w_EnterSize - $w_Time - $w_EnterTime - $w_Integer - $w_EnterInteger - $w_add_VirtualHost
-// 3.0.8 $w_settings['SupportMySQL'] - $w_portUsedMaria - $w_testPortMariaUsed
-// 3.0.9 $w_ext_zend
-// 3.1.1 $w_defaultDBMS - $w_invertDefault - $w_changeCLI - $w_misc
-// $w_settings['ShowphmyadMenu'] - $w_settings['ShowadminerMenu']
-// 3.1.2 $w_reinstallServices - $w_settings['mariadbUseConsolePrompt'] - $w_settings['mysqlUseConsolePrompt']
-// $w_enterServiceNameAll - $w_settings['NotVerifyPATH'] - $w_MysqlMariaUser
-// 3.1.4 $w_settings 'NotVerifyTLD' 'Cleaning' 'AutoCleanLogs' 'AutoCleanLogsMax' 'AutoCleanLogsMax' 'AutoCleanTmp' 'AutoCleanTmpMax' 'iniCommented'
-// $w_wampReport - $w_dowampReport
-// 3.1.9 $w_settings 'BackupHosts'
-// 3.2.0 $w_verifySymlink  - $w_settings['NotVerifyHosts']
-// 3.2.1 $w_addingVer - $w_addingVerTxt - $w_goto - $w_FileRepository
-// 3.2.2 $w_MysqlMariaUser $w_EnterSize modified
-// 3.2.3 https for wampserver.aviatechno
-// 3.2.5 $w_emptyLogs - $w_emptyPHPlog - $w_emptyApaErrLog - $w_emptyApaAccLog - $w_emptyMySQLog - $w_emptyMariaLog - $w_emptyAllLog
-//       $w_testAliasDir - $w_verifyxDebugdll - $w_apacheLoadedIncludes - $w_settings 'ShowWWWdirMenu'
-// 3.2.6 $w_compareApache - $w_versus - $w_restorefile - $w_restore - $w_apache_restore - $w_ApacheRestoreInfo - $w_apache_restore
-//       $w_ApacheCompareInfo - $w_apacheDefineVariables - $w_Refresh_Restart - $w_Refresh_Restart_Info
-//       $w_checkUpdates - $w_PhpMyAdminBigFileTxt - $w_apacheTools - $w_PHPloadedExt
-//       $w_settings 	apacheCompareVersion - apacheRestoreFiles - apacheGracefulRestart - LinksOnProjectsHomePage
-//                    ApacheWampParams - apachePhpCurlDll
-//       Suppress : $w_enterServiceNameApache - $w_enterServiceNameMysql - $w_enterServiceNameAll
-// 3.2.7 $w_showExcludedPorts
-// 3.2.8 $w_phpNotExists - LinksOnProjectsHomeByIp - CheckVirtualHost - $w_PHPversionsUse - $w_All_Versions
-//       $w_settings 	ScrollListsHomePage
-// 3.2.9 $w_phpparam_obs - $w_ApacheCompiledIn - $w_ApacheDoesNotIf - $w_mod_not_disable
-//       $w_NoDefaultDBMS
-// 3.3.0 $w_settings Browser BrowserChange
-//       Suppress apachePhpCurlDll
-// 3.3.2 $w_PhpMyAdminGoHidedb - $w_PhpMyAdminGoNoPassword - $w_ConvertHttps - $w_wampHttpsHelp - $w_wampHttpsHelpTxt
-//       $w_MariaDBMySQLHelp - $w_MariaDBMySQLHelpTxt - $w_settings httpsReady
-//       suppress $w_settings['ShowphmyadMenu']
-// 3.3.3 suppress $w_MariaDBMySQLHelpTxt transformed into file 'files\mariadb_mysql_english.rtf'
-//       suppress $w_wampHttpsHelpTxt    ........... .... .... 'files\wampmodehttps_english.rtf'
-// 3.3.4 $w_AdminerHelpTxt - $w_NeedVirtualhost
-// 3.3.5 $w_settings AllowLocalhostHttps
-// 3.3.6 $w_wampHttpsHelpAuto - $w_wampHttpsHelpManual
-// 3.3.7 $w_ExtNotLoaded
-//      suppress $w_PhpMyAdMinHelpTxt and $w_PhpMyAdminBigFileTxt transformed into file 'files\phpmyadmin_romanian.rtf'
-// 3.3.8 $w_ApacheDirectives - $w_DataBasesManagement - CleanLogs_SwitchVersion
-// 3.4.0 LinksChooseIp - $w_reinstallWait
-
-
-// Projects sub-menu
 $w_projectsSubMenu = 'Proiecte personale';
-// VirtualHosts sub-menu
 $w_virtualHostsSubMenu = 'VirtualHosts';
 $w_add_VirtualHost = 'Administrare VirtualHost';
 $w_aliasSubMenu = 'Aliasuri';
 $w_portUsed = 'Portul curent Apache: ';
 $w_portUsedMysql = 'Portul curent MySQL: ';
 $w_portUsedMaria = 'Portul curent MariaDB : ';
-$w_testPortUsed = 'Testeazã portul curent: ';
+$w_testPortUsed = 'Testeazï¿½ portul curent: ';
 $w_portForApache = 'Portul Apache';
-$w_listenForApache = 'Portul de Intrare pentru adãugare la Apache';
+$w_listenForApache = 'Portul de Intrare pentru adï¿½ugare la Apache';
 $w_portForMysql = 'Portul MySQL';
-$w_testPortMysql = 'Testeazã portul 3306';
-$w_testPortMysqlUsed = 'Testeazã portul MySQL: ';
-$w_testPortMariaUsed = 'Testeazã portul MariaDB: ';
-
-// Right-click Settings
-$w_wampSettings = 'Setãri Wamp';
+$w_testPortMysql = 'Testeazï¿½ portul 3306';
+$w_testPortMysqlUsed = 'Testeazï¿½ portul MySQL: ';
+$w_testPortMariaUsed = 'Testeazï¿½ portul MariaDB: ';
+$w_wampSettings = 'Setï¿½ri Wamp';
 $w_settings = array(
-	'urlAddLocalhost' => 'Adaugã localhost la începutul url-ului',
-	'VirtualHostSubMenu' => 'Aratã Sub-meniul VirtualHosts',
-	'AliasSubmenu' => 'Aratã Sub-meniul Alias',
-	'ProjectSubMenu' => 'Aratã Sub-meniul Proiecte personale',
+	'urlAddLocalhost' => 'Adaugï¿½ localhost la ï¿½nceputul url-ului',
+	'VirtualHostSubMenu' => 'Aratï¿½ Sub-meniul VirtualHosts',
+	'AliasSubmenu' => 'Aratï¿½ Sub-meniul Alias',
+	'ProjectSubMenu' => 'Aratï¿½ Sub-meniul Proiecte personale',
 	'HomepageAtStartup' => 'Deschide pagina Index la pornire',
-	'MenuItemOnline' => 'Aratã în Meniu: Online / Offline',
-	'ItemServicesNames' => 'Aratã în Instrumente: Schimbã numele serviciilor',
-	'CheckVirtualHost' => 'Verificã definiþiile VirtualHost',
-	'NotCheckVirtualHost' => 'Nu verifica definiþiile VirtualHost',
+	'MenuItemOnline' => 'Aratï¿½ ï¿½n Meniu: Online / Offline',
+	'ItemServicesNames' => 'Aratï¿½ ï¿½n Instrumente: Schimbï¿½ numele serviciilor',
+	'CheckVirtualHost' => 'Verificï¿½ definiï¿½iile VirtualHost',
+	'NotCheckVirtualHost' => 'Nu verifica definiï¿½iile VirtualHost',
 	'NotCheckDuplicate' => 'Nu verifica dublarea Numelui Serverului',
-	'VhostAllLocalIp' => 'Permite utilizarea IP-urilor locale, altele decât 127.*',
+	'VhostAllLocalIp' => 'Permite utilizarea IP-urilor locale, altele decï¿½t 127.*',
 	'SupportMySQL' => 'Permite utilizarea MySQL',
 	'SupportMariaDB' => 'Permite utilizarea MariaDB',
-	'DaredevilOptions' => 'Atenþie: Riscant! Numai pentru experþi.',
-	'ShowadminerMenu' => 'Aratã Adminer în Meniu',
-	'mariadbUseConsolePrompt' => 'Modificã prompterul implicit al consolei MariaDB',
-	'mysqlUseConsolePrompt' => 'Modificã prompterul implicit al consolei MySQL',
+	'DaredevilOptions' => 'Atenï¿½ie: Riscant! Numai pentru experï¿½i.',
+	'ShowadminerMenu' => 'Aratï¿½ Adminer ï¿½n Meniu',
+	'mariadbUseConsolePrompt' => 'Modificï¿½ prompterul implicit al consolei MariaDB',
+	'mysqlUseConsolePrompt' => 'Modificï¿½ prompterul implicit al consolei MySQL',
 	'NotVerifyPATH' => 'Nu testa CALEA',
 	'NotVerifyTLD' => 'Nu testa TLD',
-	'NotVerifyHosts' => 'Nu verifica fiºierul hosts',
-	'Cleaning' => 'Curãþare Automatã',
-	'AutoCleanLogs' => 'Curãþã automat fiºierele jurnal',
-	'AutoCleanLogsMax' => 'Numãr de linii înainte de curãþare',
-	'AutoCleanLogsMin' => 'Numãr de linii dupã de curãþare',
-	'AutoCleanTmp' => 'Goleºte automat directorul tmp',
-	'AutoCleanTmpMax' => 'Numãr de fiºiere înainte de curãþare',
-	'CleanLogs_SwitchVersion' => 'Goleºte fiºierele jurnal la schimbarea versiunii',
-	'ForTestOnly' => 'Numai în scopul testãrii',
-	'iniCommented' => 'Directive php.ini comentate (; la începutul liniei)',
-	'BackupHosts' => 'Fiºier hosts de rezervã',
-	'ShowWWWdirMenu' => 'Aratã directorul www în Meniu',
-	'ApacheWampParams' => 'Setãri Wampserver pentru Apache',
-	'apacheCompareVersion' => 'Permite comparaþia setãrilor Apache.',
-	'apacheRestoreFiles' => 'Permite recuperarea fiºierelor Apache',
-	'apacheGracefulRestart' => 'Permite Repornirea Forþatã Apache',
-	'LinksOnProjectsHomePage' => 'Permite link-uri în pagina de pornire a proiectelor',
-	'LinksOnProjectsHomeByIp' => 'Link-uri în proiecte prin \'IP-ul local al link-ului\'',
+	'NotVerifyHosts' => 'Nu verifica fiï¿½ierul hosts',
+	'Cleaning' => 'Curï¿½ï¿½are Automatï¿½',
+	'AutoCleanLogs' => 'Curï¿½ï¿½ï¿½ automat fiï¿½ierele jurnal',
+	'AutoCleanLogsMax' => 'Numï¿½r de linii ï¿½nainte de curï¿½ï¿½are',
+	'AutoCleanLogsMin' => 'Numï¿½r de linii dupï¿½ de curï¿½ï¿½are',
+	'AutoCleanTmp' => 'Goleï¿½te automat directorul tmp',
+	'AutoCleanTmpMax' => 'Numï¿½r de fiï¿½iere ï¿½nainte de curï¿½ï¿½are',
+	'CleanLogs_SwitchVersion' => 'Goleï¿½te fiï¿½ierele jurnal la schimbarea versiunii',
+	'ForTestOnly' => 'Numai ï¿½n scopul testï¿½rii',
+	'iniCommented' => 'Directive php.ini comentate (; la ï¿½nceputul liniei)',
+	'BackupHosts' => 'Fiï¿½ier hosts de rezervï¿½',
+	'ShowWWWdirMenu' => 'Aratï¿½ directorul www ï¿½n Meniu',
+	'ApacheWampParams' => 'Setï¿½ri Wampserver pentru Apache',
+	'apacheCompareVersion' => 'Permite comparaï¿½ia setï¿½rilor Apache.',
+	'apacheRestoreFiles' => 'Permite recuperarea fiï¿½ierelor Apache',
+	'apacheGracefulRestart' => 'Permite Repornirea Forï¿½atï¿½ Apache',
+	'LinksOnProjectsHomePage' => 'Permite link-uri ï¿½n pagina de pornire a proiectelor',
+	'LinksOnProjectsHomeByIp' => 'Link-uri ï¿½n proiecte prin \'IP-ul local al link-ului\'',
 	'LinksChooseIp' => 'Alege IP-ul local',
-	'ScrollListsHomePage' => 'Permite derularea listelor în pagina de pornire',
+	'ScrollListsHomePage' => 'Permite derularea listelor ï¿½n pagina de pornire',
 	'WampserverBrowser' => 'Browser-ul implicit pentru Wampserver',
-	'BrowserChange' => 'Seteazã Browser-ul implicit pentru Wampserver',
+	'BrowserChange' => 'Seteazï¿½ Browser-ul implicit pentru Wampserver',
 	'httpsReady' => 'Wampserver poate acum folosi https',
-	'AllowLocalhostHttps' => 'Activeazã HTTPS pentru localhost',
+	'AllowLocalhostHttps' => 'Activeazï¿½ HTTPS pentru localhost',
 );
-
-// Right-click Tools
 $w_wampTools = 'Instrumente';
-$w_restartDNS = 'Reporneºte DNS';
-$w_testConf = 'Verificã sintaxa httpd.conf';
-$w_testServices = 'Verificã starea serviciilor';
-$w_changeServices = 'Schimbã numele serviciilor';
-$w_compilerVersions = 'Verificã compilatorul VC, compatibilitatea ºi fiºierele ini';
-$w_UseAlternatePort = 'Foloseºte alt port decât %s';
-$w_AddListenPort = 'Adaugã un port de Intrare pentru Apache';
-$w_vhostConfig = 'Aratã VirtualHost verificat de Apache';
-$w_apacheLoadedModules = 'Aratã Modulele încãrcate de Apache';
-$w_apacheLoadedIncludes = 'Aratã Includes încãrcate de Apache';
-$w_apacheDefineVariables = 'Aratã variabilele Apache (Define)';
-$w_showExcludedPorts = 'Aratã porturile excluse de cãtre sistem';
-$w_testAliasDir = 'Verificã relaþiile Alias <-> Directory';
-$w_verifyxDebugdll = 'Verificã dll-uri xDebug neutilizate';
-$w_empty = 'Goleºte';
+$w_restartDNS = 'Reporneï¿½te DNS';
+$w_testConf = 'Verificï¿½ sintaxa httpd.conf';
+$w_testServices = 'Verificï¿½ starea serviciilor';
+$w_changeServices = 'Schimbï¿½ numele serviciilor';
+$w_compilerVersions = 'Verificï¿½ compilatorul VC, compatibilitatea ï¿½i fiï¿½ierele ini';
+$w_UseAlternatePort = 'Foloseï¿½te alt port decï¿½t %s';
+$w_AddListenPort = 'Adaugï¿½ un port de Intrare pentru Apache';
+$w_vhostConfig = 'Aratï¿½ VirtualHost verificat de Apache';
+$w_apacheLoadedModules = 'Aratï¿½ Modulele ï¿½ncï¿½rcate de Apache';
+$w_apacheLoadedIncludes = 'Aratï¿½ Includes ï¿½ncï¿½rcate de Apache';
+$w_apacheDefineVariables = 'Aratï¿½ variabilele Apache (Define)';
+$w_showExcludedPorts = 'Aratï¿½ porturile excluse de cï¿½tre sistem';
+$w_testAliasDir = 'Verificï¿½ relaï¿½iile Alias <-> Directory';
+$w_verifyxDebugdll = 'Verificï¿½ dll-uri xDebug neutilizate';
+$w_empty = 'Goleï¿½te';
 $w_misc = 'Diverse';
-$w_emptyAll = 'Goleºte TOATE';
+$w_emptyAll = 'Goleï¿½te TOATE';
 
-$w_emptyLogs = 'Goleºte fiºierele jurnal';
-$w_emptyPHPlog = 'Goleºte fiºierul de erori PHP';
-$w_emptyApaErrLog = 'Goleºte fiºierul de erori Apache';
-$w_emptyApaAccLog = 'Goleºte fiºierul de acces Apache';
-$w_emptyMySQLog = 'Goleºte fiºierele jurnal MySQL';
-$w_emptyMariaLog = 'Goleºte fiºierele jurnal MariaDB';
-$w_emptyAllLog ='Goleºte toate fiºierele jurnal';
+$w_emptyLogs = 'Goleï¿½te fiï¿½ierele jurnal';
+$w_emptyPHPlog = 'Goleï¿½te fiï¿½ierul de erori PHP';
+$w_emptyApaErrLog = 'Goleï¿½te fiï¿½ierul de erori Apache';
+$w_emptyApaAccLog = 'Goleï¿½te fiï¿½ierul de acces Apache';
+$w_emptyMySQLog = 'Goleï¿½te fiï¿½ierele jurnal MySQL';
+$w_emptyMariaLog = 'Goleï¿½te fiï¿½ierele jurnal MariaDB';
+$w_emptyAllLog ='Goleï¿½te toate fiï¿½ierele jurnal';
 
-$w_dnsorder = 'Verificã ordinea de cãutare a DNS';
-$w_deleteVer = 'ªterge versiunile neutilizate';
-$w_addingVer = 'Adaugã versiuni de Apache, PHP, MySQL, MariaDB, etc.';
-$w_deleteListenPort = 'ªterge un port de Intrare Apache';
-$w_delete = 'ªterge';
+$w_dnsorder = 'Verificï¿½ ordinea de cï¿½utare a DNS';
+$w_deleteVer = 'ï¿½terge versiunile neutilizate';
+$w_addingVer = 'Adaugï¿½ versiuni de Apache, PHP, MySQL, MariaDB, etc.';
+$w_deleteListenPort = 'ï¿½terge un port de Intrare Apache';
+$w_delete = 'ï¿½terge';
 $w_defaultDBMS = 'DBMS implicit:';
 $w_NoDefaultDBMS = 'DBMS implicit: niciunul';
-$w_invertDefault = 'Inverseazã DBMS implicit ';
-$w_changeCLI = 'Schimbã versiunea PHP CLI';
-$w_reinstallServices = 'Reinstaleazã toate serviciile';
-$w_reinstallWait = 'Poate dura peste 30 de secunde - Aºteptaþi';
+$w_invertDefault = 'Inverseazï¿½ DBMS implicit ';
+$w_changeCLI = 'Schimbï¿½ versiunea PHP CLI';
+$w_reinstallServices = 'Reinstaleazï¿½ toate serviciile';
+$w_reinstallWait = 'Poate dura peste 30 de secunde - Aï¿½teptaï¿½i';
 $w_wampReport = 'Raportul de Configurare Wampserver';
-$w_dowampReport = 'Genereazã '.$w_wampReport;
-$w_verifySymlink = 'Verificã link-uri simbolice';
+$w_dowampReport = 'Genereazï¿½ '.$w_wampReport;
+$w_verifySymlink = 'Verificï¿½ link-uri simbolice';
 $w_goto = 'Mergi la:';
-$w_FileRepository = 'Link-uri cãtre arhiva de fiºiere ºi addon-uri pentru Wampserver';
-$w_compareApache = 'Comparaþia setãrilor Apache';
-$w_versus = 'faþã de';
-$w_restorefile = 'Recupereazã fiºierele salvate la instalarea Apache';
-$w_restore = 'Recupereazã';
-$w_checkUpdates = 'Verificã actualizãri';
+$w_FileRepository = 'Link-uri cï¿½tre arhiva de fiï¿½iere ï¿½i addon-uri pentru Wampserver';
+$w_compareApache = 'Comparaï¿½ia setï¿½rilor Apache';
+$w_versus = 'faï¿½ï¿½ de';
+$w_restorefile = 'Recupereazï¿½ fiï¿½ierele salvate la instalarea Apache';
+$w_restore = 'Recupereazï¿½';
+$w_checkUpdates = 'Verificï¿½ actualizï¿½ri';
 $w_apacheTools = 'Instrumente Apache';
-$w_PHPloadedExt = 'Aratã Extensiile PHP încãrcate';
-$w_PHPversionsUse = 'Aratã utilizarea versiunilor PHP';
-
-//miscellaneous
+$w_PHPloadedExt = 'Aratï¿½ Extensiile PHP ï¿½ncï¿½rcate';
+$w_PHPversionsUse = 'Aratï¿½ utilizarea versiunilor PHP';
 $w_ext_spec = 'Extensii speciale';
 $w_ext_zend = 'Extensii Zend';
-$w_phpparam_info = 'Informaþii suplimentare';
-$w_ext_nodll = 'Fiºier dll inexistent';
-$w_ext_noline = "Nu existã 'extensie='";
+$w_phpparam_info = 'Informaï¿½ii suplimentare';
+$w_ext_nodll = 'Fiï¿½ier dll inexistent';
+$w_ext_noline = "Nu existï¿½ 'extensie='";
 $w_mod_fixed = "Module ireversibile";
 $w_mod_not_disable = "Aceste module nu trebuiesc dezactivate";
-$w_no_module = 'Fiºier modul inexistent';
-$w_no_moduleload = "Nu existã 'LoadModule'";
+$w_no_module = 'Fiï¿½ier modul inexistent';
+$w_no_moduleload = "Nu existï¿½ 'LoadModule'";
 $w_mysql_none = "niciunul";
 $w_mysql_user = "modul utilizator";
 $w_mysql_default = "implicit";
-$w_mysql_mode = "Explicaþii pentru sql-mode";
-$w_apache_restore = "Atenþie recuperare Apache;";
-$w_apache_compare = "Atenþie comparaþie setãri Apache";
+$w_mysql_mode = "Explicaï¿½ii pentru sql-mode";
+$w_apache_restore = "Atenï¿½ie recuperare Apache;";
+$w_apache_compare = "Atenï¿½ie comparaï¿½ie setï¿½ri Apache";
 $w_Refresh_Restart = "Ajutor ".$w_refresh.' - '.$w_restartWamp;
-$w_Size = "Mãrimea";
+$w_Size = "Mï¿½rimea";
 $w_Time = "Timpul";
-$w_Integer = "Numãr Întreg";
+$w_Integer = "Numï¿½r ï¿½ntreg";
 $w_phpMyAdminHelp = "Ajutor PhpMyAdmin";
 $w_wampHttpsHelp = "Ajutor pentru modul HTTPS";
 $w_wampHttpsHelpAuto = "Ajutor pentru modul 'automat' HTTPS";
 $w_wampHttpsHelpManual = "Ajutor pentru modul 'manual' HTTPS";
-$w_phpNotExists = 'Versiune PHP indisponibilã';
+$w_phpNotExists = 'Versiune PHP indisponibilï¿½';
 $w_All_Versions = 'Toate versiunile';
-$w_phpparam_obs = 'Setãri Depreciate | ªterse | Noi';
-$w_ApacheCompiledIn = 'Module încorporate';
+$w_phpparam_obs = 'Setï¿½ri Depreciate | ï¿½terse | Noi';
+$w_ApacheCompiledIn = 'Module ï¿½ncorporate';
 $w_ApacheDoesNotIf = 'Nu impun <IfModule ModName>';
 $w_PhpMyAdminGoHidedb = 'Ascunde bazele de date incluse (native)';
-$w_PhpMyAdminGoNoPassword = 'Permite conectarea fãrã parolã';
-$w_ConvertHttps = 'Foloseºte HTTPS pentru VirtualHost';
+$w_PhpMyAdminGoNoPassword = 'Permite conectarea fï¿½rï¿½ parolï¿½';
+$w_ConvertHttps = 'Foloseï¿½te HTTPS pentru VirtualHost';
 $w_MariaDBMySQLHelp = "Ajutor MariaDB - MySQL";
-$w_NeedVirtualhost = "Ajutor Importanþa folosirii VirtualHost";
-$w_ExtNotLoaded = "Extensii PHP neîncãrcate :";
+$w_NeedVirtualhost = "Ajutor Importanï¿½a folosirii VirtualHost";
+$w_ExtNotLoaded = "Extensii PHP neï¿½ncï¿½rcate :";
 $w_ApacheDirectives = "Directive de Configurare";
-$w_DataBasesManagement = "Administrare Bazã de Date";
-
-// PromptText for Aestan Tray Menu type: prompt variables
-// May have \r\n for multilines
-$w_EnterInteger = "Introdu un numãr întreg";
-$w_enterPort = 'Introdu numãrul noului port';
-$w_EnterSize = "Introdu Mãrimea: xxxx urmat de M pentru Mega sau G pentru Giga.\r\nNumãrul trebuie însoþit de simbolul M sau G.\r\nExemplu : 64M ; 256M ; 1G";
-$w_EnterTime = "Introdu timpul în secunde";
-$w_MysqlMariaUser = "Introdu un nume de utilizator valabil. Dacã nu-l cunoºti, pãstreazã 'root' implicit.\r\nDacã ai setat o parolã pentru root sau utilizatorul selectat, va trebui sã introduci parola când þi se va cere 'Enter password:' de la consolã. Fãrã parolã, apasã Enter";
-
-// Long texts
-// Quotation marks " in texts must be escaped: \" - May have \r\n for multilines
-$w_addingVerTxt ="Toate \"addon-urile\", ex. toate installer-ele pentru versiunile Apache, PHP, MySQL sau MariaDB cât ºi cele pentru actualizãri (Wampserver, Aestan Tray Menu, xDebug, etc.), precum ºi aplicaþiile web (PhpMyAdmin, Adminer) se gãsesc la adresa\r\n\r\n'https://sourceforge.net/projects/wampserver/'\r\n\r\nDescãrcaþi fiºierele pe care le doriþi ºi lansaþi-le apãsând click-dreapta pe numele fiºierelor descãrcate, iar apoi \"Ruleazã ca administrator\" pentru a adãuga addon-ul sau aplicaþia respectivã la versiunea existentã de Wampserver.\r\n\r\nApoi, schimbarea versiunii de Apache, PHP, MySQL sau MariaDB se face în doar trei paºi:\r\nClick-Stânga pe icon -> PHP|Apache|MySQL|MariaDB -> Schimbã versiunea -> Versiune\r\n\r\nSchimbarea versiunii nu va realiza automat ºi schimbarea parametrilor modificaþi anterior ºi nici nu va transfera bazele de date de la vechea versiune la cea nouã.\r\n\r\nO arhivã mult mai bine organizatã ºi permanent la zi decât cea de la Sourceforge existã la adresa:\r\n\r\n'https://wampserver.aviatechno.net'.\r\n\r\nLink-urile la arhive se regãsesc cu Click-dreapta pe icon -> Ajutor\r\n";
-$w_MySQLsqlmodeInfo = "MySQL/MariaDB sql-mode\r\nServerul SQL poate rula în diferite moduri SQL, în funcþie de valoare directivei sql-mode.\r\nSetând una sau mai multe directive va restricþiona anumite posibilitãþi ºi va cere o rigoare crescutã în sintaxa SQL ºi validarea datelor.\r\nModul de operare a directivei sql-mode din fiºierul my.ini este urmãtorul.\r\n\r\n- sql-mode: implicit\r\nDirectiva sql-mode nu existã sau este anulatã/comentatã (;sql-mode=\"...\")\r\nSe aplicã modurile implicite pentru versiunea de MySQL/MariaDB\r\n\r\n- sql-mode: user mode\r\nDirectiva sql-mode este populatã cu moduri definite de utilizator, ca de exemplu:\r\nsql-mode=\"NO_ZERO_DATE,NO_ZERO_IN_DATE,NO_AUTO_CREATE_USER\"\r\n\r\n- sql-mode: none\r\nDirectiva sql-mode directive este goalã dar trebuie sã existe:\r\nsql-mode=\"\"\r\nNu se aplicã niciun mod SQL.";
-$w_ApacheRestoreInfo = "--- Recuperarea Fiºierelor Apache\r\nÎncepând cu versiunea Apache 2.4.41, la terminarea procesului de instalare, fiºierele operaþionale httpd.conf ºi httpd-vhosts.conf sunt copiate automat într-un director de backup.\r\nÎn cazul în care sunt întâmpinate probleme sau se produc modificãri nedorite în funcþionarea Apache, se pot restaura/recupera aceste douã fiºiere în configuraþia originalã Apache.\r\nBineînþeles, ÎN ACEST CAZ SE VOR PIERDE ORICE MODIFICARE DE CONFIGURARE EFECTUATÃ DUPÃ INSTALARE, cum ar fi schimbarea modulele sau include care sã fie încãrcate.";
-$w_ApacheCompareInfo = "--- Comparare versiunilor Apache\r\nDacã sunt instalate cel puþin douã versiuni de Apache, se poate efectua comparaþia între versiunea curentã ºi una anterioarã.\r\nUrmãtoarele sunt comparate:\r\n- LoadModule\r\n- Include\r\n- fiºierele httpd-vhosts.conf\r\n- fiºierele httpd-ssl.conf\r\n- fiºierele openssl.cnf\r\n- Existenþa ºi conþinutul directorului Certs\r\nSe poate copia o configuraþie dintr-o versiune anterioarã în versiunea curentã.\r\n*** ATENÞIE *** Nu se vo executa backup-uri, acestea trebuiesc efectuate manual, ÎNAINTE de copierea configuraþiilor.";
-$w_Refresh_Restart_Info = "--- Diferenþele între '".$w_refresh."' ºi '".$w_restartWamp."'\r\n-- ".$w_refresh.":\r\n- Efectueazã diverse verificãri,\r\n- Reîncarcã fiºierele de configuraþie ale Wampserver, Apache, PHP, MySQL ºi MariaDB,\r\n- Modificã fiºierele de configuraþie ale Wampmanager ºi actualizeazã meniurile,\r\n- Efectueazã o 'Repornire Forþatã a Apache',\r\n- Reîncarcã meniul Aestan Tray din barã.\r\nNu se vor întrerupe conexiunile Apache, PHP, MySQL ºi/sau MariaDB.\r\n\r\n-- ".$w_restartWamp.":\r\n- Opreºte serviciile: ".$c_apacheService.", ".$c_mysqlService." ºi ".$c_mariadbService.",\r\n- Goleºte toate fiºierele jurnal,\r\n- Goleºte directorul tmp,\r\n- Închide Wampserver,\r\n- Porneºte Wampserver 'normal'.\r\nDe aceea conexiunile Apache, PHP, MySQL ºi MariaDB sunt complet întrerupte ºi le reporneºte sub alþi identificatori";
-$w_AdminerHelpTxt ="\r\n--- Adminer ---\r\nAdminer nu permite conectarea la baze de date fãrã folosirea unei parole.\r\nDe aceea, este necearã crearea unei parole pentru contul 'root' pentru a putea folosi Adminer.\r\nCrearea unei parole se poate face prin PhpMyAdmin sau din consola MySQL ºi/sau MariaDB.\r\nPe de altã parte, este posibilã autorizarea conexiunilor Adminer fãrã parolã.\r\nPentru detalii despre cum sã faceþi acest lucru, citiþi fiºierul c:\\wamp64\\apps\\adminer4.x.y\\index.php\r\n";
+$w_DataBasesManagement = "Administrare Bazï¿½ de Date";
+$w_EnterInteger = "Introdu un numï¿½r ï¿½ntreg";
+$w_enterPort = 'Introdu numï¿½rul noului port';
+$w_EnterSize = "Introdu Mï¿½rimea: xxxx urmat de M pentru Mega sau G pentru Giga.\r\nNumï¿½rul trebuie ï¿½nsoï¿½it de simbolul M sau G.\r\nExemplu : 64M ; 256M ; 1G";
+$w_EnterTime = "Introdu timpul ï¿½n secunde";
+$w_MysqlMariaUser = "Introdu un nume de utilizator valabil. Dacï¿½ nu-l cunoï¿½ti, pï¿½streazï¿½ 'root' implicit.\r\nDacï¿½ ai setat o parolï¿½ pentru root sau utilizatorul selectat, va trebui sï¿½ introduci parola cï¿½nd ï¿½i se va cere 'Enter password:' de la consolï¿½. Fï¿½rï¿½ parolï¿½, apasï¿½ Enter";
+$w_addingVerTxt ="Toate \"addon-urile\", ex. toate installer-ele pentru versiunile Apache, PHP, MySQL sau MariaDB cï¿½t ï¿½i cele pentru actualizï¿½ri (Wampserver, Aestan Tray Menu, xDebug, etc.), precum ï¿½i aplicaï¿½iile web (PhpMyAdmin, Adminer) se gï¿½sesc la adresa\r\n\r\n'https://sourceforge.net/projects/wampserver/'\r\n\r\nDescï¿½rcaï¿½i fiï¿½ierele pe care le doriï¿½i ï¿½i lansaï¿½i-le apï¿½sï¿½nd click-dreapta pe numele fiï¿½ierelor descï¿½rcate, iar apoi \"Ruleazï¿½ ca administrator\" pentru a adï¿½uga addon-ul sau aplicaï¿½ia respectivï¿½ la versiunea existentï¿½ de Wampserver.\r\n\r\nApoi, schimbarea versiunii de Apache, PHP, MySQL sau MariaDB se face ï¿½n doar trei paï¿½i:\r\nClick-Stï¿½nga pe icon -> PHP|Apache|MySQL|MariaDB -> Schimbï¿½ versiunea -> Versiune\r\n\r\nSchimbarea versiunii nu va realiza automat ï¿½i schimbarea parametrilor modificaï¿½i anterior ï¿½i nici nu va transfera bazele de date de la vechea versiune la cea nouï¿½.\r\n\r\nO arhivï¿½ mult mai bine organizatï¿½ ï¿½i permanent la zi decï¿½t cea de la Sourceforge existï¿½ la adresa:\r\n\r\n'https://wampserver.aviatechno.net'.\r\n\r\nLink-urile la arhive se regï¿½sesc cu Click-dreapta pe icon -> Ajutor\r\n";
+$w_MySQLsqlmodeInfo = "MySQL/MariaDB sql-mode\r\nServerul SQL poate rula ï¿½n diferite moduri SQL, ï¿½n funcï¿½ie de valoare directivei sql-mode.\r\nSetï¿½nd una sau mai multe directive va restricï¿½iona anumite posibilitï¿½ï¿½i ï¿½i va cere o rigoare crescutï¿½ ï¿½n sintaxa SQL ï¿½i validarea datelor.\r\nModul de operare a directivei sql-mode din fiï¿½ierul my.ini este urmï¿½torul.\r\n\r\n- sql-mode: implicit\r\nDirectiva sql-mode nu existï¿½ sau este anulatï¿½/comentatï¿½ (;sql-mode=\"...\")\r\nSe aplicï¿½ modurile implicite pentru versiunea de MySQL/MariaDB\r\n\r\n- sql-mode: user mode\r\nDirectiva sql-mode este populatï¿½ cu moduri definite de utilizator, ca de exemplu:\r\nsql-mode=\"NO_ZERO_DATE,NO_ZERO_IN_DATE,NO_AUTO_CREATE_USER\"\r\n\r\n- sql-mode: none\r\nDirectiva sql-mode directive este goalï¿½ dar trebuie sï¿½ existe:\r\nsql-mode=\"\"\r\nNu se aplicï¿½ niciun mod SQL.";
+$w_ApacheRestoreInfo = "--- Recuperarea Fiï¿½ierelor Apache\r\nï¿½ncepï¿½nd cu versiunea Apache 2.4.41, la terminarea procesului de instalare, fiï¿½ierele operaï¿½ionale httpd.conf ï¿½i httpd-vhosts.conf sunt copiate automat ï¿½ntr-un director de backup.\r\nï¿½n cazul ï¿½n care sunt ï¿½ntï¿½mpinate probleme sau se produc modificï¿½ri nedorite ï¿½n funcï¿½ionarea Apache, se pot restaura/recupera aceste douï¿½ fiï¿½iere ï¿½n configuraï¿½ia originalï¿½ Apache.\r\nBineï¿½nï¿½eles, ï¿½N ACEST CAZ SE VOR PIERDE ORICE MODIFICARE DE CONFIGURARE EFECTUATï¿½ DUPï¿½ INSTALARE, cum ar fi schimbarea modulele sau include care sï¿½ fie ï¿½ncï¿½rcate.";
+$w_ApacheCompareInfo = "--- Comparare versiunilor Apache\r\nDacï¿½ sunt instalate cel puï¿½in douï¿½ versiuni de Apache, se poate efectua comparaï¿½ia ï¿½ntre versiunea curentï¿½ ï¿½i una anterioarï¿½.\r\nUrmï¿½toarele sunt comparate:\r\n- LoadModule\r\n- Include\r\n- fiï¿½ierele httpd-vhosts.conf\r\n- fiï¿½ierele httpd-ssl.conf\r\n- fiï¿½ierele openssl.cnf\r\n- Existenï¿½a ï¿½i conï¿½inutul directorului Certs\r\nSe poate copia o configuraï¿½ie dintr-o versiune anterioarï¿½ ï¿½n versiunea curentï¿½.\r\n*** ATENï¿½IE *** Nu se vo executa backup-uri, acestea trebuiesc efectuate manual, ï¿½NAINTE de copierea configuraï¿½iilor.";
+$w_Refresh_Restart_Info = "--- Diferenï¿½ele ï¿½ntre '".$w_refresh."' ï¿½i '".$w_restartWamp."'\r\n-- ".$w_refresh.":\r\n- Efectueazï¿½ diverse verificï¿½ri,\r\n- Reï¿½ncarcï¿½ fiï¿½ierele de configuraï¿½ie ale Wampserver, Apache, PHP, MySQL ï¿½i MariaDB,\r\n- Modificï¿½ fiï¿½ierele de configuraï¿½ie ale Wampmanager ï¿½i actualizeazï¿½ meniurile,\r\n- Efectueazï¿½ o 'Repornire Forï¿½atï¿½ a Apache',\r\n- Reï¿½ncarcï¿½ meniul Aestan Tray din barï¿½.\r\nNu se vor ï¿½ntrerupe conexiunile Apache, PHP, MySQL ï¿½i/sau MariaDB.\r\n\r\n-- ".$w_restartWamp.":\r\n- Opreï¿½te serviciile: ".$c_apacheService.", ".$c_mysqlService." ï¿½i ".$c_mariadbService.",\r\n- Goleï¿½te toate fiï¿½ierele jurnal,\r\n- Goleï¿½te directorul tmp,\r\n- ï¿½nchide Wampserver,\r\n- Porneï¿½te Wampserver 'normal'.\r\nDe aceea conexiunile Apache, PHP, MySQL ï¿½i MariaDB sunt complet ï¿½ntrerupte ï¿½i le reporneï¿½te sub alï¿½i identificatori";
+$w_AdminerHelpTxt ="\r\n--- Adminer ---\r\nAdminer nu permite conectarea la baze de date fï¿½rï¿½ folosirea unei parole.\r\nDe aceea, este necearï¿½ crearea unei parole pentru contul 'root' pentru a putea folosi Adminer.\r\nCrearea unei parole se poate face prin PhpMyAdmin sau din consola MySQL ï¿½i/sau MariaDB.\r\nPe de altï¿½ parte, este posibilï¿½ autorizarea conexiunilor Adminer fï¿½rï¿½ parolï¿½.\r\nPentru detalii despre cum sï¿½ faceï¿½i acest lucru, citiï¿½i fiï¿½ierul c:\\wamp64\\apps\\adminer4.x.y\\index.php\r\n";
 
 ?>

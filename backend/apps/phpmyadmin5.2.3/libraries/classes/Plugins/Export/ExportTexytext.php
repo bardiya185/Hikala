@@ -43,18 +43,11 @@ class ExportTexytext extends ExportPlugin
         $exportPluginProperties->setExtension('txt');
         $exportPluginProperties->setMimeType('text/plain');
         $exportPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $exportPluginProperties
-        // this will be shown as "Format specific options"
         $exportSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
-
-        // what to dump (structure/data/both) main group
         $dumpWhat = new OptionsPropertyMainGroup(
             'general_opts',
             __('Dump table')
         );
-        // create primary items and add them to the group
         $leaf = new RadioPropertyItem('structure_or_data');
         $leaf->setValues(
             [
@@ -64,16 +57,12 @@ class ExportTexytext extends ExportPlugin
             ]
         );
         $dumpWhat->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($dumpWhat);
-
-        // data options main group
         $dataOptions = new OptionsPropertyMainGroup(
             'data',
             __('Data dump options')
         );
         $dataOptions->setForce('structure');
-        // create primary items and add them to the group
         $leaf = new BoolPropertyItem(
             'columns',
             __('Put columns names in the first row')
@@ -84,10 +73,7 @@ class ExportTexytext extends ExportPlugin
             __('Replace NULL with:')
         );
         $dataOptions->addProperty($leaf);
-        // add the main group to the root group
         $exportSpecificOptions->addProperty($dataOptions);
-
-        // set the options for the export plugin property item
         $exportPluginProperties->setOptions($exportSpecificOptions);
 
         return $exportPluginProperties;
@@ -181,12 +167,8 @@ class ExportTexytext extends ExportPlugin
         ) {
             return false;
         }
-
-        // Gets the data from the database
         $result = $dbi->query($sqlQuery, DatabaseInterface::CONNECT_USER, DatabaseInterface::QUERY_UNBUFFERED);
         $fields_cnt = $result->numFields();
-
-        // If required, get fields name at the first line
         if (isset($GLOBALS[$what . '_columns'])) {
             $text_output = "|------\n";
             foreach ($result->getFieldNames() as $col_as) {
@@ -203,8 +185,6 @@ class ExportTexytext extends ExportPlugin
                 return false;
             }
         }
-
-        // Format the data
         while ($row = $result->fetchRow()) {
             $text_output = '';
             for ($j = 0; $j < $fields_cnt; $j++) {
@@ -370,8 +350,6 @@ class ExportTexytext extends ExportPlugin
          * Gets fields properties
          */
         $dbi->selectDb($db);
-
-        // Check if we can use Relations
         [$res_rel, $have_rel] = $this->relation->getRelationsAndStatus(
             $do_relation && $relationParameters->relationFeature !== null,
             $db,
@@ -569,7 +547,6 @@ class ExportTexytext extends ExportPlugin
             case 'stand_in':
                 $dump .= '== ' . __('Stand-in structure for view')
                 . ' ' . $table . "\n\n";
-                // export a stand-in definition to resolve view dependencies
                 $dump .= $this->getTableDefStandIn($db, $table, $crlf, $aliases);
         }
 

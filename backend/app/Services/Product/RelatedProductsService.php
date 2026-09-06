@@ -10,7 +10,6 @@ class RelatedProductsService
     
     public function find(Product $product, int $limit = 8): Collection
     {
-        // یه Collection خالی شروع کن
         $relatedProducts = collect();
         
         

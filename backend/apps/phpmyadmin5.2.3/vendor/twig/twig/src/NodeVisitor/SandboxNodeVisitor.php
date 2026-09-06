@@ -36,11 +36,11 @@ use Twig\Node\SetNode;
 final class SandboxNodeVisitor implements NodeVisitorInterface
 {
     private $inAModule = false;
-    /** @var array<string, int> */
+    
     private $tags;
-    /** @var array<string, int> */
+    
     private $filters;
-    /** @var array<string, int> */
+    
     private $functions;
     private $needsToStringWrap = false;
 
@@ -54,22 +54,15 @@ final class SandboxNodeVisitor implements NodeVisitorInterface
 
             return $node;
         } elseif ($this->inAModule) {
-            // look for tags
             if ($node->getNodeTag() && !isset($this->tags[$node->getNodeTag()])) {
                 $this->tags[$node->getNodeTag()] = $node->getTemplateLine();
             }
-
-            // look for filters
             if ($node instanceof FilterExpression && !isset($this->filters[$node->getNode('filter')->getAttribute('value')])) {
                 $this->filters[$node->getNode('filter')->getAttribute('value')] = $node->getTemplateLine();
             }
-
-            // look for functions
             if ($node instanceof FunctionExpression && !isset($this->functions[$node->getAttribute('name')])) {
                 $this->functions[$node->getAttribute('name')] = $node->getTemplateLine();
             }
-
-            // the .. operator is equivalent to the range() function
             if ($node instanceof RangeBinary && !isset($this->functions['range'])) {
                 $this->functions['range'] = $node->getTemplateLine();
             }
@@ -82,8 +75,6 @@ final class SandboxNodeVisitor implements NodeVisitorInterface
             if ($node instanceof SetNode && !$node->getAttribute('capture')) {
                 $this->needsToStringWrap = true;
             }
-
-            // wrap outer nodes that can implicitly call __toString()
             if ($this->needsToStringWrap) {
                 if ($node instanceof ConcatBinary) {
                     $this->wrapNode($node, 'left');
@@ -122,7 +113,6 @@ final class SandboxNodeVisitor implements NodeVisitorInterface
     {
         $expr = $node->getNode($name);
         if (($expr instanceof NameExpression || $expr instanceof GetAttrExpression) && !$expr->isGenerator()) {
-            // Simplify in 4.0 as the spread attribute has been removed there
             $new = new CheckToStringNode($expr);
             if ($expr->hasAttribute('spread')) {
                 $new->setAttribute('spread', $expr->getAttribute('spread'));

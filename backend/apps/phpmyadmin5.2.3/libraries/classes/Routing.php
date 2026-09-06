@@ -56,8 +56,6 @@ class Routing
         if ($cacheFileExists && $canWriteFile) {
             return true;
         }
-
-        // Write without read does not work, chmod 200 for example
         if (! $cacheFileExists && is_writable(CACHE_DIR) && is_readable(CACHE_DIR)) {
             return true;
         }
@@ -68,16 +66,13 @@ class Routing
     private static function routesCachedDispatcher(callable $routeDefinitionCallback): Dispatcher
     {
         $skipCache = self::skipCache();
-
-        // If skip cache is enabled, do not try to read the file
-        // If no cache skipping then read it and use it
         if (
             ! $skipCache
             && file_exists(self::ROUTES_CACHE_FILE)
             && isset($_SESSION['isRoutesCacheFileValid'])
             && $_SESSION['isRoutesCacheFileValid']
         ) {
-            /** @psalm-suppress MissingFile, UnresolvableInclude, MixedAssignment */
+            
             $dispatchData = require self::ROUTES_CACHE_FILE;
 
             return new DispatcherGroupCountBased($dispatchData);
@@ -91,11 +86,8 @@ class Routing
 
         $dispatchData = $routeCollector->getData();
         $canWriteCache = self::canWriteCache();
-
-        // If skip cache is enabled, do not try to write it
-        // If no skip cache then try to write if write is possible
         if (! $skipCache && $canWriteCache) {
-            /** @psalm-suppress MissingFile, UnresolvableInclude, MixedAssignment */
+            
             $cachedDispatchData = file_exists(self::ROUTES_CACHE_FILE) ? require self::ROUTES_CACHE_FILE : [];
             $_SESSION['isRoutesCacheFileValid'] = $dispatchData === $cachedDispatchData;
             if (
@@ -129,7 +121,7 @@ class Routing
      */
     public static function getCurrentRoute(): string
     {
-        /** @var mixed $route */
+        
         $route = $_GET['route'] ?? $_POST['route'] ?? '/';
         if (! is_string($route) || $route === '') {
             $route = '/';
@@ -161,7 +153,7 @@ class Routing
         $routeInfo = $dispatcher->dispatch($request->getMethod(), rawurldecode($route));
 
         if ($routeInfo[0] === Dispatcher::NOT_FOUND) {
-            /** @var ResponseRenderer $response */
+            
             $response = $container->get(ResponseRenderer::class);
             $response->setHttpResponseCode(404);
             echo Message::error(sprintf(
@@ -173,7 +165,7 @@ class Routing
         }
 
         if ($routeInfo[0] === Dispatcher::METHOD_NOT_ALLOWED) {
-            /** @var ResponseRenderer $response */
+            
             $response = $container->get(ResponseRenderer::class);
             $response->setHttpResponseCode(405);
             echo Message::error(__('Error 405! Request method not allowed.'))->getDisplay();
@@ -185,9 +177,9 @@ class Routing
             return;
         }
 
-        /** @psalm-var class-string $controllerName */
+        
         $controllerName = $routeInfo[1];
-        /** @var array<string, string> $vars */
+        
         $vars = $routeInfo[2];
 
         /**

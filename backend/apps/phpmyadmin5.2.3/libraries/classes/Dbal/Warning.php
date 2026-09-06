@@ -30,7 +30,7 @@ final class Warning implements Stringable
      */
     public $code;
 
-    /** @var string */
+    
     public $message;
 
     private function __construct(string $level, int $code, string $message)

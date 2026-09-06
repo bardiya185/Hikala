@@ -26,7 +26,7 @@ final class Import
      */
     public $charset;
 
-    /** @var bool */
+    
     public $allow_interrupt;
 
     /**
@@ -41,55 +41,55 @@ final class Import
      */
     public $sql_compatibility;
 
-    /** @var bool */
+    
     public $sql_no_auto_value_on_zero;
 
-    /** @var bool */
+    
     public $sql_read_as_multibytes;
 
-    /** @var bool */
+    
     public $csv_replace;
 
-    /** @var bool */
+    
     public $csv_ignore;
 
-    /** @var string */
+    
     public $csv_terminated;
 
-    /** @var string */
+    
     public $csv_enclosed;
 
-    /** @var string */
+    
     public $csv_escaped;
 
-    /** @var string */
+    
     public $csv_new_line;
 
-    /** @var string */
+    
     public $csv_columns;
 
-    /** @var bool */
+    
     public $csv_col_names;
 
-    /** @var bool */
+    
     public $ldi_replace;
 
-    /** @var bool */
+    
     public $ldi_ignore;
 
-    /** @var string */
+    
     public $ldi_terminated;
 
-    /** @var string */
+    
     public $ldi_enclosed;
 
-    /** @var string */
+    
     public $ldi_escaped;
 
-    /** @var string */
+    
     public $ldi_new_line;
 
-    /** @var string */
+    
     public $ldi_columns;
 
     /**
@@ -100,16 +100,16 @@ final class Import
      */
     public $ldi_local_option;
 
-    /** @var bool */
+    
     public $ods_col_names;
 
-    /** @var bool */
+    
     public $ods_empty_rows;
 
-    /** @var bool */
+    
     public $ods_recognize_percentages;
 
-    /** @var bool */
+    
     public $ods_recognize_currency;
 
     /**

@@ -21,10 +21,10 @@ use function __;
  */
 class NavigationController extends AbstractController
 {
-    /** @var Navigation */
+    
     private $navigation;
 
-    /** @var Relation */
+    
     private $relation;
 
     public function __construct(

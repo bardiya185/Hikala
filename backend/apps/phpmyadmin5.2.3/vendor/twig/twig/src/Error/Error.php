@@ -179,13 +179,9 @@ class Error extends \Exception
                 }
             }
         }
-
-        // update template name
         if (null !== $template && null === $this->name) {
             $this->name = $template->getTemplateName();
         }
-
-        // update template path if any
         if (null !== $template && null === $this->sourcePath) {
             $src = $template->getSourceContext();
             $this->sourceCode = $src->getCode();
@@ -215,7 +211,6 @@ class Error extends \Exception
 
                 foreach ($template->getDebugInfo() as $codeLine => $templateLine) {
                     if ($codeLine <= $trace['line']) {
-                        // update template line
                         $this->lineno = $templateLine;
 
                         return;

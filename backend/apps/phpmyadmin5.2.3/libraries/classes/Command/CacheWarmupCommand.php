@@ -28,7 +28,7 @@ use const CACHE_DIR;
 
 final class CacheWarmupCommand extends Command
 {
-    /** @var string|null */
+    
     protected static $defaultName = 'cache:warmup';
 
     protected function configure(): void
@@ -49,7 +49,7 @@ final class CacheWarmupCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var string $env */
+        
         $env = $input->getOption('env');
 
         if ($input->getOption('twig') === true && $input->getOption('routing') === true) {
@@ -134,7 +134,7 @@ final class CacheWarmupCommand extends Command
             RecursiveIteratorIterator::LEAVES_ONLY
         );
 
-        /** @var CacheInterface $twigCache */
+        
         $twigCache = $twig->getCache(false);
         $replacements = [];
         $output->writeln(
@@ -144,31 +144,26 @@ final class CacheWarmupCommand extends Command
 
         $output->writeln('Warming templates', OutputInterface::VERBOSITY_VERY_VERBOSE);
         foreach ($templates as $file) {
-            // Skip test files
             if (str_contains($file->getPathname(), '/test/')) {
                 continue;
             }
-
-            // force compilation
             if (! $file->isFile() || $file->getExtension() !== 'twig') {
                 continue;
             }
 
             $name = str_replace(Template::TEMPLATES_FOLDER . '/', '', $file->getPathname());
             $output->writeln('Loading: ' . $name, OutputInterface::VERBOSITY_DEBUG);
-            /** @psalm-suppress InternalMethod */
+            
             $template = $twig->loadTemplate($twig->getTemplateClass($name), $name);
 
             if (! $writeReplacements) {
                 continue;
             }
-
-            // Generate line map
-            /** @psalm-suppress InternalMethod */
+            
             $cacheFilename = $twigCache->generateKey($name, $twig->getTemplateClass($name));
             $template_file = 'templates/' . $name;
             $cache_file = str_replace($tmpDir, 'twig-templates', $cacheFilename);
-            /** @psalm-suppress InternalMethod */
+            
             $replacements[$cache_file] = [$template_file, $template->getDebugInfo()];
         }
 
@@ -179,8 +174,6 @@ final class CacheWarmupCommand extends Command
         }
 
         $output->writeln('Writing replacements...', OutputInterface::VERBOSITY_VERY_VERBOSE);
-
-        // Store replacements in JSON
         if (file_put_contents($tmpDir . '/replace.json', (string) json_encode($replacements)) === false) {
             return Command::FAILURE;
         }

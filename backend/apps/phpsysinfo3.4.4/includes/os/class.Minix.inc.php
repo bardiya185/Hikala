@@ -146,7 +146,7 @@ class Minix extends OS
             }
         }
         if (!(isset($arrResults) && is_array($arrResults)) && ($results = Parser::lspci())) {
-            /* if access error: chmod 4755 /usr/bin/lspci */
+            
             foreach ($results as $dev) {
                 $this->sys->setPciDevices($dev);
             }

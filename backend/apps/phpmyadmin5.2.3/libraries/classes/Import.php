@@ -46,22 +46,22 @@ use function trim;
  */
 class Import
 {
-    /* MySQL type defs */
+    
     public const NONE = 0;
     public const VARCHAR = 1;
     public const INT = 2;
     public const DECIMAL = 3;
     public const BIGINT = 4;
     public const GEOMETRY = 5;
-    /* Decimal size defs */
+    
     public const M = 0;
     public const D = 1;
     public const FULL = 2;
-    /* Table array defs */
+    
     public const TBL_NAME = 0;
     public const COL_NAMES = 1;
     public const ROWS = 2;
-    /* Analysis array defs */
+    
     public const TYPES = 0;
     public const SIZES = 1;
     public const FORMATTEDSQL = 2;
@@ -89,7 +89,7 @@ class Import
         if ($timeout_passed) {
             return true;
 
-            /* 5 in next row might be too much */
+            
         }
 
         if (time() - $timestamp > $maximum_time - 5) {
@@ -240,7 +240,7 @@ class Import
 
                 $sqlData['valid_queries']++;
             } elseif ($run_query) {
-                /* Handle rollback from go_sql */
+                
                 if ($go_sql && isset($sqlData['valid_full'])) {
                     $queries = $sqlData['valid_sql'];
                     $fulls = $sqlData['valid_full'];
@@ -695,7 +695,7 @@ class Import
              * The last cumulative type was VARCHAR
              */
             if ($lastCumulativeType == self::VARCHAR) {
-                /* Convert $last_cumulative_size from varchar to decimal format */
+                
                 $size = $this->getDecimalSize($cell);
 
                 if ($size[self::M] >= $lastCumulativeSize) {
@@ -714,9 +714,9 @@ class Import
                 $oldM = $this->getDecimalPrecision($lastCumulativeSize);
                 $oldD = $this->getDecimalScale($lastCumulativeSize);
 
-                /* New val if M or D is greater than current largest */
+                
                 if ($size[self::M] > $oldM || $size[self::D] > $oldD) {
-                    /* Take the largest of both types */
+                    
                     return (string) (($size[self::M] > $oldM ? $size[self::M] : $oldM)
                         . ',' . ($size[self::D] > $oldD ? $size[self::D] : $oldD));
                 }
@@ -728,7 +728,7 @@ class Import
                 /**
                  * The last cumulative type was BIGINT or INT
                  */
-                /* Convert $last_cumulative_size from int to decimal format */
+                
                 $size = $this->getDecimalSize($cell);
 
                 if ($size[self::M] >= $lastCumulativeSize) {
@@ -742,7 +742,7 @@ class Import
                 /**
                  * This is the first row to be analyzed
                  */
-                /* First row of the column */
+                
                 $size = $this->getDecimalSize($cell);
 
                 return $size[self::FULL];
@@ -782,13 +782,13 @@ class Import
                 $oldInt = $oldM - $oldD;
                 $newInt = mb_strlen((string) $cell);
 
-                /* See which has the larger integer length */
+                
                 if ($oldInt >= $newInt) {
-                    /* Use old decimal size */
+                    
                     return $lastCumulativeSize;
                 }
 
-                /* Use $newInt + $oldD as new M */
+                
                 return ($newInt + $oldD) . ',' . $oldD;
             }
 
@@ -892,25 +892,25 @@ class Import
      */
     public function analyzeTable(array &$table)
     {
-        /* Get number of rows in table */
+        
         $numRows = count($table[self::ROWS]);
-        /* Get number of columns */
+        
         $numCols = count($table[self::COL_NAMES]);
-        /* Current type for each column */
+        
         $types = [];
         $sizes = [];
 
-        /* Initialize $sizes to all 0's */
+        
         for ($i = 0; $i < $numCols; ++$i) {
             $sizes[$i] = 0;
         }
 
-        /* Initialize $types to NONE */
+        
         for ($i = 0; $i < $numCols; ++$i) {
             $types[$i] = self::NONE;
         }
 
-        /* If the passed array is not of the correct form, do not process it */
+        
         if (
             is_array($table[self::TBL_NAME])
             || ! is_array($table[self::COL_NAMES])
@@ -923,14 +923,14 @@ class Import
             return false;
         }
 
-        /* Analyze each column */
+        
         for ($i = 0; $i < $numCols; ++$i) {
-            /* Analyze the column in each row */
+            
             for ($j = 0; $j < $numRows; ++$j) {
                 $cellValue = $table[self::ROWS][$j][$i];
-                /* Determine type of the current cell */
+                
                 $currType = $this->detectType($types[$i], $cellValue === null ? null : (string) $cellValue);
-                /* Determine size of the current cell */
+                
                 $sizes[$i] = $this->detectSize($sizes[$i], $types[$i], $currType, (string) $cellValue);
 
                 /**
@@ -959,7 +959,7 @@ class Import
             }
         }
 
-        /* Check to ensure that all types are valid */
+        
         $len = count($types);
         for ($n = 0; $n < $len; ++$n) {
             if (strcmp((string) self::NONE, (string) $types[$n])) {
@@ -999,10 +999,10 @@ class Import
     ): void {
         global $import_notice, $dbi;
 
-        /* Needed to quell the beast that is Message */
+        
         $import_notice = null;
 
-        /* Take care of the options */
+        
         $collation = 'utf8_general_ci';
         $charset = 'utf8';
         $createDb = $options['create_db'] ?? true;
@@ -1027,18 +1027,18 @@ class Import
          * $sql[] = "USE " . backquote($db_name);
          */
 
-        /* Execute the SQL statements create above */
+        
         $sqlLength = count($sql);
         for ($i = 0; $i < $sqlLength; ++$i) {
             $this->runQuery($sql[$i], $sql[$i], $sqlData);
         }
 
-        /* No longer needed */
+        
         unset($sql);
 
-        /* Run the $additional_sql statements supplied by the caller plug-in */
+        
         if ($additionalSql != null) {
-            /* Clean the SQL first */
+            
             $additionalSqlLength = count($additionalSql);
 
             /**
@@ -1060,7 +1060,7 @@ class Import
              */
             for ($i = 0; $i < $additionalSqlLength; ++$i) {
                 $additionalSql[$i] = preg_replace($pattern, $replacement, $additionalSql[$i]);
-                /* Execute the resulting statements */
+                
                 $this->runQuery($additionalSql[$i], $additionalSql[$i], $sqlData);
             }
         }
@@ -1075,12 +1075,12 @@ class Import
                 self::GEOMETRY => 'geometry',
             ];
 
-            /* TODO: Do more checking here to make sure they really are matched */
+            
             if (count($tables) != count($analyses)) {
                 exit;
             }
 
-            /* Create SQL code to create the tables */
+            
             $numTables = count($tables);
             for ($i = 0; $i < $numTables; ++$i) {
                 $numCols = count($tables[$i][self::COL_NAMES]);
@@ -1167,7 +1167,7 @@ class Import
                             $isVarchar = ! is_numeric($tables[$i][self::ROWS][$j][$k]);
                         }
 
-                        /* Don't put quotes around NULL fields */
+                        
                         if (! strcmp((string) $tables[$i][self::ROWS][$j][$k], 'NULL')) {
                             $isVarchar = false;
                         }
@@ -1187,7 +1187,7 @@ class Import
                         $colCount++;
                     }
 
-                    /* Delete the cell after we are done with it */
+                    
                     unset($tables[$i][self::ROWS][$j][$k]);
                 }
 
@@ -1198,7 +1198,7 @@ class Import
                 }
 
                 $colCount = 0;
-                /* Delete the row after we are done with it */
+                
                 unset($tables[$i][self::ROWS][$j]);
             }
 
@@ -1212,7 +1212,7 @@ class Import
             $this->runQuery($tempSQLStr, $tempSQLStr, $sqlData);
         }
 
-        /* No longer needed */
+        
         unset($tempSQLStr);
 
         /**
@@ -1225,7 +1225,7 @@ class Import
          */
         $viewPattern = '@VIEW `[^`]+`\.`([^`]+)@';
         $tablePattern = '@CREATE TABLE IF NOT EXISTS `([^`]+)`@';
-        /* Check a third pattern to make sure its not a "USE `db_name`;" statement */
+        
 
         $regs = [];
 
@@ -1252,7 +1252,7 @@ class Import
                 }
             }
 
-            /* Reset the array */
+            
             $regs = [];
             $inTables = false;
         }
@@ -1490,7 +1490,7 @@ class Import
         return $result && $result->numRows() == 1;
     }
 
-    /** @return string[] */
+    
     public static function getCompressions(): array
     {
         global $cfg;

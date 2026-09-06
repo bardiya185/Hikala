@@ -22,7 +22,7 @@ use function trim;
  */
 class GisMultiPoint extends GisGeometry
 {
-    /** @var self */
+    
     private static $instance;
 
     /**

@@ -24,10 +24,10 @@ use function min;
  */
 class IndexesController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var Indexes */
+    
     private $indexes;
 
     public function __construct(
@@ -59,7 +59,6 @@ class IndexesController extends AbstractController
 
         if (isset($_POST['index'])) {
             if (is_array($_POST['index'])) {
-                // coming already from form
                 $index = new Index($_POST['index']);
             } else {
                 $index = $this->dbi->getTable($this->db, $this->table)->getIndex($_POST['index']);
@@ -87,7 +86,6 @@ class IndexesController extends AbstractController
         $this->dbi->selectDb($GLOBALS['db']);
         $add_fields = 0;
         if (isset($_POST['index']) && is_array($_POST['index'])) {
-            // coming already from form
             if (isset($_POST['index']['columns']['names'])) {
                 $add_fields = count($_POST['index']['columns']['names'])
                     - $index->getColumnCount();
@@ -110,8 +108,6 @@ class IndexesController extends AbstractController
                 $add_fields = min((int) $_POST['added_fields'], 16);
             }
         }
-
-        // Get fields and stores their name/type
         if (isset($_POST['create_edit_table'])) {
             $fields = json_decode($_POST['columns'], true);
             $index_params = [

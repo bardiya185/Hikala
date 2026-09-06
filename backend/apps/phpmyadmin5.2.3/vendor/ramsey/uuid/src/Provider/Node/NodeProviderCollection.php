@@ -41,7 +41,7 @@ class NodeProviderCollection extends AbstractCollection
      */
     public function unserialize($serialized): void
     {
-        /** @var array<array-key, NodeProviderInterface> $data */
+        
         $data = unserialize($serialized, [
             'allowed_classes' => [
                 Hexadecimal::class,

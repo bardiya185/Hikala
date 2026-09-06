@@ -20,7 +20,7 @@ class RecentFavoriteController extends AbstractController
 
         RecentFavoriteTable::getInstance('favorite')->removeIfInvalid($_REQUEST['db'], $_REQUEST['table']);
 
-        /** @var SqlController $controller */
+        
         $controller = $containerBuilder->get(SqlController::class);
         $controller();
     }

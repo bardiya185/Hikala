@@ -9,7 +9,6 @@ Filesystem           1K-blocks      Used Available Use% Mounted on
 /dev/ad6s1e                  2         1         1   0% /opt/glftpd/site/xbox
 /dev/vinum/opt1              2         1         1   0% /opt1
 procfs                       2         1         1   0% /proc
-//ADMINISTRATOR@GODFATHER/GODFATHER C   2         1         1   0% /usr/home/username/godfather
 /dev/sda1                  2         1         1   0% /mount/sda1
 /dev/sda2                  2         1         1   0% /mount/sda2
 /dev/sda3                  2         1         1   0% /mount/sda3

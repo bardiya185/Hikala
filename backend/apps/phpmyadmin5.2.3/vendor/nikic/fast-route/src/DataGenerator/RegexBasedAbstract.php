@@ -8,10 +8,10 @@ use FastRoute\Route;
 
 abstract class RegexBasedAbstract implements DataGenerator
 {
-    /** @var mixed[][] */
+    
     protected $staticRoutes = [];
 
-    /** @var Route[][] */
+    
     protected $methodToRegexToRoutesMap = [];
 
     /**

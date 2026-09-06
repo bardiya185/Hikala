@@ -45,7 +45,6 @@ abstract class HexTransformationsPlugin extends TransformationsPlugin
      */
     public function applyTransformation($buffer, array $options = [], ?FieldMetadata $meta = null)
     {
-        // possibly use a global transform and feed it with special options
         $cfg = $GLOBALS['cfg'];
         $options = $this->getOptions($options, $cfg['DefaultTransformations']['Hex']);
         $options[0] = intval($options[0]);
@@ -57,7 +56,7 @@ abstract class HexTransformationsPlugin extends TransformationsPlugin
         return chunk_split(bin2hex($buffer), $options[0], ' ');
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

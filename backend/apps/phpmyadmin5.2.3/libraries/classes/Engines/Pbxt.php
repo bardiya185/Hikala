@@ -156,8 +156,6 @@ class Pbxt extends StorageEngine
         return Util::formatByteDown($value);
     }
 
-    //--------------------
-
     /**
      * Get information about pages
      *
@@ -170,8 +168,6 @@ class Pbxt extends StorageEngine
 
         return $pages;
     }
-
-    //--------------------
 
     /**
      * Get content of documentation page

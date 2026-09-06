@@ -17,7 +17,6 @@ class FakePaymentService
      */
     public function initiate(Order $order): array
     {
-        // در واقعیت اینجا به درگاه وصل می‌شیم
         $transactionId = 'TXN-' . strtoupper(Str::random(12));
         
         return [
@@ -33,7 +32,6 @@ class FakePaymentService
      */
     public function verify(Order $order, string $transactionId): array
     {
-        // در واقعیت اینجا از درگاه verify می‌گیریم
         return [
             'success' => true,
             'transaction_id' => $transactionId,

@@ -101,8 +101,6 @@ class Headers implements HeadersInterface
     public function setHeader($name, $value): HeadersInterface
     {
         [$values, $originalName, $normalizedName] = $this->prepareHeader($name, $value);
-
-        // Ensure we preserve original case if the header already exists in the stack
         if (isset($this->headers[$normalizedName])) {
             $existingHeader = $this->headers[$normalizedName];
             $originalName = $existingHeader->getOriginalName();

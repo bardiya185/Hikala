@@ -28,7 +28,7 @@ use function strlen;
  */
 class SqlQueryForm
 {
-    /** @var Template */
+    
     private $template;
 
     /**
@@ -69,8 +69,6 @@ class SqlQueryForm
         if (! $display_tab) {
             $display_tab = 'full';
         }
-
-        // query to show
         if ($query === true) {
             $query = $GLOBALS['sql_query'];
             if (empty($query) && (isset($_GET['show_query']) || isset($_POST['show_query']))) {
@@ -79,10 +77,8 @@ class SqlQueryForm
         }
 
         if (strlen($db) === 0) {
-            // prepare for server related
             $goto = empty($GLOBALS['goto']) ? Url::getFromRoute('/server/sql') : $GLOBALS['goto'];
         } elseif (strlen($table) === 0) {
-            // prepare for db related
             $goto = empty($GLOBALS['goto']) ? Url::getFromRoute('/database/sql') : $GLOBALS['goto'];
         } else {
             $goto = empty($GLOBALS['goto']) ? Url::getFromRoute('/table/sql') : $GLOBALS['goto'];
@@ -144,7 +140,6 @@ class SqlQueryForm
 
         $columns_list = [];
         if (strlen($GLOBALS['db']) === 0) {
-            // prepare for server related
             $legend = sprintf(
                 __('Run SQL query/queries on server “%s”'),
                 htmlspecialchars(
@@ -154,9 +149,7 @@ class SqlQueryForm
                 )
             );
         } elseif (strlen($GLOBALS['table']) === 0) {
-            // prepare for db related
             $db = $GLOBALS['db'];
-            // if you want navigation:
             $scriptName = Util::getScriptNameForOption($GLOBALS['cfg']['DefaultTabDatabase'], 'database');
             $tmp_db_link = '<a href="' . $scriptName
                 . Url::getCommon(['db' => $db], ! str_contains($scriptName, '?') ? '?' : '&')
@@ -169,9 +162,6 @@ class SqlQueryForm
         } else {
             $db = $GLOBALS['db'];
             $table = $GLOBALS['table'];
-            // Get the list and number of fields
-            // we do a try_query here, because we could be in the query window,
-            // trying to synchronize and the table has not yet been created
             $columns_list = $dbi->getColumns($db, $GLOBALS['table'], true);
 
             $scriptName = Util::getScriptNameForOption($GLOBALS['cfg']['DefaultTabTable'], 'table');

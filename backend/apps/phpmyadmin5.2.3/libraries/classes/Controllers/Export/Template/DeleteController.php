@@ -13,10 +13,10 @@ use PhpMyAdmin\Template;
 
 final class DeleteController extends AbstractController
 {
-    /** @var TemplateModel */
+    
     private $model;
 
-    /** @var Relation */
+    
     private $relation;
 
     public function __construct(

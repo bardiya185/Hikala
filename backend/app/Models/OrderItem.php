@@ -23,22 +23,13 @@ class OrderItem extends Model
     ];
 
     protected $casts = [
-        // 📋 JSON casting for variant attributes
         'variant_attributes' => 'array',
-        
-        // 🔢 Numeric
         'quantity' => 'integer',
-        
-        // 💰 Money
         'base_price' => 'decimal:2',
         'final_price' => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'total' => 'decimal:2',
     ];
-
-    // ================================================================
-    // 🔗 Relationships
-    // ================================================================
 
     public function order(): BelongsTo
     {
@@ -54,10 +45,6 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Discount::class);
     }
-
-    // ================================================================
-    // 🎯 Accessors
-    // ================================================================
 
     /**
      * 📊 Get discount percent

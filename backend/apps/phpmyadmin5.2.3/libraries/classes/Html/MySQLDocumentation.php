@@ -83,7 +83,7 @@ class MySQLDocumentation
      */
     public static function getDocumentationLink($page, $anchor = '', string $pathPrefix = './'): string
     {
-        /* Construct base URL */
+        
         $url = $page . '.html';
         if (! empty($anchor)) {
             $url .= '#' . $anchor;

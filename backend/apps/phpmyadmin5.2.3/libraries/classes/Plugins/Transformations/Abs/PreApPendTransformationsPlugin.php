@@ -45,13 +45,11 @@ abstract class PreApPendTransformationsPlugin extends TransformationsPlugin
     {
         $cfg = $GLOBALS['cfg'];
         $options = $this->getOptions($options, $cfg['DefaultTransformations']['PreApPend']);
-
-        //just prepend and/or append the options to the original text
         return htmlspecialchars($options[0]) . htmlspecialchars($buffer)
             . htmlspecialchars($options[1]);
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

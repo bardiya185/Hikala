@@ -1,30 +1,14 @@
 <?php
-//3.0.7 - $w_mariadbConsole - $w_mariadbLog - $w_mariaSettings
-//        $w_apacheDoc - $w_mysqlDoc - $w_mariadbDoc - $w_phpDoc
-//        $w_Doc
-//3.0.8   $w_noDBMS
-//3.1.1   $w_cmdWindows - $w_mysqlCommand - $w_mariadbCommand - $w_apacheCommand - $w_services_msc
-//3.2.0	$w_helpForums - $w_helpUse
-//3.2.1 $w_apacheSettings - $w_apacheDefaults
-//3.2.2 $w_helpFile modifié
-//3.2.6 $w_startedOn - $w_restartWamp - $w_phpCommand
-//3.2.7 $w_Changelog - $w_warning
-//      --- Suppress: $w_putOnline - $w_putOffline
-//3.2.9 $w_startOfServices - $w_servicesStarted - $w_bepatient - $w_ready - $w_state_services
-//      --- Suppress: $w_serverOffline - $w_serverOnline
-//3.3.0 $w_waitConfig - $file_charset
-//3.3.2 --- Modified $w_helpForums
-//3.3.6 --- Modified $w_about
-//3.3.8 $w_uncomment
+//3.2.2 $w_helpFile modifiï¿½
 
 $file_charset = 'iso-8859-1';
 
-$w_allServicesRunning = 'Tous les services sont lancés';
-$w_oneServiceRunning = '%n service sur %t est lancé';
-$w_allServicesStopped = 'Les %t services sont éteints';
-$w_state_services = 'Clic-Droit -> Outils -> Vérifier l\'état des services';
+$w_allServicesRunning = 'Tous les services sont lancï¿½s';
+$w_oneServiceRunning = '%n service sur %t est lancï¿½';
+$w_allServicesStopped = 'Les %t services sont ï¿½teints';
+$w_state_services = 'Clic-Droit -> Outils -> Vï¿½rifier l\'ï¿½tat des services';
 
-$w_about = 'Options... À propos';
+$w_about = 'Options... ï¿½ propos';
 $w_helpFile = 'Fichiers & Documentation';
 $w_help = 'Aide';
 $w_helpForums = 'Forum de support francophone';
@@ -34,19 +18,19 @@ $w_version = 'Version';
 $w_service = 'Administration du service';
 $w_services_msc = 'Gestionnaire des services';
 $w_doc = 'Documentation';
-$w_cmdWindows = 'Fenêtre de commande';
+$w_cmdWindows = 'Fenï¿½tre de commande';
 
 $w_localhost = 'Localhost';
 $w_phpmyadmin = 'phpMyAdmin';
 $w_sqlitemanager = 'SQLiteManager';
-$w_wwwDirectory = 'Répertoire www';
+$w_wwwDirectory = 'Rï¿½pertoire www';
 $w_logFiles = 'Fichiers de log';
 $w_configFiles = 'Fichiers de configuration';
 $w_apacheModules = 'Modules Apache';
 $w_apacheSettings = 'Configuration Apache';
-$w_apacheDefaults = 'Directives par défaut';
+$w_apacheDefaults = 'Directives par dï¿½faut';
 $w_phpSettings = 'Configuration PHP';
-$w_aliasDirectories = 'Répertoires Alias';
+$w_aliasDirectories = 'Rï¿½pertoires Alias';
 $w_services = 'Services';
 $w_apache = 'Apache';
 $w_apacheCommand = $w_cmdWindows.' '.$w_apache.'/bin';
@@ -56,14 +40,13 @@ $w_mysqlDoc = $w_doc.' MySQL';
 $w_mysqlSettings = 'Configuration MySQL';
 $w_mariaSettings = 'Configuration MariaDB';
 $w_mariadbDoc = $w_doc.' MariaDB';
-$w_startServices = 'Démarrer les services';
-$w_stopServices = 'Arrêter les services';
-$w_restartServices = 'Redémarrer les services';
-// Format ICU depuis https://unicode-org.github.io/icu/userguide/format_parse/datetime/#date-field-symbol-table
-// Faire très attention !
+$w_startServices = 'Dï¿½marrer les services';
+$w_stopServices = 'Arrï¿½ter les services';
+$w_restartServices = 'Redï¿½marrer les services';
+// Faire trï¿½s attention !
 $w_FormatDate = "eeee d MMMM YYYY H:mm";
-$w_startedOn = 'Démarré le : ';
-$w_restartWamp = 'Redémarrer de zéro';
+$w_startedOn = 'Dï¿½marrï¿½ le : ';
+$w_restartWamp = 'Redï¿½marrer de zï¿½ro';
 $w_warning = 'ATTENTION !';
 
 $w_apacheErrorLog = 'Apache error log';
@@ -73,19 +56,19 @@ $w_changelog = 'Journal des modifications';
 $w_phpDoc = $w_doc.' PHP';
 $w_mysqlLog = 'MySQL log';
 $w_mariadbLog = 'MariaDB log';
-$w_addAlias = 'Créer un alias';
+$w_addAlias = 'Crï¿½er un alias';
 $w_editAlias = 'Modifier l\'alias';
 $w_editHtaccess = 'Modifier .htaccess';
 $w_deleteAlias = 'Supprimer l\'alias';
-$w_refresh = 'Rafraîchir';
+$w_refresh = 'Rafraï¿½chir';
 $w_phpExtensions = 'Extensions PHP';
 $w_addExtension = 'Ajouter une extension';
 $w_phpCommand = $w_cmdWindows.' PHP';
 
-$w_startResume = 'Démarrer le service';
+$w_startResume = 'Dï¿½marrer le service';
 $w_pauseService = 'Mettre le service en pause';
 $w_stopService = 'Arreter le service';
-$w_restartService = 'Redémarrer le service';
+$w_restartService = 'Redï¿½marrer le service';
 $w_testPort80 = 'Tester le Port 80';
 $w_installService = 'Installer le service';
 $w_removeService = 'Supprimer le Service';
@@ -94,15 +77,15 @@ $w_mysqlCommand = $w_cmdWindows.' '.$w_mysql.'/bin';
 $w_mariadbConsole = 'Console MariaDB';
 $w_mariadbCommand = $w_cmdWindows.' MariaDB/bin';
 
-$w_noDBMS = 'Sans base de données';
+$w_noDBMS = 'Sans base de donnï¿½es';
 
 $w_language = 'Langue';
-$w_uncomment = 'Décommenter';
+$w_uncomment = 'Dï¿½commenter';
 
-$w_startOfServices = 'Démarrage des services';
-$w_servicesStarted = 'Services démarrés';
+$w_startOfServices = 'Dï¿½marrage des services';
+$w_servicesStarted = 'Services dï¿½marrï¿½s';
 $w_bepatient = 'Soyez patient !';
-$w_ready = 'Prêt !';
-$w_waitConfig = 'Mise à jour des paramètres !';
+$w_ready = 'Prï¿½t !';
+$w_waitConfig = 'Mise ï¿½ jour des paramï¿½tres !';
 
 ?>

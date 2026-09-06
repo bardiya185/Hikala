@@ -18,14 +18,14 @@ use Iterator;
 
 abstract class Construct extends ASNObject implements Countable, ArrayAccess, Iterator, Parsable
 {
-    /** @var \FG\ASN1\ASNObject[] */
+    
     protected $children;
     private $iteratorPosition;
 
     /**
      * @param \FG\ASN1\ASNObject[] $children the variadic type hint is commented due to https://github.com/facebook/hhvm/issues/4858
      */
-    public function __construct(/* HH_FIXME[4858]: variadic + strict */ ...$children)
+    public function __construct( ...$children)
     {
         $this->children = $children;
         $this->iteratorPosition = 0;

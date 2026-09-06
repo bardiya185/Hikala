@@ -90,7 +90,6 @@ final class Profile implements \IteratorAggregate, \Serializable
     public function getDuration(): float
     {
         if ($this->isRoot() && $this->profiles) {
-            // for the root node with children, duration is the sum of all child durations
             $duration = 0;
             foreach ($this->profiles as $profile) {
                 $duration += $profile->getDuration();

@@ -48,7 +48,7 @@ class PageSettings
      */
     private $HTML = '';
 
-    /** @var UserPreferences */
+    
     private $userPreferences;
 
     /**

@@ -1227,8 +1227,6 @@ If you want a pre-made sample, you can try this fragment. It stops the
 network :term:`IP` blocks.
 
 .. code-block:: php
-
-    //block root from logging in except from the private networks
     $cfg['Servers'][$i]['AllowDeny']['order'] = 'deny,allow';
     $cfg['Servers'][$i]['AllowDeny']['rules'] = [
         'deny root from all',

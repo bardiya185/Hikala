@@ -29,7 +29,7 @@ use function strlen;
  */
 class ChartController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -52,8 +52,6 @@ class ChartController extends AbstractController
 
             return;
         }
-
-        // Throw error if no sql query is set
         if (! isset($sql_query) || $sql_query == '') {
             $this->response->setRequestStatus(false);
             $this->response->addHTML(

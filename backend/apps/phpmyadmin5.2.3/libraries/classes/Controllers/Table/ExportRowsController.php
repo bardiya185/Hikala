@@ -13,7 +13,7 @@ use function is_array;
 
 final class ExportRowsController extends AbstractController
 {
-    /** @var ExportController */
+    
     private $exportController;
 
     public function __construct(
@@ -37,14 +37,7 @@ final class ExportRowsController extends AbstractController
 
             return;
         }
-
-        // Needed to allow SQL export
         $single_table = true;
-
-        // As we got the rows to be exported from the
-        // 'rows_to_delete' checkbox, we use the index of it as the
-        // indicating WHERE clause. Then we build the array which is used
-        // for the /table/change script.
         $where_clause = [];
         if (isset($_POST['rows_to_delete']) && is_array($_POST['rows_to_delete'])) {
             foreach ($_POST['rows_to_delete'] as $i_where_clause) {

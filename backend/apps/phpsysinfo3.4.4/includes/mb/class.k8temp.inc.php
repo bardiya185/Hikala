@@ -55,7 +55,6 @@ class K8Temp extends Sensors
                 if ($data[2] > 0) {
                     $dev = new SensorDevice();
                     $dev->setName($data[1]);
-//                    $dev->setMax('70.0');
                     if ($data[2] < 250) {
                         $dev->setValue($data[2]);
                     }

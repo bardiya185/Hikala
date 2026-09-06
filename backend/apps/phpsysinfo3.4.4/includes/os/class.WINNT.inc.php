@@ -793,7 +793,6 @@ class WINNT extends OS
                     $device['Serial'] = null;
                     if (defined('PSI_SHOW_DEVICES_SERIAL') && PSI_SHOW_DEVICES_SERIAL) {
                         if ($strType==='USB') {
-//                            if (preg_match('/\\\\([^\\\\][^&\\\\][^\\\\]+)$/', $device['PNPDeviceID'], $buf)) { // second character !== &
                             if (preg_match('/\\\\(\w+)$/', $device['PNPDeviceID'], $buf)) {
                                 $device['Serial'] = $buf[1];
                             }
@@ -889,7 +888,6 @@ class WINNT extends OS
                 }
             }
             if ($novm) {
-                // Detect QEMU cpu
                 if (isset($cpuvirt["cpuid:QEMU"])) {
                     $this->sys->setVirtualizer('qemu'); // QEMU
                 }
@@ -1456,7 +1454,7 @@ class WINNT extends OS
                     }
                 }
 
-                $allNetworkAdapterConfigurations = self::getWMI(self::$_wmi, 'Win32_NetworkAdapterConfiguration', array('SettingID', /*'Description',*/ 'MACAddress', 'IPAddress'));
+                $allNetworkAdapterConfigurations = self::getWMI(self::$_wmi, 'Win32_NetworkAdapterConfiguration', array('SettingID',  'MACAddress', 'IPAddress'));
                 foreach ($allDevices as $device) if (!preg_match('/^WAN Miniport \[/', $device['Name'])) {
                     $dev = new NetDevice();
                     $name = $device['Name'];
@@ -1497,7 +1495,6 @@ class WINNT extends OS
                     }
 
                     if ($macexist
-//                        || ($device['CurrentBandwidth'] >= 1000000)
                         || ($device['BytesTotalPersec'] != 0)
                         || ($device['BytesSentPersec'] != 0)
                         || ($device['BytesReceivedPersec'] != 0)
@@ -1512,10 +1509,6 @@ class WINNT extends OS
                                 }
                             }
                         }
-
-                        // http://msdn.microsoft.com/library/default.asp?url=/library/en-us/wmisdk/wmi/win32_perfrawdata_tcpip_networkinterface.asp
-                        // there is a possible bug in the wmi interfaceabout uint32 and uint64: http://www.ureader.com/message/1244948.aspx, so that
-                        // magative numbers would occour, try to calculate the nagative value from total - positive number
                         $txbytes = $device['BytesSentPersec'];
                         $rxbytes = $device['BytesReceivedPersec'];
                         if (($txbytes < 0) && ($rxbytes < 0)) {
@@ -1601,7 +1594,6 @@ class WINNT extends OS
                 $this->sys->setSwapDevices($dev);
             }
         } elseif (($buffer = $this->_get_systeminfo()) && preg_match("/:\s([\d \xFF]+)\sMB\r\n.+:\s([\d \xFF]+)\sMB\r\n.+:\s([\d \xFF]+)\sMB\r\n.+:\s([\d \xFF]+)\sMB\r\n.+\s([\d \xFF]+)\sMB\r\n/m", $buffer, $buffer2)) {
-//           && (preg_match("/:\s([\d \xFF]+)\sMB\r\n.+:\s([\d \xFF]+)\sMB\r\n.+:\s([\d \xFF]+)\sMB\r\n.+:\s([\d \xFF]+)\sMB\r\n.+\s([\d \xFF]+)\sMB\r\n.*:\s+(\S+)\r\n/m", $buffer, $buffer2)) {
             $this->sys->setMemTotal(preg_replace('/(\s)|(\xFF)/', '', $buffer2[1]) * 1024 * 1024);
             $this->sys->setMemFree(preg_replace('/(\s)|(\xFF)/', '', $buffer2[2]) * 1024 * 1024);
             $this->sys->setMemUsed($this->sys->getMemTotal() - $this->sys->getMemFree());
@@ -1786,8 +1778,6 @@ class WINNT extends OS
                     $memtype = '';
                     if (isset($mem['MemoryType']) && (($memval = $mem['MemoryType']) != 0)) {
                         switch ($memval) {
-//                        case 0: $memtype = 'Unknown'; break;
-//                        case 1: $memtype = 'Other'; break;
                         case 2: $memtype = 'DRAM'; break;
                         case 3: $memtype = 'Synchronous DRAM'; break;
                         case 4: $memtype = 'Cache DRAM'; break;
@@ -1815,9 +1805,6 @@ class WINNT extends OS
                         }
                     } elseif (isset($mem['SMBIOSMemoryType'])) {
                         switch ($mem['SMBIOSMemoryType']) {
-//                        case 0: $memtype = 'Invalid'; break;
-//                        case 1: $memtype = 'Other'; break;
-//                        case 2: $memtype = 'Unknown'; break;
                         case 3: $memtype = 'DRAM'; break;
                         case 4: $memtype = 'EDRAM'; break;
                         case 5: $memtype = 'VRAM'; break;
@@ -1864,8 +1851,6 @@ class WINNT extends OS
                     }
                     if (isset($mem['FormFactor'])) {
                         switch ($mem['FormFactor']) {
-//                        case 0: $memtype .= ' Unknown'; break;
-//                        case 1: $memtype .= ' Other'; break;
                         case 2: $memtype .= ' SIP'; break;
                         case 3: $memtype .= ' DIP'; break;
                         case 4: $memtype .= ' ZIP'; break;

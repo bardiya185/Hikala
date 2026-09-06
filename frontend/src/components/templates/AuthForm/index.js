@@ -1,13 +1,20 @@
+
 "use client";
+
 import ModalContainer from "@/components/partials/container/ModalContainer";
+
 import React, { useState } from "react";
+
 import { TbLogin } from "react-icons/tb";
-import SendOtpForm from "./SendOtpForm";
-import CheckOtpForm from "./CheckOtpForm";
 import { HiUser } from "react-icons/hi2";
 import { AiOutlineCaretDown } from "react-icons/ai";
-import Link from "next/link";
 import { IoLogOutOutline } from "react-icons/io5";
+
+import SendOtpForm from "./SendOtpForm";
+import CheckOtpForm from "./CheckOtpForm";
+
+import Link from "next/link";
+
 import { menuItems } from "@/core/config/menu";
 import { useGetUserData } from "@/core/services/queries";
 
@@ -16,62 +23,291 @@ function AuthForm() {
   const [isOpen, setIsOpen] = useState(false);
   const [mobile, setMobile] = useState("");
 
-  const { data } = useGetUserData();
-  const { data: userData } = data || {};
+  const {
+    data,
+    isLoading,
+  } = useGetUserData();
 
-  if (userData) {
+  /*
+   * اگر useGetUserData یک Axios response برگرداند:
+   *
+   * data = {
+   *   data: ...
+   * }
+   *
+   * بنابراین اطلاعات واقعی کاربر را جدا می‌کنیم.
+   */
+  const userData = data?.data ?? null;
+
+  /*
+   * بهتر است فقط وقتی اطلاعات معتبر کاربر داریم
+   * او را لاگین‌شده حساب کنیم.
+   */
+  const isAuthenticated =
+    Boolean(
+      userData &&
+      (
+        userData?.id ||
+        userData?.mobile ||
+        userData?.data?.id ||
+        userData?.data?.mobile
+      )
+    );
+
+  /*
+   * =========================================================
+   * LOADING
+   * =========================================================
+   */
+
+  if (isLoading) {
     return (
-      <div className="relative cursor-pointer">
-        <div onClick={() => setIsOpen(!isOpen)} className="flex items-center">
-          <HiUser className="w-[24px] h-[24px]" />
-          <AiOutlineCaretDown className="w-[20px] h-[24px]" />
-        </div>
+      <div
+        className="
+          h-10
+          w-[92px]
+          animate-pulse
+          rounded-xl
+          bg-neutral-100
+          sm:w-[105px]
+          md:w-[120px]
+        "
+      />
+    );
+  }
+
+  /*
+   * =========================================================
+   * AUTHENTICATED USER
+   * =========================================================
+   */
+
+  if (isAuthenticated) {
+    return (
+      <div className="relative shrink-0">
+        {/* USER BUTTON */}
+
+        <button
+          type="button"
+          onClick={() => setIsOpen((prev) => !prev)}
+          className="
+            flex
+            h-10
+            min-w-[44px]
+            cursor-pointer
+            items-center
+            justify-center
+            gap-1
+            rounded-xl
+            border
+            border-neutral-200
+            bg-white
+            px-2
+            transition-colors
+            hover:bg-neutral-50
+          "
+        >
+          <HiUser className="h-5 w-5 text-neutral-700" />
+
+          <AiOutlineCaretDown
+            className={`
+              h-4
+              w-4
+              text-neutral-500
+              transition-transform
+              ${
+                isOpen
+                  ? "rotate-180"
+                  : ""
+              }
+            `}
+          />
+        </button>
+
+        {/* USER DROPDOWN */}
+
         {isOpen && (
-          <div className="absolute left-0 top-full w-[256px] h-auto mt-2 overflow-hidden shadow-lg rounded-lg bg-white pb-2 z-50 border border-neutral-100 flex flex-col">
-            <Link className="block text-neutral-700 hover:bg-neutral-50" href="/profile">
-              <div className="flex mx-4 py-4 border-b mt-[15px] border-neutral-200 justify-between items-center">
-                <span className="font-iranyekanbold text-sm font-bold text-neutral-800">
-                  {userData?.data?.mobile}
+          <div
+            className="
+              absolute
+              right-0
+              top-full
+              z-[100]
+              mt-2
+              max-h-[80vh]
+              w-[256px]
+              max-w-[calc(100vw-24px)]
+              overflow-y-auto
+              rounded-xl
+              border
+              border-neutral-100
+              bg-white
+              shadow-xl
+            "
+          >
+            {/* USER MOBILE */}
+
+            <Link
+              href="/profile"
+              className="
+                block
+                text-neutral-700
+                hover:bg-neutral-50
+              "
+              onClick={() => setIsOpen(false)}
+            >
+              <div
+                className="
+                  mx-4
+                  border-b
+                  border-neutral-200
+                  py-4
+                "
+              >
+                <span
+                  className="
+                    text-sm
+                    font-bold
+                    text-neutral-800
+                  "
+                >
+                  {userData?.mobile ||
+                    userData?.data?.mobile ||
+                    "User"}
                 </span>
               </div>
             </Link>
 
-            <ul className="flex flex-1 flex-col grow justify-between">
-              <li className="px-4 cursor-pointer w-full hover:bg-neutral-50">
-                <Link href="/digiclub/" className="flex items-center text-neutral-700 w-full border-b border-neutral-200 py-2">
-                  <div className="w-8 pl-3">
-                    <img src="/icons/club.svg" alt="club" />
+            <ul className="flex flex-col">
+              {/* DIGICLUB */}
+
+              <li className="px-4 hover:bg-neutral-50">
+                <Link
+                  href="/digiclub/"
+                  onClick={() => setIsOpen(false)}
+                  className="
+                    flex
+                    w-full
+                    items-center
+                    border-b
+                    border-neutral-200
+                    py-3
+                    text-neutral-700
+                  "
+                >
+                  <div className="w-8 pl-2">
+                    <img
+                      src="/icons/club.svg"
+                      alt="DigiClub"
+                    />
                   </div>
-                  <div className="flex-1 flex justify-between items-center">
-                    <span className="font-iranyekanbold text-lg">دیجی کلاب</span>
-                    <span className="text-lg font-bold text-neutral-700">
+
+                  <div
+                    className="
+                      flex
+                      flex-1
+                      items-center
+                      justify-between
+                    "
+                  >
+                    <span className="text-base font-bold">
+                      DigiClub
+                    </span>
+
+                    <span className="text-sm font-bold">
                       0
-                      <small className="font-iranyekanbold text-neutral-400 mr-1">امتیاز</small>
+                      <small className="ml-1 text-neutral-400">
+                        Score
+                      </small>
                     </span>
                   </div>
                 </Link>
               </li>
 
+              {/* MENU ITEMS */}
+
               {menuItems.map((item) => {
                 const IconComponent = item.icon;
+
                 return (
-                  <li key={item.id} className="px-4 cursor-pointer w-full hover:bg-neutral-50">
-                    <Link href={item.href} className="flex items-center text-neutral-700 w-full py-2 border-b border-neutral-200">
-                      <div className="w-8 pl-3 flex justify-center items-center">
-                        <IconComponent className="w-6 h-6 text-neutral-600" />
+                  <li
+                    key={item.id}
+                    className="
+                      px-4
+                      hover:bg-neutral-50
+                    "
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={() => setIsOpen(false)}
+                      className="
+                        flex
+                        w-full
+                        items-center
+                        border-b
+                        border-neutral-200
+                        py-3
+                        text-neutral-700
+                      "
+                    >
+                      <div
+                        className="
+                          flex
+                          w-8
+                          justify-center
+                          pl-2
+                        "
+                      >
+                        <IconComponent
+                          className="
+                            h-5
+                            w-5
+                            text-neutral-600
+                          "
+                        />
                       </div>
-                      <div className="flex-1 text-lg font-iranyekanbold">{item.label}</div>
+
+                      <div
+                        className="
+                          flex-1
+                          text-base
+                          font-bold
+                        "
+                      >
+                        {item.label}
+                      </div>
                     </Link>
                   </li>
                 );
               })}
-              <li className="px-4 cursor-pointer w-full hover:bg-neutral-50 text-red-500">
-                <div className="flex items-center w-full py-3">
-                  <div className="w-8 pl-3">
-                    <IoLogOutOutline className="w-[24px] h-[24px]" />
+
+              {/* LOGOUT */}
+
+              <li
+                className="
+                  px-4
+                  text-red-500
+                  hover:bg-neutral-50
+                "
+              >
+                <button
+                  type="button"
+                  className="
+                    flex
+                    w-full
+                    items-center
+                    py-3
+                    text-left
+                  "
+                >
+                  <div className="w-8 pl-2">
+                    <IoLogOutOutline className="h-5 w-5" />
                   </div>
-                  <div className="flex-1 font-iranyekanbold">خروج از حساب کاربری</div>
-                </div>
+
+                  <div className="flex-1 font-bold">
+                    Log out
+                  </div>
+                </button>
               </li>
             </ul>
           </div>
@@ -80,29 +316,97 @@ function AuthForm() {
     );
   }
 
+  /*
+   * =========================================================
+   * GUEST USER
+   * =========================================================
+   */
+
   return (
     <>
-      
       <button
+        type="button"
         onClick={() => {
           setStep(1);
           setIsOpen(true);
         }}
-        className="group flex items-center justify-center gap-2 w-[120px] h-[40px] border border-neutral-200/80 hover:border-neutral-900 bg-white hover:bg-neutral-900 text-neutral-700 hover:text-white rounded-xl text-sm font-medium shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-all duration-300 ease-in-out cursor-pointer"
+        className="
+          group
+          flex
+          h-[38px]
+          w-[92px]
+          shrink-0
+          cursor-pointer
+          items-center
+          justify-center
+          gap-1.5
+          rounded-lg
+          border
+          border-neutral-200
+          bg-white
+          px-2
+          text-xs
+          font-medium
+          text-neutral-700
+          shadow-sm
+          transition-all
+          duration-300
+          hover:bg-neutral-900
+          hover:text-white
+          hover:shadow-md
+          sm:h-[40px]
+          sm:w-[105px]
+          sm:rounded-xl
+          sm:px-3
+          sm:text-sm
+          md:w-[120px]
+        "
       >
-        <TbLogin className="w-5 h-5 text-neutral-500 group-hover:text-white transition-colors duration-300" />
-        <span>Sign In</span>
+        <TbLogin
+          className="
+            h-4
+            w-4
+            shrink-0
+            text-neutral-500
+            transition-colors
+            group-hover:text-white
+            sm:h-5
+            sm:w-5
+          "
+        />
+
+        <span className="whitespace-nowrap">
+          Sign In
+        </span>
       </button>
 
+      {/* SEND OTP */}
+
       {step === 1 && (
-        <ModalContainer isOpen={isOpen} setIsOpen={setIsOpen}>
-          <SendOtpForm setStep={setStep} mobile={mobile} setMobile={setMobile} />
+        <ModalContainer
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        >
+          <SendOtpForm
+            setStep={setStep}
+            mobile={mobile}
+            setMobile={setMobile}
+          />
         </ModalContainer>
       )}
 
+      {/* CHECK OTP */}
+
       {step === 2 && (
-        <ModalContainer isOpen={isOpen} setIsOpen={setIsOpen}>
-          <CheckOtpForm mobile={mobile} setStep={setStep} setIsOpen={setIsOpen} />
+        <ModalContainer
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        >
+          <CheckOtpForm
+            mobile={mobile}
+            setStep={setStep}
+            setIsOpen={setIsOpen}
+          />
         </ModalContainer>
       )}
     </>
@@ -110,3 +414,4 @@ function AuthForm() {
 }
 
 export default AuthForm;
+

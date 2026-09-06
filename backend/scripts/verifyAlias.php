@@ -14,7 +14,6 @@ require 'wampserver.lib.php';
 
 $allOK = true;
 $message = "Relationship between Alias and Directories\n";
-//Get alias files & directory
 $aliasList = $aliasListDir = array();
 if(is_dir($aliasDir)) {
   $handle=opendir($aliasDir);
@@ -32,8 +31,6 @@ if(is_dir($aliasDir)) {
   }
   closedir($handle);
   $countAlias = $i--;
-
-  //Check if directory exists for each alias
   if($countAlias > 0) {
   	foreach($aliasList as $key => $value) {
   		if(is_dir($aliasList[$key]['dir']) === false) {
@@ -54,13 +51,9 @@ if(is_dir($aliasDir)) {
   	}
   }
 }
-
-//Get wamp/apps/* directories
 $appsDir = $c_installDir.'/apps/';
 $listAppsDir = array();
 $listAppsDir = glob($appsDir.'*',GLOB_ONLYDIR);
-
-// Check if each directory is used by an alias
 $DirAlias = array_column($aliasList, 'dir');
 foreach($listAppsDir as $value) {
 	if(substr($value,-1) != '/')	$value .= '/';

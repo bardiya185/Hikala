@@ -42,7 +42,7 @@ final class Profiling
         $dbi->query('SET PROFILING=1;');
     }
 
-    /** @return array<string, string>|null */
+    
     public static function getInformation(DatabaseInterface $dbi): ?array
     {
         if (! isset($_SESSION['profiling']) || ! self::isSupported($dbi)) {
@@ -60,7 +60,6 @@ final class Profiling
         if (isset($_REQUEST['profiling']) && self::isSupported($dbi)) {
             $_SESSION['profiling'] = true;
         } elseif (isset($_REQUEST['profiling_form'])) {
-            // the checkbox was unchecked
             unset($_SESSION['profiling']);
         }
 

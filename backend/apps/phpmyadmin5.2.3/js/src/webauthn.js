@@ -3,9 +3,9 @@
  *
  * @return {string}
  */
-const arrayBufferToBase64 = buffer => {
+const arrayBufferToBase64 = (buffer) => {
     const bytes = new Uint8Array(buffer);
-    let string = '';
+    let string = "";
     for (const byte of bytes) {
         string += String.fromCharCode(byte);
     }
@@ -18,8 +18,8 @@ const arrayBufferToBase64 = buffer => {
  *
  * @return {Uint8Array}
  */
-const base64ToUint8Array = string => {
-    return Uint8Array.from(window.atob(string), char => char.charCodeAt(0));
+const base64ToUint8Array = (string) => {
+    return Uint8Array.from(window.atob(string), (char) => char.charCodeAt(0));
 };
 
 /**
@@ -27,11 +27,11 @@ const base64ToUint8Array = string => {
  *
  * @return {void}
  */
-const handleCreation = $input => {
-    const $form = $input.parents('form');
-    $form.find('input[type=submit]').hide();
+const handleCreation = ($input) => {
+    const $form = $input.parents("form");
+    $form.find("input[type=submit]").hide();
 
-    const creationOptionsJson = $input.attr('data-creation-options');
+    const creationOptionsJson = $input.attr("data-creation-options");
     const creationOptions = JSON.parse(creationOptionsJson);
 
     const publicKey = creationOptions;
@@ -46,23 +46,26 @@ const handleCreation = $input => {
         }
         publicKey.excludeCredentials = excludedCredentials;
     }
-
-    // eslint-disable-next-line compat/compat
-    navigator.credentials.create({ publicKey: publicKey })
+    navigator.credentials
+        .create({ publicKey: publicKey })
         .then((credential) => {
             const credentialJson = JSON.stringify({
                 id: credential.id,
                 rawId: arrayBufferToBase64(credential.rawId),
                 type: credential.type,
                 response: {
-                    clientDataJSON: arrayBufferToBase64(credential.response.clientDataJSON),
-                    attestationObject: arrayBufferToBase64(credential.response.attestationObject),
-                }
+                    clientDataJSON: arrayBufferToBase64(
+                        credential.response.clientDataJSON,
+                    ),
+                    attestationObject: arrayBufferToBase64(
+                        credential.response.attestationObject,
+                    ),
+                },
             });
             $input.val(credentialJson);
-            $form.trigger('submit');
+            $form.trigger("submit");
         })
-        .catch((error) => Functions.ajaxShowMessage(error, false, 'error'));
+        .catch((error) => Functions.ajaxShowMessage(error, false, "error"));
 };
 
 /**
@@ -70,11 +73,11 @@ const handleCreation = $input => {
  *
  * @return {void}
  */
-const handleRequest = $input => {
-    const $form = $input.parents('form');
-    $form.find('input[type=submit]').hide();
+const handleRequest = ($input) => {
+    const $form = $input.parents("form");
+    $form.find("input[type=submit]").hide();
 
-    const requestOptionsJson = $input.attr('data-request-options');
+    const requestOptionsJson = $input.attr("data-request-options");
     const requestOptions = JSON.parse(requestOptionsJson);
 
     const publicKey = requestOptions;
@@ -88,45 +91,56 @@ const handleRequest = $input => {
         }
         publicKey.allowCredentials = allowedCredentials;
     }
-
-    // eslint-disable-next-line compat/compat
-    navigator.credentials.get({ publicKey: publicKey })
+    navigator.credentials
+        .get({ publicKey: publicKey })
         .then((credential) => {
             const credentialJson = JSON.stringify({
                 id: credential.id,
                 rawId: arrayBufferToBase64(credential.rawId),
                 type: credential.type,
                 response: {
-                    authenticatorData: arrayBufferToBase64(credential.response.authenticatorData),
-                    clientDataJSON: arrayBufferToBase64(credential.response.clientDataJSON),
-                    signature: arrayBufferToBase64(credential.response.signature),
-                    userHandle: arrayBufferToBase64(credential.response.userHandle),
-                }
+                    authenticatorData: arrayBufferToBase64(
+                        credential.response.authenticatorData,
+                    ),
+                    clientDataJSON: arrayBufferToBase64(
+                        credential.response.clientDataJSON,
+                    ),
+                    signature: arrayBufferToBase64(
+                        credential.response.signature,
+                    ),
+                    userHandle: arrayBufferToBase64(
+                        credential.response.userHandle,
+                    ),
+                },
             });
             $input.val(credentialJson);
-            $form.trigger('submit');
+            $form.trigger("submit");
         })
-        .catch((error) => Functions.ajaxShowMessage(error, false, 'error'));
+        .catch((error) => Functions.ajaxShowMessage(error, false, "error"));
 };
 
-AJAX.registerOnload('webauthn.js', function () {
+AJAX.registerOnload("webauthn.js", function () {
     if (
-        ! navigator.credentials
-        || ! navigator.credentials.create
-        || ! navigator.credentials.get
-        || ! window.PublicKeyCredential
+        !navigator.credentials ||
+        !navigator.credentials.create ||
+        !navigator.credentials.get ||
+        !window.PublicKeyCredential
     ) {
-        Functions.ajaxShowMessage(Messages.webAuthnNotSupported, false, 'error');
+        Functions.ajaxShowMessage(
+            Messages.webAuthnNotSupported,
+            false,
+            "error",
+        );
 
         return;
     }
 
-    const $creationInput = $('#webauthn_creation_response');
+    const $creationInput = $("#webauthn_creation_response");
     if ($creationInput.length > 0) {
         handleCreation($creationInput);
     }
 
-    const $requestInput = $('#webauthn_request_response');
+    const $requestInput = $("#webauthn_request_response");
     if ($requestInput.length > 0) {
         handleRequest($requestInput);
     }

@@ -41,23 +41,23 @@ class IncludeTokenParser extends AbstractTokenParser
         $stream = $this->parser->getStream();
 
         $ignoreMissing = false;
-        if ($stream->nextIf(/* Token::NAME_TYPE */ 5, 'ignore')) {
-            $stream->expect(/* Token::NAME_TYPE */ 5, 'missing');
+        if ($stream->nextIf( 5, 'ignore')) {
+            $stream->expect( 5, 'missing');
 
             $ignoreMissing = true;
         }
 
         $variables = null;
-        if ($stream->nextIf(/* Token::NAME_TYPE */ 5, 'with')) {
+        if ($stream->nextIf( 5, 'with')) {
             $variables = $this->parser->getExpressionParser()->parseExpression();
         }
 
         $only = false;
-        if ($stream->nextIf(/* Token::NAME_TYPE */ 5, 'only')) {
+        if ($stream->nextIf( 5, 'only')) {
             $only = true;
         }
 
-        $stream->expect(/* Token::BLOCK_END_TYPE */ 3);
+        $stream->expect( 3);
 
         return [$variables, $only, $ignoreMissing];
     }

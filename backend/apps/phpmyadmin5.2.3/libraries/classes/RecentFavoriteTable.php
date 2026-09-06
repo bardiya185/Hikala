@@ -33,7 +33,7 @@ use const SORT_REGULAR;
  */
 class RecentFavoriteTable
 {
-    /** @var Template */
+    
     public $template;
 
     /**
@@ -57,7 +57,7 @@ class RecentFavoriteTable
      */
     private static $instances = [];
 
-    /** @var Relation */
+    
     private $relation;
 
     /**
@@ -76,8 +76,6 @@ class RecentFavoriteTable
         $this->relation = new Relation($dbi);
         $this->tableType = $type;
         $server_id = $GLOBALS['server'];
-        // Code search hint: recentTables
-        // Code search hint: favoriteTables
         if (! isset($_SESSION['tmpval'][$this->tableType . 'Tables'][$server_id])) {
             $_SESSION['tmpval'][$this->tableType . 'Tables'][$server_id] = $this->getPmaTable()
                 ? $this->getFromDb()
@@ -121,8 +119,6 @@ class RecentFavoriteTable
     public function getFromDb(): array
     {
         global $dbi;
-
-        // Read from phpMyAdmin database, if recent tables is not in session
         $sql_query = ' SELECT `tables` FROM ' . $this->getPmaTable() .
             " WHERE `username` = '" . $dbi->escapeString($GLOBALS['cfg']['Server']['user']) . "'";
 
@@ -273,8 +269,6 @@ class RecentFavoriteTable
     public function add($db, $table)
     {
         global $dbi;
-
-        // If table does not exist, do not add._getPmaTable()
         if (! $dbi->getColumns($db, $table)) {
             return true;
         }
@@ -282,8 +276,6 @@ class RecentFavoriteTable
         $table_arr = [];
         $table_arr['db'] = $db;
         $table_arr['table'] = $table;
-
-        // add only if this is new table
         if (! isset($this->tables[0]) || $this->tables[0] != $table_arr) {
             array_unshift($this->tables, $table_arr);
             $this->tables = array_merge(array_unique($this->tables, SORT_REGULAR));
@@ -313,8 +305,6 @@ class RecentFavoriteTable
             if ($tbl['db'] != $db || $tbl['table'] != $table) {
                 continue;
             }
-
-            // TODO Figure out a better way to find the existence of a table
             if (! $dbi->getColumns($tbl['db'], $tbl['table'])) {
                 return $this->remove($tbl['db'], $tbl['table']);
             }
@@ -360,7 +350,6 @@ class RecentFavoriteTable
         }
 
         $relationParameters = $this->relation->getRelationParameters();
-        // Not to show this once list is synchronized.
         if (
             $relationParameters->favoriteTablesFeature !== null
             && ! isset($_SESSION['tmpval']['favorites_synced'][$server_id])

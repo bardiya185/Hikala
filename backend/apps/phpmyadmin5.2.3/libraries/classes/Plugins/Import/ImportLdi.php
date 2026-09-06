@@ -49,10 +49,6 @@ class ImportLdi extends AbstractImportCsv
         }
 
         $importPluginProperties->setOptionsText(__('Options'));
-
-        // create the root group that will be the options field for
-        // $importPluginProperties
-        // this will be shown as "Format specific options"
         $importSpecificOptions = new OptionsPropertyRootGroup('Format Specific Options');
 
         $generalOptions = $this->getGeneralOptions();
@@ -74,11 +70,7 @@ class ImportLdi extends AbstractImportCsv
             __('Use LOCAL keyword')
         );
         $generalOptions->addProperty($leaf);
-
-        // add the main group to the root group
         $importSpecificOptions->addProperty($generalOptions);
-
-        // set the options for the import plugin property item
         $importPluginProperties->setOptions($importSpecificOptions);
 
         return $importPluginProperties;
@@ -101,7 +93,6 @@ class ImportLdi extends AbstractImportCsv
         }
 
         if ($import_file === 'none' || $compression !== 'none' || $charset_conversion) {
-            // We handle only some kind of data!
             $GLOBALS['message'] = Message::error(
                 __('This plugin does not support compressed imports!')
             );
@@ -168,7 +159,7 @@ class ImportLdi extends AbstractImportCsv
                     $sql .= ', ';
                 }
 
-                /* Trim also `, if user already included backquoted fields */
+                
                 $sql .= Util::backquote(
                     trim($tmp[$i], " \t\r\n\0\x0B`")
                 );
@@ -185,8 +176,6 @@ class ImportLdi extends AbstractImportCsv
     public static function isAvailable(): bool
     {
         global $plugin_param;
-
-        // We need relations enabled and we work only on database.
         return isset($plugin_param) && $plugin_param === 'table';
     }
 

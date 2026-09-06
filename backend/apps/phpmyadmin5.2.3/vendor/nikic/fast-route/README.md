@@ -176,8 +176,8 @@ $dispatcher = FastRoute\cachedDispatcher(function(FastRoute\RouteCollector $r) {
     $r->addRoute('GET', '/user/{id:[0-9]+}', 'handler1');
     $r->addRoute('GET', '/user/{name}', 'handler2');
 }, [
-    'cacheFile' => __DIR__ . '/route.cache', /* required */
-    'cacheDisabled' => IS_DEBUG_ENABLED,     /* optional, enabled by default */
+    'cacheFile' => __DIR__ . '/route.cache', 
+    'cacheDisabled' => IS_DEBUG_ENABLED,     
 ]);
 ```
 
@@ -204,7 +204,7 @@ should use the second array element to add this header when relaying a 405 respo
 For the found status the second array element is the handler that was associated with the route
 and the third array element is a dictionary of placeholder names to their values. For example:
 
-    /* Routing against GET /user/nikic/42 */
+    
 
     [FastRoute\Dispatcher::FOUND, 'handler0', ['name' => 'nikic', 'id' => '42']]
 
@@ -237,7 +237,7 @@ interface Dispatcher {
 The route parser takes a route pattern string and converts it into an array of route infos, where
 each route info is again an array of it's parts. The structure is best understood using an example:
 
-    /* The route /user/{id:\d+}[/{name}] converts to the following array: */
+    
     [
         [
             '/user/',
@@ -272,7 +272,7 @@ through the options array:
 <?php
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
-    /* ... */
+    
 }, [
     'routeParser' => 'FastRoute\\RouteParser\\Std',
     'dataGenerator' => 'FastRoute\\DataGenerator\\GroupCountBased',

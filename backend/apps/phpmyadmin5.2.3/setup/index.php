@@ -20,7 +20,7 @@ if (! defined('ROOT_PATH')) {
     // phpcs:enable
 }
 
-/** @psalm-suppress InvalidGlobal */
+
 global $cfg;
 
 // phpcs:disable PSR1.Files.SideEffects

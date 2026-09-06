@@ -14,7 +14,7 @@ use Exception;
 
 abstract class AbstractString extends ASNObject implements Parsable
 {
-    /** @var string */
+    
     protected $value;
     private $checkStringForIllegalChars = true;
     private $allowedCharacters = [];

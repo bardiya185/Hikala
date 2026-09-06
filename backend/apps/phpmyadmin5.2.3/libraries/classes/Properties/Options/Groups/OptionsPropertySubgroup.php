@@ -18,7 +18,7 @@ class OptionsPropertySubgroup extends OptionsPropertyGroup
      * @var PropertyItem|null
      */
     private $subgroupHeader;
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Returns the property item type of either an instance of

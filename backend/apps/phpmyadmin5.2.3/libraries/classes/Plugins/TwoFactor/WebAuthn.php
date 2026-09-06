@@ -33,10 +33,10 @@ use const SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING;
  */
 class WebAuthn extends TwoFactorPlugin
 {
-    /** @var string */
+    
     public static $id = 'WebAuthn';
 
-    /** @var Server */
+    
     private $server;
 
     public function __construct(TwoFactor $twofactor)
@@ -100,7 +100,7 @@ class WebAuthn extends TwoFactorPlugin
 
         $this->provided = true;
 
-        /** @var mixed $credentialRequestOptions */
+        
         $credentialRequestOptions = $_SESSION['WebAuthnCredentialRequestOptions'];
         unset($_SESSION['WebAuthnCredentialRequestOptions']);
 
@@ -153,7 +153,7 @@ class WebAuthn extends TwoFactorPlugin
 
         $this->provided = true;
 
-        /** @var mixed $credentialCreationOptions */
+        
         $credentialCreationOptions = $_SESSION['WebAuthnCredentialCreationOptions'];
         unset($_SESSION['WebAuthnCredentialCreationOptions']);
 
@@ -201,7 +201,7 @@ class WebAuthn extends TwoFactorPlugin
     private function getAllowedCredentials(): array
     {
         $allowedCredentials = [];
-        /** @psalm-var array<array<string, mixed>> $credentials */
+        
         $credentials = $this->twofactor->config['settings']['credentials'];
         foreach ($credentials as $credential) {
             if (

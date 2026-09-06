@@ -22,7 +22,7 @@ use function usleep;
  */
 class StatusController
 {
-    /** @var Template */
+    
     private $template;
 
     public function __construct(Template $template)
@@ -39,26 +39,17 @@ class StatusController
             $upload_id,
             $plugins,
         ] = Ajax::uploadProgressSetup();
-
-        // $_GET["message"] is used for asking for an import message
         if (isset($_GET['message']) && $_GET['message']) {
-            // AJAX requests can't be cached!
             Core::noCacheHeader();
 
             header('Content-type: text/html');
-
-            // wait 0.3 sec before we check for $_SESSION variable
             usleep(300000);
 
             $maximumTime = ini_get('max_execution_time');
             $timestamp = time();
-            // wait until message is available
             while (($_SESSION['Import_message']['message'] ?? null) == null) {
-                // close session before sleeping
                 session_write_close();
-                // sleep
                 usleep(250000); // 0.25 sec
-                // reopen session
                 session_start();
 
                 if (time() - $timestamp > $maximumTime) {

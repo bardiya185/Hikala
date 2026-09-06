@@ -19,7 +19,7 @@ use function ucfirst;
 
 final class Processes
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(DatabaseInterface $dbi)
@@ -68,8 +68,6 @@ final class Processes
         $result = $this->dbi->query($sqlQuery);
         $rows = [];
         while ($process = $result->fetchAssoc()) {
-            // Array keys need to modify due to the way it has used
-            // to display column values
             foreach (array_keys($process) as $key) {
                 $newKey = ucfirst(mb_strtolower($key));
                 if ($newKey === $key) {
@@ -112,8 +110,6 @@ final class Processes
 
     private function getSortableColumnsForProcessList(bool $showFullSql, array $params): array
     {
-        // This array contains display name and real column name of each
-        // sortable column in the table
         $sortableColumns = [
             [
                 'column_name' => __('ID'),

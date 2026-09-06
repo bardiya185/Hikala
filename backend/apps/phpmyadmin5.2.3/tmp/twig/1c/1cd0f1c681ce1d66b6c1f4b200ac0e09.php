@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* navigation/tree/state.twig */
+
 class __TwigTemplate_5d0c1874d2dbba4a7b2bcdcec047001c extends Template
 {
     private $source;
@@ -34,7 +34,6 @@ class __TwigTemplate_5d0c1874d2dbba4a7b2bcdcec047001c extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield ($context["quick_warp"] ?? null);
         yield "
 
@@ -42,24 +41,20 @@ class __TwigTemplate_5d0c1874d2dbba4a7b2bcdcec047001c extends Template
 
 <ul>
   ";
-        // line 6
         yield ($context["fast_filter"] ?? null);
         yield "
   ";
-        // line 7
         yield ($context["controls"] ?? null);
         yield "
 </ul>
 
 ";
-        // line 10
         yield ($context["page_selector"] ?? null);
         yield "
 
 <div id='pma_navigation_tree_content'>
   <ul>
     ";
-        // line 14
         yield ($context["nodes"] ?? null);
         yield "
   </ul>

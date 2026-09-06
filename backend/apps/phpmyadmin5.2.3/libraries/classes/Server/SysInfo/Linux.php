@@ -85,7 +85,7 @@ class Linux extends Base
 
         preg_match_all(SysInfo::MEMORY_REGEXP, $content, $matches);
 
-        /** @var array<string, int>|false $mem */
+        
         $mem = array_combine($matches[1], $matches[2]);
         if ($mem === false) {
             return [];

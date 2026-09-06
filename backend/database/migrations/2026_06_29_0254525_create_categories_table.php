@@ -10,22 +10,14 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-
-            // Self relation (درختی)
             $table->foreignId('parent_id')
                 ->nullable()
                 ->constrained('categories')
                 ->cascadeOnDelete();
-
-            // اطلاعات اصلی
             $table->string('name');
             $table->string('slug')->unique();
-
-            // UI / Front
             $table->string('icon_key')->nullable();      // آیکون (مثلاً FontAwesome یا SVG name)
             $table->string('banner')->nullable();    // بنر دسته
-
-            // تنظیمات
             $table->text('description')->nullable();
             $table->integer('sort_order')->default(0);
             $table->boolean('is_active')->default(true);

@@ -31,12 +31,10 @@ $message = ($doReport ? "--------------------------------------------------\n" :
 $message .=  "***** Test which uses port ".$port." *****\n\n";
 if($doReport) Command_Windows($message);
 $message .=  "===== Tested by command netstat filtered on port ".$port." =====\n\n";
-//Port tested by netstat for TCP and TCPv6
 $tcp = array('TCP', 'TCPv6');
 foreach($tcp as $value) {
 $command = 'CMD /D /C netstat -anop '.$value.' | FINDSTR /C:":'.$port.'"';
 $output = shell_exec($command);
-//error_log("output=".$output);
 if(!empty($output)) {
 	$message .=  "\nTest for ".$value."\n";
 	if(preg_match("~^[ \t]*TCP.*:".$port." .*LISTENING[ \t]*([0-9]{1,5}).*$~m", $output, $pid) > 0) {
@@ -96,7 +94,6 @@ else
 
 if(!$only_process) {
 	$message .=  "\n===== Tested by attempting to open a socket on port ".$port." =====\n\n";
-	//Port tested by open socket
 	$fp = @fsockopen("127.0.0.1", $port, $errno, $errstr, 2);
 	$out = "GET / HTTP/1.1\r\n";
 	$out .= "Host: 127.0.0.1\r\n";
@@ -126,8 +123,6 @@ if(!$only_process) {
 		fclose($fp);
 		if($gotInfo !== true) {
 		$message .= "Server information not available (might be Skype or IIS).\n";
-		//if(!empty($responselines) && is_string($responseline))
-			//$message .= "Response is: ".$responselines."\n";
 		}
 	}
 }
@@ -135,8 +130,6 @@ if($doReport){
 	write_file($c_installDir."/wampConfReportTemp.txt",$message,false,false,'ab');
 	exit;
 }
-
-//echo $message;
 if(!empty($message)) {
 	$message .= "\n--- Do you want to copy the results into Clipboard?\n--- Press the Y key to confirm - Press ENTER to continue...";
 	Command_Windows($message,-1,-1,0,'Witch use port '.$port);

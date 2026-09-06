@@ -24,8 +24,6 @@ class ProductImage extends Model
     {
         return $this->belongsTo(Product::class);
     }
-
-    // ✅ اضافه کردن Accessor برای URL کامل
     public function getUrlAttribute(): string
     {
         return asset('public/' . $this->path);

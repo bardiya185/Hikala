@@ -33,10 +33,10 @@ class Console
      */
     private $isAjax = false;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Template */
+    
     public $template;
 
     /**

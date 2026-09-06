@@ -32,7 +32,7 @@ class Menu
      */
     private $db;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     /**
@@ -42,10 +42,10 @@ class Menu
      */
     private $table;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Template */
+    
     private $template;
 
     /**
@@ -82,8 +82,6 @@ class Menu
     private function getMenu(): string
     {
         $urlParams = [];
-
-        // The URL will not work if the table is defined without a database
         if ($this->table !== '' && $this->db !== '') {
             $tabs = $this->getTableTabs();
             $urlParams['db'] = $this->db;
@@ -99,7 +97,6 @@ class Menu
         }
 
         $allowedTabs = $this->getAllowedTabs($level);
-        // Filter out any tabs that are not allowed
         $tabs = array_intersect_key($tabs, $allowedTabs);
 
         return $this->template->render('top_menu', [
@@ -195,11 +192,7 @@ class Menu
                     $table['comment'] = preg_replace('@; InnoDB free:.*?$@', '', $table['comment']);
                 }
             } else {
-                // no table selected, display database comment if present
                 $relationParameters = $this->relation->getRelationParameters();
-
-                // Get additional information about tables for tooltip is done
-                // in Util::getDbInfo() only once
                 if ($relationParameters->columnCommentsFeature !== null) {
                     $database['comment'] = $this->relation->getDbComment($this->db);
                 }
@@ -291,7 +284,6 @@ class Menu
             $tabs['privileges']['route'] = '/server/privileges';
             $tabs['privileges']['args']['checkprivsdb'] = $this->db;
             $tabs['privileges']['args']['checkprivstable'] = $this->table;
-            // stay on table view
             $tabs['privileges']['args']['viewing_mode'] = 'table';
             $tabs['privileges']['text'] = __('Privileges');
             $tabs['privileges']['icon'] = 's_rights';
@@ -401,7 +393,6 @@ class Menu
             if ($isSuperUser || $isCreateOrGrantUser) {
                 $tabs['privileges']['route'] = '/server/privileges';
                 $tabs['privileges']['args']['checkprivsdb'] = $this->db;
-                // stay on database view
                 $tabs['privileges']['args']['viewing_mode'] = 'db';
                 $tabs['privileges']['text'] = __('Privileges');
                 $tabs['privileges']['icon'] = 's_rights';

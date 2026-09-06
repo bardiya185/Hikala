@@ -1,5 +1,4 @@
 <?php
-//Wampserver https ready - Contents of openssl.cnf file
 $openssl_cnf = <<<'EOF'
 #============ openssl.cnf =============#
 [ca]

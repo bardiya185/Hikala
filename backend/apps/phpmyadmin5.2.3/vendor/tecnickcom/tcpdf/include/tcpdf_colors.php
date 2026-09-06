@@ -330,7 +330,7 @@ class TCPDF_COLORS {
 					// percentage
 					$returncolor[$key] = (255 * intval($val) / 100);
 				} else {
-					$returncolor[$key] = intval($val); /* floatize */
+					$returncolor[$key] = intval($val); 
 				}
 				// normalize value
 				$returncolor[$key] = max(0, min(255, $returncolor[$key]));

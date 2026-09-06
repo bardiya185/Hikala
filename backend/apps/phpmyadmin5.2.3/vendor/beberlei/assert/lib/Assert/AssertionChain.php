@@ -142,7 +142,7 @@ class AssertionChain
      */
     private $all = false;
 
-    /** @var string|Assertion Class to use for assertion calls */
+    
     private $assertionClassName = 'Assert\Assertion';
 
     /**

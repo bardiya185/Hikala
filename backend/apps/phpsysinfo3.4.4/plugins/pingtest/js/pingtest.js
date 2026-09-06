@@ -17,43 +17,52 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-//
-// $Id: pingtest.js 1 2017-09-01 08:23:45Z namiltd $
-//
-
-/*global $, jQuery, buildBlock, datetime, plugin_translate, genlang */
 
 "use strict";
 
-var pingtest_show = false, pingtest_table;
-
+var pingtest_show = false,
+    pingtest_table;
 
 /**
  * insert content into table
  * @param {jQuery} xml plugin-XML
  */
 function pingtest_populate(xml) {
-    var address = "", pingtime = 0, state = "", hostname = "";
+    var address = "",
+        pingtime = 0,
+        state = "",
+        hostname = "";
 
     pingtest_table.fnClearTable();
 
-    hostname = $("Plugins Plugin_PingTest", xml).attr('Hostname');
+    hostname = $("Plugins Plugin_PingTest", xml).attr("Hostname");
     if (hostname !== undefined) {
-        $('span[class=Hostname_PingTest]').html(hostname);
+        $("span[class=Hostname_PingTest]").html(hostname);
     }
 
-    $("Plugins Plugin_PingTest Ping", xml).each(function pingtest_getprocess(idp) {
-        address = $(this).attr("Address");
-        pingtime = parseInt($(this).attr("PingTime"), 10);
-        if (!isNaN(pingtime)) {
-            state = "<span style=\"display:none;\">" + pingtime.toString() + "</span>" + pingtime.toString() + "&nbsp;ms";
-        }
-        else {
-            state = "<span style=\"display:none;\">1000000</span>" + genlang(4, "PingTest");
-        }
-        pingtest_table.fnAddData(["<span style=\"display:none;\">" + address + "</span>" + address, state]);
-        pingtest_show = true;
-    });
+    $("Plugins Plugin_PingTest Ping", xml).each(
+        function pingtest_getprocess(idp) {
+            address = $(this).attr("Address");
+            pingtime = parseInt($(this).attr("PingTime"), 10);
+            if (!isNaN(pingtime)) {
+                state =
+                    '<span style="display:none;">' +
+                    pingtime.toString() +
+                    "</span>" +
+                    pingtime.toString() +
+                    "&nbsp;ms";
+            } else {
+                state =
+                    '<span style="display:none;">1000000</span>' +
+                    genlang(4, "PingTest");
+            }
+            pingtest_table.fnAddData([
+                '<span style="display:none;">' + address + "</span>" + address,
+                state,
+            ]);
+            pingtest_show = true;
+        },
+    );
 }
 
 /**
@@ -62,8 +71,9 @@ function pingtest_populate(xml) {
 function pingtest_buildTable() {
     var html = "";
 
-    html += "<div style=\"overflow-x:auto;\">\n";
-    html += "  <table id=\"Plugin_PingTestTable\" style=\"border-collapse:collapse;\">\n";
+    html += '<div style="overflow-x:auto;">\n';
+    html +=
+        '  <table id="Plugin_PingTestTable" style="border-collapse:collapse;">\n';
     html += "    <thead>\n";
     html += "      <tr>\n";
     html += "        <th>" + genlang(2, "PingTest") + "</th>\n";
@@ -78,19 +88,22 @@ function pingtest_buildTable() {
     $("#Plugin_PingTest").append(html);
 
     pingtest_table = $("#Plugin_PingTestTable").dataTable({
-        "bPaginate": false,
-        "bLengthChange": false,
-        "bFilter": false,
-        "bSort": true,
-        "bInfo": false,
-        "bProcessing": true,
-        "bAutoWidth": false,
-        "bStateSave": true,
-        "aoColumns": [{
-            "sType": 'span-ip'
-        }, {
-            "sType": 'span-number'
-        }]
+        bPaginate: false,
+        bLengthChange: false,
+        bFilter: false,
+        bSort: true,
+        bInfo: false,
+        bProcessing: true,
+        bAutoWidth: false,
+        bStateSave: true,
+        aoColumns: [
+            {
+                sType: "span-ip",
+            },
+            {
+                sType: "span-number",
+            },
+        ],
     });
 }
 
@@ -112,7 +125,7 @@ function pingtest_request() {
                 plugin_translate("PingTest");
                 $("#Plugin_PingTest").show();
             }
-        }
+        },
     });
 }
 

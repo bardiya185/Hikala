@@ -150,7 +150,7 @@ class PhpFileLoader extends FileLoader
 
         $callback(...$arguments);
 
-        /** @var ConfigBuilderInterface $configBuilder */
+        
         foreach ($configBuilders as $configBuilder) {
             $containerConfigurator->extension($configBuilder->getExtensionAlias(), $configBuilder->toArray());
         }

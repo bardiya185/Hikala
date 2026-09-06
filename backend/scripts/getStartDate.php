@@ -11,11 +11,7 @@ if(WAMPTRACE_PROCESS) {
 
 require 'config.inc.php';
 require 'wampserver.lib.php';
-
-// --- DateTime of launch into string like "2021-08-24 10:17"
 $WampStartOnOri = IntlDateFormatter::formatObject(new DateTime('now',new DateTimeZone(date_default_timezone_get())),'Y-MM-d HH:mm:ss');
-
-//modifying wampmanager.conf
 $wampIniNewContents['wampStartDate'] = $WampStartOnOri;
 wampIniSet($configurationFile, $wampIniNewContents);
 

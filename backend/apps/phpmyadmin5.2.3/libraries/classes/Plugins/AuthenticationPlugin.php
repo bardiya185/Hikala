@@ -51,10 +51,10 @@ abstract class AuthenticationPlugin
      */
     public $password = '';
 
-    /** @var IpAllowDeny */
+    
     protected $ipAllowDeny;
 
-    /** @var Template */
+    
     public $template;
 
     public function __construct()
@@ -112,14 +112,14 @@ abstract class AuthenticationPlugin
     {
         global $config;
 
-        /* Obtain redirect URL (before doing logout) */
+        
         if (! empty($GLOBALS['cfg']['Server']['LogoutURL'])) {
             $redirect_url = $GLOBALS['cfg']['Server']['LogoutURL'];
         } else {
             $redirect_url = $this->getLoginFormURL();
         }
 
-        /* Clear credentials */
+        
         $this->user = '';
         $this->password = '';
 
@@ -138,16 +138,16 @@ abstract class AuthenticationPlugin
         }
 
         if ($server === 0) {
-            /* delete user's choices that were stored in session */
+            
             if (! defined('TESTSUITE')) {
                 session_unset();
                 session_destroy();
             }
 
-            /* Redirect to login form (or configured URL) */
+            
             Core::sendHeaderLocation($redirect_url);
         } else {
-            /* Redirect to other authenticated server */
+            
             $_SESSION['partial_logout'] = true;
             Core::sendHeaderLocation(
                 './index.php?route=/' . Url::getCommonRaw(['server' => $server], '&')
@@ -251,18 +251,18 @@ abstract class AuthenticationPlugin
     {
         $success = $this->readCredentials();
 
-        /* Show login form (this exits) */
+        
         if (! $success) {
-            /* Force generating of new session */
+            
             Session::secure();
             $this->showLoginForm();
         }
 
-        /* Store credentials (eg. in cookies) */
+        
         $this->storeCredentials();
-        /* Check allow/deny rules */
+        
         $this->checkRules();
-        /* clear user cache */
+        
         Util::clearUserCache();
     }
 
@@ -329,7 +329,7 @@ abstract class AuthenticationPlugin
     {
         $twofactor = new TwoFactor($this->user);
 
-        /* Do we need to show the form? */
+        
         if ($twofactor->check()) {
             return;
         }

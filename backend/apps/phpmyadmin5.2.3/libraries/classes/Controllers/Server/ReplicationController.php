@@ -22,10 +22,10 @@ use function is_array;
  */
 class ReplicationController extends AbstractController
 {
-    /** @var ReplicationGui */
+    
     private $replicationGui;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(

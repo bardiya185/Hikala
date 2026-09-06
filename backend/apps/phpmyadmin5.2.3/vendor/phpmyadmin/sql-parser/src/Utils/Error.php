@@ -35,7 +35,7 @@ class Error
 
         foreach ($objs as $obj) {
             if ($obj instanceof Lexer) {
-                /** @var LexerException $err */
+                
                 foreach ($obj->errors as $err) {
                     $ret[] = [
                         $err->getMessage(),
@@ -45,7 +45,7 @@ class Error
                     ];
                 }
             } elseif ($obj instanceof Parser) {
-                /** @var ParserException $err */
+                
                 foreach ($obj->errors as $err) {
                     $ret[] = [
                         $err->getMessage(),

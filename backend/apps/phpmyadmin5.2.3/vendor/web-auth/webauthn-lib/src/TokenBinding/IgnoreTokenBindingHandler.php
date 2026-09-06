@@ -19,6 +19,5 @@ final class IgnoreTokenBindingHandler implements TokenBindingHandler
 {
     public function check(TokenBinding $tokenBinding, ServerRequestInterface $request): void
     {
-        //Does nothing
     }
 }

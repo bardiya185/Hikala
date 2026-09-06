@@ -23,7 +23,7 @@ use function strtotime;
 
 final class TrackingController extends AbstractController
 {
-    /** @var Tracking */
+    
     private $tracking;
 
     public function __construct(
@@ -84,8 +84,6 @@ final class TrackingController extends AbstractController
         $selection_schema = false;
         $selection_data = false;
         $selection_both = false;
-
-        // Init vars for tracking report
         if (isset($_POST['report']) || isset($_POST['report_export'])) {
             $data = Tracker::getTrackedData($GLOBALS['db'], $GLOBALS['table'], $_POST['version']);
 
@@ -117,13 +115,9 @@ final class TrackingController extends AbstractController
             $filter_ts_to = strtotime($_POST['date_to']);
             $filter_users = array_map('trim', explode(',', $_POST['users']));
         }
-
-        // Prepare export
         if (isset($_POST['report_export'])) {
             $entries = $this->tracking->getEntries($data, (int) $filter_ts_from, (int) $filter_ts_to, $filter_users);
         }
-
-        // Export as file download
         if (isset($_POST['report_export']) && $_POST['export_type'] === 'sqldumpfile') {
             $this->tracking->exportAsFileDownload($entries);
         }
@@ -166,8 +160,6 @@ final class TrackingController extends AbstractController
         if (isset($_POST['toggle_activation']) && $_POST['toggle_activation'] === 'activate_now') {
             $activateTracking = $this->tracking->changeTracking($db, $table, 'activate');
         }
-
-        // Export as SQL execution
         $message = '';
         if (isset($_POST['report_export']) && $_POST['export_type'] === 'execution') {
             $this->tracking->exportAsSqlExecution($entries);

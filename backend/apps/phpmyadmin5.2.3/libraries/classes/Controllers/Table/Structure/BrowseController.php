@@ -18,7 +18,7 @@ use function sprintf;
 
 final class BrowseController extends AbstractController
 {
-    /** @var Sql */
+    
     private $sql;
 
     public function __construct(ResponseRenderer $response, Template $template, string $db, string $table, Sql $sql)
@@ -58,8 +58,6 @@ final class BrowseController extends AbstractController
             Util::backquote($this->db),
             Util::backquote($this->table)
         );
-
-        // Parse and analyze the query
         [$analyzed_sql_results, $this->db] = ParseAnalyze::sqlQuery($sql_query, $this->db);
 
         $this->response->addHTML(

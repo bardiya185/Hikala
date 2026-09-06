@@ -43,7 +43,6 @@ abstract class CallExpression extends AbstractExpression
             } elseif (\is_array($callable) && $callable[0] instanceof ExtensionInterface) {
                 $class = \get_class($callable[0]);
                 if (!$compiler->getEnvironment()->hasExtension($class)) {
-                    // Compile a non-optimized call to trigger a \Twig\Error\RuntimeError, which cannot be a compile-time error
                     $compiler->raw(\sprintf('$this->env->getExtension(\'%s\')', $class));
                 } else {
                     $compiler->raw(\sprintf('$this->extensions[\'%s\']', ltrim($class, '\\')));

@@ -40,44 +40,44 @@ final class RelationParameters
      * @psalm-var non-empty-string|null
      */
     public $user;
-    /** @var DatabaseName|null */
+    
     public $db;
 
-    /** @var BookmarkFeature|null */
+    
     public $bookmarkFeature;
-    /** @var BrowserTransformationFeature|null */
+    
     public $browserTransformationFeature;
-    /** @var CentralColumnsFeature|null */
+    
     public $centralColumnsFeature;
-    /** @var ColumnCommentsFeature|null */
+    
     public $columnCommentsFeature;
-    /** @var ConfigurableMenusFeature|null */
+    
     public $configurableMenusFeature;
-    /** @var DatabaseDesignerSettingsFeature|null */
+    
     public $databaseDesignerSettingsFeature;
-    /** @var DisplayFeature|null */
+    
     public $displayFeature;
-    /** @var ExportTemplatesFeature|null */
+    
     public $exportTemplatesFeature;
-    /** @var FavoriteTablesFeature|null */
+    
     public $favoriteTablesFeature;
-    /** @var NavigationItemsHidingFeature|null */
+    
     public $navigationItemsHidingFeature;
-    /** @var PdfFeature|null */
+    
     public $pdfFeature;
-    /** @var RecentlyUsedTablesFeature|null */
+    
     public $recentlyUsedTablesFeature;
-    /** @var RelationFeature|null */
+    
     public $relationFeature;
-    /** @var SavedQueryByExampleSearchesFeature|null */
+    
     public $savedQueryByExampleSearchesFeature;
-    /** @var SqlHistoryFeature|null */
+    
     public $sqlHistoryFeature;
-    /** @var TrackingFeature|null */
+    
     public $trackingFeature;
-    /** @var UiPreferencesFeature|null */
+    
     public $uiPreferencesFeature;
-    /** @var UserPreferencesFeature|null */
+    
     public $userPreferencesFeature;
 
     /**

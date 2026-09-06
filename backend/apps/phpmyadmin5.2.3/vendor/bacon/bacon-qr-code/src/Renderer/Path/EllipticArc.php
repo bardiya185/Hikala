@@ -183,14 +183,10 @@ final class EllipticArc implements OperationInterface
     {
         $rX = $this->xRadius;
         $rY = $this->yRadius;
-
-        // F.6.5.1
         $dx2 = ($fromX - $this->x) / 2;
         $dy2 = ($fromY - $this->y) / 2;
         $x1p = cos($xAngle) * $dx2 + sin($xAngle) * $dy2;
         $y1p = -sin($xAngle) * $dx2 + cos($xAngle) * $dy2;
-
-        // F.6.5.2
         $rxs = $rX ** 2;
         $rys = $rY ** 2;
         $x1ps = $x1p ** 2;
@@ -215,15 +211,9 @@ final class EllipticArc implements OperationInterface
 
         $cxp = $q * $rX * $y1p / $rY;
         $cyp = -$q * $rY * $x1p / $rX;
-
-        // F.6.5.3
         $cx = cos($xAngle) * $cxp - sin($xAngle) * $cyp + ($fromX + $this->x) / 2;
         $cy = sin($xAngle) * $cxp + cos($xAngle) * $cyp + ($fromY + $this->y) / 2;
-
-        // F.6.5.5
         $theta = self::angle(1, 0, ($x1p - $cxp) / $rX, ($y1p - $cyp) / $rY);
-
-        // F.6.5.6
         $delta = self::angle(($x1p - $cxp) / $rX, ($y1p - $cyp) / $rY, (-$x1p - $cxp) / $rX, (-$y1p - $cyp) / $rY);
         $delta = fmod($delta, pi() * 2);
 
@@ -236,7 +226,6 @@ final class EllipticArc implements OperationInterface
 
     private static function angle(float $ux, float $uy, float $vx, float $vy) : float
     {
-        // F.6.5.4
         $dot = $ux * $vx + $uy * $vy;
         $length = sqrt($ux ** 2 + $uy ** 2) * sqrt($vx ** 2 + $vy ** 2);
         $angle = acos(min(1, max(-1, $dot / $length)));

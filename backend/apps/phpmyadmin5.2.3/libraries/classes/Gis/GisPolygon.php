@@ -29,7 +29,7 @@ use function trim;
  */
 class GisPolygon extends GisGeometry
 {
-    /** @var self */
+    
     private static $instance;
 
     /**

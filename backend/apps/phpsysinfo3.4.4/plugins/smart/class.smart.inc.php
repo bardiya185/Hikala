@@ -101,31 +101,25 @@ class SMART extends PSI_Plugin
                                 }
                             }
                             if (count($asdvs) >= 12) for ($c = 2; $c < count($asdvs); $c += 12) {
-                                //Attribute values 0x00, 0xff are invalid
                                 $id = intval($asdvs[$c]);
                                 if (($id != 0) && ($id != 255)) {
                                     switch ($id) {
                                     case 3:
-                                        //raw16(avg16)
                                         $this->_filecontent[$_name] .= $id." ID".$id." 0x".substr("0".dechex(intval($asdvs[$c+2])), -2).substr("0".dechex(intval($asdvs[$c+1])), -2)." ".substr("00".$asdvs[$c+3], -3)." ".substr("00".$asdvs[$c+4], -3)." ".($asdvs[$c+5]+256*$asdvs[$c+6])."\n";
                                         break;
                                     case 5:
                                     case 196:
-                                        //raw16(raw16)
                                         $this->_filecontent[$_name] .= $id." ID".$id." 0x".substr("0".dechex(intval($asdvs[$c+2])), -2).substr("0".dechex(intval($asdvs[$c+1])), -2)." ".substr("00".$asdvs[$c+3], -3)." ".substr("00".$asdvs[$c+4], -3)." ".($asdvs[$c+5]+256*$asdvs[$c+6])."\n";
                                         break;
                                     case 9:
                                     case 240:
-                                        //raw24(raw8)
                                         $this->_filecontent[$_name] .= $id." ID".$id." 0x".substr("0".dechex(intval($asdvs[$c+2])), -2).substr("0".dechex(intval($asdvs[$c+1])), -2)." ".substr("00".$asdvs[$c+3], -3)." ".substr("00".$asdvs[$c+4], -3)." ".($asdvs[$c+5]+256*$asdvs[$c+6]+65536*$asdvs[$c+7])."\n";
                                         break;
                                     case 190:
                                     case 194:
-                                        //tempminmax
                                         $this->_filecontent[$_name] .= $id." ID".$id." 0x".substr("0".dechex(intval($asdvs[$c+2])), -2).substr("0".dechex(intval($asdvs[$c+1])), -2)." ".substr("00".$asdvs[$c+3], -3)." ".substr("00".$asdvs[$c+4], -3)." ".($asdvs[$c+5]+256*$asdvs[$c+6])."\n";
                                         break;
                                     default:
-                                        //raw48
                                         $this->_filecontent[$_name] .= $id." ID".$id." 0x".substr("0".dechex(intval($asdvs[$c+2])), -2).substr("0".dechex(intval($asdvs[$c+1])), -2)." ".substr("00".$asdvs[$c+3], -3)." ".substr("00".$asdvs[$c+4], -3)." ".($asdvs[$c+5]+256*$asdvs[$c+6]+65536*$asdvs[$c+7]+16777216*$asdvs[$c+8])."\n";
                                     }
                                 }
@@ -166,31 +160,25 @@ class SMART extends PSI_Plugin
                         $this->_filecontent[$disk] .= "ID# _ATTRIBUTE_NAME_ FLAG VALUE WORST RAW_VALUE\n";
                         $asdvs = preg_split('/\s*,\s*/', trim($line), -1, PREG_SPLIT_NO_EMPTY);
                         for ($c = 2; $c < count($asdvs); $c += 12) {
-                            //Attribute values 0x00, 0xff are invalid
                             $id = $asdvs[$c];
                             if (($id != 0) && ($id != 255)) {
                                 switch ($id) {
                                 case 3:
-                                    //raw16(avg16)
                                     $this->_filecontent[$disk] .= $id." ID".$id." 0x".substr("0".dechex(intval($asdvs[$c+2])), -2).substr("0".dechex(intval($asdvs[$c+1])), -2)." ".substr("00".$asdvs[$c+3], -3)." ".substr("00".$asdvs[$c+4], -3)." ".($asdvs[$c+5]+256*$asdvs[$c+6])."\n";
                                     break;
                                 case 5:
                                 case 196:
-                                    //raw16(raw16)
                                     $this->_filecontent[$disk] .= $id." ID".$id." 0x".substr("0".dechex(intval($asdvs[$c+2])), -2).substr("0".dechex(intval($asdvs[$c+1])), -2)." ".substr("00".$asdvs[$c+3], -3)." ".substr("00".$asdvs[$c+4], -3)." ".($asdvs[$c+5]+256*$asdvs[$c+6])."\n";
                                     break;
                                 case 9:
                                 case 240:
-                                    //raw24(raw8)
                                     $this->_filecontent[$disk] .= $id." ID".$id." 0x".substr("0".dechex(intval($asdvs[$c+2])), -2).substr("0".dechex(intval($asdvs[$c+1])), -2)." ".substr("00".$asdvs[$c+3], -3)." ".substr("00".$asdvs[$c+4], -3)." ".($asdvs[$c+5]+256*$asdvs[$c+6]+65536*$asdvs[$c+7])."\n";
                                     break;
                                 case 190:
                                 case 194:
-                                    //tempminmax
                                     $this->_filecontent[$disk] .= $id." ID".$id." 0x".substr("0".dechex(intval($asdvs[$c+2])), -2).substr("0".dechex(intval($asdvs[$c+1])), -2)." ".substr("00".$asdvs[$c+3], -3)." ".substr("00".$asdvs[$c+4], -3)." ".($asdvs[$c+5]+256*$asdvs[$c+6])."\n";
                                      break;
                                 default:
-                                    //raw48
                                     $this->_filecontent[$disk] .= $id." ID".$id." 0x".substr("0".dechex(intval($asdvs[$c+2])), -2).substr("0".dechex(intval($asdvs[$c+1])), -2)." ".substr("00".$asdvs[$c+3], -3)." ".substr("00".$asdvs[$c+4], -3)." ".($asdvs[$c+5]+256*$asdvs[$c+6]+65536*$asdvs[$c+7]+16777216*$asdvs[$c+8])."\n";
                                 }
                             }
@@ -222,18 +210,11 @@ class SMART extends PSI_Plugin
                 $this->global_error->addError("SMART plugin ".$disk." error", trim($error[1]));
                 continue;
             }
-
-            // set the start and end offset in the result string at the beginning and end respectively
-            // just in case we don't find the two strings, so that it still works as expected.
             $startIndex = 0;
             $endIndex = 0;
             $vendorInfos = "";
-
-            // locate the beginning string offset for the attributes
             if (preg_match('/(Vendor Specific SMART Attributes with Thresholds)/', $result, $matches, PREG_OFFSET_CAPTURE))
                $startIndex = $matches[0][1];
-
-            // locate the end string offset for the attributes, this is usually right before string "SMART Error Log Version" or "SMART Error Log not supported" or "Error SMART Error Log Read failed" (hopefully every output has it!)
             if (preg_match('/(SMART Error Log Version)|(SMART Error Log not supported)|(Error SMART Error Log Read failed)/', $result, $matches, PREG_OFFSET_CAPTURE))
                $endIndex = $matches[0][1];
 
@@ -289,7 +270,6 @@ class SMART extends PSI_Plugin
                     $i++;
                 }
             } else {
-                //SCSI and MVMe devices
                 $cid = 187;
                 if (!empty($this->_ids[$cid]) && ($this->_ids[$cid]["value_type"]=="raw_value")) {
                     if (preg_match('/\nread\: (.*)\n/', $result, $tmpbufr) && preg_match('/\nwrite\: (.*)\n/', $result, $tmpbufw)) {
@@ -471,8 +451,6 @@ class SMART extends PSI_Plugin
                 }
             }
         }
-
-        //replacement where necessary
         foreach ($this->_ids as $id=>$column) if (isset($column["replace"])) {
             foreach ($this->_result as $diskName=>$diskInfos) {
                 $not_found = true;
@@ -491,8 +469,6 @@ class SMART extends PSI_Plugin
                 }
             }
         }
-
-        //reformat to power on hours 
         foreach ($this->_result as $diskName=>$diskInfos) {
             foreach ($diskInfos as $did=>$lineInfos)
                 if ((($lineInfos['id'] == 9) && isset($lineInfos['attribute_name'])) &&
@@ -505,8 +481,6 @@ class SMART extends PSI_Plugin
                     break;
                 }
         }
-
-        //set attribute name/names
         foreach ($this->_ids as $id=>$column) if (!isset($column["replace"])) {
             foreach ($this->_result as $diskName=>$diskInfos) {
                 foreach ($diskInfos as $lineInfos)
@@ -534,7 +508,6 @@ class SMART extends PSI_Plugin
         }
 
         $columnsChild = $this->xml->addChild('columns');
-        // Fill the xml with preferences
         foreach ($this->_ids as $id=>$column) if (isset($column["attribute_name"])) {
             $columnChild = $columnsChild->addChild('column');
             $columnChild->addAttribute('id', $id);
@@ -543,7 +516,6 @@ class SMART extends PSI_Plugin
         }
 
         $disksChild = $this->xml->addChild('disks');
-        // Now fill the xml with S.M.A.R.T datas
         foreach ($this->_result as $diskName=>$diskInfos) {
             $diskChild = $disksChild->addChild('disk');
             $diskChild->addAttribute('name', $diskName);

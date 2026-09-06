@@ -33,28 +33,28 @@ class ThemeManager
      */
     private static $instance;
 
-    /** @var string file-system path to the theme folder */
+    
     private $themesPath;
 
-    /** @var string path to theme folder as an URL */
+    
     private $themesPathUrl;
 
-    /** @var array<string,Theme> available themes */
+    
     public $themes = [];
 
-    /** @var string  cookie name */
+    
     public $cookieName = 'pma_theme';
 
-    /** @var bool */
+    
     public $perServer = false;
 
-    /** @var string name of active theme */
+    
     public $activeTheme = '';
 
-    /** @var Theme Theme active theme */
+    
     public $theme = null;
 
-    /** @var string */
+    
     public $themeDefault;
 
     /**
@@ -90,18 +90,14 @@ class ThemeManager
         } else {
             $this->themeDefault = $GLOBALS['cfg']['ThemeDefault'];
         }
-
-        // check if user have a theme cookie
         $cookieTheme = $this->getThemeCookie();
         if ($cookieTheme && $this->setActiveTheme($cookieTheme)) {
             return;
         }
 
         if ($configThemeExists) {
-            // otherwise use default theme
             $this->setActiveTheme($this->themeDefault);
         } else {
-            // or fallback theme
             $this->setActiveTheme(self::FALLBACK_THEME);
         }
     }
@@ -152,9 +148,6 @@ class ThemeManager
         $this->activeTheme = $theme;
         $this->theme = $this->themes[$theme];
 
-        // need to set later
-        //$this->setThemeCookie();
-
         return true;
     }
 
@@ -165,7 +158,6 @@ class ThemeManager
      */
     public function getThemeCookieName()
     {
-        // Allow different theme per server
         if (isset($GLOBALS['server']) && $this->perServer) {
             return $this->cookieName . '-' . $GLOBALS['server'];
         }
@@ -203,8 +195,6 @@ class ThemeManager
             $themeId,
             $this->themeDefault
         );
-        // force a change of a dummy session variable to avoid problems
-        // with the caching of phpmyadmin.css.php
         $GLOBALS['config']->set('theme-update', $themeId);
 
         return true;

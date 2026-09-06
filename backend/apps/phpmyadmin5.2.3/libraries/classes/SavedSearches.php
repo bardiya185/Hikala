@@ -150,7 +150,7 @@ class SavedSearches
             $data[$field] = $criterias[$field];
         }
 
-        /* Limit amount of rows */
+        
         if (! isset($data['rows'])) {
             $data['rows'] = 0;
         } else {
@@ -262,8 +262,6 @@ class SavedSearches
 
         $savedSearchesTbl = Util::backquote($savedQueryByExampleSearchesFeature->database) . '.'
             . Util::backquote($savedQueryByExampleSearchesFeature->savedSearches);
-
-        //If it's an insert.
         if ($this->getId() === null) {
             $wheres = [
                 "search_name = '" . $dbi->escapeString($this->getSearchName())
@@ -297,8 +295,6 @@ class SavedSearches
 
             return true;
         }
-
-        //Else, it's an update.
         $wheres = [
             'id != ' . $this->getId(),
             "search_name = '" . $dbi->escapeString($this->getSearchName()) . "'",

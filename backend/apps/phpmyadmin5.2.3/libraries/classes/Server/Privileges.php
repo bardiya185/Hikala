@@ -60,19 +60,19 @@ use function uksort;
  */
 class Privileges
 {
-    /** @var Template */
+    
     public $template;
 
-    /** @var RelationCleanup */
+    
     private $relationCleanup;
 
-    /** @var DatabaseInterface */
+    
     public $dbi;
 
-    /** @var Relation */
+    
     public $relation;
 
-    /** @var Plugins */
+    
     private $plugins;
 
     /**
@@ -144,9 +144,6 @@ class Privileges
         }
 
         $like = strtr($initial, ['_' => '\\_', '%' => '\\%', '\\' => '\\\\']) . '%';
-
-        // strtolower() is used because the User field
-        // might be BINARY, so LIKE would be case sensitive
         return " WHERE `User` LIKE '"
             . $this->dbi->escapeString($like) . "'"
             . " OR `User` LIKE '"
@@ -162,10 +159,6 @@ class Privileges
     public function fillInTablePrivileges(array &$row): void
     {
         $row1 = $this->dbi->fetchSingleRow('SHOW COLUMNS FROM `mysql`.`tables_priv` LIKE \'Table_priv\';');
-        // note: in MySQL 5.0.3 we get "Create View', 'Show view';
-        // the View for Create is spelled with uppercase V
-        // the view for Show is spelled with lowercase v
-        // and there is a space between the words
 
         $avGrants = explode(
             '\',\'',
@@ -238,7 +231,6 @@ class Privileges
                 && is_array($GLOBALS[$currentGrant[0]])
                 && empty($GLOBALS[$currentGrant[0] . '_none'])
             ) {
-                // Required for proper escaping of ` (backtick) in a column name
                 $grantCols = array_map(
                     /**
                      * @param string $val
@@ -459,7 +451,6 @@ class Privileges
                 'TRIGGER',
                 __('Allows creating and dropping triggers.'),
             ],
-            // for table privs:
             [
                 'Create View_priv',
                 'CREATE VIEW',
@@ -470,7 +461,6 @@ class Privileges
                 'SHOW VIEW',
                 __('Allows performing SHOW CREATE VIEW queries.'),
             ],
-            // for table privs:
             [
                 'Show view_priv',
                 'SHOW VIEW',
@@ -479,17 +469,13 @@ class Privileges
             [
                 'Delete_history_priv',
                 'DELETE HISTORY',
-                // phpcs:ignore Generic.Files.LineLength.TooLong
-                /* l10n: https://mariadb.com/kb/en/library/grant/#table-privileges "Remove historical rows from a table using the DELETE HISTORY statement" */
+                
                 __('Allows deleting historical rows.'),
             ],
             [
-                // This was finally removed in the following MariaDB versions
-                // @see https://jira.mariadb.org/browse/MDEV-20382
                 'Delete versioning rows_priv',
                 'DELETE HISTORY',
-                // phpcs:ignore Generic.Files.LineLength.TooLong
-                /* l10n: https://mariadb.com/kb/en/library/grant/#table-privileges "Remove historical rows from a table using the DELETE HISTORY statement" */
+                
                 __('Allows deleting historical rows.'),
             ],
             [
@@ -646,8 +632,6 @@ class Privileges
 
         if (isset($row['Table_priv'])) {
             $this->fillInTablePrivileges($row);
-
-            // get columns
             $res = $this->dbi->tryQuery(
                 'SHOW COLUMNS FROM '
                 . Util::backquote(
@@ -823,11 +807,11 @@ class Privileges
      */
     public function getUsernameAndHostnameLength()
     {
-        /* Fallback values */
+        
         $usernameLength = 16;
         $hostnameLength = 41;
 
-        /* Try to get real lengths from the database */
+        
         $fieldsInfo = $this->dbi->fetchResult(
             'SELECT COLUMN_NAME, CHARACTER_MAXIMUM_LENGTH '
             . 'FROM information_schema.columns '
@@ -865,7 +849,7 @@ class Privileges
     ) {
         global $dbi;
 
-        /* Fallback (standard) value */
+        
         $authenticationPlugin = 'mysql_native_password';
         $serverVersion = $this->dbi->getVersion();
 
@@ -877,8 +861,6 @@ class Privileges
                 . $dbi->escapeString($hostname)
                 . '" LIMIT 1'
             );
-            // Table 'mysql'.'user' may not exist for some previous
-            // versions of MySQL - in that case consider fallback value
             if (is_array($row) && isset($row['plugin'])) {
                 $authenticationPlugin = $row['plugin'];
             }
@@ -939,8 +921,6 @@ class Privileges
     public function updatePassword($errorUrl, $username, $hostname)
     {
         global $dbi;
-
-        // similar logic in /user-password
         $message = null;
 
         if (isset($_POST['pma_pw'], $_POST['pma_pw2']) && empty($_POST['nopass'])) {
@@ -950,8 +930,6 @@ class Privileges
                 $message = Message::error(__('The password is empty!'));
             }
         }
-
-        // here $nopass could be == 1
         if ($message === null) {
             $hashingFunction = 'PASSWORD';
             $serverVersion = $this->dbi->getVersion();
@@ -960,8 +938,6 @@ class Privileges
                 $username,
                 $hostname
             ));
-
-            // Use 'ALTER USER ...' syntax for MySQL 5.7.6+
             if (Compatibility::isMySqlOrPerconaDb() && $serverVersion >= 50706) {
                 if ($authenticationPlugin !== 'mysql_old_password') {
                     $queryPrefix = "ALTER USER '"
@@ -976,16 +952,11 @@ class Privileges
                         . "'@'" . $this->dbi->escapeString($hostname) . "'"
                         . " IDENTIFIED BY '";
                 }
-
-                // in $sql_query which will be displayed, hide the password
                 $sqlQuery = $queryPrefix . "*'";
 
                 $localQuery = $queryPrefix
                     . $this->dbi->escapeString($_POST['pma_pw']) . "'";
             } elseif (Compatibility::isMariaDb() && $serverVersion >= 10000) {
-                // MariaDB uses "SET PASSWORD" syntax to change user password.
-                // On Galera cluster only DDL queries are replicated, since
-                // users are stored in MyISAM storage engine.
                 $queryPrefix = "SET PASSWORD FOR  '"
                     . $this->dbi->escapeString($username)
                     . "'@'" . $this->dbi->escapeString($hostname) . "'"
@@ -993,14 +964,9 @@ class Privileges
                 $sqlQuery = $localQuery = $queryPrefix
                     . $this->dbi->escapeString($_POST['pma_pw']) . "')";
             } elseif (Compatibility::isMariaDb() && $serverVersion >= 50200 && $this->dbi->isSuperUser()) {
-                // Use 'UPDATE `mysql`.`user` ...' Syntax for MariaDB 5.2+
                 if ($authenticationPlugin === 'mysql_native_password') {
-                    // Set the hashing method used by PASSWORD()
-                    // to be 'mysql_native_password' type
                     $this->dbi->tryQuery('SET old_passwords = 0;');
                 } elseif ($authenticationPlugin === 'sha256_password') {
-                    // Set the hashing method used by PASSWORD()
-                    // to be 'sha256_password' type
                     $this->dbi->tryQuery('SET `old_passwords` = 2;');
                 }
 
@@ -1021,16 +987,12 @@ class Privileges
                     . " WHERE `User` = '" . $dbi->escapeString($username)
                     . "' AND Host = '" . $dbi->escapeString($hostname) . "';";
             } else {
-                // USE 'SET PASSWORD ...' syntax for rest of the versions
-                // Backup the old value, to be reset later
                 $row = $this->dbi->fetchSingleRow('SELECT @@old_passwords;');
                 $origValue = $row['@@old_passwords'];
                 $updatePluginQuery = 'UPDATE `mysql`.`user` SET'
                     . " `plugin` = '" . $authenticationPlugin . "'"
                     . " WHERE `User` = '" . $dbi->escapeString($username)
                     . "' AND Host = '" . $dbi->escapeString($hostname) . "';";
-
-                // Update the plugin for the user
                 if (! $this->dbi->tryQuery($updatePluginQuery)) {
                     Generator::mysqlDie(
                         $this->dbi->getError(),
@@ -1043,12 +1005,8 @@ class Privileges
                 $this->dbi->tryQuery('FLUSH PRIVILEGES;');
 
                 if ($authenticationPlugin === 'mysql_native_password') {
-                    // Set the hashing method used by PASSWORD()
-                    // to be 'mysql_native_password' type
                     $this->dbi->tryQuery('SET old_passwords = 0;');
                 } elseif ($authenticationPlugin === 'sha256_password') {
-                    // Set the hashing method used by PASSWORD()
-                    // to be 'sha256_password' type
                     $this->dbi->tryQuery('SET `old_passwords` = 2;');
                 }
 
@@ -1075,8 +1033,6 @@ class Privileges
                     $errorUrl
                 );
             }
-
-            // Flush privileges after successful password change
             $this->dbi->tryQuery('FLUSH PRIVILEGES;');
 
             $message = Message::success(
@@ -1122,7 +1078,6 @@ class Privileges
 
         $this->dbi->query($sqlQuery0);
         if (! $this->dbi->tryQuery($sqlQuery1)) {
-            // this one may fail, too...
             $sqlQuery1 = '';
         }
 
@@ -1403,7 +1358,7 @@ class Privileges
                 NOT (`Table_priv` = \'\' AND Column_priv = \'\')
             ORDER BY `User` ASC, `Host` ASC, `Db` ASC, `Table_priv` ASC;
         ';
-        /** @var mysqli_stmt|false $statement */
+        
         $statement = $this->dbi->prepare($query);
         if ($statement === false || ! $statement->bind_param('ss', $db, $table) || ! $statement->execute()) {
             return [];
@@ -1580,7 +1535,6 @@ class Privileges
         $username
     ) {
         if (isset($GLOBALS['dbname'])) {
-            //if (preg_match('/\\\\(?:_|%)/i', $dbname)) {
             if (preg_match('/(?<!\\\\)(?:_|%)/', $GLOBALS['dbname'])) {
                 $dbnameIsWildcard = true;
             } else {
@@ -1690,8 +1644,6 @@ class Privileges
             $tablesToSearchForUsers = ['procs_priv'];
             $dbOrTableName = 'Routine_name';
         }
-
-        // we also want privileges for this user not in table `db` but in other table
         $tables = $this->dbi->fetchResult('SHOW TABLES FROM `mysql`;');
 
         $dbRightsSqls = [];
@@ -1712,8 +1664,6 @@ class Privileges
             'privs' => ['USAGE'],
             'Column_priv' => true,
         ];
-
-        // for the rights
         $dbRights = [];
 
         $dbRightsSql = '(' . implode(') UNION (', $dbRightsSqls) . ')'
@@ -1724,9 +1674,6 @@ class Privileges
         while ($dbRightsRow = $dbRightsResult->fetchAssoc()) {
             $dbRightsRow = array_merge($userDefaults, $dbRightsRow);
             if ($type === 'database') {
-                // only Db names in the table `mysql`.`db` uses wildcards
-                // as we are in the db specific rights display we want
-                // all db names escaped, also from other sources
                 $dbRightsRow['Db'] = Util::escapeMysqlWildcards($dbRightsRow['Db']);
             }
 
@@ -1763,9 +1710,6 @@ class Privileges
             if ($type !== 'database') {
                 continue;
             }
-
-            // there are db specific rights for this user
-            // so we can drop this db rights
             $dbRights[$row['Db']]['can_delete'] = true;
         }
 
@@ -1938,10 +1882,6 @@ class Privileges
                     }
 
                     $currentDbEscaped = Util::escapeMysqlWildcards($currentDb);
-                    // cannot use array_diff() once, outside of the loop,
-                    // because the list of databases has special characters
-                    // already escaped in $foundRows,
-                    // contrary to the output of SHOW DATABASES
                     if (in_array($currentDbEscaped, $foundRows)) {
                         continue;
                     }
@@ -2074,8 +2014,6 @@ class Privileges
     public function getHtmlForInitials()
     {
         $arrayInitials = [];
-
-        // initialize to false the letters A-Z
         for ($letterCounter = 1; $letterCounter < 27; $letterCounter++) {
             $arrayInitials[mb_chr($letterCounter + 64)] = false;
         }
@@ -2088,10 +2026,6 @@ class Privileges
                 $arrayInitials[$tmpInitial[0]] = true;
             }
         }
-
-        // Display the initials, which can be any characters, not
-        // just letters. For letters A-Z, we add the non-used letters
-        // as greyed out.
 
         uksort($arrayInitials, 'strnatcasecmp');
 
@@ -2109,7 +2043,6 @@ class Privileges
      */
     public function getDbRightsForUserOverview()
     {
-        // we also want users not in table `user` but in other table
         $tables = $this->dbi->fetchResult('SHOW TABLES FROM `mysql`;');
 
         $tablesSearchForUsers = [
@@ -2140,8 +2073,6 @@ class Privileges
             'Grant_priv' => 'N',
             'privs' => ['USAGE'],
         ];
-
-        // for the rights
         $dbRights = [];
 
         $dbRightsSql = '(' . implode(') UNION (', $dbRightsSqls) . ')'
@@ -2189,8 +2120,6 @@ class Privileges
 
                 $dropUserError .= $this->dbi->getError() . "\n";
             }
-
-            // tracking sets this, causing the deleted db to be shown in navi
             unset($GLOBALS['db']);
 
             $sqlQuery = implode("\n", $queries);
@@ -2237,9 +2166,6 @@ class Privileges
 
         $grantBackQuery = null;
         $alterUserQuery = null;
-
-        // Should not do a GRANT USAGE for a table-specific privilege, it
-        // causes problems later (cannot revoke it)
         if (! (strlen($tablename) > 0 && implode('', $this->extractPrivInfo()) === 'USAGE')) {
             [$grantBackQuery, $alterUserQuery] = $this->generateQueriesForUpdatePrivileges(
                 $itemType,
@@ -2251,14 +2177,10 @@ class Privileges
         }
 
         if (! $this->dbi->tryQuery($sqlQuery0)) {
-            // This might fail when the executing user does not have
-            // ALL PRIVILEGES themselves.
-            // See https://github.com/phpmyadmin/phpmyadmin/issues/9673
             $sqlQuery0 = '';
         }
 
         if (! empty($sqlQuery1) && ! $this->dbi->tryQuery($sqlQuery1)) {
-            // this one may fail, too...
             $sqlQuery1 = '';
         }
 
@@ -2312,7 +2234,6 @@ class Privileges
         }
 
         if (strlen($dbname) === 0) {
-            // add REQUIRE clause
             if ($needsToUseAlter) {
                 $alterUserQuery .= $this->getRequireClause();
             } else {
@@ -2371,9 +2292,6 @@ class Privileges
                 }
 
                 $serverVersion = $this->dbi->getVersion();
-                // Recent MySQL versions have the field "Password" in mysql.user,
-                // so the previous extract creates $row['Password'] but this script
-                // uses $password
                 if (! isset($row['password']) && isset($row['Password'])) {
                     $row['password'] = $row['Password'];
                 }
@@ -2398,10 +2316,6 @@ class Privileges
                 ) {
                     $row['password'] = $row['authentication_string'];
                 }
-
-                // Always use 'authentication_string' column
-                // for MySQL 5.7.6+ since it does not have
-                // the 'password' column at all
                 if (
                     Compatibility::isMySqlOrPerconaDb()
                     && $serverVersion >= 50706
@@ -2435,12 +2349,9 @@ class Privileges
                 $_POST['old_username'] . '&amp;#27;' . $_POST['old_hostname'],
             ];
         } else {
-            // null happens when no user was selected
             $selectedUsr = $_POST['selected_usr'] ?? null;
             $queries = [];
         }
-
-        // this happens, was seen in https://reports.phpmyadmin.net/reports/view/17146
         if (! is_array($selectedUsr)) {
             return [];
         }
@@ -2505,9 +2416,6 @@ class Privileges
             if ($sqlQuery[0] !== '#') {
                 $this->dbi->query($sqlQuery);
             }
-
-            // when there is a query containing a hidden password, take it
-            // instead of the real query sent
             if (isset($queriesForDisplay[$tmpCount])) {
                 $queries[$tmpCount] = $queriesForDisplay[$tmpCount];
             }
@@ -2550,9 +2458,6 @@ class Privileges
                 false, // Add user error
             ];
         }
-
-        // Some reports where sent to the error reporting server with phpMyAdmin 5.1.0
-        // pred_username was reported to be not defined
         $predUsername = $_POST['pred_username'] ?? '';
         if ($predUsername === 'any') {
             $username = '';
@@ -2649,8 +2554,6 @@ class Privileges
                 $error, // Add user error if the query fails
             ];
         }
-
-        // Copy the user group while copying a user
         $oldUserGroup = $_POST['old_usergroup'] ?? null;
         $this->setUserGroup($_POST['username'], $oldUserGroup);
 
@@ -2665,10 +2568,6 @@ class Privileges
 
             $queries[] = $passwordSetReal;
         }
-
-        // we put the query containing the hidden password in
-        // $queries_for_display, at the same position occupied
-        // by the real query in $queries
         $tmpCount = count($queries);
         if (isset($createUserReal)) {
             $queriesForDisplay[$tmpCount - 2] = $createUserShow;
@@ -2699,8 +2598,6 @@ class Privileges
      */
     public function setProperPasswordHashing($authPlugin): void
     {
-        // Set the hashing method used by PASSWORD()
-        // to be of type depending upon $authentication_plugin
         if ($authPlugin === 'sha256_password') {
             $this->dbi->tryQuery('SET `old_passwords` = 2;');
         } elseif ($authPlugin === 'mysql_old_password') {
@@ -2764,10 +2661,8 @@ class Privileges
         }
 
         if (isset($_POST['pred_dbname']) && is_array($_POST['pred_dbname'])) {
-            // Accept only array of non-empty strings
             if ($_POST['pred_dbname'] === array_filter($_POST['pred_dbname'])) {
                 $dbname = $_POST['pred_dbname'];
-                // If dbname contains only one database.
                 if (count($dbname) === 1) {
                     $dbname = (string) $dbname[0];
                 }
@@ -2776,7 +2671,6 @@ class Privileges
 
         if ($dbname === null && isset($_REQUEST['dbname'])) {
             if (is_array($_REQUEST['dbname'])) {
-                // Accept only array of non-empty strings
                 if ($_REQUEST['dbname'] === array_filter($_REQUEST['dbname'])) {
                     $dbname = $_REQUEST['dbname'];
                 }
@@ -2808,8 +2702,6 @@ class Privileges
                 }
             }
         }
-
-        // check if given $dbname is a wildcard or not
         $databaseNameIsWildcard = is_string($dbname) && preg_match('/(?<!\\\\)(?:_|%)/', $dbname);
 
         return [
@@ -2835,14 +2727,11 @@ class Privileges
     {
         $export = '<textarea class="export" cols="60" rows="15">';
 
-        /** @var array|null $selectedUsers */
+        
         $selectedUsers = $_POST['selected_usr'] ?? null;
 
         if (isset($selectedUsers)) {
-            // export privileges for selected users
             $title = __('Privileges');
-
-            //For removing duplicate entries of users
             $selectedUsers = array_unique($selectedUsers);
 
             foreach ($selectedUsers as $exportUser) {
@@ -2865,13 +2754,10 @@ class Privileges
                 $export .= $this->getGrants($exportUsername, $exportHostname) . "\n";
             }
         } else {
-            // export privileges for a single user
             $title = __('User') . ' `' . htmlspecialchars($username)
                 . '`@`' . htmlspecialchars($hostname) . '`';
             $export .= $this->getGrants($username, $hostname);
         }
-
-        // remove trailing whitespace
         $export = trim($export);
 
         $export .= '</textarea>';
@@ -2927,9 +2813,6 @@ class Privileges
             $passwordColumn = 'authentication_string';
         }
 
-        // $sql_query is for the initial-filtered,
-        // $sql_query_all is for counting the total no. of users
-
         $sqlQuery = $sqlQueryAll = 'SELECT *,' .
             ' IF(`' . $passwordColumn . "` = _latin1 '', 'N', 'Y') AS 'Password'" .
             ' FROM `mysql`.`user`';
@@ -2946,10 +2829,6 @@ class Privileges
 
         $errorMessages = '';
         if (! $res) {
-            // the query failed! This may have two reasons:
-            // - the user does not have enough privileges
-            // - the privilege tables use a structure of an earlier version.
-            // so let's try a more simple query
 
             unset($resAll);
             $sqlQuery = 'SELECT * FROM `mysql`.`user`';
@@ -2959,8 +2838,6 @@ class Privileges
                 $errorMessages .= $this->getHtmlForViewUsersError();
                 $errorMessages .= $this->getAddUserHtmlFieldset();
             } else {
-                // This message is hardcoded because I will replace it by
-                // a automatic repair feature soon.
                 $raw = 'Your privilege table structure seems to be older than'
                     . ' this MySQL version!<br>'
                     . 'Please run the <code>mysql_upgrade</code> command'
@@ -2994,7 +2871,6 @@ class Privileges
              * Also not necessary if there is less than 20 privileges
              */
             if ($resAll && $resAll->numRows() > 20) {
-                // for all initials, even non A-Z
                 $initials = $this->getHtmlForInitials();
             }
 
@@ -3107,7 +2983,6 @@ class Privileges
         }
 
         $privilegesTable = $this->getHtmlToDisplayPrivilegesTable(
-            // If $dbname is an array, pass any one db as all have same privs.
             is_string($dbname) && strlen($dbname) > 0
                 ? $dbname
                 : (is_array($dbname) ? (string) $dbname[0] : '*'),
@@ -3118,12 +2993,9 @@ class Privileges
 
         $tableSpecificRights = '';
         if (! is_array($dbname) && strlen($tablename) === 0 && empty($dbnameIsWildcard)) {
-            // no table name was given, display all table specific rights
-            // but only if $dbname contains no wildcards
             if (strlen($dbname) === 0) {
                 $tableSpecificRights .= $this->getHtmlForAllTableSpecificRights($username, $hostname, 'database');
             } else {
-                // unescape wildcards in dbname at table level
                 $unescapedDb = Util::unescapeMysqlWildcards($dbname);
 
                 $tableSpecificRights .= $this->getHtmlForAllTableSpecificRights(
@@ -3150,7 +3022,6 @@ class Privileges
         $userGroup = '';
         $changeLoginInfoFields = '';
         if (! is_array($dbname) && strlen($dbname) === 0 && ! $userDoesNotExists) {
-            //change login information
             $changePassword = $this->getFormForChangePassword($username, $hostname, true);
             $userGroup = $this->getUserGroupForUser($username);
             $changeLoginInfoFields = $this->getHtmlForLoginInformationFields('change', $username, $hostname);
@@ -3346,7 +3217,6 @@ class Privileges
         }
 
         if ($createDb1) {
-            // Create database with same name and grant all privileges
             $query = 'CREATE DATABASE IF NOT EXISTS '
                 . Util::backquote($username) . ';';
             $sqlQuery .= $query;
@@ -3373,7 +3243,6 @@ class Privileges
         }
 
         if ($createDb2) {
-            // Grant all privileges on wildcard name (username\_%)
             $query = 'GRANT ALL PRIVILEGES ON '
                 . Util::backquote(
                     Util::escapeMysqlWildcards($username) . '\_%'
@@ -3387,7 +3256,6 @@ class Privileges
         }
 
         if ($createDb3) {
-            // Grant all privileges on the specified database to the new user
             $query = 'GRANT ALL PRIVILEGES ON '
             . Util::backquote($dbname) . '.* TO \''
             . $this->dbi->escapeString($username)
@@ -3432,7 +3300,7 @@ class Privileges
 
         $result = $this->dbi->tryQuery('SHOW PLUGINS SONAME LIKE \'%_password_check%\'');
 
-        /* Plugins are not working, for example directory does not exists */
+        
         if ($result === false) {
             return false;
         }
@@ -3465,19 +3333,10 @@ class Privileges
 
         $createUserStmt = sprintf('CREATE USER \'%s\'@\'%s\'', $slashedUsername, $slashedHostname);
         $isMariaDBPwdPluginActive = $this->checkIfMariaDBPwdCheckPluginActive();
-
-        // See https://github.com/phpmyadmin/phpmyadmin/pull/11560#issuecomment-147158219
-        // for details regarding details of syntax usage for various versions
-
-        // 'IDENTIFIED WITH auth_plugin'
-        // is supported by MySQL 5.5.7+
         if (Compatibility::isMySqlOrPerconaDb() && $serverVersion >= 50507 && isset($_POST['authentication_plugin'])) {
             $createUserStmt .= ' IDENTIFIED WITH '
                 . $_POST['authentication_plugin'];
         }
-
-        // 'IDENTIFIED VIA auth_plugin'
-        // is supported by MariaDB 5.2+
         if (
             Compatibility::isMariaDb()
             && $serverVersion >= 50200
@@ -3501,34 +3360,21 @@ class Privileges
             $slashedHostname
         );
         $realSqlQuery = $sqlQuery = $sqlQueryStmt;
-
-        // Set the proper hashing method
         if (isset($_POST['authentication_plugin'])) {
             $this->setProperPasswordHashing($_POST['authentication_plugin']);
         }
-
-        // Use 'CREATE USER ... WITH ... AS ..' syntax for
-        // newer MySQL versions
-        // and 'CREATE USER ... VIA .. USING ..' syntax for
-        // newer MariaDB versions
         if (
             (Compatibility::isMySqlOrPerconaDb() && $serverVersion >= 50706)
             || (Compatibility::isMariaDb() && $serverVersion >= 50200)
         ) {
             $passwordSetReal = null;
-
-            // Required for binding '%' with '%s'
             $createUserStmt = str_replace('%', '%%', $createUserStmt);
-
-            // MariaDB uses 'USING' whereas MySQL uses 'AS'
-            // but MariaDB with validation plugin needs cleartext password
             if (Compatibility::isMariaDb() && ! $isMariaDBPwdPluginActive && isset($_POST['authentication_plugin'])) {
                 $createUserStmt .= ' USING \'%s\'';
             } elseif (Compatibility::isMariaDb()) {
                 $createUserStmt .= ' IDENTIFIED BY \'%s\'';
             } elseif (Compatibility::isMySqlOrPerconaDb() && $serverVersion >= 80011) {
                 if (! str_contains($createUserStmt, 'IDENTIFIED')) {
-                    // Maybe the authentication_plugin was not posted and then a part is missing
                     $createUserStmt .= ' IDENTIFIED BY \'%s\'';
                 } else {
                     $createUserStmt .= ' BY \'%s\'';
@@ -3550,7 +3396,6 @@ class Privileges
                 ) {
                     $hashedPassword = $this->getHashedPassword($_POST['pma_pw']);
                 } else {
-                    // MariaDB with validation plugin needs cleartext password
                     $hashedPassword = $_POST['pma_pw'];
                 }
 
@@ -3558,8 +3403,6 @@ class Privileges
                 $createUserShow = sprintf($createUserStmt, '***');
             }
         } else {
-            // Use 'SET PASSWORD' syntax for pre-5.7.6 MySQL versions
-            // and pre-5.2.0 MariaDB versions
             if ($_POST['pred_password'] === 'keep') {
                 $passwordSetReal = sprintf($passwordSetStmt, $slashedUsername, $slashedHostname, $slashedPassword);
             } elseif ($_POST['pred_password'] === 'none') {
@@ -3588,8 +3431,6 @@ class Privileges
             $alterRealSqlQuery = $alterSqlQueryStmt;
             $alterSqlQuery = $alterSqlQueryStmt;
         }
-
-        // add REQUIRE clause
         $requireClause = $this->getRequireClause();
         $withClause = $this->getWithClauseForAddUserAndUpdatePrivs();
 
@@ -3614,14 +3455,10 @@ class Privileges
         $createUserShow .= ';';
         $realSqlQuery .= ';';
         $sqlQuery .= ';';
-        // No Global GRANT_OPTION privilege
         if (! $this->dbi->isGrantUser()) {
             $realSqlQuery = '';
             $sqlQuery = '';
         }
-
-        // Use 'SET PASSWORD' for pre-5.7.6 MySQL versions
-        // and pre-5.2.0 MariaDB
         if (
             (Compatibility::isMySqlOrPerconaDb()
             && $serverVersion >= 50706)
@@ -3744,14 +3581,14 @@ class Privileges
     private function getUserPrivileges(string $user, string $host, bool $hasAccountLocking): ?array
     {
         $query = 'SELECT * FROM `mysql`.`user` WHERE `User` = ? AND `Host` = ?;';
-        /** @var mysqli_stmt|false $statement */
+        
         $statement = $this->dbi->prepare($query);
         if ($statement === false || ! $statement->bind_param('ss', $user, $host) || ! $statement->execute()) {
             return null;
         }
 
         $result = new MysqliResult($statement->get_result());
-        /** @var array<string, string|null>|null $userPrivileges */
+        
         $userPrivileges = $result->fetchAssoc();
         if ($userPrivileges === []) {
             return null;
@@ -3764,14 +3601,14 @@ class Privileges
         $userPrivileges['account_locked'] = 'N';
 
         $query = 'SELECT * FROM `mysql`.`global_priv` WHERE `User` = ? AND `Host` = ?;';
-        /** @var mysqli_stmt|false $statement */
+        
         $statement = $this->dbi->prepare($query);
         if ($statement === false || ! $statement->bind_param('ss', $user, $host) || ! $statement->execute()) {
             return $userPrivileges;
         }
 
         $result = new MysqliResult($statement->get_result());
-        /** @var array<string, string|null>|null $globalPrivileges */
+        
         $globalPrivileges = $result->fetchAssoc();
         if ($globalPrivileges === []) {
             return $userPrivileges;

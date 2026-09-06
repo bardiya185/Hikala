@@ -26,7 +26,7 @@ final class DoTokenParser extends AbstractTokenParser
     {
         $expr = $this->parser->getExpressionParser()->parseExpression();
 
-        $this->parser->getStream()->expect(/* Token::BLOCK_END_TYPE */ 3);
+        $this->parser->getStream()->expect( 3);
 
         return new DoNode($expr, $token->getLine(), $this->getTag());
     }

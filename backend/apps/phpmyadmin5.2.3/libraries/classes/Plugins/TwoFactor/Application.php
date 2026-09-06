@@ -24,10 +24,10 @@ use function extension_loaded;
  */
 class Application extends TwoFactorPlugin
 {
-    /** @var string */
+    
     public static $id = 'application';
 
-    /** @var Google2FA */
+    
     protected $google2fa;
 
     /**

@@ -16,10 +16,10 @@ use function sprintf;
 
 final class SetVersionCommand extends Command
 {
-    /** @var string */
+    
     protected static $defaultName = 'set-version';
 
-    /** @var string */
+    
     private static $generatedClassTemplate = <<<'PHP'
 <?php
 
@@ -36,7 +36,6 @@ use const VERSION_SUFFIX;
  */
 final class Version
 {
-    // The VERSION_SUFFIX constant is defined at libraries/constants.php
     public const VERSION = '%1$u.%2$u.%3$u%4$s' . VERSION_SUFFIX;
     public const SERIES = '%1$u.%2$u';
     public const MAJOR = %1$u;
@@ -58,7 +57,7 @@ PHP;
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        /** @var string $version */
+        
         $version = $input->getArgument('version');
 
         $generatedClass = $this->getGeneratedClass($version);
@@ -74,7 +73,6 @@ PHP;
 
     private function getGeneratedClass(string $version): string
     {
-        // Do not allow any major below 5
         $return = preg_match('/^([5-9]+)\.(\d{1,2})\.(\d{1,2})(-([a-z0-9]+))?$/', $version, $matches);
         if ($return === false || $return === 0) {
             throw new RangeException('The version number is in the wrong format: ' . $version);

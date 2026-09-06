@@ -30,9 +30,9 @@ class Node implements \Countable, \IteratorAggregate
     protected $tag;
 
     private $sourceContext;
-    /** @var array<string, NameDeprecation> */
+    
     private $nodeNameDeprecations = [];
-    /** @var array<string, NameDeprecation> */
+    
     private $attributeNameDeprecations = [];
 
     /**

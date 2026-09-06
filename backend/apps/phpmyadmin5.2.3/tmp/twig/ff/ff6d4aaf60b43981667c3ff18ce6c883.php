@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* message.twig */
+
 class __TwigTemplate_b3a6530adc5d697359c6971595b1843a extends Template
 {
     private $source;
@@ -34,12 +34,10 @@ class __TwigTemplate_b3a6530adc5d697359c6971595b1843a extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<div class=\"alert alert-";
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["context"] ?? null), "html", null, true);
         yield "\" role=\"alert\">
   ";
-        // line 2
         yield ($context["message"] ?? null);
         yield "
 </div>

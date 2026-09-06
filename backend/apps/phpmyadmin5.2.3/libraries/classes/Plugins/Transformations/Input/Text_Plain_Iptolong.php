@@ -93,7 +93,7 @@ class Text_Plain_Iptolong extends IOTransformationsPlugin
             . ' tabindex="' . ($tabindex + $tabindex_for_value) . '" />';
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the plugin

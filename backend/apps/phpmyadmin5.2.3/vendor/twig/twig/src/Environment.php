@@ -58,7 +58,7 @@ class Environment
     private $lexer;
     private $parser;
     private $compiler;
-    /** @var array<string, mixed> */
+    
     private $globals = [];
     private $resolvedGlobals;
     private $loadedTemplates;
@@ -68,7 +68,7 @@ class Environment
     private $runtimeLoaders = [];
     private $runtimes = [];
     private $optionsHash;
-    /** @var bool */
+    
     private $useYield;
     private $defaultRuntimeLoader;
 
@@ -570,7 +570,6 @@ class Environment
     public function setCharset(string $charset)
     {
         if ('UTF8' === $charset = strtoupper($charset ?: '')) {
-            // iconv on Windows requires "UTF-8" instead of "UTF8"
             $charset = 'UTF-8';
         }
 
@@ -832,8 +831,6 @@ class Environment
 
     public function mergeGlobals(array $context): array
     {
-        // we don't use array_merge as the context being generally
-        // bigger than globals, this code is faster.
         foreach ($this->getGlobals() as $key => $value) {
             if (!\array_key_exists($key, $context)) {
                 $context[$key] = $value;

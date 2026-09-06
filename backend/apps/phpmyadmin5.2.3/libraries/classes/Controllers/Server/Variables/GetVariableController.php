@@ -17,7 +17,7 @@ use function implode;
 
 final class GetVariableController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, DatabaseInterface $dbi)
@@ -34,11 +34,7 @@ final class GetVariableController extends AbstractController
         if (! $this->response->isAjax()) {
             return;
         }
-
-        // Send with correct charset
         header('Content-Type: text/html; charset=UTF-8');
-        // Do not use double quotes inside the query to avoid a problem
-        // when server is running in ANSI_QUOTES sql_mode
         $varValue = $this->dbi->fetchSingleRow(
             'SHOW GLOBAL VARIABLES WHERE Variable_name=\''
             . $this->dbi->escapeString($params['name']) . '\';',
@@ -52,7 +48,7 @@ final class GetVariableController extends AbstractController
         $variableType = ServerVariablesProvider::getImplementation()->getVariableType($params['name']);
 
         if ($variableType === 'byte') {
-            /** @var string[] $bytes */
+            
             $bytes = Util::formatByteDown($varValue[1], 3, 3);
             $json['message'] = implode(' ', $bytes);
         }

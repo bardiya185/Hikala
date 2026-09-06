@@ -92,9 +92,6 @@ class StoreDiscountRequest extends FormRequest
                 'boolean',
             ],
 
-
-            // Discountable
-
             'discountable_type' => [
                 'required',
                 Rule::in([

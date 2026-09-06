@@ -45,10 +45,6 @@ class CouponController extends Controller
         private CouponService $couponService,
         private CouponValidator $validator
     ) {}
-
-    // ================================================================
-    // 🌐 PUBLIC: Validate Coupon
-    // ================================================================
     #[OA\Post(
         path: '/api/coupons/validate',
         tags: ['Coupons'],
@@ -96,14 +92,8 @@ class CouponController extends Controller
                     'message' => 'Coupon not found',
                 ], Response::HTTP_NOT_FOUND);
             }
-
-            // بارگذاری discount
             $coupon->load('discount');
-
-            // ولیدیت
             $this->validator->validate($coupon);
-
-            // ولیدیت برای کاربر (اگه لاگین‌کرده باشه)
             if ($request->user()) {
                 $this->validator->validateForUser($coupon, $request->user());
             }
@@ -121,10 +111,6 @@ class CouponController extends Controller
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
-
-    // ================================================================
-    // 🔒 ADMIN: List Coupons
-    // ================================================================
     #[OA\Get(
         path: '/api/admin/coupons',
         tags: ['Coupons'],
@@ -178,10 +164,6 @@ class CouponController extends Controller
             ],
         ]);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Create Coupon
-    // ================================================================
     #[OA\Post(
         path: '/api/admin/coupons',
         tags: ['Coupons'],
@@ -213,10 +195,6 @@ class CouponController extends Controller
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Show Coupon
-    // ================================================================
     #[OA\Get(
         path: '/api/admin/coupons/{coupon}',
         tags: ['Coupons'],
@@ -241,10 +219,6 @@ class CouponController extends Controller
 
         return new CouponResource($coupon);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Update Coupon
-    // ================================================================
     #[OA\Put(
         path: '/api/admin/coupons/{coupon}',
         tags: ['Coupons'],
@@ -281,10 +255,6 @@ class CouponController extends Controller
 
         return new CouponResource($coupon);
     }
-
-    // ================================================================
-    // 🔒 ADMIN: Delete Coupon
-    // ================================================================
     #[OA\Delete(
         path: '/api/admin/coupons/{coupon}',
         tags: ['Coupons'],

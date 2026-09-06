@@ -5,9 +5,29 @@ import React from 'react'
 
 export default function Cart() {
   return (
-    <div className='flex items-center mx-auto'>
-        <CartDetails/>
-        <PlaceAnOrder/>
+    <div
+      className="
+        w-full
+        min-h-screen
+
+        mx-auto
+
+        flex
+        flex-col
+
+        lg:flex-row
+        lg:items-start
+        lg:justify-center
+
+        gap-4
+        lg:gap-6
+      "
+    >
+      {/* Products */}
+      <CartDetails />
+
+      {/* Order */}
+      <PlaceAnOrder />
     </div>
-  )
+  );
 }

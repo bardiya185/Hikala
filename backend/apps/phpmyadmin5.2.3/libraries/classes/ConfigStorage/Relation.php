@@ -55,10 +55,10 @@ use const SQL_DIR;
  */
 class Relation
 {
-    /** @var DatabaseInterface */
+    
     public $dbi;
 
-    /** @param DatabaseInterface $dbi */
+    
     public function __construct($dbi)
     {
         $this->dbi = $dbi;
@@ -1611,7 +1611,7 @@ class Relation
 
         $existingTables = $this->dbi->getTables($db, DatabaseInterface::CONNECT_CONTROL);
 
-        /** @var array<string, string> $tableNameReplacements */
+        
         $tableNameReplacements = [];
 
         // Build a map of replacements between default table names and name built by the user

@@ -20,7 +20,7 @@ use function trim;
  */
 class GroupKeyword extends Component
 {
-    /** @var mixed */
+    
     public $type;
 
     /**

@@ -13,10 +13,10 @@ use PhpMyAdmin\Url;
 
 class ProcessesController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var Processes */
+    
     private $processes;
 
     public function __construct(

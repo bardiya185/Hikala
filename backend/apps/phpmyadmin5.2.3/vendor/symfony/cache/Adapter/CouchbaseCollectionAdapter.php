@@ -29,7 +29,7 @@ class CouchbaseCollectionAdapter extends AbstractAdapter
 {
     private const MAX_KEY_LENGTH = 250;
 
-    /** @var Collection */
+    
     private $connection;
     private $marshaller;
 

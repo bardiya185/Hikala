@@ -11,8 +11,6 @@ class OrderResource extends JsonResource
         return [
             'id' => $this->id,
             'order_number' => $this->order_number,
-            
-            // 📊 Status
             'status' => [
                 'value' => $this->status->value,
                 'label' => $this->status->label(),
@@ -31,25 +29,17 @@ class OrderResource extends JsonResource
                 'label' => $this->payment_method->label(),
                 'icon' => $this->payment_method->icon(),
             ],
-            
-            // 💰 Financial
             'subtotal' => (float) $this->subtotal,
             'discount_amount' => (float) $this->discount_amount,
             'coupon_amount' => (float) $this->coupon_amount,
             'shipping_cost' => (float) $this->shipping_cost,
             'total_amount' => (float) $this->total_amount,
-            
-            // 🔢 Counts
             'items_count' => $this->items_count,
-            
-            // ⏰ Timestamps
             'paid_at' => $this->paid_at,
             'shipped_at' => $this->shipped_at,
             'delivered_at' => $this->delivered_at,
             'canceled_at' => $this->canceled_at,
             'created_at' => $this->created_at,
-            
-            // 📝 Notes
             'customer_note' => $this->customer_note,
 
             'delivery' => [
@@ -66,8 +56,6 @@ class OrderResource extends JsonResource
                     'to' => $this->estimated_delivery_to,
                 ]),
             ],
-            
-            // ✅ جدید: Shipping/Tracking
             'shipping' => [
                 'tracking_code' => $this->tracking_code,
                 'carrier' => $this->when($this->shipping_carrier, [
@@ -76,16 +64,10 @@ class OrderResource extends JsonResource
                 ]),
                 'tracking_url' => $this->tracking_url,
             ],
-            
-            // 🎯 Actions available
             'can_be_canceled' => $this->canBeCanceled(),
             'can_be_refunded' => $this->canBeRefunded(),
-
-            //Reasons
             'cancel_reason' => $this->cancel_reason,
             'refund_reason' => $this->refund_reason,
-            
-            // 🔗 Relations
             'items' => OrderItemResource::collection($this->whenLoaded('items')),
             'address' => new AddressResource($this->whenLoaded('address')),
             'status_history' => OrderStatusHistoryResource::collection(

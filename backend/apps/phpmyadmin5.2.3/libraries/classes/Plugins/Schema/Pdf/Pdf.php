@@ -19,16 +19,12 @@ use function mb_ord;
 use function str_replace;
 use function strlen;
 use function ucfirst;
-
-// phpcs:disable PSR1.Files.SideEffects
 /**
  * block attempts to directly run this script
  */
 if (getcwd() == __DIR__) {
     die('Attack stopped');
 }
-
-// phpcs:enable
 
 /**
  * Extends the "TCPDF" class and helps
@@ -38,46 +34,46 @@ if (getcwd() == __DIR__) {
  */
 class Pdf extends PdfLib
 {
-    /** @var int|float */
+    
     public $xMin = 0;
 
-    /** @var int|float */
+    
     public $yMin = 0;
 
-    /** @var int|float */
+    
     public $leftMargin = 10;
 
-    /** @var int|float */
+    
     public $topMargin = 10;
 
-    /** @var int|float */
+    
     public $scale = 1;
 
-    /** @var array */
+    
     public $customLinks = [];
 
-    /** @var array */
+    
     public $widths = [];
 
-    /** @var float */
+    
     public $cMargin = 0;
 
-    /** @var string */
+    
     private $ff = PdfLib::PMA_PDF_FONT;
 
-    /** @var bool */
+    
     private $offline = false;
 
-    /** @var int */
+    
     private $pageNumber;
 
-    /** @var bool */
+    
     private $withDoc;
 
-    /** @var string */
+    
     private $db;
 
-    /** @var Relation */
+    
     private $relation;
 
     /**
@@ -232,7 +228,6 @@ class Pdf extends PdfLib
      */
     public function setFontSizeScale($size): void
     {
-        // Set font size in points
         $size /= $this->scale;
         $this->setFontSize($size);
     }
@@ -255,14 +250,9 @@ class Pdf extends PdfLib
      *
      * @see TCPDF::Header()
      */
-    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     public function Header(): void
     {
         global $dbi;
-
-        // We only show this if we find something in the new pdf_pages table
-
-        // This function must be named "Header" to work with the TCPDF library
         if (! $this->withDoc) {
             return;
         }
@@ -293,7 +283,6 @@ class Pdf extends PdfLib
      *
      * @see PDF::Footer()
      */
-    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     public function Footer(): void
     {
         if (! $this->withDoc) {
@@ -310,7 +299,6 @@ class Pdf extends PdfLib
      */
     public function setWidths(array $w): void
     {
-        // column widths
         $this->widths = $w;
     }
 
@@ -322,38 +310,26 @@ class Pdf extends PdfLib
      */
     public function row(array $data, array $links): void
     {
-        // line height
         $nb = 0;
         $data_cnt = count($data);
         for ($i = 0; $i < $data_cnt; $i++) {
             $nb = max($nb, $this->numLines($this->widths[$i], $data[$i]));
         }
-
-        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
         $il = $this->FontSize;
         $h = ($il + 1) * $nb;
-        // page break if necessary
         $this->checkPageBreak($h);
-        // draw the cells
         $data_cnt = count($data);
         for ($i = 0; $i < $data_cnt; $i++) {
             $w = $this->widths[$i];
-            // save current position
             $x = $this->GetX();
             $y = $this->GetY();
-            // draw the border
             $this->Rect($x, $y, $w, $h);
             if (isset($links[$i])) {
                 $this->Link($x, $y, $w, $h, $links[$i]);
             }
-
-            // print text
             $this->MultiCell($w, $il + 1, $data[$i], 0, 'L');
-            // go to right side
             $this->setXY($x + $w, $y);
         }
-
-        // go to line
         $this->Ln($h);
     }
 
@@ -367,13 +343,10 @@ class Pdf extends PdfLib
      */
     public function numLines($w, $txt)
     {
-        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
         $cw = &$this->CurrentFont['cw'];
         if ($w == 0) {
             $w = $this->w - $this->rMargin - $this->x;
         }
-
-        // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
         $wmax = ($w - 2 * $this->cMargin) * 1000 / $this->FontSize;
         $s = str_replace("\r", '', $txt);
         $nb = strlen($s);

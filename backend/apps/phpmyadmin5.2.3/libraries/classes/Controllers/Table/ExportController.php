@@ -23,7 +23,7 @@ use function is_array;
 
 class ExportController extends AbstractController
 {
-    /** @var Options */
+    
     private $export;
 
     public function __construct(
@@ -57,28 +57,20 @@ class ExportController extends AbstractController
         $urlParams['goto'] = Url::getFromRoute('/table/export');
         $urlParams['back'] = Url::getFromRoute('/table/export');
 
-        // When we have some query, we need to remove LIMIT from that and possibly
-        // generate WHERE clause (if we are asked to export specific rows)
-
         if (! empty($sql_query)) {
             $parser = new Parser($sql_query);
 
             if (! empty($parser->statements[0]) && ($parser->statements[0] instanceof SelectStatement)) {
-                // Checking if the WHERE clause has to be replaced.
                 if (! empty($where_clause) && is_array($where_clause)) {
                     $replaces[] = [
                         'WHERE',
                         'WHERE (' . implode(') OR (', $where_clause) . ')',
                     ];
                 }
-
-                // Preparing to remove the LIMIT clause.
                 $replaces[] = [
                     'LIMIT',
                     '',
                 ];
-
-                // Replacing the clauses.
                 $sql_query = Query::replaceClauses($parser->statements[0], $parser->list, $replaces);
             }
         }

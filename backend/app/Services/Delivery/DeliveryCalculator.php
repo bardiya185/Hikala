@@ -12,7 +12,6 @@ use Carbon\Carbon;
  */
 class DeliveryCalculator
 {
-    // 📅 حداقل روز از الان (buffer time برای پردازش)
     private const BUFFER_HOURS = 2;
 
     /**
@@ -26,18 +25,12 @@ class DeliveryCalculator
             $variant = $item->variant;
             
             if (!$variant) continue;
-            
-            // پیدا کردن سریع‌ترین روش ارسال این محصول
             $fastestShipping = $this->getFastestShippingFeature($variant);
-            
-            // بیشترین زمان بین همه محصولات
             $maxPreparationDays = max(
                 $maxPreparationDays,
                 $fastestShipping->minPreparationDays()
             );
         }
-
-        // اگه محصول با ارسال فوری بود، از الان چند ساعت buffer بذار
         if ($maxPreparationDays === 0) {
             return now()->addHours(self::BUFFER_HOURS);
         }
@@ -74,8 +67,6 @@ class DeliveryCalculator
     public function getAvailableDates(Cart $cart, int $windowDays = 7): array
     {
         $earliestDate = $this->calculateEarliestDelivery($cart);
-        
-        // اگه ساعت الان بعد از 14 هست، از فردا شروع کن
         if ($earliestDate->isToday() && now()->hour >= 14) {
             $earliestDate = now()->addDay()->startOfDay();
         }
@@ -104,13 +95,9 @@ class DeliveryCalculator
     private function getFastestShippingFeature($variant): ShippingFeatureType
     {
         $features = $variant->shippingFeatures ?? collect();
-        
-        // اگه هیچ shipping feature نداره، STANDARD
         if ($features->isEmpty()) {
             return ShippingFeatureType::STANDARD;
         }
-        
-        // پیدا کردن کمترین preparation days
         $fastest = ShippingFeatureType::STANDARD;
         $minDays = PHP_INT_MAX;
         

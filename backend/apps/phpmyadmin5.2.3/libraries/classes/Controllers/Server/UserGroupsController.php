@@ -19,10 +19,10 @@ use function __;
  */
 class UserGroupsController extends AbstractController
 {
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -84,7 +84,6 @@ class UserGroupsController extends AbstractController
         }
 
         if (isset($_POST['viewUsers'])) {
-            // Display users belonging to a user group
             $this->response->addHTML(UserGroups::getHtmlForListingUsersofAGroup(
                 $configurableMenusFeature,
                 $_POST['userGroup']
@@ -92,16 +91,13 @@ class UserGroupsController extends AbstractController
         }
 
         if (isset($_GET['addUserGroup'])) {
-            // Display add user group dialog
             $this->response->addHTML(UserGroups::getHtmlToEditUserGroup($configurableMenusFeature));
         } elseif (isset($_POST['editUserGroup'])) {
-            // Display edit user group dialog
             $this->response->addHTML(UserGroups::getHtmlToEditUserGroup(
                 $configurableMenusFeature,
                 $_POST['userGroup']
             ));
         } else {
-            // Display user groups table
             $this->response->addHTML(UserGroups::getHtmlForUserGroupsTable($configurableMenusFeature));
         }
 

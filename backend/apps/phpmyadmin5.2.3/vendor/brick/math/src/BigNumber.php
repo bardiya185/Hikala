@@ -146,7 +146,7 @@ abstract class BigNumber implements \Serializable, \JsonSerializable
      */
     protected static function create(... $args) : BigNumber
     {
-        /** @psalm-suppress TooManyArguments */
+        
         return new static(... $args);
     }
 
@@ -229,7 +229,7 @@ abstract class BigNumber implements \Serializable, \JsonSerializable
      */
     public static function sum(...$values) : BigNumber
     {
-        /** @var BigNumber|null $sum */
+        
         $sum = null;
 
         foreach ($values as $value) {
@@ -282,7 +282,7 @@ abstract class BigNumber implements \Serializable, \JsonSerializable
             return $b->plus($a);
         }
 
-        /** @var BigInteger $a */
+        
 
         return $a->plus($b);
     }

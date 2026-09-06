@@ -53,7 +53,7 @@ class MultiTableQuery
      */
     private $tables;
 
-    /** @var Template */
+    
     public $template;
 
     /**

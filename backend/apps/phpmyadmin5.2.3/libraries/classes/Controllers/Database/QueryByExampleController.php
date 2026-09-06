@@ -21,10 +21,10 @@ use function stripos;
 
 class QueryByExampleController extends AbstractController
 {
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -52,7 +52,6 @@ class QueryByExampleController extends AbstractController
         $currentSearchId = null;
         $this->addScriptFiles(['database/qbe.js']);
         if ($savedQbeSearchesFeature !== null) {
-            //Get saved search list.
             $savedSearch = new SavedSearches();
             $savedSearch->setUsername($GLOBALS['cfg']['Server']['user'])
                 ->setDbname($db);
@@ -60,8 +59,6 @@ class QueryByExampleController extends AbstractController
             if (! empty($_POST['searchId'])) {
                 $savedSearch->setId($_POST['searchId']);
             }
-
-            //Action field is sent.
             if (isset($_POST['action'])) {
                 $savedSearch->setSearchName($_POST['searchName']);
                 if ($_POST['action'] === 'create') {
@@ -73,14 +70,12 @@ class QueryByExampleController extends AbstractController
                         ->save($savedQbeSearchesFeature);
                 } elseif ($_POST['action'] === 'delete') {
                     $savedSearch->delete($savedQbeSearchesFeature);
-                    //After deletion, reset search.
                     $savedSearch = new SavedSearches();
                     $savedSearch->setUsername($GLOBALS['cfg']['Server']['user'])
                         ->setDbname($db);
                     $_POST = [];
                 } elseif ($_POST['action'] === 'load') {
                     if (empty($_POST['searchId'])) {
-                        //when not loading a search, reset the object.
                         $savedSearch = new SavedSearches();
                         $savedSearch->setUsername($GLOBALS['cfg']['Server']['user'])
                             ->setDbname($db);
@@ -89,7 +84,6 @@ class QueryByExampleController extends AbstractController
                         $savedSearch->load($savedQbeSearchesFeature);
                     }
                 }
-                //Else, it's an "update query"
             }
 
             $savedSearchList = $savedSearch->getList($savedQbeSearchesFeature);

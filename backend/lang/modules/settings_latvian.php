@@ -1,154 +1,136 @@
 <?php
-// Latvieðu valodas fails WAMP domçnam
-// Apakðizvçlnes Projekti un VirtualHosts
-// Iestatîjumi un rîki >> peles labâs pogas klikðíis uz WAMP ikonas
-// 3.0.7. Pievienoti $w_listenForApache - $w_AddListenPort - $w_deleteListenPort - $w_settings ['SupportMariaDB']
-// $w_settings ['DaredevilOptions']
-// $w_Size - $w_EnterSize - $w_Time - $w_EnterTime - $w_Integer - $w_EnterInteger - $w_add_VirtualHost
-// 3.0.8 $w_settings ['SupportMySQL'] - $w_portUsedMaria - $w_testPortMariaUsed
-// 3.0.9 $w_ext_zend
-// 3.1.1 $w_defaultDBMS - $w_invertDefault - $w_changeCLI - $w_misc
-// $w_settings ['ShowphmyadMenu'] - $w_settings ['ShowadminerMenu']
-// 3.1.2 $w_reinstallServices - $w_settings ['mariadbUseConsolePrompt'] - $w_settings ['mysqlUseConsolePrompt']
-// $w_enterServiceNameAll - $w_settings ['NotVerifyPATH'] - $w_MysqlMariaUser
-// 3.1.4 $w_settings 'NotVerifyTLD' 'Tîrîðana' 'AutoCleanLogs' 'AutoCleanLogsMax' 'AutoCleanLogsMax' 'AutoCleanTmp' 'AutoCleanTmpMax' 'iniCommented'
-// $w_wampReport - $w_dowampReport
-// 3.1.9 $w_settings 'BackupHosts'
-// 3.2.0 $w_verifySymlink - $w_settings ['NotVerifyHosts']
-// 3.2.1. $w_addingVer - $w_addingVerTxt - $w_goto - $w_FileRepository
-// 3.2.2 $w_MysqlMariaUser un $w_EnterSize modificçts - - $w_MySQLsqlmodeInfo $w_mysql_mode $w_phpMyAdminHelp $ w_PhpMyAdMinHelpTxt
-// 3.2.3 https for wampserver.aviatechno
-// 3.2.5 $w_emptyLogs - $w_emptyPHPlog - $w_emptyApaErrLog - $w_emptyApaAccLog - $w_emptyMySQLog - $w_emptyMariaLog - $w_emptyAllLog
-//       $w_testAliasDir - $w_verifyxDebugdll - $w_apacheLoadedIncludes - $w_settings 'ShowWWWdirMenu'
+// Latvieï¿½u valodas fails WAMP domï¿½nam
+// Apakï¿½izvï¿½lnes Projekti un VirtualHosts
+// Iestatï¿½jumi un rï¿½ki >> peles labï¿½s pogas klikï¿½ï¿½is uz WAMP ikonas
+// 3.1.4 $w_settings 'NotVerifyTLD' 'Tï¿½rï¿½ï¿½ana' 'AutoCleanLogs' 'AutoCleanLogsMax' 'AutoCleanLogsMax' 'AutoCleanTmp' 'AutoCleanTmpMax' 'iniCommented'
+// 3.2.2 $w_MysqlMariaUser un $w_EnterSize modificï¿½ts - - $w_MySQLsqlmodeInfo $w_mysql_mode $w_phpMyAdminHelp $ w_PhpMyAdMinHelpTxt
 
-$w_translated_by = "Latvieðu valodâ tulkojis MariOzo" 
-// Projektu apakðizvçlne
+$w_translated_by = "Latvieï¿½u valodï¿½ tulkojis MariOzo" 
+// Projektu apakï¿½izvï¿½lne
 $w_projectsSubMenu = 'Projekti';
-// VirtualHosts apakðizvçlne
-$w_virtualHostsSubMenu = 'Jûsu VirtualHosts';
-$w_add_VirtualHost = 'VirtualHost pârvaldîba';
-$w_aliasSubMenu = 'Aizstâjvârdi';
+// VirtualHosts apakï¿½izvï¿½lne
+$w_virtualHostsSubMenu = 'Jï¿½su VirtualHosts';
+$w_add_VirtualHost = 'VirtualHost pï¿½rvaldï¿½ba';
+$w_aliasSubMenu = 'Aizstï¿½jvï¿½rdi';
 $w_portUsed = 'Apache izmantotais ports:';
 $w_portUsedMysql = 'MySQL izmantotais ports:';
 $w_portUsedMaria = 'MariaDB izmantotais ports:';
 $w_testPortUsed = 'Izmantotais testa ports:';
 $w_portForApache = 'Apache ports';
-$w_listenForApache = 'Klausîðanâs ports, ko pievienot Apache';
+$w_listenForApache = 'Klausï¿½ï¿½anï¿½s ports, ko pievienot Apache';
 $w_portForMysql = 'MySQL ports';
-$w_testPortMysql = 'Pârbaudes ports 3306';
-$w_testPortMysqlUsed = 'Pârbaudiet izmantoto MySQL portu:';
-$w_testPortMariaUsed = 'Pârbaudiet izmantoto MariaDB portu:';
+$w_testPortMysql = 'Pï¿½rbaudes ports 3306';
+$w_testPortMysqlUsed = 'Pï¿½rbaudiet izmantoto MySQL portu:';
+$w_testPortMariaUsed = 'Pï¿½rbaudiet izmantoto MariaDB portu:';
 
 
-// Labâs peles pogas izvçlnes
-$w_wampSettings = 'Wamp iestatîjumi';
+// Labï¿½s peles pogas izvï¿½lnes
+$w_wampSettings = 'Wamp iestatï¿½jumi';
 $w_settings = array(
-	'urlAddLocalhost' => 'Pievienot vietçjo hostu vietrâdî URL',
-	'VirtualHostSubMenu' => 'VirtualHosts apakðizvçlne',
-	'AliasSubmenu' => 'Apakðizvçlne Alias',
-	'ProjectSubMenu' => 'Projektu apakðizvçlne',
-	'HomepageAtStartup' => 'Wampserver mâjas lapa startçjot',
-	'MenuItemOnline' => 'Izvçlnes vienums: tieðsaistç / bezsaistç',
-	'ItemServicesNames' => 'Izvçlnes Rîki: pakalpojumu nosaukumu maiòa',
-	'NotCheckVirtualHost' => 'Nepârbaudît VirtualHost definîcijas',
-	'NotCheckDuplicate' => 'Nepârbaudît servera nosaukuma dublikâtu',
-	'VhostAllLocalIp' => 'Atïaut VirtualHost lokâlo IP citâdu kâ 127.*',
-	'SupportMySQL' => 'Atïaut MySQL',
-	'SupportMariaDB' => 'Atïaut MariaDB',
-	'DaredevilOptions' => 'Uzmanîbu: riskanti! Tikai ekspertiem. ',
-	'ShowphmyadMenu' => 'Râdît izvçlnç PhpMyAdmin',
-	'ShowadminerMenu' => 'Râdît Adminer izvçlnç',
-	'mariadbUseConsolePrompt' => 'Mainît noklusçjuma Mariadb konsoles uzvedni',
-	'mysqlUseConsolePrompt' => 'Mainît noklusçjuma Mysql konsoles uzvedni',
-	'NotVerifyPATH' => 'Nepârbaudît PATH',
-	'NotVerifyTLD' => 'Nepârbaudît TLD',
-	'NotVerifyHosts' => 'Nepârbaudît resursdatora failu',
-	'Cleaning' => 'Automâtiska tîrîðana',
-	'AutoCleanLogs' => 'Automâtiski notîrît þurnâla failus',
-	'AutoCleanLogsMax' => 'Lîniju skaits pirms tîrîðanas',
-	'AutoCleanLogsMin' => 'Lîniju skaits pçc tîrîðanas',
-	'AutoCleanTmp' => 'Automâtiski iztîrît tmp direktoriju',
-	'AutoCleanTmpMax' => 'Failu skaits pirms tîrîðanas',
-	'ForTestOnly' => 'Tikai testa vajadzîbâm',
-	'iniCommented' => 'Komentçtâs php.ini direktîvas (; rindas sâkumâ)',
-	'BackupHosts' => 'Dublçt resursdatora failu',
-	'ShowWWWdirMenu' => 'Izvçlnç râdît mapi www',
+	'urlAddLocalhost' => 'Pievienot vietï¿½jo hostu vietrï¿½dï¿½ URL',
+	'VirtualHostSubMenu' => 'VirtualHosts apakï¿½izvï¿½lne',
+	'AliasSubmenu' => 'Apakï¿½izvï¿½lne Alias',
+	'ProjectSubMenu' => 'Projektu apakï¿½izvï¿½lne',
+	'HomepageAtStartup' => 'Wampserver mï¿½jas lapa startï¿½jot',
+	'MenuItemOnline' => 'Izvï¿½lnes vienums: tieï¿½saistï¿½ / bezsaistï¿½',
+	'ItemServicesNames' => 'Izvï¿½lnes Rï¿½ki: pakalpojumu nosaukumu maiï¿½a',
+	'NotCheckVirtualHost' => 'Nepï¿½rbaudï¿½t VirtualHost definï¿½cijas',
+	'NotCheckDuplicate' => 'Nepï¿½rbaudï¿½t servera nosaukuma dublikï¿½tu',
+	'VhostAllLocalIp' => 'Atï¿½aut VirtualHost lokï¿½lo IP citï¿½du kï¿½ 127.*',
+	'SupportMySQL' => 'Atï¿½aut MySQL',
+	'SupportMariaDB' => 'Atï¿½aut MariaDB',
+	'DaredevilOptions' => 'Uzmanï¿½bu: riskanti! Tikai ekspertiem. ',
+	'ShowphmyadMenu' => 'Rï¿½dï¿½t izvï¿½lnï¿½ PhpMyAdmin',
+	'ShowadminerMenu' => 'Rï¿½dï¿½t Adminer izvï¿½lnï¿½',
+	'mariadbUseConsolePrompt' => 'Mainï¿½t noklusï¿½juma Mariadb konsoles uzvedni',
+	'mysqlUseConsolePrompt' => 'Mainï¿½t noklusï¿½juma Mysql konsoles uzvedni',
+	'NotVerifyPATH' => 'Nepï¿½rbaudï¿½t PATH',
+	'NotVerifyTLD' => 'Nepï¿½rbaudï¿½t TLD',
+	'NotVerifyHosts' => 'Nepï¿½rbaudï¿½t resursdatora failu',
+	'Cleaning' => 'Automï¿½tiska tï¿½rï¿½ï¿½ana',
+	'AutoCleanLogs' => 'Automï¿½tiski notï¿½rï¿½t ï¿½urnï¿½la failus',
+	'AutoCleanLogsMax' => 'Lï¿½niju skaits pirms tï¿½rï¿½ï¿½anas',
+	'AutoCleanLogsMin' => 'Lï¿½niju skaits pï¿½c tï¿½rï¿½ï¿½anas',
+	'AutoCleanTmp' => 'Automï¿½tiski iztï¿½rï¿½t tmp direktoriju',
+	'AutoCleanTmpMax' => 'Failu skaits pirms tï¿½rï¿½ï¿½anas',
+	'ForTestOnly' => 'Tikai testa vajadzï¿½bï¿½m',
+	'iniCommented' => 'Komentï¿½tï¿½s php.ini direktï¿½vas (; rindas sï¿½kumï¿½)',
+	'BackupHosts' => 'Dublï¿½t resursdatora failu',
+	'ShowWWWdirMenu' => 'Izvï¿½lnï¿½ rï¿½dï¿½t mapi www',
 );
 
-// Ar peles labo pogu klikðíiniet uz Rîki
-$w_wampTools = 'Rîki';
-$w_restartDNS = 'Restartçt DNS';
-$w_testConf = 'Pârbaudiet httpd.conf sintaksi';
-$w_testServices = 'Pârbaudît pakalpojumu stâvokli';
-$w_changeServices = 'Mainît pakalpojumu nosaukumus';
+// Ar peles labo pogu klikï¿½ï¿½iniet uz Rï¿½ki
+$w_wampTools = 'Rï¿½ki';
+$w_restartDNS = 'Restartï¿½t DNS';
+$w_testConf = 'Pï¿½rbaudiet httpd.conf sintaksi';
+$w_testServices = 'Pï¿½rbaudï¿½t pakalpojumu stï¿½vokli';
+$w_changeServices = 'Mainï¿½t pakalpojumu nosaukumus';
 $w_enterServiceNameApache = "Ievadiet Apache pakalpojuma indeksa numuru. Tas tiks pievienots 'wampapache'";
 $w_enterServiceNameMysql = "Ievadiet Mysql pakalpojuma indeksa numuru. Tas tiks pievienots 'wampmysqld'";
-$w_enterServiceNameAll = "Ievadiet pakalpojumu nosaukumu sufiksa numuru (tukðs, lai atgrieztu oriìinâlos pakalpojumus)";
-$w_compilerVersions = 'Pârbaudît kompilatora VC, savietojamîbas un ini failus';
+$w_enterServiceNameAll = "Ievadiet pakalpojumu nosaukumu sufiksa numuru (tukï¿½s, lai atgrieztu oriï¿½inï¿½los pakalpojumus)";
+$w_compilerVersions = 'Pï¿½rbaudï¿½t kompilatora VC, savietojamï¿½bas un ini failus';
 $w_UseAlternatePort = 'Izmantojiet citu portu, nevis %s';
-$w_AddListenPort = 'Pievienojiet Apache klausîðanâs portu';
-$w_vhostConfig = 'Râdît Apache pârbaudîto VirtualHost';
-$w_apacheLoadedModules = 'Râdît Apache ielâdçtos moduïus';
-$w_apacheLoadedIncludes = 'Râdît ielâdçto Apache iekïauðanu';
-$w_testAliasDir = 'Pârbaudît relâcijas Alias  <-> Directory';
-$w_verifyxDebugdll = 'Pârbaudît neizmantotos xDebug dlls';
-$w_empty = 'Tukðs';
-$w_misc = 'Daþâdi';
-$w_emptyAll = 'Iztukðot VISU';
+$w_AddListenPort = 'Pievienojiet Apache klausï¿½ï¿½anï¿½s portu';
+$w_vhostConfig = 'Rï¿½dï¿½t Apache pï¿½rbaudï¿½to VirtualHost';
+$w_apacheLoadedModules = 'Rï¿½dï¿½t Apache ielï¿½dï¿½tos moduï¿½us';
+$w_apacheLoadedIncludes = 'Rï¿½dï¿½t ielï¿½dï¿½to Apache iekï¿½auï¿½anu';
+$w_testAliasDir = 'Pï¿½rbaudï¿½t relï¿½cijas Alias  <-> Directory';
+$w_verifyxDebugdll = 'Pï¿½rbaudï¿½t neizmantotos xDebug dlls';
+$w_empty = 'Tukï¿½s';
+$w_misc = 'Daï¿½ï¿½di';
+$w_emptyAll = 'Iztukï¿½ot VISU';
 
-$w_emptyLogs = 'Iztukðot þurnâlus';
-$w_emptyPHPlog = 'Iztukðot PHP kïûdu þurnâlu';
-$w_emptyApaErrLog = 'Iztukðot Apache kïûdu þurnâlu';
-$w_emptyApaAccLog = 'Iztukðot Apache piekïuves þurnâlu';
-$w_emptyMySQLog = 'Iztukðot MySQL þurnâlu';
-$w_emptyMariaLog = 'Iztukðot MariaDB þurnâlu';
-$w_emptyAllLog ='Iztukðot visus þurnâlu failus';
+$w_emptyLogs = 'Iztukï¿½ot ï¿½urnï¿½lus';
+$w_emptyPHPlog = 'Iztukï¿½ot PHP kï¿½ï¿½du ï¿½urnï¿½lu';
+$w_emptyApaErrLog = 'Iztukï¿½ot Apache kï¿½ï¿½du ï¿½urnï¿½lu';
+$w_emptyApaAccLog = 'Iztukï¿½ot Apache piekï¿½uves ï¿½urnï¿½lu';
+$w_emptyMySQLog = 'Iztukï¿½ot MySQL ï¿½urnï¿½lu';
+$w_emptyMariaLog = 'Iztukï¿½ot MariaDB ï¿½urnï¿½lu';
+$w_emptyAllLog ='Iztukï¿½ot visus ï¿½urnï¿½lu failus';
 
-$w_dnsorder = 'Pârbaudît DNS meklçðanas secîbu';
-$w_deleteVer = 'Dzçst neizmantotâs versijas';
+$w_dnsorder = 'Pï¿½rbaudï¿½t DNS meklï¿½ï¿½anas secï¿½bu';
+$w_deleteVer = 'Dzï¿½st neizmantotï¿½s versijas';
 $w_addingVer = 'Pievienojiet Apache, PHP, MySQL, MariaDB utt. versijas.';
-$w_deleteListenPort = 'Dzçst klausîðanâs portu Apache';
-$w_delete = 'Dzçst';
-$w_defaultDBMS = 'Noklusçjuma DBVS:';
-$w_invertDefault = 'Apgriezt noklusçjuma DBMS ';
-$w_changeCLI = 'Mainît PHP CLI versiju';
-$w_reinstallServices = 'Pârinstalçt visus pakalpojumus';
-$w_wampReport = 'Wampserver konfigurâcijas pârskats';
+$w_deleteListenPort = 'Dzï¿½st klausï¿½ï¿½anï¿½s portu Apache';
+$w_delete = 'Dzï¿½st';
+$w_defaultDBMS = 'Noklusï¿½juma DBVS:';
+$w_invertDefault = 'Apgriezt noklusï¿½juma DBMS ';
+$w_changeCLI = 'Mainï¿½t PHP CLI versiju';
+$w_reinstallServices = 'Pï¿½rinstalï¿½t visus pakalpojumus';
+$w_wampReport = 'Wampserver konfigurï¿½cijas pï¿½rskats';
 $w_dowampReport = 'Izveidot'. $w_wampReport;
-$w_verifySymlink = 'Pârbaudît simboliskâs saites';
+$w_verifySymlink = 'Pï¿½rbaudï¿½t simboliskï¿½s saites';
 $w_goto = 'Iet uz:';
-$w_FileRepository = 'Saites uz Wampserver krâtuvju failiem un papildinâjumiem';
+$w_FileRepository = 'Saites uz Wampserver krï¿½tuvju failiem un papildinï¿½jumiem';
 
-//daþâdi
-$w_ext_spec = 'Îpaði paplaðinâjumi';
-$w_ext_zend = 'Zend paplaðinâjumi';
-$w_phpparam_info = 'Vienîgi informâcijai';
+//daï¿½ï¿½di
+$w_ext_spec = 'ï¿½paï¿½i paplaï¿½inï¿½jumi';
+$w_ext_zend = 'Zend paplaï¿½inï¿½jumi';
+$w_phpparam_info = 'Vienï¿½gi informï¿½cijai';
 $w_ext_nodll = 'Nav dll faila';
-$w_ext_noline = "Nav 'paplaðinâjuma ='";
+$w_ext_noline = "Nav 'paplaï¿½inï¿½juma ='";
 $w_mod_fixed = "Neatgriezenisks modulis";
-$w_no_module = 'Nav moduïa faila';
+$w_no_module = 'Nav moduï¿½a faila';
 $w_no_moduleload = "Nav 'LoadModule'";
 $w_mysql_none = "nav";
-$w_mysql_user = "lietotâja reþîms";
-$w_mysql_default = "pçc noklusçjuma";
+$w_mysql_user = "lietotï¿½ja reï¿½ï¿½ms";
+$w_mysql_default = "pï¿½c noklusï¿½juma";
 $w_mysql_mode = "sql-mode paskaidrojumi";
-$w_Size = "Izmçrs";
+$w_Size = "Izmï¿½rs";
 $w_Time = "Laiks";
-$w_Integer = "Integer vçrtîba";
-$w_phpMyAdminHelp = "PhpMyAdmin palîdzîba ";
+$w_Integer = "Integer vï¿½rtï¿½ba";
+$w_phpMyAdminHelp = "PhpMyAdmin palï¿½dzï¿½ba ";
 
-// PromptText for Aestan Tray Menu type: uzvednes mainîgie
-// Var bût \r\n daudzrindu
+// PromptText for Aestan Tray Menu type: uzvednes mainï¿½gie
+// Var bï¿½t \r\n daudzrindu
 $w_EnterInteger = "Ievadiet veselu skaitli";
-$w_enterPort = "Ievadiet vajadzîgo porta numuru";
-$w_EnterSize = "Ievadiet izmçru: xxxx, kam seko M - Mega vai G - Giga \ r \ nSkaitlim jâpievieno simbols M vai G. \ r \ nPiemçram: 64M; 256M; 1G";
-$w_EnterTime = "Ievadiet laiku sekundçs";
-$w_MysqlMariaUser = "Ievadiet derîgu lietotâjvârdu. Ja nezinât, saglabâjiet 'root' noklusçjumâ. \ R \ nJa esat iestatîjis paroli vai nu root, vai izvçlçtajam lietotâjam, jums bûs jâievada ðî parole, kad konsolç tiek prasîts ievadît paroli: Bez paroles ievadiet taustiòu Enter";
-
-// Gari teksti
-// Pçdiòas " tekstâ ir jâatceï: \" - \r\n var bût daudzrindu 
-$w_addingVerTxt = "Visi \"papildinâjumi\", t.i., visi Apache, PHP, MySQL vai MariaDB versiju instalçtâji, kâ arî atjauninâjumu (Wampserver, Aestan Tray Menu, xDebug u.c.) un tîmekïa lietojumprogrammu (PhpMyAdmin, Adminer) instalçtâji ir vietnç \r\n\r\n'https://sourceforge.net/projects/wampserver/ '\r\n\r\n Vienkârði lejupielâdçjiet vajadzîgos instalçðanas failus un palaidiet tos, ar peles labo pogu klikðíinot uz lejupielâdçtâ faila nosaukuma. failu \"Palaist kâ administratoram \", lai Wampserver versijai pievienotu pievienojumprogrammu vai lietojumprogrammu. \r\n\r\nTad Apache, PHP, MySQL vai MariaDB versijas maiòa ir trîs klikðíu jautâjums: \r\nKreisais klikðíis -> PHP | Apache | MySQL | MariaDB -> Versija -> Izvçlieties versiju \r\n\r\nVersijas maiòa nemainîs jûsu veiktâs parametru izmaiòas, kâ arî nenodod datubâzes no vecâs versijas uz jaunâko. \r\n\r\n Pastâv daudz labâk organizçta un vienmçr atjauninâta krâtuve nekâ Sourceforge: \r\n\r\n 'https: //wampserver.aviatechno.net '. \r\n\r\n Saites uz krâtuvçm atrodamas ar peles labo pogu klikðíinot -> Palîdzîba\r\n";
-$w_MySQLsqlmodeInfo = "MySQL/MariaDB sql-mode\r\nSQL serveris var darboties daþâdos SQL reþîmos atkarîbâ no sql-mode direktîvas vçrtîbas.\r\nViena vai vairâku reþîmu iestatîðana ierobeþo noteiktas iespçjas un prasa lielâku stingrîbu SQL sintaksç un datu validâcijâ.\r\nsql-mode reþîma darbîba my.ini failâ ir ðâda.\r\n\r\n- sql-mode: pçc noklusçjuma\r\nnepastâv vai ir komentçts (;sql-mode=\"... \")\r\nPiemçro MySQL / MariaDB versijas noklusçjuma reþîmus\r\n\r\n- sql-mode: lietotâja reþîms\r\nKvalifikâcijas reþîma direktîva ir aizpildîta ar lietotâja definçtiem reþîmiem, piemçram :\r\nsql-mode=\"NO_ZERO_DATE,NO_ZERO_IN_DATE,NO_AUTO_CREATE_USER\"\r\n\r\n- sql-mode: none\r\nKvalifikâcijas reþîma sql reþîms ir tukðs, taèu tam jâbût:\r\nsql-mode=\"\"\r\nneviens SQL reþîms netiek lietots. ";
-$w_PhpMyAdMinHelpTxt = "-- PhpMyAdmin\r\nIesâkot phpMyAdmin, jums tiks lûgts ievadît lietotâja vârdu un paroli.\r\nPçc Wampserver 3 instalçðanas noklusçjuma lietotâjvârds ir \"root\"(bez pçdiòâm) un nav parole, kas nozîmç, ka veidlapas Parole lodziòð jâatstâj tukðs.\r\n\r\nPhpMyAdmin ir konfigurçts tâ, lai ïautu piekïût MySQL vai MariaDB atkarîbâ no tâ, kuri ir aktîvi.\r\nJa abas DBVS ir aktivizçtas, jûs pieteikðanâs ekrânâ bûs redzama nolaiþamâ izvçlne ar nosaukumu \"Servera izvçle\", nolaiþamajâ sarakstâ vispirms tiks parâdîts noklusçjuma serveris. Atlasiet DBMS, kuru vçlaties izmantot ðeit kâ daïu no pieteikðanâs procesa.\r\nATCERIETIES, ja jums ir daþâdi lietotâju konti, jums jâizmanto pareizais atlasîtajam DBMS.\r\nARÎ: Ja jums ir viens un tas pats konts, t.i., 'root' abâs DBMS, ja esat iestatîjis daþâdas paroles, jums ir jâizmanto pareizâ konta un DBMS parole.\r\n";
+$w_enterPort = "Ievadiet vajadzï¿½go porta numuru";
+$w_EnterSize = "Ievadiet izmï¿½ru: xxxx, kam seko M - Mega vai G - Giga \ r \ nSkaitlim jï¿½pievieno simbols M vai G. \ r \ nPiemï¿½ram: 64M; 256M; 1G";
+$w_EnterTime = "Ievadiet laiku sekundï¿½s";
+$w_MysqlMariaUser = "Ievadiet derï¿½gu lietotï¿½jvï¿½rdu. Ja nezinï¿½t, saglabï¿½jiet 'root' noklusï¿½jumï¿½. \ R \ nJa esat iestatï¿½jis paroli vai nu root, vai izvï¿½lï¿½tajam lietotï¿½jam, jums bï¿½s jï¿½ievada ï¿½ï¿½ parole, kad konsolï¿½ tiek prasï¿½ts ievadï¿½t paroli: Bez paroles ievadiet taustiï¿½u Enter";
+// Pï¿½diï¿½as " tekstï¿½ ir jï¿½atceï¿½: \" - \r\n var bï¿½t daudzrindu 
+$w_addingVerTxt = "Visi \"papildinï¿½jumi\", t.i., visi Apache, PHP, MySQL vai MariaDB versiju instalï¿½tï¿½ji, kï¿½ arï¿½ atjauninï¿½jumu (Wampserver, Aestan Tray Menu, xDebug u.c.) un tï¿½mekï¿½a lietojumprogrammu (PhpMyAdmin, Adminer) instalï¿½tï¿½ji ir vietnï¿½ \r\n\r\n'https://sourceforge.net/projects/wampserver/ '\r\n\r\n Vienkï¿½rï¿½i lejupielï¿½dï¿½jiet vajadzï¿½gos instalï¿½ï¿½anas failus un palaidiet tos, ar peles labo pogu klikï¿½ï¿½inot uz lejupielï¿½dï¿½tï¿½ faila nosaukuma. failu \"Palaist kï¿½ administratoram \", lai Wampserver versijai pievienotu pievienojumprogrammu vai lietojumprogrammu. \r\n\r\nTad Apache, PHP, MySQL vai MariaDB versijas maiï¿½a ir trï¿½s klikï¿½ï¿½u jautï¿½jums: \r\nKreisais klikï¿½ï¿½is -> PHP | Apache | MySQL | MariaDB -> Versija -> Izvï¿½lieties versiju \r\n\r\nVersijas maiï¿½a nemainï¿½s jï¿½su veiktï¿½s parametru izmaiï¿½as, kï¿½ arï¿½ nenodod datubï¿½zes no vecï¿½s versijas uz jaunï¿½ko. \r\n\r\n Pastï¿½v daudz labï¿½k organizï¿½ta un vienmï¿½r atjauninï¿½ta krï¿½tuve nekï¿½ Sourceforge: \r\n\r\n 'https: //wampserver.aviatechno.net '. \r\n\r\n Saites uz krï¿½tuvï¿½m atrodamas ar peles labo pogu klikï¿½ï¿½inot -> Palï¿½dzï¿½ba\r\n";
+$w_MySQLsqlmodeInfo = "MySQL/MariaDB sql-mode\r\nSQL serveris var darboties daï¿½ï¿½dos SQL reï¿½ï¿½mos atkarï¿½bï¿½ no sql-mode direktï¿½vas vï¿½rtï¿½bas.\r\nViena vai vairï¿½ku reï¿½ï¿½mu iestatï¿½ï¿½ana ierobeï¿½o noteiktas iespï¿½jas un prasa lielï¿½ku stingrï¿½bu SQL sintaksï¿½ un datu validï¿½cijï¿½.\r\nsql-mode reï¿½ï¿½ma darbï¿½ba my.ini failï¿½ ir ï¿½ï¿½da.\r\n\r\n- sql-mode: pï¿½c noklusï¿½juma\r\nnepastï¿½v vai ir komentï¿½ts (;sql-mode=\"... \")\r\nPiemï¿½ro MySQL / MariaDB versijas noklusï¿½juma reï¿½ï¿½mus\r\n\r\n- sql-mode: lietotï¿½ja reï¿½ï¿½ms\r\nKvalifikï¿½cijas reï¿½ï¿½ma direktï¿½va ir aizpildï¿½ta ar lietotï¿½ja definï¿½tiem reï¿½ï¿½miem, piemï¿½ram :\r\nsql-mode=\"NO_ZERO_DATE,NO_ZERO_IN_DATE,NO_AUTO_CREATE_USER\"\r\n\r\n- sql-mode: none\r\nKvalifikï¿½cijas reï¿½ï¿½ma sql reï¿½ï¿½ms ir tukï¿½s, taï¿½u tam jï¿½bï¿½t:\r\nsql-mode=\"\"\r\nneviens SQL reï¿½ï¿½ms netiek lietots. ";
+$w_PhpMyAdMinHelpTxt = "-- PhpMyAdmin\r\nIesï¿½kot phpMyAdmin, jums tiks lï¿½gts ievadï¿½t lietotï¿½ja vï¿½rdu un paroli.\r\nPï¿½c Wampserver 3 instalï¿½ï¿½anas noklusï¿½juma lietotï¿½jvï¿½rds ir \"root\"(bez pï¿½diï¿½ï¿½m) un nav parole, kas nozï¿½mï¿½, ka veidlapas Parole lodziï¿½ï¿½ jï¿½atstï¿½j tukï¿½s.\r\n\r\nPhpMyAdmin ir konfigurï¿½ts tï¿½, lai ï¿½autu piekï¿½ï¿½t MySQL vai MariaDB atkarï¿½bï¿½ no tï¿½, kuri ir aktï¿½vi.\r\nJa abas DBVS ir aktivizï¿½tas, jï¿½s pieteikï¿½anï¿½s ekrï¿½nï¿½ bï¿½s redzama nolaiï¿½amï¿½ izvï¿½lne ar nosaukumu \"Servera izvï¿½le\", nolaiï¿½amajï¿½ sarakstï¿½ vispirms tiks parï¿½dï¿½ts noklusï¿½juma serveris. Atlasiet DBMS, kuru vï¿½laties izmantot ï¿½eit kï¿½ daï¿½u no pieteikï¿½anï¿½s procesa.\r\nATCERIETIES, ja jums ir daï¿½ï¿½di lietotï¿½ju konti, jums jï¿½izmanto pareizais atlasï¿½tajam DBMS.\r\nARï¿½: Ja jums ir viens un tas pats konts, t.i., 'root' abï¿½s DBMS, ja esat iestatï¿½jis daï¿½ï¿½das paroles, jums ir jï¿½izmanto pareizï¿½ konta un DBMS parole.\r\n";
 
 ?>

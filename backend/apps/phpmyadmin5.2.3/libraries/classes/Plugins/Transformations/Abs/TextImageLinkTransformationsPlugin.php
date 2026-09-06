@@ -48,7 +48,7 @@ abstract class TextImageLinkTransformationsPlugin extends TransformationsPlugin
         $cfg = $GLOBALS['cfg'];
         $options = $this->getOptions($options, $cfg['DefaultTransformations']['TextImageLink']);
         $url = $options[0] . $buffer;
-        /* Do not allow javascript links */
+        
         if (! Sanitize::checkLink($url, true, true)) {
             return htmlspecialchars($url);
         }
@@ -63,7 +63,7 @@ abstract class TextImageLinkTransformationsPlugin extends TransformationsPlugin
         ]);
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

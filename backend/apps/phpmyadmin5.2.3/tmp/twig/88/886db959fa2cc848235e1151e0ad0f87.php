@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* login/footer.twig */
+
 class __TwigTemplate_5b8cb6a71a5bd637355a746b0e8ab8e2 extends Template
 {
     private $source;
@@ -34,12 +34,9 @@ class __TwigTemplate_5b8cb6a71a5bd637355a746b0e8ab8e2 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "</div>
 ";
-        // line 2
         if ((($context["check_timeout"] ?? null) == true)) {
-            // line 3
             yield "    </div>
 ";
         }

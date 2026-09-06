@@ -22,8 +22,6 @@ class ShippingCalculator
         float $cartTotal,
         ShippingMethod $method = ShippingMethod::STANDARD
     ): float {
-        
-        // Free shipping for large orders
         if ($cartTotal >= self::FREE_SHIPPING_THRESHOLD) {
             return 0.00;
         }
@@ -44,7 +42,6 @@ class ShippingCalculator
         $methods = [];
         
         foreach (ShippingMethod::cases() as $method) {
-            // Only show FREE if eligible
             if ($method === ShippingMethod::FREE 
                 && $cartTotal < self::FREE_SHIPPING_THRESHOLD) {
                 continue;

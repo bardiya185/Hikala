@@ -27,40 +27,40 @@ use function str_contains;
  */
 class Data
 {
-    /** @var array */
+    
     public $status;
 
-    /** @var array */
+    
     public $sections;
 
-    /** @var array */
+    
     public $variables;
 
-    /** @var array */
+    
     public $usedQueries;
 
-    /** @var array */
+    
     public $allocationMap;
 
-    /** @var array */
+    
     public $links;
 
-    /** @var bool */
+    
     public $dbIsLocal;
 
-    /** @var mixed */
+    
     public $section;
 
-    /** @var array */
+    
     public $sectionUsed;
 
-    /** @var string */
+    
     public $selfUrl;
 
-    /** @var bool */
+    
     public $dataLoaded;
 
-    /** @var ReplicationInfo */
+    
     private $replicationInfo;
 
     public function getReplicationInfo(): ReplicationInfo
@@ -76,7 +76,6 @@ class Data
      */
     public function __set($a, $b): void
     {
-        // Discard everything
     }
 
     /**
@@ -87,8 +86,6 @@ class Data
     private function getAllocations()
     {
         return [
-            // variable name => section
-            // variable names match when they begin with the given string
 
             'Com_' => 'com',
             'Innodb_' => 'innodb',
@@ -141,7 +138,6 @@ class Data
     private function getSections()
     {
         return [
-            // section => section name (description)
             'com' => 'Com',
             'query' => __('SQL query'),
             'innodb' => 'InnoDB',
@@ -175,7 +171,6 @@ class Data
         $replicaInfo = $this->replicationInfo->getReplicaInfo();
 
         $links = [];
-        // variable or section name => (name => url)
 
         $links['table'][__('Flush (close) all tables')] = [
             'url' => $this->selfUrl,
@@ -249,7 +244,6 @@ class Data
      */
     private function calculateValues(array $server_status, array $server_variables)
     {
-        // Key_buffer_fraction
         if (
             isset($server_status['Key_blocks_unused'], $server_variables['key_cache_block_size'])
             && isset($server_variables['key_buffer_size'])
@@ -268,8 +262,6 @@ class Data
                 * 1024
                 / $server_variables['key_buffer_size'];
         }
-
-        // Ratio for key read/write
         if (
             isset($server_status['Key_writes'], $server_status['Key_write_requests'])
             && $server_status['Key_write_requests'] > 0
@@ -287,8 +279,6 @@ class Data
             $key_read_requests = $server_status['Key_read_requests'];
             $server_status['Key_read_ratio_%'] = 100 * $key_reads / $key_read_requests;
         }
-
-        // Threads_cache_hitrate
         if (
             isset($server_status['Threads_created'], $server_status['Connections'])
             && $server_status['Connections'] > 0
@@ -358,8 +348,6 @@ class Data
         $this->replicationInfo->load($_POST['primary_connection'] ?? null);
 
         $this->selfUrl = basename($GLOBALS['PMA_PHP_SELF']);
-
-        // get status from server
         $server_status_result = $dbi->tryQuery('SHOW GLOBAL STATUS');
         if ($server_status_result === false) {
             $server_status = [];
@@ -369,48 +357,23 @@ class Data
             $server_status = $server_status_result->fetchAllKeyPair();
             unset($server_status_result);
         }
-
-        // for some calculations we require also some server settings
         $server_variables = $dbi->fetchResult('SHOW GLOBAL VARIABLES', 0, 1);
-
-        // cleanup of some deprecated values
         $server_status = self::cleanDeprecated($server_status);
-
-        // calculate some values
         $server_status = $this->calculateValues($server_status, $server_variables);
-
-        // split variables in sections
         $allocations = $this->getAllocations();
 
         $sections = $this->getSections();
-
-        // define some needful links/commands
         $links = $this->getLinks();
-
-        // Variable to contain all com_ variables (query statistics)
         $used_queries = [];
-
-        // Variable to map variable names to their respective section name
-        // (used for js category filtering)
         $allocationMap = [];
-
-        // Variable to mark used sections
         $sectionUsed = [];
-
-        // sort vars into arrays
         [
             $allocationMap,
             $sectionUsed,
             $used_queries,
         ] = $this->sortVariables($server_status, $allocations, $allocationMap, $sectionUsed, $used_queries);
-
-        // admin commands are not queries (e.g. they include COM_PING,
-        // which is excluded from $server_status['Questions'])
         unset($used_queries['Com_admin_commands']);
-
-        // Set all class properties
         $this->dbIsLocal = false;
-        // can be null if $cfg['ServerDefault'] = 0;
         $serverHostToLower = mb_strtolower((string) $GLOBALS['cfg']['Server']['host']);
         if (
             $serverHostToLower === 'localhost'

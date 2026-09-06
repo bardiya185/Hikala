@@ -8,7 +8,6 @@ if(WAMPTRACE_PROCESS) {
 	$errorTxt .= ' - Elapsed time='.(microtime(true)-$start_time);
 	error_log($errorTxt."\n",3,WAMPTRACE_FILE);
 }
-// Low limits of PHP, MySQL, MariaDB versions to search for
 $php_Limit = '7.4';
 $php_Min = 'php'.str_replace('.','',$php_Limit);
 $mysql_Limit = '5.7';
@@ -18,10 +17,6 @@ $mariadb_Min = 'mariadb'.str_replace('.','',$mariadb_Limit);
 
 require 'config.inc.php';
 require 'wampserver.lib.php';
-
-//-- Check if file 'last32|64_versions.txt'
-//   from 'https://wampserver.aviatechno.net'
-//   can be loaded and that the contents is correct.
 Command_Windows('Check Wampserver updates',55,2,0,'Check Wampserver updates');
 $last_wamp_versions = false;
 $message = $message_final = $message_question = '';
@@ -32,19 +27,13 @@ else
 
 $contents = @file_get_contents($file);
 if($contents !== false) {
-	// Rewrite the file 'last_versions.txt' into a php file
 	write_file('last_versions.php',$contents);
-	// Include file to get $wamp_versions array
 	include 'last_versions.php';
 	if(isset($wamp_versions) && is_array($wamp_versions) && count($wamp_versions) > 20) {
-		// Check if file 'last_versions_here.txt'
-		// from wampserver refresh.php script
-		// can be loaded and that the contents is correct
 		$file = 'last_versions_here.txt';
 		$contents = @file_get_contents($file);
 		if($contents !== false) {
 			write_file('last_versions_here.php',$contents);
-			// Include file to get $wamp_versions_here array
 			include 'last_versions_here.php';
 			if(isset($wamp_versions_here) && is_array($wamp_versions_here) && count($wamp_versions_here) > 4) {
 				$last_wamp_versions = true;
@@ -75,7 +64,6 @@ if(!$last_wamp_versions) {
 	trim(fgets(STDIN));
 	exit(0);
 }
-//We can check if there are updates
 $update_available = false;
 $your_versions = '';
 foreach($wamp_versions as $key => $last_version) {
@@ -103,7 +91,6 @@ foreach($wamp_versions as $key => $last_version) {
 		}
 	}
 	if(!$used) {
-		// Lower limits
 		if((strpos($key, 'php') === 0 && $key >= $php_Min) || (strpos($key, 'mysql') === 0 && $key >= $mysql_Min) || (strpos($key, 'mariadb') === 0 && $key >= $mariadb_Min)) {
 			$your_versions .= str_pad($key_txt.':',15).$version_used.' - Last version: '.$last_version."\n";
 		}

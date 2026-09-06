@@ -24,7 +24,7 @@ use const PHP_VERSION_ID;
  */
 class NodeFactory
 {
-    /** @var string */
+    
     protected static $namespace = 'PhpMyAdmin\\Navigation\\Nodes\\%s';
 
     /**
@@ -41,7 +41,7 @@ class NodeFactory
             $class = 'Node';
             trigger_error(
                 sprintf(
-                    /* l10n: The word "Node" must not be translated here */
+                    
                     __('Invalid class name "%1$s", using default of "Node"'),
                     $class
                 ),
@@ -64,11 +64,11 @@ class NodeFactory
      */
     private static function checkClass($class)
     {
-        /** @var class-string $class */
+        
         $class = sprintf(self::$namespace, $class);
 
         if (! class_exists($class)) {
-            /** @var class-string $class */
+            
             $class = sprintf(self::$namespace, 'Node');
             trigger_error(
                 sprintf(
@@ -98,7 +98,7 @@ class NodeFactory
     ): Node {
         $class = self::sanitizeClass($class);
 
-        /** @var Node $node */
+        
         $node = new $class($name, $type, $isGroup);
 
         return $node;

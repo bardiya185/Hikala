@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* import/javascript.twig */
+
 class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
 {
     private $source;
@@ -34,50 +34,34 @@ class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "\$( function() {
     ";
-        // line 3
         yield "    \$(\"#buttonGo\").on(\"click\", function() {
         ";
-        // line 5
         yield "        \$(\"#upload_form_form\").css(\"display\", \"none\");
 
         ";
-        // line 7
         if ((($context["handler"] ?? null) != "PhpMyAdmin\\Plugins\\Import\\Upload\\UploadNoplugin")) {
-            // line 8
             yield "            ";
-            // line 9
             yield "            ";
             $context["ajax_url"] = (("index.php?route=/import-status&id=" . ($context["upload_id"] ?? null)) . PhpMyAdmin\Url::getCommonRaw(["import_status" => 1], "&"));
-            // line 12
             yield "            ";
             $context["promot_str"] = PhpMyAdmin\Sanitize::jsFormat(_gettext("The file being uploaded is probably larger than the maximum allowed size or this is a known bug in webkit based (Safari, Google Chrome, Arora etc.) browsers."), false);
-            // line 13
             yield "            ";
             $context["statustext_str"] = PhpMyAdmin\Sanitize::escapeJsString(_gettext("%s of %s"));
-            // line 14
             yield "            ";
             $context["second_str"] = PhpMyAdmin\Sanitize::jsFormat(_gettext("%s/sec."), false);
-            // line 15
             yield "            ";
             $context["remaining_min"] = PhpMyAdmin\Sanitize::jsFormat(_gettext("About %MIN min. %SEC sec. remaining."), false);
-            // line 16
             yield "            ";
             $context["remaining_second"] = PhpMyAdmin\Sanitize::jsFormat(_gettext("About %SEC sec. remaining."), false);
-            // line 17
             yield "            ";
             $context["processed_str"] = PhpMyAdmin\Sanitize::jsFormat(_gettext("The file is being processed, please be patient."), false);
-            // line 18
             yield "            ";
             $context["import_url"] = PhpMyAdmin\Url::getCommonRaw(["import_status" => 1], "&");
-            // line 19
             yield "
             ";
-            // line 20
             $context["upload_html"] = ('' === $tmp = \Twig\Extension\CoreExtension::captureOutput((function () use (&$context, $macros, $blocks) {
-                // line 21
                 yield "                    <div class=\"upload_progress\">
                         <div class=\"upload_progress_bar_outer\">
                             <div class=\"percentage\"></div>
@@ -87,21 +71,17 @@ class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
                         </div>
                         <div>
                             <img src=\"";
-                // line 29
                 yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['PhpMyAdmin\Twig\AssetExtension']->getImagePath("ajax_clock_small.gif"), "html", null, true);
                 yield "\" width=\"16\" height=\"16\" alt=\"ajax clock\"> ";
                 yield PhpMyAdmin\Sanitize::jsFormat(_gettext("Uploading your import file…"), false);
-                // line 30
                 yield "</div>
                         <div id=\"statustext\"></div>
                     </div>
             ";
                 return; yield '';
             })())) ? '' : new Markup($tmp, $this->env->getCharset());
-            // line 34
             yield "
             ";
-            // line 36
             yield "            var finished = false;
             var percent  = 0.0;
             var total    = 0;
@@ -112,7 +92,6 @@ class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
             var perform_upload = function () {
             new \$.getJSON(
                 \"";
-            // line 45
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["ajax_url"] ?? null), "js"), "html", null, true);
             yield "\",
                 {},
@@ -124,7 +103,6 @@ class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
 
                     if (total==0 && complete==0 && percent==0) {
                         \$(\"#upload_form_status_info\").html('<img src=\"";
-            // line 54
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['PhpMyAdmin\Twig\AssetExtension']->getImagePath("ajax_clock_small.gif"), "html", null, true);
             yield "\" width=\"16\" height=\"16\" alt=\"ajax clock\"> ";
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["promot_str"] ?? null), "js"), "html", null, true);
@@ -142,7 +120,6 @@ class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
                             + now.getMilliseconds() - 1000;
                         var statustext = Functions.sprintf(
                             \"";
-            // line 67
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["statustext_str"] ?? null), "js"), "html", null, true);
             yield "\",
                             Functions.formatBytes(
@@ -155,11 +132,9 @@ class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
 
                         if (\$(\"#importmain\").is(\":visible\")) {
                             ";
-            // line 78
             yield "                            \$(\"#importmain\").hide();
                             \$(\"#import_form_status\")
                             .html('";
-            // line 80
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["upload_html"] ?? null), "js"), "html", null, true);
             yield "')
                             .show();
@@ -167,12 +142,10 @@ class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
                         }
                         else if (percent > 9 || complete > 2000000) {
                             ";
-            // line 86
             yield "                            var used_time = now - import_start;
                             var seconds = parseInt(((total - complete) / complete) * used_time / 1000);
                             var speed = Functions.sprintf(
                                 \"";
-            // line 89
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["second_str"] ?? null), "js"), "html", null, true);
             yield "\",
                                 Functions.formatBytes(complete / used_time * 1000, 1, Messages.strDecimalSeparator)
@@ -183,7 +156,6 @@ class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
                             var estimated_time;
                             if (minutes > 0) {
                                 estimated_time = \"";
-            // line 97
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["remaining_min"] ?? null), "js"), "html", null, true);
             yield "\"
                                     .replace(\"%MIN\", minutes)
@@ -191,7 +163,6 @@ class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
                             }
                             else {
                                 estimated_time = \"";
-            // line 102
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["remaining_second"] ?? null), "js"), "html", null, true);
             yield "\"
                                 .replace(\"%SEC\", seconds);
@@ -205,7 +176,6 @@ class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
                         \$(\".percentage\").text(percent_str);
 
                         ";
-            // line 114
             yield "                        if (original_title !== false) {
                             parent.document.title
                                 = percent_str + \" - \" + original_title;
@@ -226,23 +196,19 @@ class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
                         }
                         \$(\"#importmain\").hide();
                         ";
-            // line 134
             yield "                        \$(\"#import_form_status\")
                         .html('<img src=\"";
-            // line 135
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['PhpMyAdmin\Twig\AssetExtension']->getImagePath("ajax_clock_small.gif"), "html", null, true);
             yield "\" width=\"16\" height=\"16\" alt=\"ajax clock\"> ";
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["processed_str"] ?? null), "js"), "html", null, true);
             yield "')
                         .show();
                         \$(\"#import_form_status\").load(\"index.php?route=/import-status&message=true&";
-            // line 137
             yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["import_url"] ?? null), "js"), "html", null, true);
             yield "\");
                         Navigation.reload();
 
                         ";
-            // line 141
             yield "                    }
                     else {
                         setTimeout(perform_upload, 1000);
@@ -252,29 +218,22 @@ class __TwigTemplate_cfe000002c0ba27e19eae7271758c36a extends Template
             setTimeout(perform_upload, 1000);
         ";
         } else {
-            // line 149
             yield "            ";
-            // line 150
             yield "            ";
             $context["image_tag"] = ('' === $tmp = \Twig\Extension\CoreExtension::captureOutput((function () use (&$context, $macros, $blocks) {
-                // line 151
                 yield "<img src=\"";
                 yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['PhpMyAdmin\Twig\AssetExtension']->getImagePath("ajax_clock_small.gif"), "html", null, true);
                 yield "\" width=\"16\" height=\"16\" alt=\"ajax clock\">";
-                // line 152
                 yield PhpMyAdmin\Sanitize::jsFormat(_gettext("Please be patient, the file is being uploaded. Details about the upload are not available."), false);
-                // line 153
                 yield PhpMyAdmin\Html\MySQLDocumentation::showDocumentation("faq", "faq2-9");
                 return; yield '';
             })())) ? '' : new Markup($tmp, $this->env->getCharset());
-            // line 155
             yield "            \$('#upload_form_status_info').html('";
             yield ($context["image_tag"] ?? null);
             yield "');
             \$(\"#upload_form_status\").css(\"display\", \"none\");
         ";
         }
-        // line 158
         yield "    });
 });
 ";

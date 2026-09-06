@@ -82,26 +82,8 @@ abstract class ExternalTransformationsPlugin extends TransformationsPlugin
      */
     public function applyTransformation($buffer, array $options = [], ?FieldMetadata $meta = null)
     {
-        // possibly use a global transform and feed it with special options
-
-        // further operations on $buffer using the $options[] array.
 
         $allowed_programs = [];
-
-        // WARNING:
-        //
-        // It's up to administrator to allow anything here. Note that users may
-        // specify any parameters, so when programs allow output redirection or
-        // any other possibly dangerous operations, you should write wrapper
-        // script that will publish only functions you really want.
-        //
-        // Add here program definitions like (note that these are NOT safe
-        // programs):
-        //
-        //$allowed_programs[0] = '/usr/local/bin/tidy';
-        //$allowed_programs[1] = '/usr/local/bin/validate';
-
-        // no-op when no allowed programs
         if (count($allowed_programs) === 0) {
             return $buffer;
         }
@@ -125,8 +107,6 @@ abstract class ExternalTransformationsPlugin extends TransformationsPlugin
                 '[code]libraries/classes/Plugins/Transformations/Abs/ExternalTransformationsPlugin.php[/code]'
             ), E_USER_DEPRECATED);
         }
-
-        // needs PHP >= 4.3.0
         $newstring = '';
         $descriptorspec = [
             0 => [
@@ -148,7 +128,6 @@ abstract class ExternalTransformationsPlugin extends TransformationsPlugin
             }
 
             fclose($pipes[1]);
-            // we don't currently use the return value
             proc_close($process);
         }
 
@@ -161,7 +140,7 @@ abstract class ExternalTransformationsPlugin extends TransformationsPlugin
         return $retstring;
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

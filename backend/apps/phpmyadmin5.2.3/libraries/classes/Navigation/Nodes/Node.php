@@ -45,7 +45,7 @@ class Node
      *             This will never change after being assigned
      */
     public $realName = '';
-    /** @var int May be one of CONTAINER or OBJECT */
+    
     public $type = self::OBJECT;
     /**
      * @var bool Whether this object has been created while grouping nodes
@@ -102,11 +102,11 @@ class Node
         'icon' => ['route' => '', 'params' => []],
     ];
 
-    /** @var string HTML title */
+    
     public $title;
-    /** @var string Extra CSS classes for the node */
+    
     public $classes = '';
-    /** @var bool Whether this node is a link for creating new objects */
+    
     public $isNew = false;
     /**
      * @var int The position for the pagination of
@@ -119,13 +119,13 @@ class Node
      */
     public $pos3 = 0;
 
-    /** @var Relation */
+    
     protected $relation;
 
-    /** @var string $displayName  display name for the navigation tree */
+    
     public $displayName;
 
-    /** @var string|null */
+    
     public $urlParamName = null;
 
     /**

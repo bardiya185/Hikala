@@ -26,7 +26,7 @@ use const PHP_VERSION_ID;
 
 final class ImageWrapper
 {
-    /** @var resource */
+    
     private $image;
 
     /**

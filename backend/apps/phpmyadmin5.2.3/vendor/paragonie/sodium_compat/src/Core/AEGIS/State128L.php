@@ -13,7 +13,7 @@ if (!defined('SODIUM_COMPAT_AEGIS_C1')) {
 
 class ParagonIE_Sodium_Core_AEGIS_State128L
 {
-    /** @var array<int, string> $state */
+    
     protected $state;
     public function __construct()
     {

@@ -9,8 +9,6 @@
 
 declare(strict_types=1);
 
-// phpcs:disable Squiz.Functions.GlobalFunction
-
 /**
  * This function returns username and password.
  *
@@ -22,7 +20,7 @@ declare(strict_types=1);
  */
 function get_login_credentials($user)
 {
-    /* Optionally we can use passed username */
+    
     if (! empty($user)) {
         return [
             $user,
@@ -30,7 +28,7 @@ function get_login_credentials($user)
         ];
     }
 
-    /* Here we would retrieve the credentials */
+    
     return [
         'root',
         '',

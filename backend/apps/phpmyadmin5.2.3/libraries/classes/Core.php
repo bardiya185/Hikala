@@ -73,7 +73,6 @@ class Core
      */
     public static function securePath(string $path): string
     {
-        // change .. to .
         return (string) preg_replace('@\.\.*@', '.', $path);
     }
 
@@ -92,7 +91,7 @@ class Core
     ): void {
         global $dbi;
 
-        /* Use format string if applicable */
+        
         if (is_string($message_args)) {
             $error_message = sprintf($error_message, $message_args);
         } elseif (is_array($message_args)) {
@@ -120,7 +119,6 @@ class Core
         }
 
         if (! empty($_REQUEST['ajax_request'])) {
-            // Generate JSON manually
             self::headerJSON();
             echo json_encode(
                 [
@@ -159,7 +157,7 @@ class Core
      */
     public static function getPHPDocLink(string $target): string
     {
-        /* List of PHP documentation translations */
+        
         $php_doc_languages = [
             'pt_BR',
             'zh_CN',
@@ -199,7 +197,7 @@ class Core
 
         $message = 'The %s extension is missing. Please check your PHP configuration.';
 
-        /* Gettext does not have to be loaded yet here */
+        
         if (function_exists('__')) {
             $message = __('The %s extension is missing. Please check your PHP configuration.');
         }
@@ -381,10 +379,6 @@ class Core
                 PHP_VERSION_ID < 80400 ? E_USER_ERROR : E_USER_WARNING
             );
         }
-
-        // bug #1523784: IE6 does not like 'Refresh: 0', it
-        // results in a blank page
-        // but we need it when coming from the cookie login panel)
         if ($GLOBALS['config']->get('PMA_IS_IIS') && $use_refresh) {
             $response->header('Refresh: 0; ' . $uri);
 
@@ -402,11 +396,7 @@ class Core
         if (defined('TESTSUITE')) {
             return;
         }
-
-        // No caching
         $headers = self::getNoCacheHeaders();
-
-        // Media type
         $headers['Content-Type'] = 'application/json; charset=UTF-8';
 
         /**
@@ -443,19 +433,9 @@ class Core
     {
         $headers = [];
         $date = (string) gmdate(DATE_RFC1123);
-
-        // rfc2616 - Section 14.21
         $headers['Expires'] = $date;
-
-        // HTTP/1.1
         $headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, pre-check=0, post-check=0, max-age=0';
-
-        // HTTP/1.0
         $headers['Pragma'] = 'no-cache';
-
-        // test case: exporting a database into a .gz file with Safari
-        // would produce files not having the current time
-        // (added this header for Safari but should not harm other browsers)
         $headers['Last-Modified'] = $date;
 
         return $headers;
@@ -481,7 +461,7 @@ class Core
             $headers = self::getNoCacheHeaders();
         }
 
-        /* Replace all possibly dangerous chars in filename */
+        
         $filename = Sanitize::sanitizeFilename($filename);
         if ($filename !== '') {
             $headers['Content-Description'] = 'File Transfer';
@@ -514,10 +494,6 @@ class Core
         bool $noCache = true
     ): void {
         $headers = self::getDownloadHeaders($filename, $mimetype, $length, $noCache);
-
-        // The default output in PMA uses gzip,
-        // so if we want to output uncompressed file, we should reset the encoding.
-        // See PHP bug https://github.com/php/php-src/issues/8218
         header_remove('Content-Encoding');
 
         foreach ($headers as $name => $value) {
@@ -589,7 +565,6 @@ class Core
 
         $path[0] =& $array;
         $found = true;
-        // go as deep as required or possible
         foreach ($keys as $key) {
             if (! isset($path[$depth][$key])) {
                 $found = false;
@@ -599,14 +574,10 @@ class Core
             $depth++;
             $path[$depth] =& $path[$depth - 1][$key];
         }
-
-        // if element found, remove it
         if ($found) {
             unset($path[$depth][$keys_last]);
             $depth--;
         }
-
-        // remove empty nested arrays
         for (; $depth >= 0; $depth--) {
             if (isset($path[$depth + 1]) && count($path[$depth + 1]) !== 0) {
                 break;
@@ -633,7 +604,6 @@ class Core
         $params['url'] = $url;
 
         $url = Url::getCommon($params);
-        //strip off token and such sensitive information. Just keep url.
         $arr = parse_url($url);
 
         if (! is_array($arr)) {
@@ -663,13 +633,9 @@ class Core
         if (! is_array($arr)) {
             $arr = [];
         }
-
-        // We need host to be set
         if (! isset($arr['host']) || strlen($arr['host']) == 0) {
             return false;
         }
-
-        // We do not want these to be present
         $blocked = [
             'user',
             'pass',
@@ -683,31 +649,31 @@ class Core
 
         $domain = $arr['host'];
         $domainAllowList = [
-            /* Include current domain */
+            
             $_SERVER['SERVER_NAME'],
-            /* phpMyAdmin domains */
+            
             'wiki.phpmyadmin.net',
             'www.phpmyadmin.net',
             'phpmyadmin.net',
             'demo.phpmyadmin.net',
             'docs.phpmyadmin.net',
-            /* mysql.com domains */
+            
             'dev.mysql.com',
             'bugs.mysql.com',
-            /* mariadb domains */
+            
             'mariadb.org',
             'mariadb.com',
-            /* php.net domains */
+            
             'php.net',
             'www.php.net',
-            /* Github domains*/
+            
             'github.com',
             'www.github.com',
-            /* Percona domains */
+            
             'www.percona.com',
-            /* CVE domain */
+            
             'www.cve.org',
-            /* Following are doubtful ones. */
+            
             'mysqldatabaseadministration.blogspot.com',
         ];
 
@@ -805,17 +771,17 @@ class Core
      */
     public static function getIp()
     {
-        /* Get the address of user */
+        
         if (empty($_SERVER['REMOTE_ADDR'])) {
-            /* We do not know remote IP */
+            
             return false;
         }
 
         $direct_ip = $_SERVER['REMOTE_ADDR'];
 
-        /* Do we trust this IP as a proxy? If yes we will use it's header. */
+        
         if (! isset($GLOBALS['cfg']['TrustedProxies'][$direct_ip])) {
-            /* Return true IP */
+            
             return $direct_ip;
         }
 
@@ -823,19 +789,13 @@ class Core
          * Parse header in form:
          * X-Forwarded-For: client, proxy1, proxy2
          */
-        // Get header content
         $value = self::getenv($GLOBALS['cfg']['TrustedProxies'][$direct_ip]);
-        // Grab first element what is client adddress
         $value = explode(',', $value)[0];
-        // checks that the header contains only one IP address,
         $is_ip = filter_var($value, FILTER_VALIDATE_IP);
 
         if ($is_ip !== false) {
-            // True IP behind a proxy
             return $value;
         }
-
-        // We could not parse header
         return false;
     }
 
@@ -883,7 +843,7 @@ class Core
      */
     public static function safeUnserialize(string $data)
     {
-        /* validate serialized data */
+        
         $length = strlen($data);
         $depth = 0;
         for ($i = 0; $i < $length; $i++) {
@@ -891,7 +851,7 @@ class Core
 
             switch ($value) {
                 case '}':
-                    /* end of array */
+                    
                     if ($depth <= 0) {
                         return null;
                     }
@@ -899,16 +859,12 @@ class Core
                     $depth--;
                     break;
                 case 's':
-                    /* string */
-                    // parse sting length
+                    
                     $strlen = intval(substr($data, $i + 2));
-                    // string start
                     $i = strpos($data, ':', $i + 2);
                     if ($i === false) {
                         return null;
                     }
-
-                    // skip string, quotes and ;
                     $i += 2 + $strlen + 1;
                     if ($data[$i] !== ';') {
                         return null;
@@ -919,8 +875,7 @@ class Core
                 case 'b':
                 case 'i':
                 case 'd':
-                    /* bool, integer or double */
-                    // skip value to separator
+                    
                     $i = strpos($data, ';', $i);
                     if ($i === false) {
                         return null;
@@ -928,19 +883,15 @@ class Core
 
                     break;
                 case 'a':
-                    /* array */
-                    // find array start
+                    
                     $i = strpos($data, '{', $i);
                     if ($i === false) {
                         return null;
                     }
-
-                    // remember nesting
                     $depth++;
                     break;
                 case 'N':
-                    /* null */
-                    // skip to end
+                    
                     $i = strpos($data, ';', $i);
                     if ($i === false) {
                         return null;
@@ -948,12 +899,10 @@ class Core
 
                     break;
                 default:
-                    /* any other elements are not wanted */
+                    
                     return null;
             }
         }
-
-        // check unterminated arrays
         if ($depth > 0) {
             return null;
         }

@@ -21,10 +21,10 @@ use function strlen;
  */
 class RoutinesController extends AbstractController
 {
-    /** @var CheckUserPrivileges */
+    
     private $checkUserPrivileges;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(

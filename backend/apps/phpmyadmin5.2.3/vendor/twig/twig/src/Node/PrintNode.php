@@ -31,7 +31,7 @@ class PrintNode extends Node implements NodeOutputInterface
 
     public function compile(Compiler $compiler): void
     {
-        /** @var AbstractExpression */
+        
         $expr = $this->getNode('expr');
 
         $compiler

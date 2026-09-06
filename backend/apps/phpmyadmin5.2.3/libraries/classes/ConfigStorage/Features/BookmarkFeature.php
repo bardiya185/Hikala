@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class BookmarkFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $bookmark;
 
     public function __construct(DatabaseName $database, TableName $bookmark)

@@ -163,7 +163,7 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
             $c %= 64;
         }
         if ($c >= 32) {
-            /** @var int $tmp */
+            
             $tmp = $x[0];
             $x[0] = $x[1];
             $x[1] = $tmp;
@@ -176,7 +176,7 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
         $l0 = 0;
         $c = 64 - $c;
 
-        /** @var int $c */
+        
         if ($c < 32) {
             $h0 = ((int) ($x[0]) << $c) | (
                 (
@@ -226,12 +226,12 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
      */
     protected static function load64(SplFixedArray $x, $i)
     {
-        /** @var int $l */
+        
         $l = (int) ($x[$i])
              | ((int) ($x[$i+1]) << 8)
              | ((int) ($x[$i+2]) << 16)
              | ((int) ($x[$i+3]) << 24);
-        /** @var int $h */
+        
         $h = (int) ($x[$i+4])
              | ((int) ($x[$i+5]) << 8)
              | ((int) ($x[$i+6]) << 16)
@@ -257,13 +257,13 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
                     ... becomes ...
                [0, 0, 0, 0, 1, 1, 1, 1]
             */
-            /** @var int $uIdx */
+            
             $uIdx = ((7 - $j) & 4) >> 2;
             $x[$i]   = ((int) ($u[$uIdx]) & 0xff);
             if (++$i > $maxLength) {
                 return;
             }
-            /** @psalm-suppress MixedOperand */
+            
             $u[$uIdx] >>= 8;
         }
     }
@@ -469,7 +469,7 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
             $fill = 256 - $left;
 
             if ($plen > $fill) {
-                # memcpy( S->buf + left, in, fill ); /* Fill buffer */
+                # memcpy( S->buf + left, in, fill ); 
                 for ($i = $fill; $i--;) {
                     $ctx[3][$i + $left] = $p[$i + $offset];
                 }
@@ -480,10 +480,10 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
                 # blake2b_increment_counter( S, BLAKE2B_BLOCKBYTES );
                 self::increment_counter($ctx, 128);
 
-                # blake2b_compress( S, S->buf ); /* Compress */
+                # blake2b_compress( S, S->buf ); 
                 self::compress($ctx, $ctx[3]);
 
-                # memcpy( S->buf, S->buf + BLAKE2B_BLOCKBYTES, BLAKE2B_BLOCKBYTES ); /* Shift buffer left */
+                # memcpy( S->buf, S->buf + BLAKE2B_BLOCKBYTES, BLAKE2B_BLOCKBYTES ); 
                 for ($i = 128; $i--;) {
                     $ctx[3][$i] = $ctx[3][$i + 128];
                 }
@@ -695,7 +695,7 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
     public static function contextToString(SplFixedArray $ctx)
     {
         $str = '';
-        /** @var array<int, array<int, int>> $ctxA */
+        
         $ctxA = $ctx[0]->toArray();
 
         # uint64_t h[8];
@@ -717,7 +717,7 @@ abstract class ParagonIE_Sodium_Core_BLAKE2b extends ParagonIE_Sodium_Core_Util
         # uint8_t buf[2 * 128];
         $str .= self::SplFixedArrayToString($ctx[3]);
 
-        /** @var int $ctx4 */
+        
         $ctx4 = (int) $ctx[4];
 
         # size_t buflen;

@@ -22,10 +22,10 @@ use function __;
  */
 class OperationsController extends AbstractController
 {
-    /** @var Operations */
+    
     private $operations;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -66,7 +66,7 @@ class OperationsController extends AbstractController
                     $message->addText($tableObject->getLastMessage());
                     $result = true;
                     $table = $tableObject->getName();
-                    /* Force reread after rename */
+                    
                     $tableObject->getStatusInfo(null, true);
                     $reload = true;
                 } else {
@@ -79,8 +79,6 @@ class OperationsController extends AbstractController
         }
 
         if (isset($result)) {
-            // set to success by default, because result set could be empty
-            // (for example, a table rename)
             if (empty($message->getString())) {
                 if ($result) {
                     $message->addText(
@@ -89,8 +87,6 @@ class OperationsController extends AbstractController
                 } else {
                     $message->addText(__('Error'));
                 }
-
-                // $result should exist, regardless of $_message
                 $type = $result ? 'success' : 'error';
             }
 

@@ -1,7 +1,4 @@
 <?php
-// // 3.1.1 - txtDocRoot
-
-// translated by František Bartoš (Bart, admin@bart.cz)
 
 $langues = array(
 	'langue' => 'Czech',

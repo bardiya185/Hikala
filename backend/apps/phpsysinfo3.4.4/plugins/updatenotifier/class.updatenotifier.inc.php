@@ -61,7 +61,6 @@ class UpdateNotifier extends PSI_Plugin
         }
 
         if (trim($buffer_info) != "") {
-            // Remove blank lines
             $this->_filecontent = preg_split("/\r?\n/", $buffer_info, -1, PREG_SPLIT_NO_EMPTY);
         }
     }

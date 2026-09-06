@@ -84,7 +84,7 @@ abstract class DownloadTransformationsPlugin extends TransformationsPlugin
         return $link;
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the specific plugin

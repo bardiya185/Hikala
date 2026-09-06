@@ -20,7 +20,7 @@ use function strlen;
  */
 class TriggersController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(ResponseRenderer $response, Template $template, string $db, DatabaseInterface $dbi)

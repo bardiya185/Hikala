@@ -20,7 +20,7 @@ use function sprintf;
 
 class CentralColumnsController extends AbstractController
 {
-    /** @var CentralColumns */
+    
     private $centralColumns;
 
     public function __construct(

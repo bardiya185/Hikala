@@ -90,8 +90,6 @@ class ErrorHandler
         if (! isset($_SESSION['errors'])) {
             $_SESSION['errors'] = [];
         }
-
-        // remember only not displayed errors
         foreach ($this->errors as $key => $error) {
             /**
              * We don't want to store all errors here as it would
@@ -162,13 +160,7 @@ class ErrorHandler
      */
     public function sliceErrors(int $count): array
     {
-        // store the errors before any operation, example number of items: 10
         $errors = $this->getErrors(false);
-
-        // before array_splice $this->errors has 10 elements
-        // cut out $count items out, let's say $count = 9
-        // $errors will now contain 10 - 9 = 1 elements
-        // $this->errors will contain the 9 elements left
         $this->errors = array_splice($errors, 0, $count);
 
         return $errors;
@@ -273,14 +265,9 @@ class ErrorHandler
         if ($escape) {
             $errstr = htmlspecialchars($errstr);
         }
-
-        // create error object
         $error = new Error($errno, $errstr, $errfile, $errline);
         $error->setHideLocation($this->hideLocation);
-
-        // Deprecation errors will be shown in development environment, as they will have a different number.
         if ($error->getNumber() !== E_DEPRECATED) {
-            // do not repeat errors
             $this->errors[$error->getHash()] = $error;
         }
 
@@ -292,22 +279,19 @@ class ErrorHandler
             case E_CORE_WARNING:
             case E_COMPILE_WARNING:
             case E_RECOVERABLE_ERROR:
-                /* Avoid rendering BB code in PHP errors */
+                
                 $error->setBBCode(false);
                 break;
             case E_USER_NOTICE:
             case E_USER_WARNING:
             case E_USER_ERROR:
             case E_USER_DEPRECATED:
-                // just collect the error
-                // display is called from outside
                 break;
             case E_ERROR:
             case E_PARSE:
             case E_CORE_ERROR:
             case E_COMPILE_ERROR:
             default:
-                // FATAL error, display it and exit
                 $this->dispFatalError($error);
                 if (! defined('TESTSUITE')) {
                     exit; // @codeCoverageIgnore
@@ -324,8 +308,6 @@ class ErrorHandler
      */
     public function triggerError(string $errorInfo, int $errorNumber = E_USER_NOTICE): void
     {
-        // we could also extract file and line from backtrace
-        // and call handleError() directly
         trigger_error($errorInfo, $errorNumber);
     }
 
@@ -382,7 +364,6 @@ class ErrorHandler
     public function getDispErrors(): string
     {
         $retval = '';
-        // display errors if SendErrorReports is set to 'ask'.
         if ($GLOBALS['cfg']['SendErrorReports'] !== 'never') {
             foreach ($this->getErrors() as $error) {
                 if ($error->isDisplayed()) {
@@ -394,15 +375,10 @@ class ErrorHandler
         } else {
             $retval .= $this->getDispUserErrors();
         }
-
-        // if preference is not 'never' and
-        // there are 'actual' errors to be reported
         if ($GLOBALS['cfg']['SendErrorReports'] !== 'never' && $this->countErrors() != $this->countUserErrors()) {
-            // add report button.
             $retval .= '<form method="post" action="' . Url::getFromRoute('/error-report')
                     . '" id="pma_report_errors_form"';
             if ($GLOBALS['cfg']['SendErrorReports'] === 'always') {
-                // in case of 'always', generate 'invisible' form.
                 $retval .= ' class="hide"';
             }
 
@@ -422,7 +398,6 @@ class ErrorHandler
                     . '</label>';
 
             if ($GLOBALS['cfg']['SendErrorReports'] === 'ask') {
-                // add ignore buttons
                 $retval .= '<input type="submit" value="'
                         . __('Ignore')
                         . '" id="pma_ignore_errors_bottom" class="btn btn-secondary float-end">';
@@ -445,8 +420,6 @@ class ErrorHandler
         if (! isset($_SESSION['errors'])) {
             return;
         }
-
-        // restore saved errors
         foreach ($_SESSION['errors'] as $hash => $error) {
             if (! ($error instanceof Error) || isset($this->errors[$hash])) {
                 continue;
@@ -454,8 +427,6 @@ class ErrorHandler
 
             $this->errors[$hash] = $error;
         }
-
-        // delete stored errors
         $_SESSION['errors'] = [];
         unset($_SESSION['errors']);
     }
@@ -562,35 +533,26 @@ class ErrorHandler
      */
     public function reportErrors(): void
     {
-        // if there're no actual errors,
         if (! $this->hasErrors() || $this->countErrors() == $this->countUserErrors()) {
-            // then simply return.
             return;
         }
-
-        // Delete all the prev_errors in session & store new prev_errors in session
         $this->savePreviousErrors();
         $response = ResponseRenderer::getInstance();
         $jsCode = '';
         if ($GLOBALS['cfg']['SendErrorReports'] === 'always') {
             if ($response->isAjax()) {
-                // set flag for automatic report submission.
                 $response->addJSON('sendErrorAlways', '1');
             } else {
-                // send the error reports asynchronously & without asking user
                 $jsCode .= '$("#pma_report_errors_form").submit();'
                         . 'Functions.ajaxShowMessage(
                             Messages.phpErrorsBeingSubmitted, false
                         );';
-                // js code to appropriate focusing,
                 $jsCode .= '$("html, body").animate({
                                 scrollTop:$(document).height()
                             }, "slow");';
             }
         } elseif ($GLOBALS['cfg']['SendErrorReports'] === 'ask') {
-            //ask user whether to submit errors or not.
             if (! $response->isAjax()) {
-                // js code to show appropriate msgs, event binding & focusing.
                 $jsCode = 'Functions.ajaxShowMessage(Messages.phpErrorsFound);'
                         . '$("#pma_ignore_errors_popup").on("click", function() {
                             Functions.ignorePhpErrors()
@@ -613,9 +575,6 @@ class ErrorHandler
                         }, "slow");';
             }
         }
-
-        // The errors are already sent from the response.
-        // Just focus on errors division upon load event.
         $response->getFooter()->getScripts()->addCode($jsCode);
     }
 }

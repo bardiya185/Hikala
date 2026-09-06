@@ -93,14 +93,12 @@ class WebpageXML extends Output implements PSI_Interface_Output
                     $this->error->addError("file_exists(class.WINNT.inc.php)", "WINNT is not currently supported");
                 }
             } else {
-                // Figure out which OS we are running on, and detect support
                 if (!file_exists(PSI_APP_ROOT.'/includes/os/class.'.PSI_OS.'.inc.php')) {
                     $this->error->addError("file_exists(class.".PSI_OS.".inc.php)", PSI_OS." is not currently supported");
                 }
             }
 
             if (!defined('PSI_MBINFO') && (!$this->_blockName || in_array($this->_blockName, array('mbinfo','voltage','current','temperature','fans','power','other')))) {
-                // check if there is a valid sensor configuration in phpsysinfo.ini
                 $foundsp = array();
                 if (defined('PSI_SENSOR_PROGRAM') && is_string(PSI_SENSOR_PROGRAM)) {
                     if (preg_match(ARRAY_EXP, PSI_SENSOR_PROGRAM)) {
@@ -126,7 +124,6 @@ class WebpageXML extends Output implements PSI_Interface_Output
             }
 
             if (!defined('PSI_UPSINFO') && (!$this->_blockName || ($this->_blockName==='ups'))) {
-                // check if there is a valid ups configuration in phpsysinfo.ini
                 $foundup = array();
                 if (defined('PSI_UPS_PROGRAM') && is_string(PSI_UPS_PROGRAM)) {
                     if (preg_match(ARRAY_EXP, PSI_UPS_PROGRAM)) {
@@ -149,13 +146,9 @@ class WebpageXML extends Output implements PSI_Interface_Output
                  */
                 define('PSI_UPSINFO', serialize($foundup));
             }
-
-            // if there are errors stop executing the script until they are fixed
             if ($this->error->errorsExist()) {
                 $this->error->errorsAsXML();
             }
-
-            // Create the XML
             $this->_xml = new XML($this->_completeXML, '', $this->_blockName);
         } else {
             if ((PSI_OS == 'WINNT') || (PSI_OS == 'Linux')) {
@@ -212,8 +205,6 @@ class WebpageXML extends Output implements PSI_Interface_Output
                     }
                 }
             }
-
-            // Create the XML
             $this->_xml = new XML(false, $this->_pluginName);
         }
     }

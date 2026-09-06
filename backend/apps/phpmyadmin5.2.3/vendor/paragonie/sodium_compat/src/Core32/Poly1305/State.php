@@ -56,7 +56,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
                 'Poly1305 requires a 32-byte key'
             );
         }
-        /* r &= 0xffffffc0ffffffc0ffffffc0fffffff */
+        
         $this->r = array(
             // st->r[0] = ...
             ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($key, 0, 4))
@@ -84,7 +84,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
                 ->mask(0x00fffff)
         );
 
-        /* h = 0 */
+        
         $this->h = array(
             new ParagonIE_Sodium_Core32_Int32(array(0, 0), true),
             new ParagonIE_Sodium_Core32_Int32(array(0, 0), true),
@@ -93,7 +93,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
             new ParagonIE_Sodium_Core32_Int32(array(0, 0), true)
         );
 
-        /* save pad for later */
+        
         $this->pad = array(
             ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($key, 16, 4))
                 ->setUnsignedInt(true)->toInt64(),
@@ -121,9 +121,9 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
     {
         $bytes = self::strlen($message);
 
-        /* handle leftover */
+        
         if ($this->leftover) {
-            /** @var int $want */
+            
             $want = ParagonIE_Sodium_Core32_Poly1305::BLOCK_SIZE - $this->leftover;
             if ($want > $bytes) {
                 $want = $bytes;
@@ -148,12 +148,12 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
             $this->leftover = 0;
         }
 
-        /* process full blocks */
+        
         if ($bytes >= ParagonIE_Sodium_Core32_Poly1305::BLOCK_SIZE) {
-            /** @var int $want */
+            
             $want = $bytes & ~(ParagonIE_Sodium_Core32_Poly1305::BLOCK_SIZE - 1);
             if ($want >= ParagonIE_Sodium_Core32_Poly1305::BLOCK_SIZE) {
-                /** @var string $block */
+                
                 $block = self::substr($message, 0, $want);
                 if (self::strlen($block) >= ParagonIE_Sodium_Core32_Poly1305::BLOCK_SIZE) {
                     $this->blocks($block, $want);
@@ -163,7 +163,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
             }
         }
 
-        /* store leftover */
+        
         if ($bytes) {
             for ($i = 0; $i < $bytes; ++$i) {
                 $mi = self::chrToInt($message[$i]);
@@ -188,7 +188,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
         if (self::strlen($message) < 16) {
             $message = str_pad($message, 16, "\x00", STR_PAD_RIGHT);
         }
-        $hibit = ParagonIE_Sodium_Core32_Int32::fromInt((int) ($this->final ? 0 : 1 << 24)); /* 1 << 128 */
+        $hibit = ParagonIE_Sodium_Core32_Int32::fromInt((int) ($this->final ? 0 : 1 << 24)); 
         $hibit->setUnsignedInt(true);
         $zero = new ParagonIE_Sodium_Core32_Int64(array(0, 0, 0, 0), true);
         /**
@@ -227,7 +227,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
         $h4 = $this->h[4];
 
         while ($bytes >= ParagonIE_Sodium_Core32_Poly1305::BLOCK_SIZE) {
-            /* h += m[i] */
+            
             $h0 = $h0->addInt32(
                 ParagonIE_Sodium_Core32_Int32::fromReverseString(self::substr($message, 0, 4))
                     ->mask(0x3ffffff)
@@ -253,7 +253,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
                     ->orInt32($hibit)
             )->toInt64();
 
-            /* h *= r */
+            
             $d0 = $zero
                 ->addInt64($h0->mulInt64($r0, 27))
                 ->addInt64($s4->mulInt64($h1, 27))
@@ -289,7 +289,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
                 ->addInt64($h3->mulInt64($r1, 27))
                 ->addInt64($h4->mulInt64($r0, 27));
 
-            /* (partial) h %= p */
+            
             $c = $d0->shiftRight(26);
             $h0 = $d0->toInt32()->mask(0x3ffffff);
             $d1 = $d1->addInt64($c);
@@ -322,7 +322,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
             $bytes -= ParagonIE_Sodium_Core32_Poly1305::BLOCK_SIZE;
         }
 
-        /** @var array<int, ParagonIE_Sodium_Core32_Int32> $h */
+        
         $this->h = array($h0, $h1, $h2, $h3, $h4);
         return $this;
     }
@@ -336,7 +336,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
      */
     public function finish()
     {
-        /* process the remaining block */
+        
         if ($this->leftover) {
             $i = $this->leftover;
             $this->buffer[$i++] = 1;
@@ -393,7 +393,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
         $h0 = $h0->mask(0x3ffffff);         # $h0 &= 0x3ffffff;
         $h1 = $h1->addInt32($c);            # $h1 += $c;
 
-        /* compute h + -p */
+        
         $g0 = $h0->addInt(5);
         $c  = $g0->shiftRight(26);
         $g0 = $g0->mask(0x3ffffff);
@@ -409,7 +409,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
         $g4 = $h4->addInt32($c)->subInt(1 << 26);
 
         # $mask = ($g4 >> 31) - 1;
-        /* select h if h < p, or h + -p if h >= p */
+        
         $mask = (int) (($g4->toInt() >> 31) + 1);
 
         $g0 = $g0->mask($mask);
@@ -418,7 +418,7 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
         $g3 = $g3->mask($mask);
         $g4 = $g4->mask($mask);
 
-        /** @var int $mask */
+        
         $mask = ~$mask;
 
         $h0 = $h0->mask($mask)->orInt32($g0);
@@ -427,13 +427,13 @@ class ParagonIE_Sodium_Core32_Poly1305_State extends ParagonIE_Sodium_Core32_Uti
         $h3 = $h3->mask($mask)->orInt32($g3);
         $h4 = $h4->mask($mask)->orInt32($g4);
 
-        /* h = h % (2^128) */
+        
         $h0 = $h0->orInt32($h1->shiftLeft(26));
         $h1 = $h1->shiftRight(6)->orInt32($h2->shiftLeft(20));
         $h2 = $h2->shiftRight(12)->orInt32($h3->shiftLeft(14));
         $h3 = $h3->shiftRight(18)->orInt32($h4->shiftLeft(8));
 
-        /* mac = (h + pad) % (2^128) */
+        
         $f = $h0->toInt64()->addInt64($this->pad[0]);
         $h0 = $f->toInt32();
         $f = $h1->toInt64()->addInt64($this->pad[1])->addInt($h0->overflow);

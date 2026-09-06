@@ -31,31 +31,31 @@ use function strlen;
  */
 class DatabasesController extends AbstractController
 {
-    /** @var array array of database details */
+    
     private $databases = [];
 
-    /** @var int number of databases */
+    
     private $databaseCount = 0;
 
-    /** @var string sort by column */
+    
     private $sortBy;
 
-    /** @var string sort order of databases */
+    
     private $sortOrder;
 
-    /** @var bool whether to show database statistics */
+    
     private $hasStatistics;
 
-    /** @var int position in list navigation */
+    
     private $position;
 
-    /** @var Transformations */
+    
     private $transformations;
 
-    /** @var RelationCleanup */
+    
     private $relationCleanup;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(

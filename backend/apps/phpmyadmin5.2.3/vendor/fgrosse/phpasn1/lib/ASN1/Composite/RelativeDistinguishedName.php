@@ -29,7 +29,7 @@ class RelativeDistinguishedName extends Set
 
     public function getContent()
     {
-        /** @var \FG\ASN1\ASNObject $firstObject */
+        
         $firstObject = $this->children[0];
         return $firstObject->__toString();
     }

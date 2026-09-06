@@ -16,10 +16,6 @@ class WishlistController extends Controller
     public function __construct(
         private WishlistService $wishlistService
     ) {}
-
-    // ================================================================
-    // Get User's Wishlist
-    // ================================================================
     #[OA\Get(
         path: '/api/wishlist',
         tags: ['Wishlist'],
@@ -84,10 +80,6 @@ class WishlistController extends Controller
             ],
         ]);
     }
-
-    // ================================================================
-    // Add Product to Wishlist
-    // ================================================================
     #[OA\Post(
         path: '/api/wishlist/{product}',
         tags: ['Wishlist'],
@@ -133,10 +125,6 @@ class WishlistController extends Controller
             'count' => $this->wishlistService->getCount($user),
         ]);
     }
-
-    // ================================================================
-    // Remove Product from Wishlist
-    // ================================================================
     #[OA\Delete(
         path: '/api/wishlist/{product}',
         tags: ['Wishlist'],
@@ -182,10 +170,6 @@ class WishlistController extends Controller
             'count' => $this->wishlistService->getCount($user),
         ]);
     }
-
-    // ================================================================
-    // Toggle Product in Wishlist
-    // ================================================================
     #[OA\Post(
         path: '/api/wishlist/{product}/toggle',
         tags: ['Wishlist'],
@@ -233,10 +217,6 @@ class WishlistController extends Controller
             'count' => $this->wishlistService->getCount($user),
         ]);
     }
-
-    // ================================================================
-    // Check if Product is in Wishlist
-    // ================================================================
     #[OA\Get(
         path: '/api/wishlist/{product}/check',
         tags: ['Wishlist'],
@@ -275,10 +255,6 @@ class WishlistController extends Controller
             'in_wishlist' => $this->wishlistService->isInWishlist($user, $product),
         ]);
     }
-
-    // ================================================================
-    // Clear Wishlist
-    // ================================================================
     #[OA\Delete(
         path: '/api/wishlist',
         tags: ['Wishlist'],

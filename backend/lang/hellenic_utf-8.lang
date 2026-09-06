@@ -1,5 +1,4 @@
 <?php
-//3.2.10  $file_charset
 
 $file_charset = 'utf-8';
 
@@ -47,8 +46,6 @@ $w_stopServices = 'Σταμάτημα όλων των Υπηρεσιών';
 $w_restartServices = 'Επανεκκίνηση όλων των υπηρεσιών';
 $w_putOnline = 'Τοποθέτηση σε λειτουργία';
 $w_putOffline = 'Τοποθέτηση εκτός λειτουργίας';
-// Format ICU from https://unicode-org.github.io/icu/userguide/format_parse/datetime/#date-field-symbol-table
-// be careful
 $w_FormatDate = "eeee, d MMM YYYY H:mm:ss";
 $w_startedOn = 'Εκκίνηση: ';
 $w_restartWamp = 'Εκκίνηση από το μηδέν';

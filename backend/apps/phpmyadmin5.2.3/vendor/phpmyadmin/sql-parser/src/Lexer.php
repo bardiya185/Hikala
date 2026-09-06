@@ -65,7 +65,7 @@ class Lexer extends Core
         // They fight over `+` and `-`.
         //
         // 2. `parseComment` and `parseOperator`
-        // They fight over `/` (as in ```/*comment*/``` or ```a / b```)
+        // They fight over `/` (as in `````` or ```a / b```)
         //
         // 3. `parseBool` and `parseKeyword`
         // They fight over `TRUE` and `FALSE`.
@@ -674,8 +674,8 @@ class Lexer extends Core
             if (Context::isComment($token)) {
                 // There might be a conflict with "*" operator here, when string is "*/*".
                 // This can occurs in the following statements:
-                // - "SELECT */* comment */ FROM ..."
-                // - "SELECT 2*/* comment */3 AS `six`;"
+                // - "SELECT * FROM ..."
+                // - "SELECT 2*3 AS `six`;"
                 $next = $this->last + 1;
                 if (($next < $this->len) && $this->str[$next] === '*' && $token === '*/') {
                     // Conflict in "*/*": first "*" was not for ending a comment.

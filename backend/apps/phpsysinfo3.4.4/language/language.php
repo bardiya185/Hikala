@@ -14,8 +14,6 @@
  * @version   SVN: $Id: language.php 661 2012-08-27 11:26:39Z namiltd $
  * @link      http://phpsysinfo.sourceforge.net
  */
-
-// Set the correct content-type header.
 header('Content-Type: text/xml');
 
 /**

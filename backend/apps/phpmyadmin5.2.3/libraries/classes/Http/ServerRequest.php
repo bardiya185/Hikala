@@ -14,7 +14,7 @@ use function property_exists;
 
 class ServerRequest implements ServerRequestInterface
 {
-    /** @var ServerRequestInterface */
+    
     private $serverRequest;
 
     final public function __construct(ServerRequestInterface $serverRequest)

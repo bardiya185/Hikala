@@ -1,15 +1,4 @@
 <?php
-//3.1.1 - NotwwwDir
-//3.1.3 - VirtualHostPortNone
-//3.1.4 - txtTLDdev
-//3.1.9 - VirtualHostName modifié. Accepte les diacritiques (IDN)
-//3.2.6 - HoweverWamp
-//3.2.8 - phpNotExists - VirtualHostPhpFCGI - modifyForm - modifyVhost - modAliasForm
-//      - modifyAlias - StartAlias - ModifiedAlias - NoModifyAlias - HoweverAlias
-//    modifiés: VirtualHostPort - Start - VirtualCreated - However - HoweverWamp
-//    array $langues_help ajouté.
-//3.3.0 - Modification des lignes FcgidInitialEnv
-//3.3.2 - Suppress $langues[''VirtualSubMenuOn']
 
 $langues = array(
 	'langue' => 'Français',

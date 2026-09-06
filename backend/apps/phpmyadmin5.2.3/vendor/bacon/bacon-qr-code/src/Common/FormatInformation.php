@@ -115,9 +115,6 @@ class FormatInformation
         if (null !== $formatInfo) {
             return $formatInfo;
         }
-
-        // Should return null, but, some QR codes apparently do not mask this info. Try again by actually masking the
-        // pattern first.
         return self::doDecodeFormatInformation(
             $maskedFormatInfo1 ^ self::FORMAT_INFO_MASK_QR,
             $maskedFormatInfo2 ^ self::FORMAT_INFO_MASK_QR
@@ -136,7 +133,6 @@ class FormatInformation
             $targetInfo = $decodeInfo[0];
 
             if ($targetInfo === $maskedFormatInfo1 || $targetInfo === $maskedFormatInfo2) {
-                // Found an exact match
                 return new self($decodeInfo[1]);
             }
 
@@ -148,7 +144,6 @@ class FormatInformation
             }
 
             if ($maskedFormatInfo1 !== $maskedFormatInfo2) {
-                // Also try the other option
                 $bitsDifference = self::numBitsDiffering($maskedFormatInfo2, $targetInfo);
 
                 if ($bitsDifference < $bestDifference) {
@@ -157,8 +152,6 @@ class FormatInformation
                 }
             }
         }
-
-        // Hamming distance of the 32 masked codes is 7, by construction, so <= 3 bits differing means we found a match.
         if ($bestDifference <= 3) {
             return new self($bestFormatInfo);
         }

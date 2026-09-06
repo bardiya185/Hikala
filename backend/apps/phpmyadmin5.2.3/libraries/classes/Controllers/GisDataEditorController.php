@@ -39,24 +39,22 @@ class GisDataEditorController extends AbstractController
         global $gis_data, $geom_type, $gis_obj, $srid, $wkt, $wkt_with_zero;
         global $result, $visualizationSettings, $data, $visualization, $open_layers, $geom_count, $dbi;
 
-        /** @var string|null $field */
+        
         $field = $request->getParsedBodyParam('field');
-        /** @var array|null $gisDataParam */
+        
         $gisDataParam = $request->getParsedBodyParam('gis_data');
-        /** @var string $type */
+        
         $type = $request->getParsedBodyParam('type', 'GEOMETRY');
-        /** @var string|null $value */
+        
         $value = $request->getParsedBodyParam('value');
-        /** @var string|null $generate */
+        
         $generate = $request->getParsedBodyParam('generate');
-        /** @var string|null $inputName */
+        
         $inputName = $request->getParsedBodyParam('input_name');
 
         if (! isset($field)) {
             return;
         }
-
-        // Get data if any posted
         $gis_data = [];
         if (is_array($gisDataParam)) {
             $gis_data = $gisDataParam;
@@ -64,8 +62,6 @@ class GisDataEditorController extends AbstractController
 
         $gis_data = $this->validateGisData($gis_data, $type, $value);
         $geom_type = $gis_data['gis_type'];
-
-        // Generate parameters from value passed.
         $gis_obj = GisFactory::factory($geom_type);
         if ($gis_obj === false) {
             return;
@@ -77,14 +73,10 @@ class GisDataEditorController extends AbstractController
                 $gis_obj->generateParams($value)
             );
         }
-
-        // Generate Well Known Text
         $srid = isset($gis_data['srid']) && $gis_data['srid'] != '' ? (int) $gis_data['srid'] : 0;
         $wkt = $gis_obj->generateWkt($gis_data, 0);
         $wkt_with_zero = $gis_obj->generateWkt($gis_data, 0, '0');
         $result = "'" . $wkt . "'," . $srid;
-
-        // Generate SVG based visualization
         $visualizationSettings = [
             'width' => 450,
             'height' => 300,
@@ -103,8 +95,6 @@ class GisDataEditorController extends AbstractController
 
         $open_layers = GisVisualization::getByData($data, $visualizationSettings)
             ->asOl();
-
-        // If the call is to update the WKT and visualization make an AJAX response
         if ($generate) {
             $this->response->addJSON([
                 'result' => $result,

@@ -35,7 +35,7 @@ class Logging
     {
         $log_file = $GLOBALS['config']->get('AuthLog');
 
-        /* Autodetect */
+        
         if ($log_file === 'auto') {
             if (function_exists('syslog')) {
                 $log_file = 'syslog';
@@ -79,7 +79,7 @@ class Logging
             apache_note('userStatus', $status);
         }
 
-        /* Do not log successful authentications */
+        
         if (! $GLOBALS['config']->get('AuthLogSuccess') && $status === 'ok') {
             return;
         }

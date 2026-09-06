@@ -26,10 +26,10 @@ use function time;
  */
 class ReplicationGui
 {
-    /** @var Replication */
+    
     private $replication;
 
-    /** @var Template */
+    
     private $template;
 
     /**
@@ -414,8 +414,6 @@ class ReplicationGui
                 $thisHost = $userHost;
             }
         }
-
-        // when we start editing a user, $GLOBALS['pred_hostname'] is not defined
         if (! isset($GLOBALS['pred_hostname']) && isset($_POST['hostname'])) {
             switch (mb_strtolower($_POST['hostname'])) {
                 case 'localhost':
@@ -530,8 +528,6 @@ class ReplicationGui
         $_SESSION['replication']['m_correct'] = '';
         $_SESSION['replication']['sr_action_status'] = 'error';
         $_SESSION['replication']['sr_action_info'] = __('Unknown error');
-
-        // Attempt to connect to the new primary server
         $linkToPrimary = $this->replication->connectToPrimary(
             $sr['username'],
             $sr['pma_pw'],
@@ -546,7 +542,6 @@ class ReplicationGui
                 htmlspecialchars($sr['hostname'])
             );
         } else {
-            // Read the current primary position
             $position = $this->replication->replicaBinLogPrimary(DatabaseInterface::CONNECT_AUXILIARY);
 
             if (empty($position)) {
@@ -588,7 +583,7 @@ class ReplicationGui
     {
         global $dbi;
 
-        /** @var string|null $control */
+        
         $control = $_POST['sr_replica_control_param'] ?? null;
 
         if ($_POST['sr_replica_action'] === 'reset') {

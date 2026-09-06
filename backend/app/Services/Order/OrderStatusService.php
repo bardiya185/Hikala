@@ -25,21 +25,13 @@ class OrderStatusService
         return DB::transaction(function () use ($order, $newStatus, $changedBy, $note) {
             
             $oldStatus = $order->status;
-            
-            // اگه وضعیت یکی بود، هیچ کاری نکن
             if ($oldStatus === $newStatus) {
                 return $order;
             }
-            
-            // آپدیت وضعیت
             $order->status = $newStatus;
-            
-            // ذخیره زمان مربوطه
             $this->setStatusTimestamp($order, $newStatus);
             
             $order->save();
-            
-            // ثبت در تاریخچه
             OrderStatusHistory::create([
                 'order_id' => $order->id,
                 'from_status' => $oldStatus->value,

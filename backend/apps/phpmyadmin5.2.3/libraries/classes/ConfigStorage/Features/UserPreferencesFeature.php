@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class UserPreferencesFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $userConfig;
 
     public function __construct(DatabaseName $database, TableName $userConfig)

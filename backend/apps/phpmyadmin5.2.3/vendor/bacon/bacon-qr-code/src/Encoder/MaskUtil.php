@@ -18,7 +18,7 @@ final class MaskUtil
     const N2 = 3;
     const N3 = 40;
     const N4 = 10;
-    /**#@-*/
+    
 
     private function __construct()
     {

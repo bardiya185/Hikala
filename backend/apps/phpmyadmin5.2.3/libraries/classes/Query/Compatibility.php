@@ -20,19 +20,15 @@ use function substr;
  */
 class Compatibility
 {
-    /** @return mixed[][] */
+    
     public static function getISCompatForGetTablesFull(array $eachTables, string $eachDatabase): array
     {
         foreach ($eachTables as $table_name => $_) {
             if (! isset($eachTables[$table_name]['Type']) && isset($eachTables[$table_name]['Engine'])) {
-                // pma BC, same parts of PMA still uses 'Type'
                 $eachTables[$table_name]['Type'] =& $eachTables[$table_name]['Engine'];
             } elseif (! isset($eachTables[$table_name]['Engine']) && isset($eachTables[$table_name]['Type'])) {
-                // old MySQL reports Type, newer MySQL reports Engine
                 $eachTables[$table_name]['Engine'] =& $eachTables[$table_name]['Type'];
             }
-
-            // Compatibility with INFORMATION_SCHEMA output
             $eachTables[$table_name]['TABLE_SCHEMA'] = $eachDatabase;
             $eachTables[$table_name]['TABLE_NAME'] =& $eachTables[$table_name]['Name'];
             $eachTables[$table_name]['ENGINE'] =& $eachTables[$table_name]['Engine'];
@@ -76,7 +72,6 @@ class Compatibility
     {
         $ordinal_position = 1;
         foreach ($columns as $column_name => $_) {
-            // Compatibility with INFORMATION_SCHEMA output
             $columns[$column_name]['COLUMN_NAME'] =& $columns[$column_name]['Field'];
             $columns[$column_name]['COLUMN_TYPE'] =& $columns[$column_name]['Type'];
             $columns[$column_name]['COLLATION_NAME'] =& $columns[$column_name]['Collation'];
@@ -139,8 +134,6 @@ class Compatibility
         if (self::isMySqlOrPerconaDb()) {
             return $serverVersion >= 50700;
         }
-
-        // @see https://mariadb.com/kb/en/alter-table/#rename-indexkey
         if (self::isMariaDb()) {
             return $serverVersion >= 100502;
         }
@@ -150,8 +143,6 @@ class Compatibility
 
     public static function isIntegersLengthRestricted(DatabaseInterface $dbi): bool
     {
-        // MySQL made restrictions on the integer types' length from versions >= 8.0.18
-        // See: https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html
         $serverType = Util::getServerType();
         $serverVersion = $dbi->getVersion();
 
@@ -160,25 +151,14 @@ class Compatibility
 
     public static function supportsReferencesPrivilege(DatabaseInterface $dbi): bool
     {
-        // See: https://mariadb.com/kb/en/grant/#table-privileges
-        // Unused
         if ($dbi->isMariaDB()) {
             return false;
         }
-
-        // https://dev.mysql.com/doc/refman/5.6/en/privileges-provided.html#priv_references
-        // This privilege is unused before MySQL 5.6.22.
-        // As of 5.6.22, creation of a foreign key constraint
-        // requires at least one of the SELECT, INSERT, UPDATE, DELETE,
-        // or REFERENCES privileges for the parent table.
         return $dbi->getVersion() >= 50622;
     }
 
     public static function isIntegersSupportLength(string $type, string $length, DatabaseInterface $dbi): bool
     {
-        // MySQL Removed the Integer types' length from versions >= 8.0.18
-        // except TINYINT(1).
-        // See: https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html
         $integerTypes = ['SMALLINT', 'MEDIUMINT', 'INT', 'BIGINT'];
         $typeLengthNotAllowed = in_array($type, $integerTypes) || $type === 'TINYINT' && $length !== '1';
 
@@ -190,12 +170,9 @@ class Compatibility
      */
     public static function isVirtualColumnsSupported(int $serverVersion): bool
     {
-        // @see: https://dev.mysql.com/doc/relnotes/mysql/5.7/en/news-5-7-6.html
         if (self::isMySqlOrPerconaDb()) {
             return $serverVersion >= 50706;
         }
-
-        // @see https://mariadb.com/kb/en/changes-improvements-in-mariadb-52/#new-features
         if (self::isMariaDb()) {
             return $serverVersion >= 50200;
         }
@@ -209,7 +186,6 @@ class Compatibility
      */
     public static function isUUIDSupported(DatabaseInterface $dbi): bool
     {
-        // @see: https://mariadb.com/kb/en/mariadb-1070-release-notes/#uuid
         return $dbi->isMariaDB() && $dbi->getVersion() >= 100700; // 10.7.0
     }
 
@@ -218,12 +194,9 @@ class Compatibility
      */
     public static function supportsStoredKeywordForVirtualColumns(int $serverVersion): bool
     {
-        // @see: https://dev.mysql.com/doc/relnotes/mysql/5.7/en/news-5-7-6.html
         if (self::isMySqlOrPerconaDb()) {
             return $serverVersion >= 50706;
         }
-
-        // @see https://mariadb.com/kb/en/generated-columns/#mysql-compatibility-support
         if (self::isMariaDb()) {
             return $serverVersion >= 100201;
         }
@@ -236,8 +209,6 @@ class Compatibility
      */
     public static function supportsCompressedColumns(int $serverVersion): bool
     {
-        // @see https://mariadb.com/kb/en/innodb-page-compression/#comment_1992
-        // Comment: Page compression is only available in MariaDB >= 10.1. [...]
         if (self::isMariaDb()) {
             return $serverVersion >= 100100;
         }
@@ -256,7 +227,7 @@ class Compatibility
         return $isMariaDb && $version >= 100402 || ! $isMariaDb && $version >= 50706;
     }
 
-    /** @return non-empty-string */
+    
     public static function getShowBinLogStatusStmt(DbalInterface $dbal): string
     {
         if ($dbal->isMySql() && $dbal->getVersion() >= 80200) {

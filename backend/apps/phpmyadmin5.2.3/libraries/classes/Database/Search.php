@@ -84,10 +84,10 @@ class Search
      */
     private $criteriaColumnName;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var Template */
+    
     public $template;
 
     /**
@@ -107,7 +107,6 @@ class Search
             '5' => __('as regular expression'),
         ];
         $this->template = $template;
-        // Sets criteria parameters
         $this->setSearchParams();
     }
 
@@ -168,21 +167,15 @@ class Search
      */
     private function getSearchSqls($table)
     {
-        // Statement types
         $sqlstr_select = 'SELECT';
         $sqlstr_delete = 'DELETE';
-        // Table to use
         $sqlstr_from = ' FROM '
             . Util::backquote($GLOBALS['db']) . '.'
             . Util::backquote($table);
-        // Gets where clause for the query
         $where_clause = $this->getWhereClause($table);
-        // Builds complete queries
         $sql = [];
         $sql['select_columns'] = $sqlstr_select . ' *' . $sqlstr_from
             . $where_clause;
-        // here, I think we need to still use the COUNT clause, even for
-        // VIEWs, anyway we have a WHERE clause that should limit results
         $sql['select_count'] = $sqlstr_select . ' COUNT(*) AS `count`'
             . $sqlstr_from . $where_clause;
         $sql['delete'] = $sqlstr_delete . $sqlstr_from . $where_clause;
@@ -199,29 +192,21 @@ class Search
      */
     private function getWhereClause($table)
     {
-        // Columns to select
         $allColumns = $this->dbi->getColumns($GLOBALS['db'], $table);
         $likeClauses = [];
-        // Based on search type, decide like/regex & '%'/''
         $like_or_regex = ($this->criteriaSearchType == 5 ? 'REGEXP' : 'LIKE');
         $automatic_wildcard = ($this->criteriaSearchType < 4 ? '%' : '');
-        // For "as regular expression" (search option 5), LIKE won't be used
-        // Usage example: If user is searching for a literal $ in a regexp search,
-        // they should enter \$ as the value.
         $criteriaSearchStringEscaped = $this->dbi->escapeString($this->criteriaSearchString);
-        // Extract search words or pattern
         $search_words = $this->criteriaSearchType > 2
             ? [$criteriaSearchStringEscaped]
             : explode(' ', $criteriaSearchStringEscaped);
 
         foreach ($search_words as $search_word) {
-            // Eliminates empty values
             if (strlen($search_word) === 0) {
                 continue;
             }
 
             $likeClausesPerColumn = [];
-            // for each column in the table
             foreach ($allColumns as $column) {
                 if (
                     isset($this->criteriaColumnName)
@@ -245,12 +230,8 @@ class Search
 
             $likeClauses[] = implode(' OR ', $likeClausesPerColumn);
         }
-
-        // Use 'OR' if 'at least one word' is to be searched, else use 'AND'
         $implode_str = ($this->criteriaSearchType == 1 ? ' OR ' : ' AND ');
         if (empty($likeClauses)) {
-            // this could happen when the "inside column" does not exist
-            // in any selected tables
             $where_clause = ' WHERE FALSE';
         } else {
             $where_clause = ' WHERE ('
@@ -270,16 +251,12 @@ class Search
     {
         $resultTotal = 0;
         $rows = [];
-        // For each table selected as search criteria
         foreach ($this->criteriaTables as $eachTable) {
-            // Gets the SQL statements
             $newSearchSqls = $this->getSearchSqls($eachTable);
-            // Executes the "COUNT" statement
             $resultCount = intval($this->dbi->fetchValue(
                 $newSearchSqls['select_count']
             ));
             $resultTotal += $resultCount;
-            // Gets the result row's HTML for a table
             $rows[] = [
                 'table' => htmlspecialchars($eachTable),
                 'new_search_sqls' => $newSearchSqls,

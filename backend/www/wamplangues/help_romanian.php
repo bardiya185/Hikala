@@ -1,8 +1,4 @@
 <?php
-// Romanian language file for Help page
-// Translated by Ciprian Murariu <ciprianmp[at]yahoo[dot]com>
-//3.2.8 - New file
-//3.3.0 - Modification of lines FcgidInitialEnv
 
 $langues['fcgi_mode_link'] = 'ajutor pentru modul FCGI';
 $langues['fcgi_not_loaded'] = 'PHP nu poate fi utilizat în modul FCGI întrucât modulul Apache fcgid_module nu este încărcat';

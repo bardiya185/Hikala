@@ -23,7 +23,7 @@ use function min;
  */
 class NormalizationController extends AbstractController
 {
-    /** @var Normalization */
+    
     private $normalization;
 
     public function __construct(ResponseRenderer $response, Template $template, Normalization $normalization)
@@ -39,7 +39,6 @@ class NormalizationController extends AbstractController
         if (isset($_POST['getColumns'])) {
             $html = '<option selected disabled>' . __('Select one…') . '</option>'
                 . '<option value="no_such_col">' . __('No such column') . '</option>';
-            //get column whose datatype falls under string category
             $html .= $this->normalization->getHtmlForColumnsList(
                 $db,
                 $table,

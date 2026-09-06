@@ -82,20 +82,15 @@ final class SafeAnalysisNodeVisitor implements NodeVisitorInterface
     public function leaveNode(Node $node, Environment $env): ?Node
     {
         if ($node instanceof ConstantExpression) {
-            // constants are marked safe for all
             $this->setSafe($node, ['all']);
         } elseif ($node instanceof BlockReferenceExpression) {
-            // blocks are safe by definition
             $this->setSafe($node, ['all']);
         } elseif ($node instanceof ParentExpression) {
-            // parent block is safe by definition
             $this->setSafe($node, ['all']);
         } elseif ($node instanceof ConditionalExpression) {
-            // intersect safeness of both operands
             $safe = $this->intersectSafe($this->getSafe($node->getNode('expr2')), $this->getSafe($node->getNode('expr3')));
             $this->setSafe($node, $safe);
         } elseif ($node instanceof FilterExpression) {
-            // filter expression is safe when the filter is safe
             $name = $node->getNode('filter')->getAttribute('value');
             $args = $node->getNode('arguments');
             if ($filter = $env->getFilter($name)) {
@@ -108,7 +103,6 @@ final class SafeAnalysisNodeVisitor implements NodeVisitorInterface
                 $this->setSafe($node, []);
             }
         } elseif ($node instanceof FunctionExpression) {
-            // function expression is safe when the function is safe
             $name = $node->getAttribute('name');
             $args = $node->getNode('arguments');
             if ($function = $env->getFunction($name)) {

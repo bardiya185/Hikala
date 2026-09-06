@@ -94,8 +94,6 @@ class ListDatabase extends ListAbstract
         if ($GLOBALS['cfg']['NaturalOrder']) {
             usort($database_list, 'strnatcasecmp');
         } else {
-            // need to sort anyway, otherwise information_schema
-            // goes at the top
             sort($database_list);
         }
 
@@ -133,10 +131,7 @@ class ListDatabase extends ListAbstract
         $items = [];
 
         foreach ($GLOBALS['cfg']['Server']['only_db'] as $each_only_db) {
-            // check if the db name contains wildcard,
-            // thus containing not escaped _ or %
             if (! preg_match('/(^|[^\\\\])(_|%)/', $each_only_db)) {
-                // ... not contains wildcard
                 $items[] = Util::unescapeMysqlWildcards($each_only_db);
                 continue;
             }

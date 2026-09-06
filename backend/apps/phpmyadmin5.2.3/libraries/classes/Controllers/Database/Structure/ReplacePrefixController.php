@@ -18,10 +18,10 @@ use function mb_substr;
 
 final class ReplacePrefixController extends AbstractController
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
-    /** @var StructureController */
+    
     private $structureController;
 
     public function __construct(

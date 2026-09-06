@@ -58,7 +58,6 @@ abstract class Message implements MessageInterface
      */
     public function __set($name, $value): void
     {
-        // Do nothing
     }
 
     /**

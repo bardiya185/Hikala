@@ -130,30 +130,18 @@ final class CustomServer implements Server
         Assert::string($creationOptions['user']['id']);
 
         $clientData = $this->getCollectedClientData($attestationCredential['response']['clientDataJSON']);
-
-        // Verify that the value of C.type is webauthn.create.
         Assert::same($clientData['type'], 'webauthn.create');
-
-        // Verify that the value of C.challenge equals the base64url encoding of options.challenge.
         $optionsChallenge = sodium_base642bin($creationOptions['challenge'], SODIUM_BASE64_VARIANT_ORIGINAL);
         $clientDataChallenge = sodium_base642bin($clientData['challenge'], SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING);
         Assert::true(hash_equals($optionsChallenge, $clientDataChallenge));
-
-        // Verify that the value of C.origin matches the Relying Party's origin.
         $host = $request->getUri()->getHost();
         Assert::same($host, parse_url($clientData['origin'], PHP_URL_HOST), 'Invalid origin.');
-
-        // Perform CBOR decoding on the attestationObject field.
         $attestationObject = $this->getAttestationObject($attestationCredential['response']['attestationObject']);
 
         $authenticatorData = $this->getAuthenticatorData($attestationObject['authData']);
         Assert::notNull($authenticatorData['attestedCredentialData']);
-
-        // Verify that the rpIdHash in authData is the SHA-256 hash of the RP ID expected by the Relying Party.
         $rpIdHash = hash('sha256', $host, true);
         Assert::true(hash_equals($rpIdHash, $authenticatorData['rpIdHash']), 'Invalid rpIdHash.');
-
-        // Verify that the User Present bit of the flags in authData is set.
         $isUserPresent = (ord($authenticatorData['flags']) & 1) !== 0;
         Assert::true($isUserPresent);
 
@@ -230,8 +218,6 @@ final class CustomServer implements Server
 
         $rpIdHash = $authDataStream->take(32);
         $flags = $authDataStream->take(1);
-
-        // 32-bit unsigned big-endian integer
         $unpackedSignCount = unpack('N', $authDataStream->take(4));
         Assert::isArray($unpackedSignCount);
         Assert::keyExists($unpackedSignCount, 1);
@@ -239,12 +225,9 @@ final class CustomServer implements Server
         $signCount = $unpackedSignCount[1];
 
         $attestedCredentialData = null;
-        // Bit 6: Attested credential data included (AT).
         if ((ord($flags) & 64) !== 0) {
-            /** Authenticator Attestation GUID */
+            
             $aaguid = $authDataStream->take(16);
-
-            // 16-bit unsigned big-endian integer
             $unpackedCredentialIdLength = unpack('n', $authDataStream->take(2));
             Assert::isArray($unpackedCredentialIdLength);
             Assert::keyExists($unpackedCredentialIdLength, 1);

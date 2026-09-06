@@ -102,7 +102,7 @@ class TransNode extends Node
             $nodes['context'] = $context;
         }
 
-        /** @phpstan-ignore-next-line */
+        
         if (Environment::MAJOR_VERSION >= 3 && Environment::MINOR_VERSION >= 12) {
             parent::__construct($nodes, [], $lineno);
 
@@ -266,7 +266,7 @@ class TransNode extends Node
                         $vars[] = new NameExpression($attributeName, $n->getTemplateLine());
                     }
                 } else {
-                    /** @phpstan-var TextNode $node */
+                    
                     $msg .= $node->getAttribute('data');
                 }
             }

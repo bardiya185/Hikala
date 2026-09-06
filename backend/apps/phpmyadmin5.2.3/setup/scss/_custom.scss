@@ -1,4 +1,4 @@
-/* global styles */
+
 
 body {
   margin-right: auto;
@@ -47,7 +47,7 @@ h1 {
   font-size: 1.5em;
 }
 
-/* language selection box */
+
 
 #select_lang {
   position: absolute;
@@ -55,7 +55,7 @@ h1 {
   top: 1em;
 }
 
-/* menu */
+
 
 #menu {
   float: left;
@@ -83,7 +83,7 @@ h1 {
   }
 }
 
-/* page contents and footer layout */
+
 
 #page {
   margin-left: 220px;
@@ -100,7 +100,7 @@ h1 {
   }
 }
 
-/* phpMyAdmin logo colors */
+
 
 .blue {
   color: #669;
@@ -114,9 +114,9 @@ h1 {
   color: #c00;
 }
 
-/* main page messages */
 
-/* message boxes: error, confirmation */
+
+
 .success h4,
 .notice h4,
 div.error h4 {
@@ -197,7 +197,7 @@ div.notice[id^=version_check] h4 {
   border-color: #002dff;
 }
 
-/* "restore default value" and "set value: foo" buttons */
+
 
 .restore-default img,
 .set-value img {
@@ -258,7 +258,7 @@ fieldset {
     border-top: 0;
   }
 
-  .errors { /* form error list */
+  .errors { 
     margin: 0 -2px 1em -2px;
     padding: 0.5em 1.5em;
     background: #fbead9;
@@ -270,7 +270,7 @@ fieldset {
     font-size: small;
   }
 
-  .inline_errors { /* field error list */
+  .inline_errors { 
     margin: 0.3em 0.3em 0.3em 0;
     padding: 0;
     list-style: none;
@@ -429,14 +429,14 @@ select {
   margin: 6px;
 }
 
-/* form elements */
+
 
 span.checkbox {
   padding: 2px;
   display: inline-block;
 }
 
-.custom { /* customized field */
+.custom { 
   background: #ffc;
 }
 
@@ -464,7 +464,7 @@ span.checkbox {
   color: #a00;
 }
 
-.green { /* default form button */
+.green { 
   color: #080 !important;
 }
 
@@ -483,14 +483,14 @@ table.datatable {
   }
 }
 
-/* textarea with config file's contents */
+
 
 #textconfig {
   width: 100%;
   border: 0;
 }
 
-/* error list */
+
 
 dd {
   margin-left: 0.5em;
@@ -500,7 +500,7 @@ dd {
   }
 }
 
-/* links on failed validation page, when saving a form */
+
 
 a.btn {
   padding: 1px 5px;

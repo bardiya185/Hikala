@@ -10,7 +10,7 @@ use function array_key_exists;
 
 final class InMemoryCache implements CacheInterface, GetAllInterface
 {
-    /** @var array<string, string> */
+    
     private $cache;
 
     public function __construct(MoParser $parser)

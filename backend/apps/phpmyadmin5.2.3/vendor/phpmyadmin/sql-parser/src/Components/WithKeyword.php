@@ -15,13 +15,13 @@ use RuntimeException;
  */
 final class WithKeyword extends Component
 {
-    /** @var string */
+    
     public $name;
 
-    /** @var ArrayObj[] */
+    
     public $columns = [];
 
-    /** @var Parser|null */
+    
     public $statement;
 
     public function __construct(string $name)

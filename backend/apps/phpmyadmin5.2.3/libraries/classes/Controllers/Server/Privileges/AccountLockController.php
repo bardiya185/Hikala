@@ -16,7 +16,7 @@ use function __;
 
 final class AccountLockController extends AbstractController
 {
-    /** @var AccountLocking */
+    
     private $model;
 
     public function __construct(ResponseRenderer $response, Template $template, AccountLocking $accountLocking)
@@ -29,9 +29,9 @@ final class AccountLockController extends AbstractController
     {
         $this->response->setAjax(true);
 
-        /** @var string $userName */
+        
         $userName = $request->getParsedBodyParam('username');
-        /** @var string $hostName */
+        
         $hostName = $request->getParsedBodyParam('hostname');
 
         try {

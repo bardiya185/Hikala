@@ -23,37 +23,37 @@ use function rawurldecode;
  */
 class ExportRelationSchema
 {
-    /** @var string */
+    
     protected $db;
 
-    /** @var Dia\Dia|Eps\Eps|Pdf\Pdf|Svg\Svg|null */
+    
     protected $diagram;
 
-    /** @var bool */
+    
     protected $showColor = false;
 
-    /** @var bool */
+    
     protected $tableDimension = false;
 
-    /** @var bool */
+    
     protected $sameWide = false;
 
-    /** @var bool */
+    
     protected $showKeys = false;
 
-    /** @var string */
+    
     protected $orientation = 'L';
 
-    /** @var string */
+    
     protected $paper = 'A4';
 
-    /** @var int */
+    
     protected $pageNumber = 0;
 
-    /** @var bool */
+    
     protected $offline = false;
 
-    /** @var Relation */
+    
     protected $relation;
 
     /**
@@ -252,7 +252,6 @@ class ExportRelationSchema
         $pdfFeature = $this->relation->getRelationParameters()->pdfFeature;
 
         $filename = $this->db . $extension;
-        // Get the name of this page to use as filename
         if ($this->pageNumber != -1 && ! $this->offline && $pdfFeature !== null) {
             $_name_sql = 'SELECT page_descr FROM '
                 . Util::backquote($pdfFeature->database) . '.'

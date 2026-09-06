@@ -22,7 +22,7 @@ use function trim;
  */
 class CreateAddField
 {
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     /**
@@ -76,7 +76,6 @@ class CreateAddField
         $definitions = [];
         $previousField = -1;
         for ($i = 0; $i < $fieldCount; ++$i) {
-            // '0' is also empty for php :-(
             if (strlen($_POST['field_name'][$i]) === 0) {
                 continue;
             }
@@ -117,7 +116,6 @@ class CreateAddField
         int $previousField,
         bool $isCreateTable = true
     ): string {
-        // no suffix is needed if request is a table creation
         if ($isCreateTable) {
             return ' ';
         }
@@ -125,8 +123,6 @@ class CreateAddField
         if ((string) $_POST['field_where'] === 'last') {
             return ' ';
         }
-
-        // Only the first field can be added somewhere other than at the end
         if ($previousField === -1) {
             if ((string) $_POST['field_where'] === 'first') {
                 return ' FIRST';
@@ -185,8 +181,6 @@ class CreateAddField
             $sqlQuery .= ' KEY_BLOCK_SIZE = '
                  . $this->dbi->escapeString($index['Key_block_size']);
         }
-
-        // specifying index type is allowed only for primary, unique and index only
         if (
             $index['Index_choice'] !== 'SPATIAL'
             && $index['Index_choice'] !== 'FULLTEXT'
@@ -240,28 +234,18 @@ class CreateAddField
             $fieldSpatial,
         ] = $this->getIndexedColumns();
         $definitions = $this->buildColumnCreationStatement($fieldCount, $isCreateTable);
-
-        // Builds the PRIMARY KEY statements
         if (isset($fieldPrimary[0])) {
             $definitions[] = $this->buildIndexStatement($fieldPrimary[0], 'PRIMARY KEY', $isCreateTable);
         }
-
-        // Builds the INDEX statements
         foreach ($fieldIndex as $index) {
             $definitions[] = $this->buildIndexStatement($index, 'INDEX', $isCreateTable);
         }
-
-        // Builds the UNIQUE statements
         foreach ($fieldUnique as $index) {
             $definitions[] = $this->buildIndexStatement($index, 'UNIQUE', $isCreateTable);
         }
-
-        // Builds the FULLTEXT statements
         foreach ($fieldFullText as $index) {
             $definitions[] = $this->buildIndexStatement($index, 'FULLTEXT', $isCreateTable);
         }
-
-        // Builds the SPATIAL statements
         foreach ($fieldSpatial as $index) {
             $definitions[] = $this->buildIndexStatement($index, 'SPATIAL', $isCreateTable);
         }
@@ -390,14 +374,9 @@ class CreateAddField
      */
     public function getTableCreationQuery(string $db, string $table): string
     {
-        // get column addition statements
         $sqlStatement = $this->getColumnCreationStatements(true);
-
-        // Builds the 'create table' statement
         $sqlQuery = 'CREATE TABLE ' . Util::backquote($db) . '.'
             . Util::backquote(trim($table)) . ' (' . $sqlStatement . ')';
-
-        // Adds table type, character set, comments and partition definition
         if (
             ! empty($_POST['tbl_storage_engine'])
             && ($_POST['tbl_storage_engine'] !== 'Default')
@@ -435,7 +414,6 @@ class CreateAddField
      */
     public function getNumberOfFieldsFromRequest(): int
     {
-        // Limit to 4096 fields (MySQL maximal value)
         $mysqlLimit = 4096;
 
         if (isset($_POST['submit_num_fields'])) { // adding new fields
@@ -462,7 +440,6 @@ class CreateAddField
     public function getColumnCreationQuery(
         string $table
     ): string {
-        // get column addition statements
         $sqlStatement = $this->getColumnCreationStatements(false);
 
         $sqlQuery = 'ALTER TABLE ' .
@@ -486,8 +463,6 @@ class CreateAddField
         string $sqlQuery,
         string $errorUrl
     ): bool {
-        // To allow replication, we first select the db to use and then run queries
-        // on this db.
         if (! $this->dbi->selectDb($db)) {
             Generator::mysqlDie(
                 $this->dbi->getError(),

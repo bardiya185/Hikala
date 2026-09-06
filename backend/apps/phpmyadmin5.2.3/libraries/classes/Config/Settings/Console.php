@@ -13,19 +13,19 @@ use function in_array;
  */
 final class Console
 {
-    /** @var bool */
+    
     public $StartHistory;
 
-    /** @var bool */
+    
     public $AlwaysExpand;
 
-    /** @var bool */
+    
     public $CurrentQuery;
 
-    /** @var bool */
+    
     public $EnterExecutes;
 
-    /** @var bool */
+    
     public $DarkTheme;
 
     /**
@@ -40,7 +40,7 @@ final class Console
      */
     public $Height;
 
-    /** @var bool */
+    
     public $GroupQueries;
 
     /**

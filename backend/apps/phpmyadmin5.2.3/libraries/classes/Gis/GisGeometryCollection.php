@@ -21,7 +21,7 @@ use function str_split;
  */
 class GisGeometryCollection extends GisGeometry
 {
-    /** @var self */
+    
     private static $instance;
 
     /**

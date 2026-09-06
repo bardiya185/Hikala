@@ -17,11 +17,6 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-//
-// $Id: stablebit.js 661 2012-08-27 11:26:39Z namiltd $
-//
-
-/*global $, jQuery, buildBlock, datetime, plugin_translate, genlang */
 
 "use strict";
 
@@ -32,127 +27,222 @@ var stablebit_show = false;
  * @param {jQuery} xml plugin-XML
  */
 function stablebit_buildTable(xml) {
-    var html = "", tree = [], closed = [], hostname = "";
+    var html = "",
+        tree = [],
+        closed = [],
+        hostname = "";
 
     $("#Plugin_StableBit #Plugin_StableBitTable").remove();
 
-    hostname = $("Plugins Plugin_StableBit", xml).attr('Hostname');
+    hostname = $("Plugins Plugin_StableBit", xml).attr("Hostname");
     if (hostname !== undefined) {
-        $('span[class=Hostname_StableBit]').html(hostname);
+        $("span[class=Hostname_StableBit]").html(hostname);
     }
 
-    html += "  <div style=\"overflow-x:auto;\">\n";
-    html += "    <table id=\"Plugin_StableBitTable\" class=\"tablemain\">\n";
+    html += '  <div style="overflow-x:auto;">\n';
+    html += '    <table id="Plugin_StableBitTable" class="tablemain">\n';
     html += "     <thead>\n";
     html += "      <tr>\n";
     html += "       <th>" + genlang(2, "StableBit") + "</th>\n";
-    html += "       <th style=\"width:31%;\">" + genlang(3, "StableBit") + "</th>\n";
+    html +=
+        '       <th style="width:31%;">' + genlang(3, "StableBit") + "</th>\n";
     html += "      </tr>\n";
     html += "     </thead>\n";
-    html += "     <tbody class=\"tree\">\n";
+    html += '     <tbody class="tree">\n';
 
     var index = 0;
 
-    $("Plugins Plugin_StableBit Disk", xml).each(function stablebit_getdisks(id) {
-        var name = "";
-        name = $(this).attr("Name");
-        if (name !== undefined) {
-            var serialnumber = "", firmware = "", size = 0, powerstate = "", temperaturec = "",
-            ishot = 0, issmartwarning = 0, issmartpastthresholds = 0, issmartpastadvisorythresholds = 0,
-            issmartfailurepredicted = 0, isdamaged = 0;
+    $("Plugins Plugin_StableBit Disk", xml).each(
+        function stablebit_getdisks(id) {
+            var name = "";
+            name = $(this).attr("Name");
+            if (name !== undefined) {
+                var serialnumber = "",
+                    firmware = "",
+                    size = 0,
+                    powerstate = "",
+                    temperaturec = "",
+                    ishot = 0,
+                    issmartwarning = 0,
+                    issmartpastthresholds = 0,
+                    issmartpastadvisorythresholds = 0,
+                    issmartfailurepredicted = 0,
+                    isdamaged = 0;
 
-            html += "      <tr><td colspan=\"2\"><div class=\"treediv\"><span class=\"treespanbold\">" + name + "</div></span></td></tr>\n";
-            index = tree.push(0);
+                html +=
+                    '      <tr><td colspan="2"><div class="treediv"><span class="treespanbold">' +
+                    name +
+                    "</div></span></td></tr>\n";
+                index = tree.push(0);
 
-            serialnumber = $(this).attr("SerialNumber");
-            if (serialnumber !== undefined) {
-                html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(4, "StableBit") + "</div></span></td><td>" + serialnumber +"</td></tr>\n";
-                tree.push(index);
-            }
-            firmware = $(this).attr("Firmware");
-            if (firmware !== undefined) {
-                html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(5, "StableBit") + "</div></span></td><td>" + firmware +"</td></tr>\n";
-                tree.push(index);
-            }
-            size = parseInt($(this).attr("Size"), 10);
-            if (!isNaN(size)) {
-                html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(6, "StableBit") + "</div></span></td><td>" + formatBytes(size, xml) +"</td></tr>\n";
-                tree.push(index);
-            }
-            powerstate = $(this).attr("PowerState");
-            if (powerstate !== undefined) {
-                html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(7, "StableBit") + "</div></span></td><td>" + powerstate +"</td></tr>\n";
-                tree.push(index);
-            }
-            temperaturec = $(this).attr("TemperatureC");
-            if (temperaturec !== undefined) {
-                html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(8, "StableBit") + "</div></span></td><td>" + formatTemp(temperaturec, xml) +"</td></tr>\n";
-                tree.push(index);
-            }
-            if ($(this).attr("IsHot") !== undefined) {
-                ishot = parseInt($(this).attr("IsHot"), 10);
-                if (!isNaN(ishot) && (ishot === 1)) {
-                    html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(9, "StableBit") + "</div></span></td><td><img src=\"./plugins/stablebit/gfx/on.gif\" alt=\"on\" title=\"\" style=\"width:18px;\" /></td></tr>\n";
+                serialnumber = $(this).attr("SerialNumber");
+                if (serialnumber !== undefined) {
+                    html +=
+                        '      <tr><td><div class="treediv"><span class="treespan">' +
+                        genlang(4, "StableBit") +
+                        "</div></span></td><td>" +
+                        serialnumber +
+                        "</td></tr>\n";
+                    tree.push(index);
                 }
-                else {
-                    html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(9, "StableBit") + "</div></span></td><td><img src=\"./plugins/stablebit/gfx/off.gif\" alt=\"off\" title=\"\" style=\"width:18px;\" /></td></tr>\n";
+                firmware = $(this).attr("Firmware");
+                if (firmware !== undefined) {
+                    html +=
+                        '      <tr><td><div class="treediv"><span class="treespan">' +
+                        genlang(5, "StableBit") +
+                        "</div></span></td><td>" +
+                        firmware +
+                        "</td></tr>\n";
+                    tree.push(index);
                 }
-                tree.push(index);
-            }
-            if ($(this).attr("IsSmartWarning") !== undefined) {
-                issmartwarning = parseInt($(this).attr("IsSmartWarning"), 10);
-                if (!isNaN(issmartwarning) && (issmartwarning === 1)) {
-                    html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(10, "StableBit") + "</div></span></td><td><img src=\"./plugins/stablebit/gfx/on.gif\" alt=\"on\" title=\"\" style=\"width:18px;\" /></td></tr>\n";
+                size = parseInt($(this).attr("Size"), 10);
+                if (!isNaN(size)) {
+                    html +=
+                        '      <tr><td><div class="treediv"><span class="treespan">' +
+                        genlang(6, "StableBit") +
+                        "</div></span></td><td>" +
+                        formatBytes(size, xml) +
+                        "</td></tr>\n";
+                    tree.push(index);
                 }
-                else {
-                    html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(10, "StableBit") + "</div></span></td><td><img src=\"./plugins/stablebit/gfx/off.gif\" alt=\"off\" title=\"\" style=\"width:18px;\" /></td></tr>\n";
+                powerstate = $(this).attr("PowerState");
+                if (powerstate !== undefined) {
+                    html +=
+                        '      <tr><td><div class="treediv"><span class="treespan">' +
+                        genlang(7, "StableBit") +
+                        "</div></span></td><td>" +
+                        powerstate +
+                        "</td></tr>\n";
+                    tree.push(index);
                 }
-                tree.push(index);
-            }
-            if ($(this).attr("IsSmartPastThresholds") !== undefined) {
-                issmartpastthresholds = parseInt($(this).attr("IsSmartPastThresholds"), 10);
-                if (!isNaN(issmartpastthresholds) && (issmartpastthresholds === 1)) {
-                    html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(11, "StableBit") + "</div></span></td><td><img src=\"./plugins/stablebit/gfx/on.gif\" alt=\"on\" title=\"\" style=\"width:18px;\" /></td></tr>\n";
+                temperaturec = $(this).attr("TemperatureC");
+                if (temperaturec !== undefined) {
+                    html +=
+                        '      <tr><td><div class="treediv"><span class="treespan">' +
+                        genlang(8, "StableBit") +
+                        "</div></span></td><td>" +
+                        formatTemp(temperaturec, xml) +
+                        "</td></tr>\n";
+                    tree.push(index);
                 }
-                else {
-                    html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(11, "StableBit") + "</div></span></td><td><img src=\"./plugins/stablebit/gfx/off.gif\" alt=\"off\" title=\"\" style=\"width:18px;\" /></td></tr>\n";
+                if ($(this).attr("IsHot") !== undefined) {
+                    ishot = parseInt($(this).attr("IsHot"), 10);
+                    if (!isNaN(ishot) && ishot === 1) {
+                        html +=
+                            '      <tr><td><div class="treediv"><span class="treespan">' +
+                            genlang(9, "StableBit") +
+                            '</div></span></td><td><img src="./plugins/stablebit/gfx/on.gif" alt="on" title="" style="width:18px;" /></td></tr>\n';
+                    } else {
+                        html +=
+                            '      <tr><td><div class="treediv"><span class="treespan">' +
+                            genlang(9, "StableBit") +
+                            '</div></span></td><td><img src="./plugins/stablebit/gfx/off.gif" alt="off" title="" style="width:18px;" /></td></tr>\n';
+                    }
+                    tree.push(index);
                 }
-                tree.push(index);
-            }
-            if ($(this).attr("IsSmartPastAdvisoryThresholds") !== undefined) {
-                issmartpastadvisorythresholds = parseInt($(this).attr("IsSmartPastAdvisoryThresholds"), 10);
-                if (!isNaN(issmartpastadvisorythresholds) && (issmartpastadvisorythresholds === 1)) {
-                    html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(12, "StableBit") + "</div></span></td><td><img src=\"./plugins/stablebit/gfx/on.gif\" alt=\"on\" title=\"\" style=\"width:18px;\" /></td></tr>\n";
+                if ($(this).attr("IsSmartWarning") !== undefined) {
+                    issmartwarning = parseInt(
+                        $(this).attr("IsSmartWarning"),
+                        10,
+                    );
+                    if (!isNaN(issmartwarning) && issmartwarning === 1) {
+                        html +=
+                            '      <tr><td><div class="treediv"><span class="treespan">' +
+                            genlang(10, "StableBit") +
+                            '</div></span></td><td><img src="./plugins/stablebit/gfx/on.gif" alt="on" title="" style="width:18px;" /></td></tr>\n';
+                    } else {
+                        html +=
+                            '      <tr><td><div class="treediv"><span class="treespan">' +
+                            genlang(10, "StableBit") +
+                            '</div></span></td><td><img src="./plugins/stablebit/gfx/off.gif" alt="off" title="" style="width:18px;" /></td></tr>\n';
+                    }
+                    tree.push(index);
                 }
-                else {
-                    html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(12, "StableBit") + "</div></span></td><td><img src=\"./plugins/stablebit/gfx/off.gif\" alt=\"off\" title=\"\" style=\"width:18px;\" /></td></tr>\n";
+                if ($(this).attr("IsSmartPastThresholds") !== undefined) {
+                    issmartpastthresholds = parseInt(
+                        $(this).attr("IsSmartPastThresholds"),
+                        10,
+                    );
+                    if (
+                        !isNaN(issmartpastthresholds) &&
+                        issmartpastthresholds === 1
+                    ) {
+                        html +=
+                            '      <tr><td><div class="treediv"><span class="treespan">' +
+                            genlang(11, "StableBit") +
+                            '</div></span></td><td><img src="./plugins/stablebit/gfx/on.gif" alt="on" title="" style="width:18px;" /></td></tr>\n';
+                    } else {
+                        html +=
+                            '      <tr><td><div class="treediv"><span class="treespan">' +
+                            genlang(11, "StableBit") +
+                            '</div></span></td><td><img src="./plugins/stablebit/gfx/off.gif" alt="off" title="" style="width:18px;" /></td></tr>\n';
+                    }
+                    tree.push(index);
                 }
-                tree.push(index);
-            }
-            if ($(this).attr("IsSmartFailurePredicted") !== undefined) {
-                issmartfailurepredicted = parseInt($(this).attr("IsSmartFailurePredicted"), 10);
-                if (!isNaN(issmartfailurepredicted) && (issmartfailurepredicted === 1)) {
-                    html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(13, "StableBit") + "</div></span></td><td><img src=\"./plugins/stablebit/gfx/on.gif\" alt=\"on\" title=\"\" style=\"width:18px;\" /></td></tr>\n";
+                if (
+                    $(this).attr("IsSmartPastAdvisoryThresholds") !== undefined
+                ) {
+                    issmartpastadvisorythresholds = parseInt(
+                        $(this).attr("IsSmartPastAdvisoryThresholds"),
+                        10,
+                    );
+                    if (
+                        !isNaN(issmartpastadvisorythresholds) &&
+                        issmartpastadvisorythresholds === 1
+                    ) {
+                        html +=
+                            '      <tr><td><div class="treediv"><span class="treespan">' +
+                            genlang(12, "StableBit") +
+                            '</div></span></td><td><img src="./plugins/stablebit/gfx/on.gif" alt="on" title="" style="width:18px;" /></td></tr>\n';
+                    } else {
+                        html +=
+                            '      <tr><td><div class="treediv"><span class="treespan">' +
+                            genlang(12, "StableBit") +
+                            '</div></span></td><td><img src="./plugins/stablebit/gfx/off.gif" alt="off" title="" style="width:18px;" /></td></tr>\n';
+                    }
+                    tree.push(index);
                 }
-                else {
-                    html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(13, "StableBit") + "</div></span></td><td><img src=\"./plugins/stablebit/gfx/off.gif\" alt=\"off\" title=\"\" style=\"width:18px;\" /></td></tr>\n";
+                if ($(this).attr("IsSmartFailurePredicted") !== undefined) {
+                    issmartfailurepredicted = parseInt(
+                        $(this).attr("IsSmartFailurePredicted"),
+                        10,
+                    );
+                    if (
+                        !isNaN(issmartfailurepredicted) &&
+                        issmartfailurepredicted === 1
+                    ) {
+                        html +=
+                            '      <tr><td><div class="treediv"><span class="treespan">' +
+                            genlang(13, "StableBit") +
+                            '</div></span></td><td><img src="./plugins/stablebit/gfx/on.gif" alt="on" title="" style="width:18px;" /></td></tr>\n';
+                    } else {
+                        html +=
+                            '      <tr><td><div class="treediv"><span class="treespan">' +
+                            genlang(13, "StableBit") +
+                            '</div></span></td><td><img src="./plugins/stablebit/gfx/off.gif" alt="off" title="" style="width:18px;" /></td></tr>\n';
+                    }
+                    tree.push(index);
                 }
-                tree.push(index);
-            }
-            if ($(this).attr("IsDamaged") !== undefined) {
-                isdamaged = parseInt($(this).attr("IsDamaged"), 10);
-                if (!isNaN(isdamaged) && (isdamaged === 1)) {
-                    html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(14, "StableBit") + "</div></span></td><td><img src=\"./plugins/stablebit/gfx/on.gif\" alt=\"on\" title=\"\" style=\"width:18px;\" /></td></tr>\n";
+                if ($(this).attr("IsDamaged") !== undefined) {
+                    isdamaged = parseInt($(this).attr("IsDamaged"), 10);
+                    if (!isNaN(isdamaged) && isdamaged === 1) {
+                        html +=
+                            '      <tr><td><div class="treediv"><span class="treespan">' +
+                            genlang(14, "StableBit") +
+                            '</div></span></td><td><img src="./plugins/stablebit/gfx/on.gif" alt="on" title="" style="width:18px;" /></td></tr>\n';
+                    } else {
+                        html +=
+                            '      <tr><td><div class="treediv"><span class="treespan">' +
+                            genlang(14, "StableBit") +
+                            '</div></span></td><td><img src="./plugins/stablebit/gfx/off.gif" alt="off" title="" style="width:18px;" /></td></tr>\n';
+                    }
+                    tree.push(index);
                 }
-                else {
-                    html += "      <tr><td><div class=\"treediv\"><span class=\"treespan\">" + genlang(14, "StableBit") + "</div></span></td><td><img src=\"./plugins/stablebit/gfx/off.gif\" alt=\"off\" title=\"\" style=\"width:18px;\" /></td></tr>\n";
-                }
-                tree.push(index);
-            }
 
-            stablebit_show = true;
-        }
-    });
+                stablebit_show = true;
+            }
+        },
+    );
 
     html += "     </tbody>\n";
     html += "    </table>\n";
@@ -173,9 +263,8 @@ function stablebit_buildTable(xml) {
         column: 0,
         striped: true,
         highlight: false,
-        state: false
+        state: false,
     });
-
 }
 
 /**
@@ -196,7 +285,7 @@ function stablebit_request() {
                 plugin_translate("StableBit");
                 $("#Plugin_StableBit").show();
             }
-        }
+        },
     });
 }
 

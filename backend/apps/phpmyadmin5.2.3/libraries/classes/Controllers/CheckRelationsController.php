@@ -16,7 +16,7 @@ use const SQL_DIR;
  */
 class CheckRelationsController extends AbstractController
 {
-    /** @var Relation */
+    
     private $relation;
 
     public function __construct(ResponseRenderer $response, Template $template, Relation $relation)
@@ -29,11 +29,11 @@ class CheckRelationsController extends AbstractController
     {
         global $db, $cfg;
 
-        /** @var string|null $createPmaDb */
+        
         $createPmaDb = $request->getParsedBodyParam('create_pmadb');
-        /** @var string|null $fixAllPmaDb */
+        
         $fixAllPmaDb = $request->getParsedBodyParam('fixall_pmadb');
-        /** @var string|null $fixPmaDb */
+        
         $fixPmaDb = $request->getParsedBodyParam('fix_pmadb');
 
         $cfgStorageDbName = $this->relation->getConfigurationStorageDbName();

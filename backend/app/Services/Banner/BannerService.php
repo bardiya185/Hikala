@@ -35,13 +35,9 @@ class BannerService
     public function create(array $data, ?UploadedFile $image = null, ?UploadedFile $mobileImage = null): Banner
     {
         return DB::transaction(function () use ($data, $image, $mobileImage) {
-            
-            // آپلود عکس اصلی
             if ($image) {
                 $data['image'] = $this->imageService->uploadImage($image);
             }
-
-            // آپلود عکس موبایل
             if ($mobileImage) {
                 $data['mobile_image'] = $this->imageService->uploadMobileImage($mobileImage);
             }
@@ -60,16 +56,12 @@ class BannerService
         ?UploadedFile $mobileImage = null
     ): Banner {
         return DB::transaction(function () use ($banner, $data, $image, $mobileImage) {
-            
-            // جایگزینی عکس اصلی
             if ($image) {
                 $data['image'] = $this->imageService->replaceImage(
                     $image,
                     $banner->image
                 );
             }
-
-            // جایگزینی عکس موبایل
             if ($mobileImage) {
                 $data['mobile_image'] = $this->imageService->replaceMobileImage(
                     $mobileImage,

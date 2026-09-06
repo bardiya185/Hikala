@@ -52,26 +52,19 @@ class OrderService
      */
     public function cancelOrder(Order $order, User $user, ?string $reason = null): Order
     {
-        // چک دسترسی
         if ($order->user_id !== $user->id) {
             throw new \Exception('You do not have access to this order');
         }
-        
-        // چک قابل لغو بودن
         if (!$order->canBeCanceled()) {
             throw new \Exception('This order cannot be canceled');
         }
         
         return DB::transaction(function () use ($order, $user, $reason) {
-            
-            // برگردوندن موجودی
             foreach ($order->items as $item) {
                 if ($item->variant) {
                     $item->variant->increment('stock', $item->quantity);
                 }
             }
-            
-            // تغییر وضعیت
             return $this->statusService->changeStatus(
                 $order,
                 OrderStatus::CANCELED,

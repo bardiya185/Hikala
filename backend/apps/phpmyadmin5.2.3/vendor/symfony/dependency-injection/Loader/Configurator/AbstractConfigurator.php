@@ -30,7 +30,7 @@ abstract class AbstractConfigurator
      */
     public static $valuePreProcessor;
 
-    /** @internal */
+    
     protected $definition;
 
     public function __call(string $method, array $args)

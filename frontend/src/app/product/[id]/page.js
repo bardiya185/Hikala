@@ -1,24 +1,80 @@
-import ProductsDe from '@/components/templates/productDetails'
-import React from 'react'
+import Breadcrumb from "@/components/common/Breadcrumb";
+import ProductsDe from "@/components/templates/productDetails";
 
+async function getProductDetails(id) {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-async function getProductDetails(id){
-  const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL + `/api/products/${id}`)
+    const response = await fetch(`${baseUrl}/api/products/${id}`, {
+      cache: "no-store",
+    });
 
-  const json = await res.json()
-  return json?.data
+    if (!response.ok) {
+      console.error(
+        "Product Details API Error:",
+        response.status,
+        response.statusText
+      );
+
+      return null;
+    }
+
+    const data = await response.json();
+
+    return data?.data || null;
+  } catch (error) {
+    console.error("Error fetching product details:", error);
+
+    return null;
+  }
 }
 
+export default async function ProductDetails({ params }) {
+  const { id } = await params;
 
+  const product = await getProductDetails(id);
 
-export async function ProductDetails({params}) {
-  const product = await getProductDetails(params.id) 
-    const {id} = params
+  if (!product) {
+    return null;
+  }
+
+  const category = product?.categories?.[0];
+  const parentCategory = category?.parent;
+
+  const breadcrumbItems = [
+    {
+      title: "DigiKala",
+      href: "/",
+    },
+
+    ...(parentCategory
+      ? [
+          {
+            title: parentCategory.name,
+            href: `/search/${parentCategory.slug}`,
+          },
+        ]
+      : []),
+
+    ...(category
+      ? [
+          {
+            title: category.name,
+            href: `/search/${category.slug}`,
+          },
+        ]
+      : []),
+
+    {
+      title: product.title,
+    },
+  ];
+
   return (
     <div>
-        <ProductsDe data={product} />
-    </div>
-  )
-}
+      <Breadcrumb items={breadcrumbItems} />
 
-export default ProductDetails
+      <ProductsDe data={product} />
+    </div>
+  );
+}

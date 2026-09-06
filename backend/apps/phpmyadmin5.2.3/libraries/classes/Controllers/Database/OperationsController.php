@@ -30,19 +30,19 @@ use function strlen;
  */
 class OperationsController extends AbstractController
 {
-    /** @var Operations */
+    
     private $operations;
 
-    /** @var CheckUserPrivileges */
+    
     private $checkUserPrivileges;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var RelationCleanup */
+    
     private $relationCleanup;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -118,7 +118,7 @@ class OperationsController extends AbstractController
                     $tableNames = $this->dbi->getTables($db);
 
                     // remove all foreign key constraints, otherwise we can get errors
-                    /** @var ExportSql $export_sql_plugin */
+                    
                     $export_sql_plugin = Plugins::getPlugin('export', 'sql', [
                         'export_type' => 'database',
                         'single_table' => isset($single_table),
@@ -194,7 +194,7 @@ class OperationsController extends AbstractController
 
                     $reload = true;
 
-                    /* Change database to be used */
+                    
                     if (! $_error && $move) {
                         $db = $_POST['newname'];
                     } elseif (! $_error) {
@@ -301,7 +301,7 @@ class OperationsController extends AbstractController
                 . '" data-post="' . Url::getCommon(['db' => $db]) . '">'
             );
             $message->addParamHtml('</a>');
-            /* Show error if user has configured something, notice elsewhere */
+            
             if (! empty($cfg['Servers'][$server]['pmadb'])) {
                 $message->isError(true);
             }

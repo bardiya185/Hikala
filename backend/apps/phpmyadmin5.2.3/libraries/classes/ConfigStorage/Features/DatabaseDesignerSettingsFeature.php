@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class DatabaseDesignerSettingsFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $designerSettings;
 
     public function __construct(DatabaseName $database, TableName $designerSettings)

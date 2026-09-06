@@ -564,26 +564,26 @@ class CreateStatement extends Statement
             $this->entityOptions = OptionsArray::parse($parser, $list, static::$DB_OPTIONS);
         } elseif ($this->options->has('TABLE')) {
             if (($token->type === Token::TYPE_KEYWORD) && ($token->keyword === 'SELECT')) {
-                /* CREATE TABLE ... SELECT */
+                
                 $this->select = new SelectStatement($parser, $list);
             } elseif ($token->type === Token::TYPE_KEYWORD && ($token->keyword === 'WITH')) {
-                /* CREATE TABLE WITH */
+                
                 $this->with = new WithStatement($parser, $list);
             } elseif (
                 ($token->type === Token::TYPE_KEYWORD) && ($token->keyword === 'AS')
                 && ($list->tokens[$nextidx]->type === Token::TYPE_KEYWORD)
             ) {
                 if ($list->tokens[$nextidx]->value === 'SELECT') {
-                    /* CREATE TABLE ... AS SELECT */
+                    
                     $list->idx = $nextidx;
                     $this->select = new SelectStatement($parser, $list);
                 } elseif ($list->tokens[$nextidx]->value === 'WITH') {
-                    /* CREATE TABLE WITH */
+                    
                     $list->idx = $nextidx;
                     $this->with = new WithStatement($parser, $list);
                 }
             } elseif ($token->type === Token::TYPE_KEYWORD && $token->keyword === 'LIKE') {
-                /* CREATE TABLE `new_tbl` LIKE 'orig_tbl' */
+                
                 $list->idx = $nextidx;
                 $this->like = Expression::parse(
                     $parser,
@@ -725,7 +725,7 @@ class CreateStatement extends Statement
                 $this->body[] = $token;
             }
         } elseif ($this->options->has('VIEW')) {
-            /** @var Token $token */
+            
             $token = $list->getNext(); // Skipping whitespaces and comments.
 
             // Parsing columns list.

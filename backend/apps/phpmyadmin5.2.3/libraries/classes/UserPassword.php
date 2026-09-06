@@ -16,7 +16,7 @@ use function strlen;
  */
 class UserPassword
 {
-    /** @var Privileges */
+    
     private $serverPrivileges;
 
     /**
@@ -101,10 +101,6 @@ class UserPassword
             ($isPerconaOrMySql && $serverVersion >= 50507)
             || (Compatibility::isMariaDb() && $serverVersion >= 50200)
         ) {
-            // For MySQL and Percona versions 5.5.7+ and MariaDB versions 5.2+,
-            // explicitly set value of `old_passwords` so that
-            // it does not give an error while using
-            // the PASSWORD() function
             if ($orig_auth_plugin === 'sha256_password') {
                 $value = 2;
             } else {
@@ -138,13 +134,6 @@ class UserPassword
         bool $authPluginChanged
     ): string {
         global $dbi;
-
-        // Starting with MySQL 5.7.37 the security check changed
-        // See: https://github.com/mysql/mysql-server/commit/b31a8a5d7805834ca2d25629c0e584d2c53b1a5b
-        // See: https://github.com/phpmyadmin/phpmyadmin/issues/17654
-        // That means that you should not try to change or state a plugin using IDENTIFIED WITH
-        // Or it will say: Access denied; you need (at least one of) the CREATE USER privilege(s) for this operation
-        // So let's avoid stating a plugin if it's not needed/changed
 
         if ($serverVersion >= 50706 && $serverVersion < 50737) {
             return 'ALTER USER \'' . $dbi->escapeString($username)
@@ -212,12 +201,8 @@ class UserPassword
             && $orig_auth_plugin !== ''
         ) {
             if ($orig_auth_plugin === 'mysql_native_password') {
-                // Set the hashing method used by PASSWORD()
-                // to be 'mysql_native_password' type
                 $dbi->tryQuery('SET old_passwords = 0;');
             } elseif ($orig_auth_plugin === 'sha256_password') {
-                // Set the hashing method used by PASSWORD()
-                // to be 'sha256_password' type
                 $dbi->tryQuery('SET `old_passwords` = 2;');
             }
 
@@ -244,8 +229,6 @@ class UserPassword
                 $err_url
             );
         }
-
-        // Flush privileges after successful password change
         $dbi->tryQuery('FLUSH PRIVILEGES;');
     }
 

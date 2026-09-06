@@ -64,9 +64,7 @@ class UploadProgress implements UploadInterface
         }
 
         $status = null;
-        // @see https://pecl.php.net/package/uploadprogress
         if (function_exists('uploadprogress_get_info')) {
-            // phpcs:ignore SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFullyQualifiedName
             $status = \uploadprogress_get_info($id);
         }
 

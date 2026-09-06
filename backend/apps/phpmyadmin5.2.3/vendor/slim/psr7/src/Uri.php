@@ -329,8 +329,6 @@ class Uri implements UriInterface
     public function getPath(): string
     {
         $path = $this->path;
-
-        // If the path starts with a / then remove all leading slashes except one.
         if (strpos($path, '/') === 0) {
             $path = '/' . ltrim($path, '/');
         }

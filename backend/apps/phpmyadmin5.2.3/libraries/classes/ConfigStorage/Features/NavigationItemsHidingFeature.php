@@ -12,10 +12,10 @@ use PhpMyAdmin\Dbal\TableName;
  */
 final class NavigationItemsHidingFeature
 {
-    /** @var DatabaseName */
+    
     public $database;
 
-    /** @var TableName */
+    
     public $navigationHiding;
 
     public function __construct(DatabaseName $database, TableName $navigationHiding)

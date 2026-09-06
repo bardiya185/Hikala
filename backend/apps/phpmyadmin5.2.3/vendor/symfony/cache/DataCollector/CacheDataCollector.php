@@ -111,7 +111,7 @@ class CacheDataCollector extends DataCollector implements LateDataCollectorInter
                 'hits' => 0,
                 'misses' => 0,
             ];
-            /** @var TraceableAdapterEvent $call */
+            
             foreach ($calls as $call) {
                 ++$statistics[$name]['calls'];
                 $statistics[$name]['time'] += ($call->end ?? microtime(true)) - $call->start;

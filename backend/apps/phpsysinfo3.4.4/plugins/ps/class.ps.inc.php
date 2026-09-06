@@ -67,14 +67,6 @@ class PS extends PSI_Plugin
                             if (isset($proccpu[$procid]) && ($proccpu[$procid]['ParentProcessId'] == $parentid)) {
                                 $cpu = $proccpu[$procid]['PercentProcessorTime'];
                             }
-                            //ParentProcessId
-                            //Unique identifier of the process that creates a process. Process identifier numbers are reused, so they
-                            //only identify a process for the lifetime of that process. It is possible that the process identified by
-                            //ParentProcessId is terminated, so ParentProcessId may not refer to a running process. It is also
-                            //possible that ParentProcessId incorrectly refers to a process that reuses a process identifier. You can
-                            //use the CreationDate property to determine whether the specified parent was created after the process
-                            //represented by this Win32_Process instance was created.
-                            //=> subtrees of processes may be missing (WHAT TODO?!?)
                             $this->_filecontent[] = $procid." ".$parentid." ".$memusage." ".$cpu." ".$ps;
                         }
                     }

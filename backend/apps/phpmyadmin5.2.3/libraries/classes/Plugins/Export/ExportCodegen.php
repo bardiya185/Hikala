@@ -220,7 +220,7 @@ class ExportCodegen extends ExportPlugin
             )
         );
 
-        /** @var TableProperty[] $tableProperties */
+        
         $tableProperties = [];
         while ($row = $result->fetchRow()) {
             $col_as = $this->getAlias($aliases, $row[0], 'col', $db, $table);

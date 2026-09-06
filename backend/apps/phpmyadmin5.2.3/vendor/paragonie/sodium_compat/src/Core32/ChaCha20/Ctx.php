@@ -37,7 +37,7 @@ class ParagonIE_Sodium_Core32_ChaCha20_Ctx extends ParagonIE_Sodium_Core32_Util 
         }
         $this->container = new SplFixedArray(16);
 
-        /* "expand 32-byte k" as per ChaCha20 spec */
+        
         $this->container[0]  = new ParagonIE_Sodium_Core32_Int32(array(0x6170, 0x7865));
         $this->container[1]  = new ParagonIE_Sodium_Core32_Int32(array(0x3320, 0x646e));
         $this->container[2]  = new ParagonIE_Sodium_Core32_Int32(array(0x7962, 0x2d32));

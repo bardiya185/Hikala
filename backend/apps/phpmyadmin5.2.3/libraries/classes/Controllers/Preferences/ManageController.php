@@ -43,13 +43,13 @@ use const UPLOAD_ERR_OK;
  */
 class ManageController extends AbstractController
 {
-    /** @var UserPreferences */
+    
     private $userPreferences;
 
-    /** @var Relation */
+    
     private $relation;
 
-    /** @var Config */
+    
     private $config;
 
     public function __construct(
@@ -75,7 +75,6 @@ class ManageController extends AbstractController
 
         $error = '';
         if (isset($_POST['submit_export'], $_POST['export_type']) && $_POST['export_type'] === 'text_file') {
-            // export to JSON file
             $this->response->disable();
             $filename = 'phpMyAdmin-config-' . urlencode(Core::getenv('HTTP_HOST')) . '.json';
             Core::downloadHeader($filename, 'application/json');
@@ -86,13 +85,22 @@ class ManageController extends AbstractController
         }
 
         if (isset($_POST['submit_export'], $_POST['export_type']) && $_POST['export_type'] === 'php_file') {
-            // export to JSON file
             $this->response->disable();
             $filename = 'phpMyAdmin-config-' . urlencode(Core::getenv('HTTP_HOST')) . '.php';
             Core::downloadHeader($filename, 'application/php');
             $settings = $this->userPreferences->load();
-            echo '/* ' . __('phpMyAdmin configuration snippet') . " */\n\n";
-            echo '/* ' . __('Paste it to your config.inc.php') . " */\n\n";
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+            echo "\n\n";
+            echo "\n\n";
+=======
+            echo '\n\n";
+            echo '\n\n";
+>>>>>>> Stashed changes
+=======
+            echo '\n\n";
+            echo '\n\n";
+>>>>>>> Stashed changes
             foreach ($settings['config_data'] as $key => $val) {
                 echo '$cfg[\'' . str_replace('/', '\'][\'', $key) . '\'] = ';
                 echo var_export($val, true) . ";\n";
@@ -110,7 +118,6 @@ class ManageController extends AbstractController
         }
 
         if (isset($_POST['submit_import'])) {
-            // load from JSON file
             $json = '';
             if (
                 isset($_POST['import_type'], $_FILES['import_file'])
@@ -126,15 +133,11 @@ class ManageController extends AbstractController
                 if ($importHandle->isError()) {
                     $error = $importHandle->getError();
                 } else {
-                    // read JSON from uploaded file
                     $json = $importHandle->getRawContent();
                 }
             } else {
-                // read from POST value (json)
                 $json = $_POST['json'] ?? null;
             }
-
-            // hide header message
             $_SESSION['userprefs_autoload'] = true;
 
             $configuration = json_decode($json, true);
@@ -144,8 +147,6 @@ class ManageController extends AbstractController
                     $error = __('Could not import configuration');
                 }
             } else {
-                // sanitize input values: treat them as though
-                // they came from HTTP POST request
                 $form_display = new UserFormList($cf);
                 $new_config = $cf->getFlatDefaultConfig();
                 if (! empty($_POST['import_merge'])) {
@@ -169,7 +170,6 @@ class ManageController extends AbstractController
                 }
 
                 if (! $all_ok) {
-                    // mimic original form and post json in a hidden field
                     $relationParameters = $this->relation->getRelationParameters();
 
                     echo $this->template->render('preferences/header', [
@@ -187,8 +187,6 @@ class ManageController extends AbstractController
 
                     return;
                 }
-
-                // check for ThemeDefault
                 $params = [];
                 $tmanager = ThemeManager::getInstance();
                 if (
@@ -203,8 +201,6 @@ class ManageController extends AbstractController
                 if (isset($configuration['lang']) && $configuration['lang'] != $lang) {
                     $params['lang'] = $configuration['lang'];
                 }
-
-                // save settings
                 $result = $this->userPreferences->save($cf->getConfigArray());
                 if ($result === true) {
                     if ($return_url) {
@@ -223,8 +219,6 @@ class ManageController extends AbstractController
                     } else {
                         $return_url = 'index.php?route=/preferences/manage';
                     }
-
-                    // reload config
                     $this->config->loadUserPreferences();
                     $this->userPreferences->redirect($return_url ?? '', $params);
 

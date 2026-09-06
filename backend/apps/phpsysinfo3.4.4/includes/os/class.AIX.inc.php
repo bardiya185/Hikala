@@ -216,7 +216,6 @@ class AIX extends OS
                     $dev->setRxBytes($ar_buf[4]);
                     $dev->setTxBytes($ar_buf[6]);
                     $dev->setErrors($ar_buf[5] + $ar_buf[7]);
-                    //$dev->setDrops($ar_buf[8]);
                     $this->sys->setNetDevices($dev);
                 }
             }
@@ -256,9 +255,6 @@ class AIX extends OS
             }
             $this->sys->setMemUsed($memu);
             $this->sys->setMemFree($memf);
-//            $this->sys->setMemApplication($mems);
-//            $this->sys->setMemBuffer($mems);
-//            $this->sys->setMemCache($mems);
         }
         if (trim($tswap) != "") {
             $dev = new DiskDevice();

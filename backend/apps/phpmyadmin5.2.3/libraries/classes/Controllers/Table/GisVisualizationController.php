@@ -26,10 +26,10 @@ use function is_array;
  */
 final class GisVisualizationController extends AbstractController
 {
-    /** @var GisVisualization */
+    
     private $visualization;
 
-    /** @var DatabaseInterface */
+    
     private $dbi;
 
     public function __construct(
@@ -55,8 +55,6 @@ final class GisVisualizationController extends AbstractController
         if (! $this->hasDatabase()) {
             return;
         }
-
-        // SQL query for retrieving GIS data
         $sqlQuery = '';
         if (isset($_GET['sql_query'], $_GET['sql_signature'])) {
             if (Core::checkSqlQuerySignature($_GET['sql_query'], $_GET['sql_signature'])) {
@@ -65,8 +63,6 @@ final class GisVisualizationController extends AbstractController
         } elseif (isset($_POST['sql_query'])) {
             $sqlQuery = $_POST['sql_query'];
         }
-
-        // Throw error if no sql query is set
         if ($sqlQuery == '') {
             $this->response->setRequestStatus(false);
             $this->response->addHTML(
@@ -77,31 +73,21 @@ final class GisVisualizationController extends AbstractController
         }
 
         [$labelCandidates, $spatialCandidates] = $this->getCandidateColumns($sqlQuery);
-
-        // Get settings if any posted
         $visualizationSettings = [];
-        // Download as PNG/SVG/PDF use _GET and the normal form uses _POST
         if (isset($_POST['visualizationSettings']) && is_array($_POST['visualizationSettings'])) {
             $visualizationSettings = $_POST['visualizationSettings'];
         } elseif (isset($_GET['visualizationSettings']) && is_array($_GET['visualizationSettings'])) {
             $visualizationSettings = $_GET['visualizationSettings'];
         }
-
-        // Check mysql version
         $visualizationSettings['mysqlVersion'] = $this->dbi->getVersion();
         $visualizationSettings['isMariaDB'] = $this->dbi->isMariaDB();
 
         if (! isset($visualizationSettings['labelColumn']) && isset($labelCandidates[0])) {
             $visualizationSettings['labelColumn'] = '';
         }
-
-        // If spatial column is not set, use first geometric column as spatial column
         if (! isset($visualizationSettings['spatialColumn'])) {
             $visualizationSettings['spatialColumn'] = $spatialCandidates[0];
         }
-
-        // Download as PNG/SVG/PDF use _GET and the normal form uses _POST
-        // Convert geometric columns from bytes to text.
         $pos = (int) ($_POST['pos'] ?? $_GET['pos'] ?? $_SESSION['tmpval']['pos']);
         if (isset($_POST['session_max_rows']) || isset($_GET['session_max_rows'])) {
             $rows = (int) ($_POST['session_max_rows'] ?? $_GET['session_max_rows']);
@@ -122,8 +108,6 @@ final class GisVisualizationController extends AbstractController
         }
 
         $this->addScriptFiles(['vendor/openlayers/OpenLayers.js', 'table/gis_visualization.js']);
-
-        // If all the rows contain SRID, use OpenStreetMaps on the initial loading.
         if (! isset($_POST['displayVisualization'])) {
             if ($this->visualization->hasSrid()) {
                 $visualizationSettings['choice'] = 'useBaseLayer';
@@ -193,7 +177,7 @@ final class GisVisualizationController extends AbstractController
     private function getCandidateColumns(string $sqlQuery): array
     {
         $parser = new Parser($sqlQuery);
-        /** @var SelectStatement $statement */
+        
         $statement = $parser->statements[0];
         $statement->limit = new Limit(0, 0);
         $limitedSqlQuery = $statement->build();

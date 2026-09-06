@@ -13,7 +13,7 @@ use Twig\Sandbox\SecurityNotAllowedFunctionError;
 use Twig\Source;
 use Twig\Template;
 
-/* preferences/autoload.twig */
+
 class __TwigTemplate_e64943fb2a93cb80cfb20c76dde76018 extends Template
 {
     private $source;
@@ -34,37 +34,29 @@ class __TwigTemplate_e64943fb2a93cb80cfb20c76dde76018 extends Template
     protected function doDisplay(array $context, array $blocks = [])
     {
         $macros = $this->macros;
-        // line 1
         yield "<div id=\"prefs_autoload\" class=\"alert alert-primary d-print-none hide\" role=\"alert\">
     <form action=\"";
-        // line 2
         yield PhpMyAdmin\Url::getFromRoute("/preferences/manage");
         yield "\" method=\"post\" class=\"disableAjax\">
         ";
-        // line 3
         yield ($context["hidden_inputs"] ?? null);
         yield "
         <input type=\"hidden\" name=\"json\" value=\"\">
         <input type=\"hidden\" name=\"submit_import\" value=\"1\">
         <input type=\"hidden\" name=\"return_url\" value=\"";
-        // line 6
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(($context["return_url"] ?? null), "html", null, true);
         yield "\">
         ";
 yield _gettext("Your browser has phpMyAdmin configuration for this domain. Would you like to import it for current session?");
-        // line 10
         yield "        <br>
         <a href=\"#yes\">";
 yield _gettext("Yes");
-        // line 11
         yield "</a>
         / <a href=\"#no\">";
 yield _gettext("No");
-        // line 12
         yield "</a>
         / <a href=\"#delete\">";
 yield _gettext("Delete settings");
-        // line 13
         yield "</a>
     </form>
 </div>

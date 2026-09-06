@@ -31,7 +31,6 @@ if(file_exists($aliasDir.$aliasToDelete)) {
 	  		$deleteDir = false;
 	  		$message .= "\n\nThe directory ".$dirToDelete."\nis associated with alias ".$aliasDir.$aliasToDelete."\nDo you really want to delete also this directory?\n\nType Y key then Enter for yes: ";
 	  		$message1 = "\n\nThe directory ".$dirToDelete."\nis associated with alias ".$aliasDir.$aliasToDelete."\n\nDo you really want to delete also this directory?\n\nType Y key then Enter for yes: ";
-				//Command_Windows($message,80,-1,0,'Delete an Alias');
 				echo $message1;
 				$confirm = trim(fgets(STDIN));
 				$confirm = mb_strtoupper(trim($confirm ,'\''));

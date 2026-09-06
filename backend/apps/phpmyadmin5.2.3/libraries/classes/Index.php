@@ -28,13 +28,13 @@ class Index
      */
     private static $registry = [];
 
-    /** @var string The name of the schema */
+    
     private $schema = '';
 
-    /** @var string The name of the table */
+    
     private $table = '';
 
-    /** @var string The name of the index */
+    
     private $name = '';
 
     /**
@@ -73,7 +73,7 @@ class Index
      */
     private $comment = '';
 
-    /** @var int 0 if the index cannot contain duplicates, 1 if it can. */
+    
     private $nonUnique = 0;
 
     /**

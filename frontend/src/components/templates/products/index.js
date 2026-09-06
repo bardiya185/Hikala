@@ -1,206 +1,301 @@
 "use client";
+
 import Image from "next/image";
-import React from "react";
-import { TfiAlignLeft } from "react-icons/tfi";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
-import { formatPrice } from "@/core/utils/formatPrice";
-import ReactStars from "react-stars";
-import { useEffect, useRef } from "react";
-import { motion } from "framer-motion";
-import { gsap } from "gsap";
-import { SplitText } from "gsap/SplitText"; 
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { TfiAlignLeft } from "react-icons/tfi";
+import ReactStars from "react-stars";
+import { motion } from "framer-motion";
+import { formatPrice } from "@/core/utils/formatPrice";
+import { FreeShippingBadge } from "@/components/atom/FreeShippingBadge.";
+import WishlistButton from "@/components/WishlistButton";
+import { useWishlistIds } from "@/core/services/queries";
+import { useMemo } from "react";
 
-gsap.registerPlugin(SplitText);
+const SORT_OPTIONS = [
+  {
+    label: "The cheapest",
+    sortBy: "base_price",
+    sortOrder: "asc",
+  },
+  {
+    label: "The most expensive",
+    sortBy: "base_price",
+    sortOrder: "desc",
+  },
+];
 
-function ProductSkeleton() {
+function SortButton({ active, onClick, children }) {
   return (
-    <div className="w-full h-auto rounded-[20px] border border-neutral-100 bg-white p-3 animate-pulse">
-      <div className="rounded-[10px] w-full h-full border border-solid border-neutral-100 p-4">
-        <div className="w-full aspect-[4/5] bg-neutral-200 rounded-[20px]" />
+    <button
+      type="button"
+      onClick={onClick}
+      className={`
+        shrink-0
+        rounded-lg
+        px-2.5
+        py-1.5
+        text-[11px]
+        font-semibold
+        transition-colors
+        sm:px-3
+        sm:text-xs
+        ${
+          active
+            ? "bg-red-50 text-red-500"
+            : "text-neutral-400 hover:text-neutral-600"
+        }
+      `}
+    >
+      {children}
+    </button>
+  );
+}
 
-        <div className="flex justify-between items-center mt-5">
-          <div className="h-4 bg-neutral-200 rounded w-1/2" />
-          <div className="h-5 bg-neutral-200 rounded w-1/4" />
-        </div>
-
-        <div className="flex justify-between items-center mt-4">
-          <div className="h-4 bg-neutral-200 rounded w-1/3" />
-          <div className="h-5 bg-neutral-200 rounded-md w-1/5" />
-        </div>
-
-        <div className="space-y-2 mt-4">
-          <div className="h-3 bg-neutral-200 rounded w-full" />
-          <div className="h-3 bg-neutral-200 rounded w-5/6" />
-        </div>
+function SortBar({ currentSort, currentSortOrder, onSortChange }) {
+  return (
+    <div
+      dir="ltr"
+      className="mb-3 flex w-full items-center gap-2 overflow-x-auto px-1 pb-1 sm:mb-4 sm:gap-3 sm:px-0"
+    >
+      <div className="flex shrink-0 items-center gap-1.5 text-neutral-700 sm:gap-2">
+        <TfiAlignLeft size={16} className="sm:h-[18px] sm:w-[18px]" />
+        <span className="text-xs font-semibold sm:text-sm">Sort:</span>
       </div>
+
+      {SORT_OPTIONS.map(({ label, sortBy, sortOrder }) => {
+        const isActive =
+          currentSort === sortBy && currentSortOrder === sortOrder;
+
+        return (
+          <SortButton
+            key={`${sortBy}-${sortOrder}`}
+            active={isActive}
+            onClick={() => onSortChange(sortBy, sortOrder)}
+          >
+            {label}
+          </SortButton>
+        );
+      })}
     </div>
   );
 }
 
-function Products({ data, current_sort, current_sortorder }) {
+function getProductVariant(product) {
+  const variants = product?.variants;
+  if (!Array.isArray(variants) || variants.length === 0) return null;
+
+  return (
+    variants.find((variant) => variant?.is_default && variant?.is_active) ??
+    variants.find((variant) => variant?.is_active) ??
+    variants[0]
+  );
+}
+
+export function getProductPricing(product) {
+  const variant = getProductVariant(product);
+  const basePrice = variant?.base_price ?? 0;
+  const finalPrice = variant?.final_price ?? 0;
+  const discountPercent = variant?.discount_percent ?? 0;
+
+  return {
+    basePrice,
+    finalPrice,
+    discountPercent,
+    hasDiscount: finalPrice < basePrice && basePrice > 0,
+  };
+}
+
+export function hasFreeShipping(product) {
+  const variant = getProductVariant(product);
+  return variant?.shipping_features?.some(
+    (feature) => feature?.type === "free" && feature?.is_active === true
+  );
+}
+
+function DiscountBadge({ discountPercent }) {
+  if (!discountPercent || discountPercent <= 0) return null;
+
+  return (
+    <div className="flex shrink-0 items-center rounded-md bg-red-50 px-1.5 py-1 text-[9px] font-bold text-red-600 sm:px-2 sm:text-[10px]">
+      <svg
+        className="mr-0.5 h-2.5 w-2.5 fill-current sm:h-3 sm:w-3"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l-7-7c-.37-.36-.59-.86-.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
+      </svg>
+      <span>{discountPercent}% Off</span>
+    </div>
+  );
+}
+
+export function ProductRating({ rating }) {
+  const productRating = rating || 0;
+
+  return (
+    <div className="flex shrink-0 items-center gap-0.5 text-[10px] text-neutral-600 sm:gap-1 sm:text-xs">
+      <ReactStars
+        count={1}
+        value={productRating}
+        size={15}
+        color2="#fbbf24"
+        edit={false}
+        half
+      />
+      <span>{productRating}</span>
+    </div>
+  );
+}
+
+export function ProductImage({ product, priority }) {
+  return (
+    <div className="relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-xl bg-white sm:rounded-2xl">
+      <Image
+        src="/icons/images.jfif"
+        width={200}
+        height={250}
+        alt={product?.title || "product"}
+        priority={priority}
+        className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+      />
+    </div>
+  );
+}
+
+function ProductCard({ product, index, isInWishlist }) {
+  const { basePrice, finalPrice, discountPercent, hasDiscount } =
+    getProductPricing(product);
+
+  const freeShipping = hasFreeShipping(product);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        ease: "easeOut",
+        duration: 0.3,
+        delay: Math.min(index * 0.03, 0.3),
+      }}
+      className="group relative min-w-0 rounded-2xl border border-neutral-100 bg-white p-1.5 sm:rounded-[20px] sm:p-2 lg:p-3"
+    >
+      <div className="relative flex h-full flex-col justify-between rounded-xl border border-neutral-100 p-2 sm:rounded-[10px] sm:p-3 lg:p-4">
+        {/* Wishlist Button */}
+        <WishlistButton productId={product?.id} isInWishlist={isInWishlist} />
+
+        <Link href={`/product/${product?.id}`} className="block">
+          <ProductImage product={product} priority={index < 4} />
+
+          <div className="mt-3 flex items-start justify-between gap-1.5 sm:mt-4 sm:gap-2 lg:mt-5">
+            <h3 className="min-w-0 flex-1 overflow-hidden text-xs font-bold leading-5 text-neutral-800 [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] sm:text-sm sm:leading-6">
+              {product?.title}
+            </h3>
+
+            <ProductRating rating={product?.rating} />
+          </div>
+        </Link>
+
+        <div
+          dir="ltr"
+          className="mt-3 flex flex-wrap items-center justify-between gap-2 sm:mt-4"
+        >
+          <div className="flex min-w-0 flex-wrap items-center gap-1.5 sm:gap-2">
+            <p className="text-sm font-bold text-green-600 sm:text-base">
+              ${formatPrice(finalPrice)}
+            </p>
+
+            {hasDiscount && (
+              <span className="text-[10px] text-neutral-400 line-through sm:text-xs">
+                ${formatPrice(basePrice)}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1.5">
+            {freeShipping && <FreeShippingBadge />}
+
+            {hasDiscount && discountPercent > 0 && (
+              <DiscountBadge discountPercent={discountPercent} />
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function Products({
+  data,
+  current_sort,
+  current_sortorder,
+  isFromBanner,
+  bannerId,
+}) {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const pathname = usePathname();
-  const containerRef = useRef(null);
+  const { data: wishlistIds = [] } = useWishlistIds();
 
-  const handleSortChange = (sort_by, sort_order) => {
-    const params = new URLSearchParams(window.location.search);
+  const wishlistSet = useMemo(
+    () => new Set(wishlistIds.map(String)),
+    [wishlistIds]
+  );
 
-    if (sort_by && sort_order) {
-      params.set("sort_by", sort_by);
-      params.set("sort_order", sort_order);
+  const urlBannerId =
+    searchParams.get("bannerId") || searchParams.get("banner_id");
+
+  const clientBannerId = bannerId || urlBannerId;
+
+  const clientIsFromBanner =
+    isFromBanner ||
+    searchParams.get("source") === "banner" ||
+    Boolean(clientBannerId);
+
+  const handleSortChange = (sortBy, sortOrder) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (sortBy && sortOrder) {
+      params.set("sort_by", sortBy);
+      params.set("sort_order", sortOrder);
     } else {
       params.delete("sort_by");
       params.delete("sort_order");
     }
-    router.push(`${pathname}?${params.toString()}`);
+
+    const queryString = params.toString();
+    router.push(queryString ? `?${queryString}` : "?");
   };
 
-  const isLoading = !data || data.length === 0;
-
+  const products = Array.isArray(data) ? data : [];
 
   return (
     <>
-      
-      <div className="flex gap-4 pl-4 mb-4 items-center" dir="ltr">
-        <div className="flex items-center gap-2 text-neutral-700">
-          <TfiAlignLeft size={18} />
-          <span className="text-sm font-semibold">Sort:</span>
+      {clientIsFromBanner && (
+        <div className="mb-3 px-1 sm:px-0">
+          <h1 className="text-base font-bold text-neutral-800 sm:text-lg">
+            Products
+          </h1>
         </div>
-        <button
-          className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
-            current_sort === "base_price" && current_sortorder === "asc"
-              ? "text-red-500 bg-red-50"
-              : "text-neutral-400 hover:text-neutral-600"
-          }`}
-          onClick={() => handleSortChange("base_price", "asc")}
-        >
-          The cheapest
-        </button>
-        <button
-          className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
-            current_sort === "base_price" && current_sortorder === "desc"
-              ? "text-red-500 bg-red-50"
-              : "text-neutral-400 hover:text-neutral-600"
-          }`}
-          onClick={() => handleSortChange("base_price", "desc")}
-        >
-          The most expensive
-        </button>
-      </div>
+      )}
 
-      
+      <SortBar
+        currentSort={current_sort}
+        currentSortOrder={current_sortorder}
+        onSortChange={handleSortChange}
+      />
+
       <div
-        ref={containerRef}
-        className="max-w-[1270px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         dir="ltr"
+        className="grid w-full grid-cols-2 gap-2 sm:grid-cols-2 sm:gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-4"
       >
-        {isLoading
-          ? Array.from({ length: 8 }).map((_, index) => (
-              <ProductSkeleton key={index} />
-            ))
-          : data.map((product , index) => {
-            const variant =
-            product.variants?.find(v => v.is_default && v.is_active) ??
-            product.variants?.find(v => v.is_active) ??
-            product.variants?.[0];
-    
-        const basePrice = variant?.base_price ?? 0;
-        const finalPrice = variant?.final_price ?? 0;
-        const discountPercent = variant?.discount_percent ?? 0;
-        const discountAmount = variant?.discount_amount ?? 0;
-    
-        // ✅ چک واقعی تخفیف
-        const hasDiscount = finalPrice < basePrice && basePrice > 0;
-           
-
-              return (
-                <motion.div
-                initial={{opacity:0 , y:20 , filter:'blur(10px)'}}
-                animate={{ opacity:100 , y:0 , filter:'blur(0px)'}}
-                transition={{ ease:'easeInOut', duration:0.5, delay: 0.1 * index  }}
-                  className="product-card group rounded-[20px] bg-white border border-neutral-100 p-3"
-                  key={product.id}
-                >
-                  <div className="rounded-[10px] w-full h-full border border-solid border-neutral-100 p-4 flex flex-col justify-between">
-                    <div>
-                      <Link href={`/product/${product?.id}`}>
-                      
-                      <div className="w-full overflow-hidden rounded-[20px] aspect-[4/5] relative flex items-center justify-center">
-                        <Image
-                          src="/icons/images.jfif"
-                          className="object-contain transform transition-transform duration-500 group-hover:scale-105"
-                          width={200}
-                          height={250}
-                          alt={product?.title || "product"}
-                          priority
-                        />
-                      </div>
-
-                      
-                      <div className="flex justify-between items-start mt-5 gap-2">
-                        <h3 className="font-bold text-sm text-neutral-800 line-clamp-2 leading-6 h-12 animate-text-split">
-                          {product?.title}
-                        </h3>
-                        <div className="flex items-center shrink-0 gap-1">
-                          <ReactStars
-
-
-                            count={1}
-                            value={product?.rating || 0}
-                            size={18}
-                            color2="#fbbf24"
-                            edit={false}
-                            half={true}
-                          />
-                          <span>{product?.rating}</span>
-                        </div>
-                      </div>
-                    </Link>
-                    </div>
-
-                    <div>
-                      
-                      <div
-                        className="flex justify-between items-center mt-4"
-                        dir="ltr"
-                      >
-                        <div className="flex items-center gap-2">
-                          <p className="text-green-600 font-bold text-base animate-text-split">
-                            ${formatPrice(finalPrice)}
-                          </p>
-                          {discountPercent > 0 && (
-                            <span className="text-neutral-400 line-through text-xs animate-text-split">
-                              ${formatPrice(basePrice)}
-                            </span>
-                          )}
-                        </div>
-
-                        {discountPercent > 0 && (
-                          <div className="flex items-center text-[10px] font-bold text-red-600 bg-red-50 px-2 py-1 rounded-md">
-                            <svg
-                              className="w-3 h-3 fill-current mr-1"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z" />
-                            </svg>
-                            <span className="animate-text-split">
-                              {discountPercent}% Off
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                    
-                      <p className="w-full mt-3 line-clamp-2 text-xs text-neutral-500 leading-5 animate-text-split">
-                        {product?.short_description}
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            })}
+        {products.map((product, index) => (
+          <ProductCard
+            key={product?.id ?? index}
+            product={product}
+            index={index}
+            isInWishlist={wishlistSet.has(String(product?.id))}
+          />
+        ))}
       </div>
     </>
   );

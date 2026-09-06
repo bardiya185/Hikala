@@ -8,7 +8,6 @@
 /dev/ad6s1e on /opt/glftpd/site/xbox type ext2 (ufs, local, soft-updates)
 /dev/vinum/opt1 on /opt1 type ext2 (ufs, local, soft-updates)
 procfs on /proc type ext2 (procfs, local)
-//ADMINISTRATOR@GODFATHER/GODFATHER C on /usr/home/username/godfather type ext2 (smbfs)
 /dev/sda1 on /mount/sda1 type ext2 (rw)
 /dev/sda2 on /mount/sda2 type ext2 (rw)
 /dev/sda3 on /mount/sda3 type ext2 (rw)

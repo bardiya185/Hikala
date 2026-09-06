@@ -49,7 +49,7 @@ class Text_Plain_Binarytoip extends TransformationsPlugin
         return FormatConverter::binaryToIp($buffer, $isBinary);
     }
 
-    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+    
 
     /**
      * Gets the transformation name of the plugin
