@@ -32,13 +32,13 @@ export default function RootLayout({ children }) {
     <html lang="en" dir="ltr">
       <body className="min-h-screen">
         <TanstackQueryProvider>
-             <Header />
+             {/* <Header /> */}
           <NextTopLoader color="#DC2626" showSpinner={false} />
           <main className="min-h-screen pb-20 lg:pb-0">
             <PageTransition>{children}</PageTransition>
           </main>
           <Toaster />
-          <Footer />
+          {/* <Footer /> */}
         </TanstackQueryProvider>
       </body>
     </html>

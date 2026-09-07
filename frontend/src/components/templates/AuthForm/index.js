@@ -1,18 +1,22 @@
 "use client";
 
 import React, { useState, useMemo, useCallback } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
+
 import { TbLogin } from "react-icons/tb";
 import { HiUser } from "react-icons/hi2";
 import { AiOutlineCaretDown } from "react-icons/ai";
 
 import ModalContainer from "@/components/partials/container/ModalContainer";
-import SendOtpForm from "./SendOtpForm";
-import CheckOtpForm from "./CheckOtpForm";
+
+import SendOtpForm from "@/app/auth/login/sendOtp/SendOtpForm";
+import CheckOtpForm from "@/app/auth/login/checkOtp/CheckOtpForm";
 import LogoutButton from "@/components/LogoutButton/logout_button";
 import { menuItems } from "@/core/config/menu";
 import { useGetUserData } from "@/core/services/queries";
+import { useRouter } from "next/navigation";
+
 
 // ============================================================
 // SKELETON COMPONENT
@@ -31,13 +35,14 @@ function AuthForm() {
   const [isOpen, setIsOpen] = useState(false);
   const [mobile, setMobile] = useState("");
 
-  const { data, isLoading } = useGetUserData();
+  const { data:userData, isLoading } = useGetUserData();
 
-  const userData = useMemo(() => data?.data ?? null, [data]);
+  const router = useRouter()
 
-  const isAuthenticated = useMemo(() => {
-    return Boolean(userData && (userData?.id || userData?.mobile));
-  }, [userData]);
+  console.log(userData);
+  
+
+
 
   const handleToggleDropdown = useCallback(() => {
     setIsOpen((prev) => !prev);
@@ -47,18 +52,10 @@ function AuthForm() {
     setIsOpen(false);
   }, []);
 
-  const handleOpenLogin = useCallback(() => {
-    setStep(1);
-    setIsOpen(true);
-  }, []);
+  
 
-  const handleSetStep = useCallback((newStep) => {
-    setStep(newStep);
-  }, []);
+ 
 
-  const handleSetMobile = useCallback((newMobile) => {
-    setMobile(newMobile);
-  }, []);
 
   // ✅ useMemo برای منوی کاربر (برای جلوگیری از رندر مجدد)
   const renderedMenuItems = useMemo(() => {
@@ -90,7 +87,7 @@ function AuthForm() {
   // AUTHENTICATED USER
   // ============================================================
 
-  if (isAuthenticated) {
+  if (userData) {
     return (
       <div className="relative shrink-0">
         {/* User Button */}
@@ -118,7 +115,7 @@ function AuthForm() {
             >
               <div className="mx-4 border-b border-neutral-200 py-4">
                 <span className="text-sm font-bold text-neutral-800">
-                  {userData?.mobile || "User"}
+                  {userData?.data?.data?.mobile}
                 </span>
               </div>
             </Link>
@@ -178,7 +175,15 @@ function AuthForm() {
     <>
       <button
         type="button"
-        onClick={handleOpenLogin}
+        onClick={() => {
+          setStep(1);
+           window.history.replaceState(
+    {},
+    "",
+    "/auth/login/sendOtp"
+  );
+          setIsOpen(true)}}
+        
         className="group flex h-[38px] w-[92px] shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-2 text-xs font-medium text-neutral-700 shadow-sm transition-all duration-300 hover:bg-neutral-900 hover:text-white hover:shadow-md sm:h-[40px] sm:w-[105px] sm:rounded-xl sm:px-3 sm:text-sm md:w-[120px]"
       >
         <TbLogin className="h-4 w-4 shrink-0 text-neutral-500 transition-colors group-hover:text-white sm:h-5 sm:w-5" />
@@ -189,9 +194,9 @@ function AuthForm() {
       {step === 1 && (
         <ModalContainer isOpen={isOpen} setIsOpen={setIsOpen}>
           <SendOtpForm
-            setStep={handleSetStep}
+            setStep={setStep}
             mobile={mobile}
-            setMobile={handleSetMobile}
+            setMobile={setMobile}
           />
         </ModalContainer>
       )}
@@ -201,8 +206,9 @@ function AuthForm() {
         <ModalContainer isOpen={isOpen} setIsOpen={setIsOpen}>
           <CheckOtpForm
             mobile={mobile}
-            setStep={handleSetStep}
+            setStep={setStep}
             setIsOpen={setIsOpen}
+            
           />
         </ModalContainer>
       )}

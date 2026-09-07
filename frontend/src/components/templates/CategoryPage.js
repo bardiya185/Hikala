@@ -3,12 +3,14 @@
 import DigikalaFilterSidebar from "./DigikalaFilterSidebar";
 import Products from "./products";
 
+
 export default function CategoryPage({
   data,
   current_sort,
   current_sortorder,
   isFromBanner,
   bannerId,
+  
 }) {
   return (
     <div

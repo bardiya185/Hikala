@@ -191,21 +191,29 @@ export function ProductRating({ rating }) {
 // PRODUCT IMAGE
 // ============================================================
 
-export function ProductImage({ product, priority }) {
+export function ProductImage({ product, priority = false }) {
+  const image =
+    product?.images?.find((item) => item?.is_main) ??
+    product?.images?.[0];
+
+  const imageUrl = image?.image_url;
+
   return (
     <div className="relative flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-xl bg-white sm:rounded-2xl">
-      {product.images[0].image_url ?
-      <Image
-        src={product.images[0].image_url}
-        width={200}
-        height={250}
-        alt={product?.title || "product"}
-        priority={priority}
-        className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
-      />
-
-
-: <div  cla ></div>   } 
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={image?.alt || product?.title || "product"}
+          width={200}
+          height={250}
+          priority={priority}
+          className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center text-sm text-neutral-400">
+          No image
+        </div>
+      )}
     </div>
   );
 }
