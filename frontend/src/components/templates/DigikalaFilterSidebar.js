@@ -209,9 +209,9 @@ export default function DigikalaFilterSidebar({
   /* =======================================================
      LOCAL SLIDER STATE
 
-     مهم:
-     این state باعث می‌شود هنگام Drag کردن،
-     router دوباره render نکند.
+     Important:
+     This state prevents the router from
+     re-rendering while dragging.
   ======================================================= */
 
   const [priceRange, setPriceRange] = useState([
@@ -222,8 +222,8 @@ export default function DigikalaFilterSidebar({
   /* =======================================================
      SYNC URL -> SLIDER
 
-     اگر URL از بیرون تغییر کرد،
-     اسلایدر هم تغییر کند.
+     If the URL changes externally,
+     the slider changes as well.
   ======================================================= */
 
   useEffect(() => {
@@ -244,8 +244,8 @@ export default function DigikalaFilterSidebar({
   /* =======================================================
      PRICE CHANGE - LOCAL ONLY
 
-     اینجا دیگر router نداریم.
-     بنابراین اسلایدر روان حرکت می‌کند.
+     No router here.
+     Therefore, the slider moves smoothly.
   ======================================================= */
 
   const handlePriceChange = (value) => {
@@ -262,8 +262,8 @@ export default function DigikalaFilterSidebar({
   /* =======================================================
      PRICE CHANGE COMPLETE
 
-     وقتی کاربر دستگیره را رها کرد،
-     URL تغییر می‌کند.
+     When the user releases the handle,
+     the URL changes.
   ======================================================= */
 
   const handlePriceChangeComplete = (value) => {
@@ -362,11 +362,11 @@ export default function DigikalaFilterSidebar({
 
   return (
     <aside
-      dir="rtl"
+      dir="ltr"
       className="
         w-full
         bg-white
-        text-right
+        text-left
         font-sans
 
         border-0
@@ -399,7 +399,7 @@ export default function DigikalaFilterSidebar({
           border-neutral-100
         "
       >
-        فیلترها
+        Filters
       </div>
 
       {/* ===================================================
@@ -420,7 +420,7 @@ export default function DigikalaFilterSidebar({
 
         <FilterSection
           value="address"
-          title="ارسال سریع"
+          title="Express Delivery"
         >
           <div className="pb-4 space-y-3">
             <div
@@ -452,9 +452,9 @@ export default function DigikalaFilterSidebar({
                   leading-relaxed
                 "
               >
-                برای مشاهده کالاهای موجود
-                در انبار نزدیک خود، لطفاً
-                آدرس را مشخص کنید.
+                To view available products
+                in a nearby warehouse, please
+                specify your address.
               </p>
             </div>
 
@@ -473,7 +473,7 @@ export default function DigikalaFilterSidebar({
                 transition-colors
               "
             >
-              انتخاب آدرس
+              Select Address
             </button>
           </div>
         </FilterSection>
@@ -484,7 +484,7 @@ export default function DigikalaFilterSidebar({
 
         <FilterSection
           value="brand"
-          title="برند"
+          title="Brand"
         >
           <div className="pb-4 pt-1">
             {/* SEARCH */}
@@ -512,7 +512,7 @@ export default function DigikalaFilterSidebar({
 
               <input
                 type="text"
-                placeholder="جستجو برند..."
+                placeholder="Search brands..."
                 value={searchTerm}
                 onChange={(e) =>
                   setSearchTerm(
@@ -551,7 +551,7 @@ export default function DigikalaFilterSidebar({
                     py-2
                   "
                 >
-                  در حال بارگذاری...
+                  Loading...
                 </p>
               ) : filteredBrands.length ? (
                 filteredBrands.map(
@@ -685,7 +685,7 @@ export default function DigikalaFilterSidebar({
                     py-2
                   "
                 >
-                  برندی یافت نشد.
+                  No brands found.
                 </p>
               )}
             </div>
@@ -698,7 +698,7 @@ export default function DigikalaFilterSidebar({
 
         <FilterSection
           value="price"
-          title="محدوده قیمت"
+          title="Price Range"
         >
           <div
             className="
@@ -761,7 +761,7 @@ export default function DigikalaFilterSidebar({
                         mb-1
                       "
                     >
-                      حداقل قیمت
+                      Minimum Price
                     </span>
 
                     <div
@@ -799,7 +799,7 @@ export default function DigikalaFilterSidebar({
                         mb-1
                       "
                     >
-                      حداکثر قیمت
+                      Maximum Price
                     </span>
 
                     <div
@@ -873,7 +873,7 @@ export default function DigikalaFilterSidebar({
                     text-neutral-500
                   "
                 >
-                  قیمت محصول
+                  Product Price
                 </p>
 
                 <p
@@ -900,7 +900,7 @@ export default function DigikalaFilterSidebar({
                   py-4
                 "
               >
-                قیمت محصولی موجود نیست.
+                No product price available.
               </p>
             )}
           </div>
@@ -937,7 +937,7 @@ export default function DigikalaFilterSidebar({
               cursor-pointer
             "
           >
-            فقط کالاهای موجود
+            In-stock products only
           </label>
 
           <Switch.Root
