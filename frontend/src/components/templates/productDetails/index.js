@@ -225,19 +225,14 @@ function ProductsDe({ data }) {
           response,
         );
 
-        /*
-         * Toggle local state
-         */
+        // Toggle local wishlist state
         setIsFavorite(
           (previousState) =>
             !previousState,
         );
 
-        /*
-         * چون state در همین لحظه هنوز
-         * مقدار قبلی را دارد، از آن برای
-         * پیام استفاده می‌کنیم.
-         */
+        // The current state still contains the previous value,
+        // so we use it to determine the success message.
         if (isFavorite) {
           toast.success(
             "Removed from wishlist",
@@ -372,7 +367,7 @@ function ProductsDe({ data }) {
       {
         onSuccess: () => {
           toast.success(
-            "Added to basket successfully",
+            "Added to cart successfully",
           );
         },
 
@@ -383,7 +378,7 @@ function ProductsDe({ data }) {
           );
 
           toast.error(
-            "Could not add product to basket",
+            "Could not add product to cart",
           );
         },
       },
@@ -574,9 +569,7 @@ function ProductsDe({ data }) {
             min-w-0
           "
         >
-          {/* =================================================
-              SPECIAL SALE + WISHLIST
-          ================================================= */}
+          {/* SPECIAL OFFER + WISHLIST */}
 
           <div
             className="
@@ -662,7 +655,7 @@ function ProductsDe({ data }) {
                 text-red-600
               "
             >
-              فروش ویژه
+              Special Offer
             </p>
 
             {/* BALANCE FOR CENTERING */}
@@ -704,7 +697,7 @@ function ProductsDe({ data }) {
               "
               alt={
                 data?.title ||
-                "product"
+                "Product"
               }
               priority
               className="object-contain p-4 sm:p-6 lg:p-8"
@@ -804,8 +797,8 @@ function ProductsDe({ data }) {
 
             <span>
               {data?.buyers_count ||
-                0}
-              خریدار
+                0}{" "}
+              Buyers
             </span>
 
             <Link
@@ -817,7 +810,7 @@ function ProductsDe({ data }) {
             >
               {data?.reviews_count ||
                 0}{" "}
-              دیدگاه
+              Reviews
             </Link>
 
             <Link
@@ -829,7 +822,7 @@ function ProductsDe({ data }) {
             >
               {data?.questions_count ||
                 0}{" "}
-              پرسش
+              Questions
             </Link>
           </div>
 
@@ -899,9 +892,8 @@ function ProductsDe({ data }) {
                 sm:text-sm
               "
             >
-              تحویل امروز با
-              ارسال سریع
-              دیجی‌کالا
+              Get it today with
+              express delivery
             </p>
           </div>
 
@@ -915,7 +907,7 @@ function ProductsDe({ data }) {
               text-neutral-800
             "
           >
-            ویژگی ها
+            Features
           </p>
 
           <div
@@ -940,8 +932,7 @@ function ProductsDe({ data }) {
               title="Operating system version"
               value={
                 attributes?.[1]
-                  ?.value ||
-                "Dynamic LTPO AMOLED 2"
+                  ?.value || "-"
               }
             />
 
@@ -957,8 +948,7 @@ function ProductsDe({ data }) {
               title="Size"
               value={
                 attributes?.[2]
-                  ?.value ||
-                "Dynamic LTPO AMOLED 2"
+                  ?.value || "-"
               }
             />
 
@@ -966,8 +956,7 @@ function ProductsDe({ data }) {
               title="Display technology"
               value={
                 attributes?.[3]
-                  ?.value ||
-                "Dynamic LTPO AMOLED 2"
+                  ?.value || "-"
               }
             />
           </div>
@@ -1007,22 +996,18 @@ function ProductsDe({ data }) {
                 sm:leading-6
               "
             >
-              The possibility of
-              returning goods in
-              the mobile category
-              with the reason
-              &quot;cancellation of
-              purchase&quot; is only
-              accepted if the
-              product seal has not
-              been opened. All
-              Digikala phones have
-              a registry guarantee.
-              In case of a registry
-              problem, you can
-              return the purchased
-              phone after the
-              30-day legal deadline.
+              Mobile products can
+              only be returned due
+              to purchase cancellation
+              if the product seal has
+              not been opened. All
+              phones are covered by
+              a registration guarantee.
+              In case of a registration
+              issue, you may return
+              the purchased phone
+              within the applicable
+              legal return period.
             </p>
           </div>
 
@@ -1069,13 +1054,26 @@ function ProductsDe({ data }) {
             </div>
 
             <div className="mt-3 space-y-2">
-              <PlusItem>4 Free digital delivery</PlusItem>
-              <PlusItem>2 Supermarket delivery</PlusItem>
-              <PlusItem>4 free 45-minute deliveries</PlusItem>
-              <PlusItem>Dedicated support</PlusItem>
               <PlusItem>
-                Fast and free delivery of digital goods (Tehran and Karaj
-                only)
+                4 free digital deliveries
+              </PlusItem>
+
+              <PlusItem>
+                2 supermarket deliveries
+              </PlusItem>
+
+              <PlusItem>
+                4 free 45-minute deliveries
+              </PlusItem>
+
+              <PlusItem>
+                Dedicated customer support
+              </PlusItem>
+
+              <PlusItem>
+                Fast and free delivery
+                of digital goods
+                (Tehran and Karaj only)
               </PlusItem>
             </div>
 
@@ -1096,7 +1094,7 @@ function ProductsDe({ data }) {
                 src="/icons/free-delivery.svg"
                 width={80}
                 height={80}
-                alt="delivery"
+                alt="Free delivery"
               />
             </div>
           </div>
@@ -1161,27 +1159,27 @@ function ProductsDe({ data }) {
         >
           <ServiceItem
             image="/icons/express-delivery.svg"
-            text="Express delivery possible"
+            text="Express delivery"
           />
 
           <ServiceItem
             image="/icons/support.svg"
-            text="24 hours a day, 7 days a week"
+            text="24/7 customer support"
           />
 
           <ServiceItem
             image="/icons/cash-on-delivery.svg"
-            text="Possibility of payment on site"
+            text="Pay on delivery"
           />
 
           <ServiceItem
             image="/icons/days-return.svg"
-            text="Seven-day return guarantee"
+            text="7-day return guarantee"
           />
 
           <ServiceItem
             image="/icons/original-products.svg"
-            text="Guarantee of authenticity of the product"
+            text="Authentic products guaranteed"
           />
         </div>
       </div>
@@ -1301,7 +1299,7 @@ function SellerBox({
             src="/icons/idigi.jfif"
             width={22}
             height={22}
-            alt="Digikala"
+            alt="Seller"
             className="rounded-lg"
           />
 
@@ -1328,7 +1326,7 @@ function SellerBox({
               text-neutral-400
             "
           >
-            Performance
+            Seller performance
           </p>
 
           <span
@@ -1489,10 +1487,10 @@ function SellerBox({
             "
           >
             {isAdding
-              ? "در حال افزودن..."
+              ? "Adding..."
               : stock <= 0
                 ? "Out of stock"
-                : "Add to Basket"}
+                : "Add to Cart"}
           </button>
         )}
 
@@ -1516,8 +1514,7 @@ function SellerBox({
             />
 
             <span className="text-xs">
-              Sadrtel 18-month
-              warranty
+              Sadrtel 18-month warranty
             </span>
           </div>
         </div>
@@ -1592,7 +1589,7 @@ function CartQuantityControl({
             color="white"
             strokeWidth="5"
             animationDuration="0.75"
-            ariaLabel="loading"
+            ariaLabel="Loading"
           />
         )}
 

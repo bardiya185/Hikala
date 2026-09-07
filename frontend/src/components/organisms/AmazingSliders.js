@@ -3,6 +3,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import CountdownTimer from "../atom/CountDownTimer";
+import Link from "next/link";
 
 function AmazingSliders({ campaign, products }) {
   const sliderRef = useRef(null);
@@ -96,7 +97,7 @@ function AmazingSliders({ campaign, products }) {
   );
 }
 function ProductCard({ product }) {
-  const productImage = product.images?.[0]?.image_url || "/icons/product1.webp";
+  const productImage = product.images?.[0]?.image_url ;
 
   const pricing = product.pricing || {};
   const basePrice = pricing.base_price || 0;
@@ -107,6 +108,8 @@ function ProductCard({ product }) {
   return (
     <div className="w-[180px] xs:w-[180px] sm:w-[180px] md:w-[200px] lg:w-[260px] bg-white rounded-lg sm:rounded-xl lg:rounded-2xl p-1.5 sm:p-2 lg:p-4 border border-neutral-300 shadow-sm shrink-0 flex flex-col hover:shadow-md transition-shadow">
       {}
+      <Link href={`/product/${product.id}`}>
+      
       <div className="w-full h-[90px] xs:h-[100px] sm:h-[130px] md:h-[150px] lg:h-[180px] relative flex items-center justify-center bg-gray-50 rounded-md sm:rounded-lg lg:rounded-xl overflow-hidden mb-2">
         <Image
           src={productImage}
@@ -114,7 +117,7 @@ function ProductCard({ product }) {
           width={180}
           height={180}
           className="object-contain max-h-full p-1"
-          unoptimized={productImage.startsWith("http")}
+          
         />
       </div>
 
@@ -150,6 +153,7 @@ function ProductCard({ product }) {
           </p>
         )}
       </div>
+      </Link>
     </div>
   );
 }
