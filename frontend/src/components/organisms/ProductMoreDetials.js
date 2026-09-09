@@ -11,6 +11,8 @@ import { RotatingLines } from "react-loader-spinner";
 import { VscCopilotSuccess } from "react-icons/vsc";
 import ProductReviewModal from "../ProductReviewModal";
 import { useRouter } from "next/navigation";
+import { TbBrandSpeedtest } from "react-icons/tb";
+import { IoWarningOutline } from "react-icons/io5";
 
 function ProductOverview({ data }) {
   return (
@@ -458,222 +460,245 @@ function SellerCard({
   up,
   isPending,
 }) {
+  const stock = Number(selectedVariant?.stock || 0);
+  const maxOrderQuantity = Number(
+    selectedVariant?.max_order_quantity || 0,
+  );
+
+  const finalPrice = Number(
+    selectedVariant?.final_price || 0,
+  );
+
+  const basePrice = Number(
+    selectedVariant?.base_price || 0,
+  );
+
+  const discountPercent = Number(
+    selectedVariant?.discount_percent || 0,
+  );
+
+  const cartQuantity = Number(cartItem?.quantity || 0);
+
+  const hasDiscount =
+    discountPercent > 0 &&
+    basePrice > 0 &&
+    finalPrice > 0 &&
+    finalPrice < basePrice;
+
+  const isOutOfStock = !selectedVariant || stock <= 0;
+
+  const reachedStockLimit =
+    cartQuantity >= stock;
+
+  const reachedOrderLimit =
+    maxOrderQuantity > 0 &&
+    cartQuantity >= maxOrderQuantity;
+
+  const disableIncrease =
+    up ||
+    !selectedVariant ||
+    isOutOfStock ||
+    reachedStockLimit ||
+    reachedOrderLimit;
+
   return (
-    <aside
-      className="
-        w-full
-        lg:w-[360px]
-        lg:sticky
-        lg:top-6
-        lg:pr-0
-      "
-    >
-      <div
-        className="
-          w-full
-          min-h-[400px]
-          border
-          border-neutral-200
-          rounded-xl
-          bg-white
-          shadow-sm
-          overflow-hidden
-          p-4
-          sm:p-5
-        "
-      >
-        {/* Seller header */}
-        <div className="flex justify-between items-center gap-3">
-          <p className="font-medium text-sm sm:text-base">
+    <div className="w-full rounded-xl border border-neutral-200 bg-white p-4 sm:p-5">
+      {/* Seller Header */}
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h3 className="text-sm font-semibold text-neutral-900 sm:text-base">
             Seller
+          </h3>
+
+          <p className="mt-1 text-xs text-neutral-500">
+            Official seller
           </p>
+        </div>
 
-          <span className="text-orange-400 text-xs sm:text-sm font-medium">
-            3 other sellers
+        <div className="flex items-center gap-1 text-xs text-green-600">
+          <VscCopilotSuccess className="h-4 w-4" />
+          <span>Trusted</span>
+        </div>
+      </div>
+
+      {/* Seller Features */}
+      <div className="mt-4 grid grid-cols-1 gap-3 border-y border-neutral-100 py-4 sm:grid-cols-2">
+        <div className="flex items-center gap-2">
+          <TbBrandSpeedtest className="h-5 w-5 shrink-0 text-neutral-600" />
+
+          <span className="text-xs text-neutral-600 sm:text-sm">
+            Fast delivery
           </span>
         </div>
 
-        {/* Seller name */}
-        <div className="flex items-center gap-2 mt-5">
-          <Image
-            src="/icons/idigi.jfif"
-            width={22}
-            height={22}
-            alt="Digikala"
-            className="rounded-lg"
-          />
+        <div className="flex items-center gap-2">
+          <VscCopilotSuccess className="h-5 w-5 shrink-0 text-green-600" />
 
-          <span className="text-sm font-medium">Digikala</span>
-        </div>
-
-        {/* Seller performance */}
-        <div className="flex items-center gap-2 mt-3 ml-7">
-          <p className="text-[10px] text-neutral-400">
-            Performance
-          </p>
-
-          <span className="text-sm text-green-600">
-            Excellent
+          <span className="text-xs text-neutral-600 sm:text-sm">
+            Product warranty
           </span>
         </div>
+      </div>
 
-        <div className="w-full mt-4 border-t border-neutral-200" />
+      {/* Price */}
+      <div className="mt-5">
+        {hasDiscount && (
+          <div className="flex items-center gap-2">
+            <span className="min-w-[36px] rounded-md bg-red-600 px-2 py-1 text-center text-xs font-medium text-white">
+              {discountPercent}%
+            </span>
 
-        {/* Price */}
-        <div className="flex items-center gap-2 mt-5">
-          <span
-            className="
-              min-w-[30px]
-              px-1
-              py-1
-              bg-red-600
-              rounded-md
-              text-center
-              text-xs
-              text-white
-            "
-          >
-            3%
-          </span>
-
-          <del className="text-xs text-neutral-400">
-            3.500 $
-          </del>
-        </div>
-
-        <span className="mt-3 block text-lg sm:text-xl font-semibold">
-          {selectedVariant?.base_price ?? 0} $
-        </span>
-
-        {/* Stock */}
-        <div className="flex items-center gap-2 mt-3">
-          <FaFire className="w-5 h-5 shrink-0 text-orange-600" />
-
-          <span className="text-xs sm:text-sm text-orange-400 font-medium">
-            Only 1 item left in stock.
-          </span>
-        </div>
-
-        {/* Cart */}
-        {cartItem ? (
-          <div className="mt-5">
-            <div
-              className="
-                flex
-                items-center
-                justify-between
-                w-full
-                h-[42px]
-                px-3
-                bg-red-500
-                rounded-lg
-              "
-            >
-              <button
-                type="button"
-                onClick={handleDeacrease}
-                aria-label={
-                  cartItem.quantity === 1
-                    ? "Remove from cart"
-                    : "Decrease quantity"
-                }
-                className="
-                  flex
-                  items-center
-                  justify-center
-                  w-8
-                  h-8
-                  rounded-md
-                  text-white
-                  hover:bg-red-600
-                  transition-colors
-                "
-              >
-                {cartItem.quantity === 1 ? (
-                  <Trash2 size={18} />
-                ) : (
-                  <Minus size={18} />
-                )}
-              </button>
-
-              {!up ? (
-                <span className="text-sm font-medium text-white">
-                  {cartItem.quantity}
-                </span>
-              ) : (
-                <RotatingLines
-                  visible={true}
-                  height="25"
-                  width="25"
-                  color="white"
-                  strokeWidth="5"
-                  animationDuration="0.75"
-                  ariaLabel="loading"
-                />
-              )}
-
-              <button
-                type="button"
-                onClick={handleIncrease}
-                aria-label="Increase quantity"
-                className="
-                  flex
-                  items-center
-                  justify-center
-                  w-8
-                  h-8
-                  rounded-md
-                  text-white
-                  hover:bg-red-600
-                  transition-colors
-                  disabled:opacity-30
-                "
-              >
-                <Plus size={18} />
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="mt-5">
-            <button
-              type="button"
-              onClick={handleAddToCarts}
-              disabled={
-                isPending ||
-                !selectedVariant ||
-                selectedVariant.stock === 0
-              }
-              className="
-                w-full
-                h-[42px]
-                bg-red-500
-                disabled:opacity-50
-                disabled:cursor-not-allowed
-                rounded-lg
-                px-5
-                text-white
-                text-sm
-                transition-colors
-                hover:bg-red-600
-              "
-            >
-              {isPending ? "در حال افزودن..." : "Add to Basket"}
-            </button>
+            <del className="text-xs text-neutral-400 sm:text-sm">
+              {basePrice.toLocaleString()} $
+            </del>
           </div>
         )}
 
-        {/* Warranty */}
-        <div className="mt-5">
-          <div className="flex items-center text-neutral-400 gap-3">
-            <VscCopilotSuccess className="w-5 h-5 shrink-0" />
-
-            <span className="text-xs sm:text-sm">
-              Sadrtel 18-month warranty
-            </span>
-          </div>
+        <div className="mt-2 flex items-center gap-2">
+          <span className="text-xl font-bold text-neutral-900 sm:text-2xl">
+            {finalPrice > 0
+              ? finalPrice.toLocaleString()
+              : "0"}{" "}
+            $
+          </span>
         </div>
       </div>
-    </aside>
+
+      {/* Stock */}
+      {stock > 0 ? (
+        <div className="mt-3 flex items-center gap-2">
+          <FaFire className="h-5 w-5 shrink-0 text-orange-600" />
+
+          <span className="text-xs font-medium text-orange-500 sm:text-sm">
+            {stock} items left in stock.
+          </span>
+        </div>
+      ) : (
+        <div className="mt-3 flex items-center gap-2">
+          <IoWarningOutline className="h-5 w-5 shrink-0 text-red-500" />
+
+          <span className="text-xs font-medium text-red-500 sm:text-sm">
+            Out of stock
+          </span>
+        </div>
+      )}
+
+      {/* Cart Controls */}
+      {cartItem ? (
+        <div className="mt-5">
+          <div className="flex h-12 w-full items-center justify-between rounded-lg border border-neutral-200 bg-white px-2">
+            {/* Decrease / Remove */}
+            <button
+              type="button"
+              onClick={handleDeacrease}
+              disabled={up}
+              aria-label={
+                cartQuantity === 1
+                  ? "Remove from cart"
+                  : "Decrease quantity"
+              }
+              className="flex h-9 w-9 items-center justify-center rounded-md text-neutral-700 transition-colors hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {cartQuantity === 1 ? (
+                <Trash2 className="h-4 w-4" />
+              ) : (
+                <Minus className="h-4 w-4" />
+              )}
+            </button>
+
+            {/* Quantity */}
+            <div className="flex min-w-[50px] items-center justify-center">
+              {up ? (
+                <RotatingLines
+                  visible={true}
+                  height="20"
+                  width="20"
+                  strokeWidth="5"
+                  animationDuration="0.75"
+                  ariaLabel="Loading"
+                />
+              ) : (
+                <span className="text-sm font-semibold text-neutral-900">
+                  {cartQuantity}
+                </span>
+              )}
+            </div>
+
+            {/* Increase */}
+            <button
+              type="button"
+              onClick={handleIncrease}
+              disabled={disableIncrease}
+              aria-label="Increase quantity"
+              className="flex h-9 w-9 items-center justify-center rounded-md text-neutral-700 transition-colors hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+          </div>
+
+          {/* Quantity limitation */}
+          {(reachedStockLimit || reachedOrderLimit) && (
+            <p className="mt-2 text-center text-xs text-orange-500">
+              {reachedOrderLimit
+                ? `Maximum ${maxOrderQuantity} items allowed.`
+                : "Maximum available quantity reached."}
+            </p>
+          )}
+        </div>
+      ) : (
+        /* Add To Basket */
+        <div className="mt-5">
+          <button
+            type="button"
+            onClick={handleAddToCarts}
+            disabled={
+              isPending ||
+              !selectedVariant ||
+              stock <= 0
+            }
+            className="flex h-12 w-full items-center justify-center rounded-lg bg-red-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:bg-neutral-300 disabled:text-neutral-500"
+          >
+            {isPending ? (
+              <span className="flex items-center gap-2">
+                <RotatingLines
+                  visible={true}
+                  height="20"
+                  width="20"
+                  strokeWidth="5"
+                  animationDuration="0.75"
+                  ariaLabel="Loading"
+                />
+
+                <span>Adding...</span>
+              </span>
+            ) : stock <= 0 ? (
+              "Out of Stock"
+            ) : (
+              "Add to Basket"
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* Shipping Information */}
+      <div className="mt-5 space-y-3 border-t border-neutral-100 pt-4">
+        <div className="flex items-center gap-2">
+          <TbBrandSpeedtest className="h-5 w-5 shrink-0 text-neutral-600" />
+
+          <span className="text-xs text-neutral-600 sm:text-sm">
+            Fast delivery available
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <VscCopilotSuccess className="h-5 w-5 shrink-0 text-green-600" />
+
+          <span className="text-xs text-neutral-600 sm:text-sm">
+            Safe and secure purchase
+          </span>
+        </div>
+      </div>
+    </div>
   );
 }
 

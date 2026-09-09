@@ -3,6 +3,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import CountdownTimer from "../atom/CountDownTimer";
+import Link from "next/link";
 
 function SpecialOffers({ campaign, products }) {
   const sliderRef = useRef(null);
@@ -74,12 +75,15 @@ function SpecialOffers({ campaign, products }) {
 
           {}
           <div
+
             ref={sliderRef}
             className="flex items-stretch gap-2 sm:gap-3 lg:gap-4 overflow-x-auto scrollbar-hide scroll-smooth py-1 px-1"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {products.map((product) => (
+            <Link href={`/product/${product.id}`}>
               <ProductCard key={product.id} product={product} />
+            </Link>
             ))}
           </div>
 
