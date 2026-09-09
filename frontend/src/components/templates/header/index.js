@@ -16,6 +16,8 @@ import {
   TbTrophy,
 } from "react-icons/tb";
 
+import { RiNotification3Line } from "react-icons/ri";
+
 import {
   GiGoldBar,
   GiCarKey,
@@ -75,6 +77,18 @@ function CategoryIcon({ iconKey, className }) {
   }
 
   return <IconComponent className={className} />;
+}
+
+function NotificationButton() {
+  return (
+    <Link
+      href="/profile/notification"
+      aria-label="Notifications"
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-neutral-700 transition-colors hover:bg-neutral-100 hover:text-red-500"
+    >
+      <RiNotification3Line className="h-[23px] w-[23px]" />
+    </Link>
+  );
 }
 
 // =====================================================
@@ -316,11 +330,21 @@ function Header() {
             <SearchBar />
           </div>
 
+          {/* NOTIFICATION - MOBILE & TABLET */}
+
+<div className="flex shrink-0 items-center lg:hidden">
+  <NotificationButton />
+</div>
+
           {/* AUTH */}
 
           <div className="hidden shrink-0 items-center lg:flex">
             <AuthForm />
           </div>
+
+          <div className="hidden shrink-0 items-center lg:flex">
+  <NotificationButton />
+</div>
 
           {/* CART */}
 
