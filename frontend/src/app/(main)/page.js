@@ -105,8 +105,8 @@ export default async function Home() {
           <Categories />
         </section>
         {specialOff && (
-        <section className="w-full">
-          <SpecialOffers campaign={specialOff.campaign} key={specialOff.id} 
+        <section  className="w-full">
+          <SpecialOffers campaign={specialOff.campaign}  
            products={specialOff?.data} />
         </section>
 

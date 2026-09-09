@@ -39,8 +39,7 @@
     "react-leaflet": "^5.0.0",
     "react-loader-spinner": "^8.0.2",
     "react-spinners": "^0.17.0",
-    "react-stars": "^2.2.5",
-    "react18-input-otp": "^1.1.4"
+    "react-stars": "^2.2.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
