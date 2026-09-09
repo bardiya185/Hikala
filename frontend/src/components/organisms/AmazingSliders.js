@@ -111,14 +111,17 @@ function ProductCard({ product }) {
       <Link href={`/product/${product.id}`}>
       
       <div className="w-full h-[90px] xs:h-[100px] sm:h-[130px] md:h-[150px] lg:h-[180px] relative flex items-center justify-center bg-gray-50 rounded-md sm:rounded-lg lg:rounded-xl overflow-hidden mb-2">
-        <Image
-          src={productImage}
-          alt={product.title || "product"}
-          width={180}
-          height={180}
-          className="object-contain max-h-full p-1"
-          
-        />
+        {productImage ? (
+
+          <Image
+            src={productImage}
+            alt={product.title || "product"}
+            width={180}
+            height={180}
+            className="object-contain max-h-full p-1"
+            
+          />
+        ):null}
       </div>
 
       {}

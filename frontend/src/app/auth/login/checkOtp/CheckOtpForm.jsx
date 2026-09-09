@@ -2,15 +2,16 @@
 
 import { useCheckOtp } from "@/core/services/mutations";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import OtpInput from "react18-input-otp";
 
-function CheckOtpForm({mobile,  setStep, setIsOpen }) {
+function CheckOtpForm({ mobile, setStep, setIsOpen }) {
   const [code, setCode] = useState("");
- 
+
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const { isPending, mutate } = useCheckOtp();
 
@@ -23,6 +24,11 @@ function CheckOtpForm({mobile,  setStep, setIsOpen }) {
 
     if (isPending) return;
 
+    if (!mobile) {
+      toast.error("Mobile number is missing");
+      return;
+    }
+
     if (code.length !== 6) {
       toast.error("Please enter the complete 6-digit code");
       return;
@@ -30,7 +36,8 @@ function CheckOtpForm({mobile,  setStep, setIsOpen }) {
 
     mutate(
       {
-        mobile,code
+        mobile,
+        code,
       },
       {
         onSuccess: (data) => {
@@ -38,17 +45,41 @@ function CheckOtpForm({mobile,  setStep, setIsOpen }) {
 
           toast.success("Login successful");
 
-          setStep(0);
-          setIsOpen(false);
+          // Get redirect path before changing anything
+          const redirect = searchParams.get("redirect");
 
-        window.history.replaceState({}, "", "/");
-  router.refresh();
+          // Remove temporary mobile number
+          sessionStorage.removeItem("login_mobile");
+
+          // Modal mode
+          if (setStep && setIsOpen) {
+            setStep(0);
+            setIsOpen(false);
+
+            if (redirect) {
+              router.push(redirect);
+            } else {
+              router.refresh();
+            }
+
+            return;
+          }
+
+          // Standalone page mode
+          if (redirect) {
+            router.push(redirect);
+          } else {
+            router.push("/");
+          }
         },
 
         onError: (error) => {
           console.error("OTP verification error:", error);
 
-          
+          toast.error(
+            error?.response?.data?.message ||
+              "Invalid verification code. Please try again."
+          );
         },
       }
     );
@@ -60,7 +91,6 @@ function CheckOtpForm({mobile,  setStep, setIsOpen }) {
       className="flex min-h-[450px] w-full items-center justify-center"
     >
       <div className="flex w-full flex-col rounded-2xl border border-neutral-100 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 lg:max-w-[360px]">
-
         {/* Logo */}
         <div className="mb-6 mt-2 flex justify-center">
           <Image

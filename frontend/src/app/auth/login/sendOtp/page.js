@@ -1,12 +1,15 @@
-"use client"
+"use client";
 
-import SendOtpForm from "./SendOtpForm"
+import React, { useState } from "react";
+import SendOtpForm from "./SendOtpForm";
 
-function page(){
-  return(
-    null
-  )
+export default function SendOtpPage() {
+  const [mobile, setMobile] = useState("");
+
+  return (
+    <SendOtpForm
+      mobile={mobile}
+      setMobile={setMobile}
+    />
+  );
 }
-
-
-export default page
