@@ -109,24 +109,30 @@ export const useLogOut = () => {
 export const useAddProductsBasket = () => {
   const queryClient = useQueryClient();
 
-  const mutationFn = (data) => {
+  const mutationFn = async (data) => {
     const sessionId = getGuestSessionId();
-    console.log("sseeion id",sessionId)
 
-    return api.post(
-      "/api/cart/items",
-      data,
-      {
-        headers: {
-          "X-Session-Id": sessionId
-        },
-      }
-    );
+    console.log("ADD TO CART SESSION:", sessionId);
+
+    if (!sessionId) {
+      throw new Error("Guest session ID is missing");
+    }
+
+    return api.post("/api/cart/items", data, {
+      headers: {
+        "X-Session-Id": sessionId,
+      },
+    });
   };
 
-  const onSuccess = () => {
-    queryClient.invalidateQueries({
+  const onSuccess = async () => {
+    await queryClient.invalidateQueries({
       queryKey: ["cart"],
+    });
+
+    await queryClient.refetchQueries({
+      queryKey: ["cart"],
+      type: "active",
     });
   };
 
@@ -139,8 +145,14 @@ export const useAddProductsBasket = () => {
 export const useUpdateCartItem = () => {
   const queryClient = useQueryClient();
 
-  const mutationFn = ({ itemId, quantity }) => {
+  const mutationFn = async ({ itemId, quantity }) => {
     const sessionId = getGuestSessionId();
+
+    console.log("UPDATE CART SESSION:", sessionId);
+
+    if (!sessionId) {
+      throw new Error("Guest session ID is missing");
+    }
 
     return api.put(
       `/api/cart/items/${itemId}`,
@@ -155,10 +167,14 @@ export const useUpdateCartItem = () => {
     );
   };
 
-  const onSuccess = () => {
-    queryClient.invalidateQueries({
+  const onSuccess = async () => {
+    await queryClient.invalidateQueries({
       queryKey: ["cart"],
-      refetchType: "active",
+    });
+
+    await queryClient.refetchQueries({
+      queryKey: ["cart"],
+      type: "active",
     });
   };
 
@@ -170,21 +186,38 @@ export const useUpdateCartItem = () => {
 
 export const useRemoveCartItem = () => {
   const queryClient = useQueryClient();
-  const sessionId = getGuestSessionId()
 
-  const mutationFn = (cartItemId) =>
-    api.delete(`/api/cart/items/${cartItemId}`,{
-      headers:{
+  const mutationFn = async (cartItemId) => {
+    const sessionId = getGuestSessionId();
+
+    console.log("REMOVE CART SESSION:", sessionId);
+
+    if (!sessionId) {
+      throw new Error("Guest session ID is missing");
+    }
+
+    return api.delete(`/api/cart/items/${cartItemId}`, {
+      headers: {
         "X-Session-Id": sessionId,
-      }
-     
+      },
     });
-
-  const onSuccess = () => {
-    queryClient.invalidateQueries({ queryKey: ["cart"] });
   };
 
-  return useMutation({ mutationFn, onSuccess });
+  const onSuccess = async () => {
+    await queryClient.invalidateQueries({
+      queryKey: ["cart"],
+    });
+
+    await queryClient.refetchQueries({
+      queryKey: ["cart"],
+      type: "active",
+    });
+  };
+
+  return useMutation({
+    mutationFn,
+    onSuccess,
+  });
 };
 
 
