@@ -274,7 +274,7 @@ function Header() {
               "
             >
               <Image
-                src="/icons/logo.png"
+                src="/icons/en-logo.svg"
                 alt="Gandom"
                 width={140}
                 height={45}
