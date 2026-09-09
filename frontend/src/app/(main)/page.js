@@ -102,7 +102,7 @@ export default async function Home() {
         </section>
 
         <section className="w-full">
-          {/* <Categories /> */}
+          <Categories />
         </section>
         {specialOff && (
         <section  className="w-full">
