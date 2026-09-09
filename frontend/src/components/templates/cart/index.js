@@ -70,7 +70,7 @@ export default function CartItem({
         "
       >
         <img
-          src="/icons/ip17.jpg"
+          src={product?.main_image}
           alt={product?.title || "product image"}
           className="w-full h-full object-contain p-3"
         />
@@ -80,7 +80,6 @@ export default function CartItem({
           Product Information
       ========================== */}
       <div className="flex-1 min-w-0 flex flex-col justify-between gap-4">
-        {}
         <div>
           <h3
             className="
@@ -96,9 +95,7 @@ export default function CartItem({
           </h3>
         </div>
 
-        {}
         <div className="flex flex-col gap-2 text-xs text-gray-600">
-          {}
           <div className="flex items-center gap-2">
             <span
               className="
@@ -116,7 +113,6 @@ export default function CartItem({
             <span className="text-gray-600">Product variant</span>
           </div>
 
-          {}
           <div className="flex items-start gap-2">
             <svg
               className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5"
@@ -152,7 +148,6 @@ export default function CartItem({
             mt-1
           "
         >
-          {}
           <div
             className="
               flex
@@ -236,7 +231,6 @@ export default function CartItem({
             </button>
           </div>
 
-          {}
           <button
             type="button"
             onClick={onRemove}
@@ -278,7 +272,6 @@ export default function CartItem({
           border-gray-100
         "
       >
-        {}
         <div className="text-left sm:text-right">
           <span
             className="
@@ -292,7 +285,6 @@ export default function CartItem({
           ></span>
         </div>
 
-        {}
         {variant?.stock <= 3 && variant?.stock > 0 && (
           <div
             className="
