@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -98,6 +97,7 @@ function Header() {
   const [selectedAddress, setSelectedAddress] = useState(null);
 
   const closeTimer = useRef(null);
+  const miniCartTimer = useRef(null);
 
   const { data: cart } = useCart();
 
@@ -158,8 +158,35 @@ function Header() {
       if (closeTimer.current) {
         clearTimeout(closeTimer.current);
       }
+
+      if (miniCartTimer.current) {
+        clearTimeout(miniCartTimer.current);
+      }
     };
   }, []);
+
+  const openMiniCart = useCallback(() => {
+    if (miniCartTimer.current) {
+      clearTimeout(miniCartTimer.current);
+      miniCartTimer.current = null;
+    }
+
+    setIsOpenMiniCart(true);
+  }, []);
+
+  const closeMiniCart = useCallback(() => {
+    if (miniCartTimer.current) {
+      clearTimeout(miniCartTimer.current);
+    }
+
+    miniCartTimer.current = setTimeout(() => {
+      setIsOpenMiniCart(false);
+    }, 150);
+  }, []);
+
+  const handleCartClick = () => {
+    setIsOpenMiniCart(false);
+  };
 
   const activeCategory =
     mainDataArray.find((category) => category.id === activeId) ||
@@ -304,12 +331,14 @@ function Header() {
             </div>
 
             {/* Cart */}
-            <div className="hidden shrink-0 items-center lg:flex">
-              <button
-                type="button"
-                onClick={() =>
-                  setIsOpenMiniCart((prev) => !prev)
-                }
+            <div
+              className="relative hidden shrink-0 items-center lg:flex"
+              onMouseEnter={openMiniCart}
+              onMouseLeave={closeMiniCart}
+            >
+              <Link
+                href="/checkout/cart"
+                onClick={handleCartClick}
                 aria-label={`Shopping cart${
                   totalCount > 0
                     ? `, ${totalCount} items`
@@ -353,7 +382,7 @@ function Header() {
                     {totalCount > 99 ? "99+" : totalCount}
                   </span>
                 )}
-              </button>
+              </Link>
 
               {isOpenMiniCart && (
                 <MiniCart
@@ -766,4 +795,3 @@ function Header() {
 }
 
 export default Header;
-

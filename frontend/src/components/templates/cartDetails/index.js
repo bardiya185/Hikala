@@ -13,6 +13,7 @@ import { IoHome } from "react-icons/io5";
 
 export default function CartDetails() {
   const { data: cart, isLoading } = useCart();
+  
 
   const { mutate: updateCartItem, isPending } = useUpdateCartItem();
   const { mutate: removeCartItem } = useRemoveCartItem();
