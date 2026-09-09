@@ -97,7 +97,11 @@ function AmazingSliders({ campaign, products }) {
   );
 }
 function ProductCard({ product }) {
+  console.log(product)
   const productImage = product.images?.[0]?.image_url ;
+  console.log(productImage)
+  // const productImage = product.images?.[0]image_url ;
+
 
   const pricing = product.pricing || {};
   const basePrice = pricing.base_price || 0;
