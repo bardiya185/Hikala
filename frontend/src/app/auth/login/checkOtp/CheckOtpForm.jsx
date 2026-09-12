@@ -2,26 +2,82 @@
 
 import { useCheckOtp } from "@/core/services/mutations";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useRef, useState } from "react";
 import toast from "react-hot-toast";
-import OtpInput from "react18-input-otp";
 
-function CheckOtpForm({mobile,  setStep, setIsOpen }) {
+function CheckOtpForm({ mobile, setStep, setIsOpen }) {
   const [code, setCode] = useState("");
- 
+  const inputRefs = useRef([]);
+
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const { isPending, mutate } = useCheckOtp();
 
-  const handleChange = (otp) => {
-    setCode(otp);
+  const handleChange = (index, value) => {
+    // فقط عدد
+    const digit = value.replace(/\D/g, "").slice(-1);
+
+    const currentCode = code.split("");
+    currentCode[index] = digit;
+
+    const newCode = currentCode.join("").slice(0, 6);
+
+    setCode(newCode);
+
+    // رفتن به input بعدی
+    if (digit && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (index, event) => {
+    // Backspace روی input خالی -> برگشت به قبلی
+    if (
+      event.key === "Backspace" &&
+      !code[index] &&
+      index > 0
+    ) {
+      inputRefs.current[index - 1]?.focus();
+    }
+
+    // Arrow Left
+    if (event.key === "ArrowLeft" && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+
+    // Arrow Right
+    if (event.key === "ArrowRight" && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handlePaste = (event) => {
+    event.preventDefault();
+
+    const pastedCode = event.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
+
+    if (!pastedCode) return;
+
+    setCode(pastedCode);
+
+    const nextIndex = Math.min(pastedCode.length, 5);
+    inputRefs.current[nextIndex]?.focus();
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
 
     if (isPending) return;
+
+    if (!mobile) {
+      toast.error("Mobile number is missing");
+      return;
+    }
 
     if (code.length !== 6) {
       toast.error("Please enter the complete 6-digit code");
@@ -30,7 +86,8 @@ function CheckOtpForm({mobile,  setStep, setIsOpen }) {
 
     mutate(
       {
-        mobile,code
+        mobile,
+        code,
       },
       {
         onSuccess: (data) => {
@@ -38,17 +95,39 @@ function CheckOtpForm({mobile,  setStep, setIsOpen }) {
 
           toast.success("Login successful");
 
-          setStep(0);
-          setIsOpen(false);
+          const redirect = searchParams.get("redirect");
 
-        window.history.replaceState({}, "", "/");
-  router.refresh();
+          sessionStorage.removeItem("login_mobile");
+
+          // Modal mode
+          if (setStep && setIsOpen) {
+            setStep(0);
+            setIsOpen(false);
+
+            if (redirect) {
+              router.push(redirect);
+            } else {
+              router.refresh();
+            }
+
+            return;
+          }
+
+          // Standalone page mode
+          if (redirect) {
+            router.push(redirect);
+          } else {
+            router.push("/");
+          }
         },
 
         onError: (error) => {
           console.error("OTP verification error:", error);
 
-          
+          toast.error(
+            error?.response?.data?.message ||
+              "Invalid verification code. Please try again."
+          );
         },
       }
     );
@@ -60,7 +139,6 @@ function CheckOtpForm({mobile,  setStep, setIsOpen }) {
       className="flex min-h-[450px] w-full items-center justify-center"
     >
       <div className="flex w-full flex-col rounded-2xl border border-neutral-100 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 lg:max-w-[360px]">
-
         {/* Logo */}
         <div className="mb-6 mt-2 flex justify-center">
           <Image
@@ -87,25 +165,50 @@ function CheckOtpForm({mobile,  setStep, setIsOpen }) {
         </div>
 
         {/* OTP */}
-        <div className="mt-6 flex justify-center" dir="ltr">
-          <OtpInput
-            value={code}
-            onChange={handleChange}
-            numInputs={6}
-            shouldAutoFocus
-            inputStyle={{
-              width: "44px",
-              height: "48px",
-              margin: "0 4px",
-              textAlign: "center",
-              fontSize: "18px",
-              fontWeight: "600",
-              border: "1px solid #e5e5e5",
-              borderRadius: "12px",
-              outline: "none",
-              background: "#fafafa",
-            }}
-          />
+        <div
+          className="mt-6 flex justify-center gap-2"
+          dir="ltr"
+        >
+          {Array.from({ length: 6 }).map((_, index) => (
+            <input
+              key={index}
+              ref={(element) => {
+                inputRefs.current[index] = element;
+              }}
+              type="text"
+              inputMode="numeric"
+              autoComplete={index === 0 ? "one-time-code" : "off"}
+              maxLength={1}
+              value={code[index] || ""}
+              autoFocus={index === 0}
+              onChange={(event) =>
+                handleChange(index, event.target.value)
+              }
+              onKeyDown={(event) =>
+                handleKeyDown(index, event)
+              }
+              onPaste={handlePaste}
+              aria-label={`Verification code digit ${index + 1}`}
+              className="
+                h-12
+                w-11
+                rounded-xl
+                border
+                border-neutral-200
+                bg-[#fafafa]
+                text-center
+                text-lg
+                font-semibold
+                text-neutral-800
+                outline-none
+                transition-all
+                focus:border-red-500
+                focus:bg-white
+                focus:ring-2
+                focus:ring-red-500/10
+              "
+            />
+          ))}
         </div>
 
         {/* Submit */}

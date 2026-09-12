@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState, useEffect, useMemo } from "react";
-import ProductReviewModal from "@/components/ProductReviewModal";
+import React, { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 
 import { FcRating } from "react-icons/fc";
 import { TbBrandSpeedtest } from "react-icons/tb";
@@ -11,12 +11,15 @@ import { VscCopilotSuccess } from "react-icons/vsc";
 import { IoWarningOutline } from "react-icons/io5";
 import { FaRegStar, FaHeart } from "react-icons/fa";
 import { BsDot } from "react-icons/bs";
+
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 
 import ColorSwatchSelector from "@/components/atom/ColorSwatchSelector";
 import ViewDetailsButton from "@/components/atom/ViewDetailsButton";
 import ProductMoreDetials from "@/components/organisms/ProductMoreDetials";
+import ProductReviewModal from "@/components/ProductReviewModal";
+import WishlistButton from "@/components/WishlistButton";
 
 import {
   useAddProductsBasket,
@@ -25,34 +28,25 @@ import {
   useAddToWishlist,
 } from "@/core/services/mutations";
 
-import { useCart, useWishlistIds } from "@/core/services/queries";
+import {
+  useCart,
+  useWishlistIds,
+} from "@/core/services/queries";
 
 import toast from "react-hot-toast";
 
-import {
-  Minus,
-  Plus,
-  Trash2,
-} from "lucide-react";
-
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { RotatingLines } from "react-loader-spinner";
-
 import { formatPrice } from "@/core/utils/formatPrice";
-import WishlistButton from "@/components/WishlistButton";
-import { useParams } from "next/navigation";
-import Link from "next/link";
 
 gsap.registerPlugin(SplitText);
 
-/* =========================================================
-   HELPERS
-========================================================= */
+/* -------------------------------------------------------------------------- */
+/*                               Helper Functions                             */
+/* -------------------------------------------------------------------------- */
 
 function getDefaultVariant(variants) {
-  if (
-    !Array.isArray(variants) ||
-    variants.length === 0
-  ) {
+  if (!Array.isArray(variants) || variants.length === 0) {
     return null;
   }
 
@@ -71,63 +65,308 @@ function getDefaultVariant(variants) {
 
 function getVariantPrice(variant) {
   return {
-    basePrice: Number(
-      variant?.base_price || 0,
-    ),
-
-    finalPrice: Number(
-      variant?.final_price || 0,
-    ),
-
+    basePrice: Number(variant?.base_price || 0),
+    finalPrice: Number(variant?.final_price || 0),
     discountPercent: Number(
       variant?.discount_percent || 0,
     ),
   };
 }
 
-/* =========================================================
-   MAIN COMPONENT
-========================================================= */
+/**
+ * Returns the main product image from the API.
+ *
+ * API structure:
+ *
+ * images: [
+ *   {
+ *     id: 58,
+ *     image_url: "...",
+ *     alt: "...",
+ *     sort_order: 1,
+ *     is_main: true
+ *   }
+ * ]
+ */
+function getProductImage(product) {
+  if (
+    !Array.isArray(product?.images) ||
+    product.images.length === 0
+  ) {
+    return "/icons/test.webp";
+  }
+
+  const mainImage = product.images.find(
+    (image) =>
+      image?.is_main === true ||
+      image?.is_main === 1,
+  );
+
+  const sortedImage = [...product.images]
+    .filter(
+      (image) =>
+        typeof image?.image_url === "string" &&
+        image.image_url.trim().length > 0,
+    )
+    .sort(
+      (a, b) =>
+        Number(a?.sort_order || 0) -
+        Number(b?.sort_order || 0),
+    )[0];
+
+  const image = mainImage || sortedImage;
+
+  if (
+    typeof image?.image_url === "string" &&
+    image.image_url.trim().length > 0
+  ) {
+    return image.image_url;
+  }
+
+  return "/icons/test.webp";
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Seller Box                                    */
+/* -------------------------------------------------------------------------- */
+
+function SellerBox({ data }) {
+  return (
+    <div className="rounded-xl border border-neutral-200 bg-white p-4">
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="text-sm font-bold text-neutral-800">
+          Seller
+        </h3>
+
+        <span className="text-xs text-neutral-500">
+          Official Store
+        </span>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-neutral-200 bg-white">
+          <Image
+            src="/icons/idigi.jfif"
+            alt="Seller"
+            fill
+            sizes="48px"
+            className="object-contain p-1"
+          />
+        </div>
+
+        <div className="min-w-0">
+          <p className="truncate text-sm font-bold text-neutral-800">
+            Digi Seller
+          </p>
+
+          <p className="mt-1 text-xs text-neutral-500">
+            Trusted seller
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 grid grid-cols-3 divide-x divide-neutral-200 rounded-lg bg-neutral-50 py-3 text-center">
+        <div>
+          <p className="text-xs text-neutral-500">
+            Rating
+          </p>
+
+          <p className="mt-1 text-sm font-bold text-neutral-800">
+            95%
+          </p>
+        </div>
+
+        <div>
+          <p className="text-xs text-neutral-500">
+            Delivery
+          </p>
+
+          <p className="mt-1 text-sm font-bold text-neutral-800">
+            Fast
+          </p>
+        </div>
+
+        <div>
+          <p className="text-xs text-neutral-500">
+            Products
+          </p>
+
+          <p className="mt-1 text-sm font-bold text-neutral-800">
+            100+
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                           Cart Quantity Control                            */
+/* -------------------------------------------------------------------------- */
+
+function CartQuantityControl({
+  quantity,
+  onIncrease,
+  onDecrease,
+  isLoading,
+}) {
+  return (
+    <div className="flex h-11 items-center justify-between rounded-lg border border-neutral-200 bg-white px-2">
+      <button
+        type="button"
+        onClick={onIncrease}
+        disabled={isLoading}
+        aria-label="Increase quantity"
+        className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-700 transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        <Plus className="h-4 w-4" />
+      </button>
+
+      <span className="min-w-8 text-center text-sm font-bold text-neutral-800">
+        {isLoading ? (
+          <span className="mx-auto block h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-red-500" />
+        ) : (
+          quantity
+        )}
+      </span>
+
+      <button
+        type="button"
+        onClick={onDecrease}
+        disabled={isLoading}
+        aria-label={
+          quantity <= 1
+            ? "Remove product"
+            : "Decrease quantity"
+        }
+        className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-700 transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {quantity <= 1 ? (
+          <Trash2 className="h-4 w-4" />
+        ) : (
+          <Minus className="h-4 w-4" />
+        )}
+      </button>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               Feature Box                                  */
+/* -------------------------------------------------------------------------- */
+
+function FeatureBox({
+  icon,
+  title,
+  description,
+}) {
+  return (
+    <div className="flex items-center gap-3 rounded-xl border border-neutral-100 bg-white p-3">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-500">
+        {icon}
+      </div>
+
+      <div className="min-w-0">
+        <p className="text-sm font-semibold text-neutral-800">
+          {title}
+        </p>
+
+        {description && (
+          <p className="mt-1 text-xs leading-5 text-neutral-500">
+            {description}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                Plus Item                                   */
+/* -------------------------------------------------------------------------- */
+
+function PlusItem({
+  title,
+  description,
+  icon,
+}) {
+  return (
+    <div className="flex items-center gap-3 rounded-lg border border-neutral-100 p-3">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-neutral-100">
+        {icon}
+      </div>
+
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-neutral-800">
+          {title}
+        </p>
+
+        {description && (
+          <p className="mt-1 text-xs text-neutral-500">
+            {description}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Service Item                                  */
+/* -------------------------------------------------------------------------- */
+
+function ServiceItem({
+  icon,
+  title,
+  description,
+}) {
+  return (
+    <div className="flex items-start gap-3">
+      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-neutral-100">
+        {icon}
+      </div>
+
+      <div>
+        <p className="text-sm font-medium text-neutral-800">
+          {title}
+        </p>
+
+        {description && (
+          <p className="mt-1 text-xs leading-5 text-neutral-500">
+            {description}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Main Component                                */
+/* -------------------------------------------------------------------------- */
 
 function ProductsDe({ data }) {
-  /* =======================================================
-     PRODUCT DATA
-  ======================================================= */
-
   const variants = Array.isArray(data?.variants)
     ? data.variants
     : [];
 
   const [selectedVariant, setSelectedVariant] =
-    useState(() =>
-      getDefaultVariant(variants),
-    );
+    useState(() => getDefaultVariant(variants));
 
-  const [quantity, setQuantity] =
-    useState(1);
+  const [quantity, setQuantity] = useState(1);
 
-  /* =======================================================
-     WISHLIST
-  ======================================================= */
-
-  const [isFavorite, setIsFavorite] =
-    useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const {
     mutate: toggleWishlist,
     isPending: isWishlistLoading,
   } = useAddToWishlist();
 
-  /* =======================================================
-     CART
-  ======================================================= */
-
   const { data: cart } = useCart();
 
   const {
-    data: addedProduct,
-    isPending: isAdding,
     mutate: addProductToCart,
+    isPending: isAdding,
   } = useAddProductsBasket();
 
   const {
@@ -140,15 +379,39 @@ function ProductsDe({ data }) {
     isPending: isRemoving,
   } = useRemoveCartItem();
 
-  /* =======================================================
-     CART ITEMS
-  ======================================================= */
-
   const cartItems = Array.isArray(
     cart?.data?.items,
   )
     ? cart.data.items
     : [];
+
+  /* ------------------------------------------------------------------------ */
+  /*                              Product Image                               */
+  /* ------------------------------------------------------------------------ */
+
+  const productImage = useMemo(() => {
+    return getProductImage(data);
+  }, [data]);
+
+  const productImageAlt = useMemo(() => {
+    const mainImage = Array.isArray(data?.images)
+      ? data.images.find(
+          (image) =>
+            image?.is_main === true ||
+            image?.is_main === 1,
+        )
+      : null;
+
+    return (
+      mainImage?.alt ||
+      data?.title ||
+      "Product"
+    );
+  }, [data]);
+
+  /* ------------------------------------------------------------------------ */
+  /*                                Cart Item                                 */
+  /* ------------------------------------------------------------------------ */
 
   const cartItem = useMemo(() => {
     if (!selectedVariant?.id) {
@@ -162,31 +425,22 @@ function ProductsDe({ data }) {
           selectedVariant.id,
       ) || null
     );
-  }, [
-    cartItems,
-    selectedVariant,
-  ]);
+  }, [cartItems, selectedVariant]);
 
-  /* =======================================================
-     STOCK
-  ======================================================= */
+  /* ------------------------------------------------------------------------ */
+  /*                               Variant Data                               */
+  /* ------------------------------------------------------------------------ */
 
   const stock = Number(
     selectedVariant?.stock || 0,
   );
-
-  /* =======================================================
-     PRICE
-  ======================================================= */
 
   const {
     basePrice,
     finalPrice,
     discountPercent,
   } = useMemo(() => {
-    return getVariantPrice(
-      selectedVariant,
-    );
+    return getVariantPrice(selectedVariant);
   }, [selectedVariant]);
 
   const hasDiscount =
@@ -194,19 +448,23 @@ function ProductsDe({ data }) {
     basePrice > 0 &&
     finalPrice < basePrice;
 
-  /* =======================================================
-     ATTRIBUTES
-  ======================================================= */
-
   const attributes = Array.isArray(
     selectedVariant?.attributes,
   )
     ? selectedVariant.attributes
     : [];
 
-  /* =======================================================
-     WISHLIST
-  ======================================================= */
+  const colorAttributes = attributes.filter(
+    (attribute) =>
+      attribute?.attribute_slug === "color",
+  );
+
+  const hasColors =
+    colorAttributes.length > 0;
+
+  /* ------------------------------------------------------------------------ */
+  /*                           Wishlist                                       */
+  /* ------------------------------------------------------------------------ */
 
   const handleToggleWishlist = () => {
     if (!data?.id) {
@@ -219,25 +477,12 @@ function ProductsDe({ data }) {
     }
 
     toggleWishlist(data.id, {
-      onSuccess: (response) => {
-        console.log(
-          "Wishlist success:",
-          response,
-        );
-
-        /*
-         * Toggle local state
-         */
+      onSuccess: () => {
         setIsFavorite(
           (previousState) =>
             !previousState,
         );
 
-        /*
-         * چون state در همین لحظه هنوز
-         * مقدار قبلی را دارد، از آن برای
-         * پیام استفاده می‌کنیم.
-         */
         if (isFavorite) {
           toast.success(
             "Removed from wishlist",
@@ -257,15 +502,15 @@ function ProductsDe({ data }) {
 
         toast.error(
           error?.message ||
-          "Failed to update wishlist",
+            "Failed to update wishlist",
         );
       },
     });
   };
 
-  /* =======================================================
-     SELECT VARIANT
-  ======================================================= */
+  /* ------------------------------------------------------------------------ */
+  /*                          Variant Selection                               */
+  /* ------------------------------------------------------------------------ */
 
   const handleSelectVariant = (
     variant,
@@ -285,9 +530,9 @@ function ProductsDe({ data }) {
     );
   };
 
-  /* =======================================================
-     QUANTITY SYNC
-  ======================================================= */
+  /* ------------------------------------------------------------------------ */
+  /*                             Quantity                                     */
+  /* ------------------------------------------------------------------------ */
 
   useEffect(() => {
     if (!selectedVariant) {
@@ -322,15 +567,13 @@ function ProductsDe({ data }) {
     );
   }, [selectedVariant]);
 
-  /* =======================================================
-     ADD TO CART
-  ======================================================= */
+  /* ------------------------------------------------------------------------ */
+  /*                              Add To Cart                                 */
+  /* ------------------------------------------------------------------------ */
 
   const handleAddToCart = () => {
     if (!data) {
-      toast.error(
-        "Product not found",
-      );
+      toast.error("Product not found");
       return;
     }
 
@@ -349,16 +592,12 @@ function ProductsDe({ data }) {
     }
 
     if (quantity <= 0) {
-      toast.error(
-        "Invalid quantity",
-      );
+      toast.error("Invalid quantity");
       return;
     }
 
     if (quantity > stock) {
-      toast.error(
-        "Not enough stock",
-      );
+      toast.error("Not enough stock");
       return;
     }
 
@@ -366,13 +605,12 @@ function ProductsDe({ data }) {
       {
         product_variant_id:
           selectedVariant.id,
-
         quantity,
       },
       {
         onSuccess: () => {
           toast.success(
-            "Added to basket successfully",
+            "Added to cart successfully",
           );
         },
 
@@ -383,34 +621,29 @@ function ProductsDe({ data }) {
           );
 
           toast.error(
-            "Could not add product to basket",
+            "Could not add product to cart",
           );
         },
       },
     );
   };
 
-  /* =======================================================
-     INCREASE CART QUANTITY
-  ======================================================= */
+  /* ------------------------------------------------------------------------ */
+  /*                         Cart Quantity                                    */
+  /* ------------------------------------------------------------------------ */
 
   const handleIncrease = () => {
-    if (
-      !cartItem ||
-      !selectedVariant
-    ) {
+    if (!cartItem || !selectedVariant) {
       return;
     }
 
-    const currentQuantity =
-      Number(
-        cartItem.quantity || 0,
-      );
+    const currentQuantity = Number(
+      cartItem.quantity || 0,
+    );
 
-    const currentStock =
-      Number(
-        selectedVariant.stock || 0,
-      );
+    const currentStock = Number(
+      selectedVariant.stock || 0,
+    );
 
     if (
       currentQuantity >=
@@ -419,7 +652,6 @@ function ProductsDe({ data }) {
       toast.error(
         "No more items available",
       );
-
       return;
     }
 
@@ -430,25 +662,17 @@ function ProductsDe({ data }) {
     });
   };
 
-  /* =======================================================
-     DECREASE CART QUANTITY
-  ======================================================= */
-
   const handleDecrease = () => {
     if (!cartItem) {
       return;
     }
 
-    const currentQuantity =
-      Number(
-        cartItem.quantity || 0,
-      );
+    const currentQuantity = Number(
+      cartItem.quantity || 0,
+    );
 
     if (currentQuantity <= 1) {
-      removeCartItem(
-        cartItem.id,
-      );
-
+      removeCartItem(cartItem.id);
       return;
     }
 
@@ -459,9 +683,9 @@ function ProductsDe({ data }) {
     });
   };
 
-  /* =======================================================
-     GSAP TEXT ANIMATION
-  ======================================================= */
+  /* ------------------------------------------------------------------------ */
+  /*                              Animation                                   */
+  /* ------------------------------------------------------------------------ */
 
   useEffect(() => {
     const elements =
@@ -475,123 +699,68 @@ function ProductsDe({ data }) {
 
     const splits = [];
 
-    elements.forEach(
-      (element) => {
+    elements.forEach((element) => {
+      try {
+        const split = new SplitText(
+          element,
+          {
+            type: "words",
+            wordsClass:
+              "inline-block overflow-hidden",
+          },
+        );
+
+        splits.push(split);
+
+        gsap.from(split.words, {
+          duration: 0.8,
+          y: 20,
+          opacity: 0,
+          stagger: 0.08,
+          ease: "back.out(1.7)",
+        });
+      } catch (error) {
+        console.error(
+          "GSAP SplitText error:",
+          error,
+        );
+      }
+    });
+
+    return () => {
+      splits.forEach((split) => {
         try {
-          const split =
-            new SplitText(
-              element,
-              {
-                type: "words",
-                wordsClass:
-                  "inline-block overflow-hidden",
-              },
-            );
-
-          splits.push(split);
-
-          gsap.from(
-            split.words,
-            {
-              duration: 0.8,
-              y: 20,
-              opacity: 0,
-              stagger: 0.08,
-              ease:
-                "back.out(1.7)",
-            },
-          );
+          split.revert();
         } catch (error) {
           console.error(
-            "GSAP SplitText error:",
+            "GSAP cleanup error:",
             error,
           );
         }
-      },
-    );
-
-    return () => {
-      splits.forEach(
-        (split) => {
-          try {
-            split.revert();
-          } catch (error) {
-            console.error(
-              "GSAP cleanup error:",
-              error,
-            );
-          }
-        },
-      );
+      });
     };
   }, []);
 
-  /* =======================================================
-     LOADING
-  ======================================================= */
-
   const isCartUpdating =
-    isUpdating ||
-    isRemoving;
+    isUpdating || isRemoving;
 
-  /* =======================================================
-     RENDER
-  ======================================================= */
+  /* ------------------------------------------------------------------------ */
+  /*                                 Render                                   */
+  /* ------------------------------------------------------------------------ */
 
   return (
     <main
       dir="ltr"
-      className="
-        mx-auto
-        w-full
-        max-w-[1440px]
-        px-3
-        sm:px-5
-        lg:px-8
-      "
+      className="mx-auto w-full max-w-[1440px] px-3 sm:px-5 lg:px-8"
     >
-      {/* =================================================
-          MAIN PRODUCT AREA
-      ================================================= */}
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-6 xl:grid-cols-[minmax(0,450px)_minmax(0,1fr)_360px]">
 
-      <div
-        className="
-          grid
-          grid-cols-1
-          gap-5
-          lg:grid-cols-[minmax(0,1fr)_360px]
-          lg:gap-6
-          xl:grid-cols-[minmax(0,450px)_minmax(0,1fr)_360px]
-        "
-      >
-        {/* =================================================
-            PRODUCT IMAGE
-        ================================================= */}
+        {/* ---------------------------------------------------------------- */}
+        {/* Product Image                                                     */}
+        {/* ---------------------------------------------------------------- */}
 
-        <section
-          className="
-            order-1
-            min-w-0
-          "
-        >
-          {/* =================================================
-              SPECIAL SALE + WISHLIST
-          ================================================= */}
-
-          <div
-            className="
-              flex
-              h-10
-              items-center
-              justify-between
-              rounded-t-xl
-              bg-red-500/10
-              px-3
-              sm:h-[50px]
-            "
-          >
-            {/* WISHLIST BUTTON */}
-
+        <section className="order-1 min-w-0">
+          <div className="flex h-10 items-center justify-between rounded-t-xl bg-red-500/10 px-3 sm:h-[50px]">
             <button
               type="button"
               onClick={
@@ -605,1147 +774,523 @@ function ProductsDe({ data }) {
                   ? "Remove from wishlist"
                   : "Add to wishlist"
               }
-              aria-pressed={
-                isFavorite
-              }
-              className="
-                flex
-                h-9
-                w-9
-                items-center
-                justify-center
-                rounded-full
-                bg-white
-                shadow-sm
-                transition-all
-                duration-200
-                hover:scale-110
-                active:scale-95
-                disabled:cursor-not-allowed
-                disabled:opacity-50
-              "
+              aria-pressed={isFavorite}
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition-all duration-200 hover:scale-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isWishlistLoading ? (
-                <span
-                  className="
-                    h-4
-                    w-4
-                    animate-spin
-                    rounded-full
-                    border-2
-                    border-neutral-300
-                    border-t-red-500
-                  "
-                />
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-red-500" />
               ) : (
                 <FaHeart
-                  className={`
-                    h-5
-                    w-5
-                    transition-all
-                    duration-200
-                    ${isFavorite
+                  className={`h-5 w-5 transition-all duration-200 ${
+                    isFavorite
                       ? "scale-110 text-red-500"
                       : "text-neutral-400"
-                    }
-                  `}
+                  }`}
                 />
               )}
             </button>
 
-            {/* TITLE */}
-
-            <p
-              className="
-                text-sm
-                font-bold
-                text-red-600
-              "
-            >
-              فروش ویژه
+            <p className="text-sm font-bold text-red-600">
+              Special Offer
             </p>
 
-            {/* BALANCE FOR CENTERING */}
-
-            <div
-              className="
-                h-9
-                w-9
-              "
-            />
+            <div className="h-9 w-9" />
           </div>
 
           {/* PRODUCT IMAGE */}
-
-          <div
-            className="
-              relative
-              flex
-              aspect-square
-              w-full
-              items-center
-              justify-center
-              overflow-hidden
-              rounded-b-xl
-              border
-              border-neutral-100
-              bg-white
-              sm:aspect-[4/5]
-              xl:aspect-[450/500]
-            "
-          >
+          <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-b-xl border border-neutral-100 bg-white sm:aspect-[4/5] xl:aspect-[450/500]">
             <Image
-              src="/icons/test.webp"
+              src={productImage}
               fill
               sizes="
                 (max-width: 640px) 100vw,
                 (max-width: 1024px) 50vw,
                 450px
               "
-              alt={
-                data?.title ||
-                "product"
-              }
+              alt={productImageAlt}
               priority
               className="object-contain p-4 sm:p-6 lg:p-8"
             />
           </div>
-        </section>
 
-        {/* =================================================
-            PRODUCT INFORMATION
-        ================================================= */}
-
-        <section
-          className="
-            order-2
-            min-w-0
-          "
-        >
-          {/* TITLE */}
-
-          <h1
-            className="
-              animate-split
-              text-base
-              font-bold
-              leading-7
-              text-neutral-900
-              sm:text-lg
-              sm:leading-8
-              lg:text-xl
-            "
-          >
-            {data?.title ||
-              data?.description ||
-              "-"}
-          </h1>
-
-          {/* DESCRIPTION */}
-
-          <p
-            className="
-              mt-2
-              text-sm
-              leading-6
-              text-neutral-400
-              sm:mt-3
-              sm:leading-7
-            "
-          >
-            {data?.short_description ||
-              data?.description ||
-              "-"}
-          </p>
-
-          <div
-            className="
-              mt-4
-              h-px
-              w-full
-              bg-neutral-200
-            "
-          />
-
-          {/* RATING */}
-
-          <div
-            className="
-              mt-4
-              flex
-              flex-wrap
-              items-center
-              gap-x-3
-              gap-y-2
-              text-xs
-              text-neutral-500
-              sm:text-sm
-            "
-          >
-            <div
-              className="
-                flex
-                items-center
-                gap-1.5
-              "
-            >
-              <FcRating
-                className="
-                  h-5
-                  w-5
-                "
-              />
-
-              <span>
-                {data?.rating ||
-                  "0"}
-              </span>
-            </div>
-
+          {/* Product image information */}
+          <div className="mt-3 flex items-center justify-between text-xs text-neutral-500">
             <span>
-              {data?.buyers_count ||
-                0}
-              خریدار
+              Product ID: {data?.id || "-"}
             </span>
 
-            <Link
-              href="#reviews"
-              className="
-                text-blue-600
-                hover:underline
-              "
-            >
-              {data?.reviews_count ||
-                0}{" "}
-              دیدگاه
-            </Link>
-
-            <Link
-              href="#questions"
-              className="
-                text-blue-600
-                hover:underline
-              "
-            >
-              {data?.questions_count ||
-                0}{" "}
-              پرسش
-            </Link>
+            <span>
+              {Array.isArray(data?.images)
+                ? data.images.length
+                : 0}{" "}
+              image
+              {Array.isArray(data?.images) &&
+              data.images.length !== 1
+                ? "s"
+                : ""}
+            </span>
           </div>
+        </section>
 
-          {/* COLOR / VARIANT */}
+        {/* ---------------------------------------------------------------- */}
+        {/* Product Details                                                   */}
+        {/* ---------------------------------------------------------------- */}
 
-          {variants.length > 0 && (
-            <div className="mt-6">
-              <span
-                className="
-                  text-sm
-                  font-semibold
-                  text-neutral-800
-                "
-              >
-                Color
-              </span>
+        <section className="order-2 min-w-0">
+          <div className="rounded-xl border border-neutral-200 bg-white p-4 sm:p-5 lg:p-6">
 
-              <div className="mt-3">
-                <ColorSwatchSelector
-                  variants={
-                    variants
-                  }
-                  selectedVariant={
-                    selectedVariant
-                  }
-                  onSelectVariant={
-                    handleSelectVariant
-                  }
-                />
+            <div className="mb-3 flex items-center gap-2">
+              {data?.brand?.name && (
+                <span className="text-sm font-semibold text-neutral-500">
+                  {data.brand.name}
+                </span>
+              )}
+
+              {data?.rating && (
+                <>
+                  <BsDot className="text-neutral-400" />
+
+                  <div className="flex items-center gap-1">
+                    <FcRating className="h-4 w-4" />
+
+                    <span className="text-xs font-semibold text-neutral-700">
+                      {data.rating}
+                    </span>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <h1 className="animate-split text-lg font-bold leading-8 text-neutral-900 sm:text-xl lg:text-2xl">
+              {data?.title ||
+                "Product"}
+            </h1>
+
+            {data?.short_description && (
+              <p className="mt-3 text-sm leading-7 text-neutral-500">
+                {data.short_description}
+              </p>
+            )}
+
+            {/* Product statistics */}
+            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-neutral-100 pb-5">
+              <div className="flex items-center gap-1.5 text-xs text-neutral-500">
+                <FaRegStar className="text-amber-400" />
+                <span>
+                  Rating:{" "}
+                  {data?.rating || 0}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1.5 text-xs text-neutral-500">
+                <BsDot />
+                <span>
+                  {data?.reviews_count ||
+                    0}{" "}
+                  Reviews
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1.5 text-xs text-neutral-500">
+                <BsDot />
+                <span>
+                  {data?.view_count || 0}{" "}
+                  Views
+                </span>
               </div>
             </div>
-          )}
 
-          {/* FAST DELIVERY */}
+            {/* Variants */}
+            {variants.length > 0 && (
+              <div className="mt-6">
+                <div className="mb-4 flex items-center justify-between">
+                  <h2 className="text-sm font-bold text-neutral-800">
+                    Product Variants
+                  </h2>
 
-          <div
-            className="
-              mt-6
-              flex
-              min-h-[60px]
-              items-center
-              gap-2
-              rounded-xl
-              border
-              border-blue-100
-              bg-blue-400/10
-              px-3
-              py-3
-              sm:min-h-[75px]
-              sm:px-4
-            "
-          >
-            <TbBrandSpeedtest
-              className="
-                h-6
-                w-6
-                shrink-0
-                text-blue-600
-              "
-            />
+                  <span className="text-xs text-neutral-500">
+                    {variants.length} options
+                  </span>
+                </div>
 
-            <p
-              className="
-                text-xs
-                leading-5
-                text-neutral-700
-                sm:text-sm
-              "
-            >
-              تحویل امروز با
-              ارسال سریع
-              دیجی‌کالا
-            </p>
-          </div>
+                <div className="space-y-3">
+                  {variants.map(
+                    (variant) => {
+                      const isSelected =
+                        selectedVariant?.id ===
+                        variant.id;
 
-          {/* FEATURES */}
+                      const variantPrice =
+                        getVariantPrice(
+                          variant,
+                        );
 
-          <p
-            className="
-              mt-7
-              text-sm
-              font-bold
-              text-neutral-800
-            "
-          >
-            ویژگی ها
-          </p>
+                      const variantColor =
+                        variant.attributes?.find(
+                          (attribute) =>
+                            attribute?.attribute_slug ===
+                            "color",
+                        );
 
-          <div
-            className="
-              mt-4
-              grid
-              grid-cols-1
-              gap-2.5
-              sm:grid-cols-2
-              xl:grid-cols-3
-            "
-          >
-            <FeatureBox
-              title="Display technology"
-              value={
-                attributes?.[5]
-                  ?.value
-              }
-            />
+                      return (
+                        <button
+                          key={variant.id}
+                          type="button"
+                          onClick={() =>
+                            handleSelectVariant(
+                              variant,
+                            )
+                          }
+                          className={`w-full rounded-xl border p-3 text-left transition-all ${
+                            isSelected
+                              ? "border-red-500 bg-red-50/50"
+                              : "border-neutral-200 bg-white hover:border-neutral-300"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                {variantColor?.value && (
+                                  <span className="text-sm font-semibold text-neutral-800">
+                                    {
+                                      variantColor.value
+                                    }
+                                  </span>
+                                )}
 
-            <FeatureBox
-              title="Operating system version"
-              value={
-                attributes?.[1]
-                  ?.value ||
-                "Dynamic LTPO AMOLED 2"
-              }
-            />
+                                {variant.sku && (
+                                  <span className="text-xs text-neutral-400">
+                                    {variant.sku}
+                                  </span>
+                                )}
+                              </div>
 
-            <FeatureBox
-              title="Main camera resolution"
-              value={
-                attributes?.[6]
-                  ?.value
-              }
-            />
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                {variant.attributes
+                                  ?.slice(0, 4)
+                                  .map(
+                                    (
+                                      attribute,
+                                    ) => (
+                                      <span
+                                        key={
+                                          attribute.id
+                                        }
+                                        className="rounded-md bg-neutral-100 px-2 py-1 text-[11px] text-neutral-600"
+                                      >
+                                        {
+                                          attribute.value
+                                        }
+                                      </span>
+                                    ),
+                                  )}
+                              </div>
+                            </div>
 
-            <FeatureBox
-              title="Size"
-              value={
-                attributes?.[2]
-                  ?.value ||
-                "Dynamic LTPO AMOLED 2"
-              }
-            />
+                            <div className="shrink-0 text-right">
+                              <p className="text-sm font-bold text-neutral-900">
+                                {formatPrice(
+                                  variantPrice.finalPrice,
+                                )}
+                              </p>
 
-            <FeatureBox
-              title="Display technology"
-              value={
-                attributes?.[3]
-                  ?.value ||
-                "Dynamic LTPO AMOLED 2"
-              }
-            />
-          </div>
+                              {variantPrice.basePrice >
+                                variantPrice.finalPrice && (
+                                <p className="mt-1 text-xs text-neutral-400 line-through">
+                                  {formatPrice(
+                                    variantPrice.basePrice,
+                                  )}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    },
+                  )}
+                </div>
+              </div>
+            )}
 
-          <div className="mt-4">
-            <ViewDetailsButton />
-          </div>
+            {/* Colors */}
+            {hasColors && (
+              <div className="mt-6">
+                <h2 className="mb-3 text-sm font-bold text-neutral-800">
+                  Color
+                </h2>
 
-          {/* RETURN WARNING */}
+                <div className="flex flex-wrap gap-3">
+                  {colorAttributes.map(
+                    (attribute) => (
+                      <ColorSwatchSelector
+                        key={
+                          attribute.id
+                        }
+                        color={
+                          attribute.color_code
+                        }
+                        label={
+                          attribute.value
+                        }
+                        selected={
+                          selectedVariant?.attributes?.some(
+                            (
+                              selectedAttribute,
+                            ) =>
+                              selectedAttribute?.attribute_slug ===
+                                "color" &&
+                              selectedAttribute?.value ===
+                                attribute.value,
+                          )
+                        }
+                      />
+                    ),
+                  )}
+                </div>
+              </div>
+            )}
 
-          <div
-            className="
-              mt-5
-              flex
-              items-start
-              gap-2
-            "
-          >
-            <IoWarningOutline
-              className="
-                mt-0.5
-                h-5
-                w-5
-                shrink-0
-                text-neutral-400
-              "
-            />
+            {/* Selected variant attributes */}
+            {attributes.length > 0 && (
+              <div className="mt-6">
+                <h2 className="mb-3 text-sm font-bold text-neutral-800">
+                  Specifications
+                </h2>
 
-            <p
-              className="
-                max-w-[700px]
-                text-justify
-                text-[11px]
-                leading-5
-                text-neutral-400
-                sm:text-[13px]
-                sm:leading-6
-              "
-            >
-              The possibility of
-              returning goods in
-              the mobile category
-              with the reason
-              &quot;cancellation of
-              purchase&quot; is only
-              accepted if the
-              product seal has not
-              been opened. All
-              Digikala phones have
-              a registry guarantee.
-              In case of a registry
-              problem, you can
-              return the purchased
-              phone after the
-              30-day legal deadline.
-            </p>
-          </div>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {attributes.map(
+                    (attribute) => (
+                      <div
+                        key={
+                          attribute.id
+                        }
+                        className="flex items-center justify-between gap-3 rounded-lg bg-neutral-50 px-3 py-2.5"
+                      >
+                        <span className="text-xs text-neutral-500">
+                          {
+                            attribute.attribute_name
+                          }
+                        </span>
 
-          {/* PLUS MEMBERS */}
+                        <span className="text-xs font-semibold text-neutral-800">
+                          {
+                            attribute.value
+                          }
+                        </span>
+                      </div>
+                    ),
+                  )}
+                </div>
+              </div>
+            )}
 
-          <div
-            className="
-              mt-6
-              overflow-hidden
-              rounded-2xl
-              border
-              border-neutral-300
-              p-3
-              sm:p-5
-            "
-          >
-            <div
-              className="
-                flex
-                items-center
-                gap-2
-              "
-            >
-              <FaRegStar
-                className="
-                  h-6
-                  w-6
-                  shrink-0
-                  text-purple-600
-                "
-              />
+            {/* Price */}
+            <div className="mt-6 rounded-xl bg-neutral-50 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs text-neutral-500">
+                    Final Price
+                  </p>
 
-              <p
-                className="
-                  text-sm
-                  font-bold
-                  text-purple-600
-                  sm:text-base
-                  lg:text-lg
-                "
-              >
-                Free shipping for Plus members
-              </p>
+                  <p className="mt-1 text-xl font-extrabold text-neutral-900 sm:text-2xl">
+                    {formatPrice(
+                      finalPrice,
+                    )}
+                  </p>
+                </div>
+
+                {hasDiscount && (
+                  <div className="flex flex-col items-end gap-1">
+                    <span className="rounded-md bg-red-500 px-2 py-1 text-xs font-bold text-white">
+                      {discountPercent}%
+                    </span>
+
+                    <span className="text-xs text-neutral-400 line-through">
+                      {formatPrice(
+                        basePrice,
+                      )}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <div className="mt-3 space-y-2">
-              <PlusItem>4 Free digital delivery</PlusItem>
-              <PlusItem>2 Supermarket delivery</PlusItem>
-              <PlusItem>4 free 45-minute deliveries</PlusItem>
-              <PlusItem>Dedicated support</PlusItem>
-              <PlusItem>
-                Fast and free delivery of digital goods (Tehran and Karaj
-                only)
-              </PlusItem>
+            {/* Stock */}
+            <div className="mt-4 flex items-center gap-2">
+              {stock > 0 ? (
+                <>
+                  <VscCopilotSuccess className="text-green-500" />
+
+                  <span className="text-sm font-medium text-green-600">
+                    In stock
+                  </span>
+
+                  <span className="text-xs text-neutral-400">
+                    ({stock} available)
+                  </span>
+                </>
+              ) : (
+                <>
+                  <IoWarningOutline className="text-red-500" />
+
+                  <span className="text-sm font-medium text-red-500">
+                    Out of stock
+                  </span>
+                </>
+              )}
             </div>
 
-            <button
-              type="button"
-              className="
-                mt-3
-                text-xs
-                text-blue-500
-                hover:underline
-              "
-            >
-              Buy a subscription
-            </button>
+            {/* Cart */}
+            <div className="mt-5">
+              {cartItem ? (
+                <div className="space-y-3">
+                  <CartQuantityControl
+                    quantity={
+                      cartItem.quantity
+                    }
+                    onIncrease={
+                      handleIncrease
+                    }
+                    onDecrease={
+                      handleDecrease
+                    }
+                    isLoading={
+                      isCartUpdating
+                    }
+                  />
 
-            <div className="mt-2 flex justify-end">
-              <Image
-                src="/icons/free-delivery.svg"
-                width={80}
-                height={80}
-                alt="delivery"
-              />
+                  <Link
+                    href="/checkout/cart"
+                    className="flex h-11 items-center justify-center rounded-lg border border-red-500 text-sm font-bold text-red-500 transition hover:bg-red-50"
+                  >
+                    View Cart
+                  </Link>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={
+                    handleAddToCart
+                  }
+                  disabled={
+                    isAdding ||
+                    stock <= 0
+                  }
+                  className="flex h-12 w-full items-center justify-center rounded-lg bg-red-500 text-sm font-bold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:bg-neutral-300"
+                >
+                  {isAdding ? (
+                    <RotatingLines
+                      visible
+                      width="22"
+                      strokeWidth="5"
+                      animationDuration="0.75"
+                      ariaLabel="Loading"
+                    />
+                  ) : (
+                    "Add to Cart"
+                  )}
+                </button>
+              )}
             </div>
           </div>
         </section>
 
-        {/* =================================================
-            SELLER BOX
-        ================================================= */}
+        {/* ---------------------------------------------------------------- */}
+        {/* Right Sidebar                                                     */}
+        {/* ---------------------------------------------------------------- */}
 
-        <SellerBox
-          data={data}
-          selectedVariant={
-            selectedVariant
-          }
-          cartItem={cartItem}
-          stock={stock}
-          basePrice={basePrice}
-          finalPrice={finalPrice}
-          discountPercent={
-            discountPercent
-          }
-          hasDiscount={
-            hasDiscount
-          }
-          isAdding={isAdding}
-          isCartUpdating={
-            isCartUpdating
-          }
-          handleAddToCart={
-            handleAddToCart
-          }
-          handleDecrease={
-            handleDecrease
-          }
-          handleIncrease={
-            handleIncrease
-          }
-        />
+        <aside className="order-3 min-w-0 space-y-4">
+          <SellerBox data={data} />
+
+          <div className="rounded-xl border border-neutral-200 bg-white p-4">
+            <h2 className="mb-4 text-sm font-bold text-neutral-800">
+              Delivery Services
+            </h2>
+
+            <div className="space-y-4">
+              {selectedVariant?.shipping_features?.map(
+                (feature) => (
+                  <ServiceItem
+                    key={feature.id}
+                    icon={
+                      feature.type ===
+                      "fast" ? (
+                        <TbBrandSpeedtest className="h-4 w-4" />
+                      ) : (
+                        <VscCopilotSuccess className="h-4 w-4" />
+                      )
+                    }
+                    title={
+                      feature.title
+                    }
+                    description={
+                      feature.description
+                    }
+                  />
+                ),
+              )}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-neutral-200 bg-white p-4">
+            <h2 className="mb-4 text-sm font-bold text-neutral-800">
+              Product Features
+            </h2>
+
+            <div className="space-y-3">
+              <FeatureBox
+                icon={
+                  <FaFire className="h-4 w-4" />
+                }
+                title="Special Offer"
+                description="This product is currently available with a special offer."
+              />
+
+              <FeatureBox
+                icon={
+                  <VscCopilotSuccess className="h-4 w-4" />
+                }
+                title="Original Product"
+                description="Product supplied through our trusted seller network."
+              />
+
+              <FeatureBox
+                icon={
+                  <TbBrandSpeedtest className="h-4 w-4" />
+                }
+                title="Fast Delivery"
+                description="Fast delivery options may be available."
+              />
+            </div>
+          </div>
+        </aside>
       </div>
 
-      {/* ===================================================
-          SERVICE FEATURES
-      =================================================== */}
-
-      <div
-        className="
-          mt-8
-          border-t
-          border-neutral-200
-          pt-5
-          sm:mt-10
-        "
-      >
-        <div
-          className="
-            grid
-            grid-cols-2
-            gap-5
-            sm:grid-cols-3
-            lg:grid-cols-5
-          "
-        >
-          <ServiceItem
-            image="/icons/express-delivery.svg"
-            text="Express delivery possible"
-          />
-
-          <ServiceItem
-            image="/icons/support.svg"
-            text="24 hours a day, 7 days a week"
-          />
-
-          <ServiceItem
-            image="/icons/cash-on-delivery.svg"
-            text="Possibility of payment on site"
-          />
-
-          <ServiceItem
-            image="/icons/days-return.svg"
-            text="Seven-day return guarantee"
-          />
-
-          <ServiceItem
-            image="/icons/original-products.svg"
-            text="Guarantee of authenticity of the product"
-          />
-        </div>
-      </div>
-
-      <div className="mt-8 border-b border-neutral-200" />
-
-      {/* ===================================================
-          MORE DETAILS
-      =================================================== */}
+      {/* ------------------------------------------------------------------ */}
+      {/* Additional Product Details                                        */}
+      {/* ------------------------------------------------------------------ */}
 
       <div className="mt-6">
-        <ProductMoreDetials
-          data={data}
-          selectedVariant={
-            selectedVariant
-          }
-          cartItem={cartItem}
-          handleAddToCarts={
-            handleAddToCart
-          }
-          handleDeacrease={
-            handleDecrease
-          }
-          handleIncrease={
-            handleIncrease
-          }
-          up={isCartUpdating}
-          isPending={isAdding}
+        <ProductMoreDetials data={data}
+    selectedVariant={selectedVariant}
+    cartItem={cartItem}
+    handleAddToCarts={handleAddToCart}
+    handleDeacrease={handleDecrease}
+    handleIncrease={handleIncrease}
+    up={isCartUpdating}
+    isPending={isAdding} />
+      </div>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Reviews                                                            */}
+      {/* ------------------------------------------------------------------ */}
+
+      <div className="mt-6">
+        <ProductReviewModal
+          productId={data?.id}
         />
       </div>
     </main>
-  );
-}
-
-/* =========================================================
-   SELLER BOX
-========================================================= */
-
-function SellerBox({
-  data,
-  selectedVariant,
-  cartItem,
-  stock,
-  basePrice,
-  finalPrice,
-  discountPercent,
-  hasDiscount,
-  isAdding,
-  isCartUpdating,
-  handleAddToCart,
-  handleDecrease,
-  handleIncrease,
-}) {
-  return (
-    <aside
-      className="
-        order-3
-        min-w-0
-        lg:sticky
-        lg:top-8
-        lg:self-start
-      "
-    >
-      <div
-        className="
-          w-full
-          rounded-2xl
-          border
-          border-neutral-300
-          bg-white
-          p-4
-          sm:p-5
-        "
-      >
-        {/* SELLER HEADER */}
-
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-            gap-3
-          "
-        >
-          <p
-            className="
-              text-sm
-              font-semibold
-            "
-          >
-            Seller
-          </p>
-
-          <span
-            className="
-              animate-split
-              text-xs
-              font-medium
-              text-orange-400
-            "
-          >
-            3 other sellers
-          </span>
-        </div>
-
-        {/* SELLER NAME */}
-
-        <div
-          className="
-            mt-5
-            flex
-            items-center
-            gap-2
-          "
-        >
-          <Image
-            src="/icons/idigi.jfif"
-            width={22}
-            height={22}
-            alt="Digikala"
-            className="rounded-lg"
-          />
-
-          <span className="text-sm">
-            {data?.seller?.name ||
-              "Digikala"}
-          </span>
-        </div>
-
-        {/* SELLER PERFORMANCE */}
-
-        <div
-          className="
-            mt-3
-            flex
-            items-center
-            gap-2
-            pl-7
-          "
-        >
-          <p
-            className="
-              text-[10px]
-              text-neutral-400
-            "
-          >
-            Performance
-          </p>
-
-          <span
-            className="
-              text-xs
-              text-green-600
-            "
-          >
-            Excellent
-          </span>
-        </div>
-
-        <div
-          className="
-            mt-4
-            h-px
-            w-full
-            bg-neutral-200
-          "
-        />
-
-        {/* PRICE */}
-
-        <div
-          className="
-            mt-5
-            flex
-            items-center
-            gap-2
-          "
-        >
-          {hasDiscount && (
-            <span
-              className="
-                rounded-md
-                bg-red-600
-                px-2
-                py-1
-                text-xs
-                font-bold
-                text-white
-              "
-            >
-              {discountPercent}%
-            </span>
-          )}
-
-          {hasDiscount && (
-            <del
-              className="
-                text-xs
-                text-neutral-400
-              "
-            >
-              {formatPrice(
-                basePrice,
-              )}{" "}
-              $
-            </del>
-          )}
-        </div>
-
-        <span
-          className="
-            mt-3
-            block
-            text-xl
-            font-bold
-            text-neutral-800
-          "
-        >
-          {finalPrice > 0
-            ? `${formatPrice(
-              finalPrice,
-            )} $`
-            : "-"}
-        </span>
-
-        {/* STOCK */}
-
-        <div
-          className="
-            mt-3
-            flex
-            items-start
-            gap-2
-          "
-        >
-          <FaFire
-            className="
-              mt-0.5
-              h-5
-              w-5
-              shrink-0
-              text-orange-600
-            "
-          />
-
-          <span
-            className="
-              animate-split
-              text-xs
-              font-medium
-              leading-5
-              text-orange-400
-            "
-          >
-            {stock > 0
-              ? `Only ${stock} item${stock > 1
-                ? "s"
-                : ""
-              } left in stock.`
-              : "Out of stock"}
-          </span>
-        </div>
-
-        {/* CART */}
-
-        {cartItem ? (
-          <CartQuantityControl
-            cartItem={cartItem}
-            stock={stock}
-            loading={
-              isCartUpdating
-            }
-            onDecrease={
-              handleDecrease
-            }
-            onIncrease={
-              handleIncrease
-            }
-          />
-        ) : (
-          <button
-            type="button"
-            onClick={
-              handleAddToCart
-            }
-            disabled={
-              isAdding ||
-              !selectedVariant ||
-              stock <= 0
-            }
-            className="
-              mt-5
-              h-11
-              w-full
-              rounded-lg
-              bg-red-500
-              px-4
-              text-sm
-              font-semibold
-              text-white
-              transition-colors
-              hover:bg-red-600
-              disabled:cursor-not-allowed
-              disabled:opacity-50
-            "
-          >
-            {isAdding
-              ? "در حال افزودن..."
-              : stock <= 0
-                ? "Out of stock"
-                : "Add to Basket"}
-          </button>
-        )}
-
-        {/* WARRANTY */}
-
-        <div className="mt-5">
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-              text-neutral-400
-            "
-          >
-            <VscCopilotSuccess
-              className="
-                h-5
-                w-5
-                shrink-0
-              "
-            />
-
-            <span className="text-xs">
-              Sadrtel 18-month
-              warranty
-            </span>
-          </div>
-        </div>
-      </div>
-    </aside>
-  );
-}
-
-/* =========================================================
-   CART QUANTITY
-========================================================= */
-
-function CartQuantityControl({
-  cartItem,
-  stock,
-  loading,
-  onDecrease,
-  onIncrease,
-}) {
-  const quantity = Number(
-    cartItem?.quantity || 0,
-  );
-
-  return (
-    <div className="mt-5">
-      <div
-        className="
-          flex
-          h-11
-          w-full
-          items-center
-          justify-between
-          rounded-lg
-          bg-red-500
-          px-3
-        "
-      >
-        <button
-          type="button"
-          onClick={
-            onDecrease
-          }
-          disabled={loading}
-          className="
-            text-white
-            disabled:opacity-40
-          "
-          aria-label="Decrease quantity"
-        >
-          {quantity <= 1 ? (
-            <Trash2 size={18} />
-          ) : (
-            <Minus size={18} />
-          )}
-        </button>
-
-        {!loading ? (
-          <span
-            className="
-              text-sm
-              font-medium
-              text-white
-            "
-          >
-            {quantity}
-          </span>
-        ) : (
-          <RotatingLines
-            visible
-            height="25"
-            width="25"
-            color="white"
-            strokeWidth="5"
-            animationDuration="0.75"
-            ariaLabel="loading"
-          />
-        )}
-
-        <button
-          type="button"
-          onClick={
-            onIncrease
-          }
-          disabled={
-            loading ||
-            quantity >= stock
-          }
-          className="
-            text-white
-            disabled:opacity-30
-          "
-          aria-label="Increase quantity"
-        >
-          <Plus size={18} />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function FeatureBox({
-  title,
-  value,
-}) {
-  return (
-    <div
-      className="
-        min-h-[90px]
-        rounded-xl
-        bg-neutral-100
-        px-3
-        py-4
-        text-center
-        sm:min-h-[100px]
-        sm:py-5
-      "
-    >
-      <p
-        className="
-          text-[10px]
-          leading-4
-          text-neutral-500
-          sm:text-xs
-        "
-      >
-        {title}
-      </p>
-
-      <p
-        className="
-          mt-1
-          line-clamp-2
-          text-xs
-          font-medium
-          leading-5
-          text-black/80
-          sm:text-sm
-        "
-      >
-        {value || "-"}
-      </p>
-    </div>
-  );
-}
-
-/* =========================================================
-   PLUS ITEM
-========================================================= */
-
-function PlusItem({
-  children,
-}) {
-  return (
-    <div
-      className="
-        flex
-        items-start
-        gap-1
-      "
-    >
-      <BsDot
-        className="
-          mt-0.5
-          h-5
-          w-5
-          shrink-0
-          text-purple-600
-        "
-      />
-
-      <p
-        className="
-          text-xs
-          leading-5
-          text-neutral-700
-        "
-      >
-        {children}
-      </p>
-    </div>
-  );
-}
-
-/* =========================================================
-   SERVICE ITEM
-========================================================= */
-
-function ServiceItem({
-  image,
-  text,
-}) {
-  return (
-    <div
-      className="
-        flex
-        flex-col
-        items-center
-        justify-center
-        gap-2
-        text-center
-      "
-    >
-      <Image
-        src={image}
-        width={60}
-        height={60}
-        alt=""
-        className="
-          h-12
-          w-12
-          object-contain
-          sm:h-14
-          sm:w-14
-        "
-      />
-
-      <p
-        className="
-          text-[10px]
-          leading-4
-          text-neutral-500
-          sm:text-xs
-          sm:leading-5
-        "
-      >
-        {text}
-      </p>
-    </div>
   );
 }
 

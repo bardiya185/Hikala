@@ -13,6 +13,8 @@ export default function Categories() {
     error,
   } = useGetCategoriesHomePage();
 
+  console.log(data)
+
   // API ممکن است مستقیماً آرایه بدهد
   // یا داخل data قرار گرفته باشد.
   const categories = Array.isArray(data)

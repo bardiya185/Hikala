@@ -208,7 +208,7 @@ Route::prefix('categories')->group(function () {
         Route::put('shipping-features/{feature}', [ProductVariantShippingFeatureController::class, 'update']);
         Route::delete('shipping-features/{feature}', [ProductVariantShippingFeatureController::class, 'destroy']);
     });
-    Route::prefix('banners')->middleware('permission:create-banners')->group(function () {
+    Route::prefix('admin/banners')->middleware('permission:create-banners')->group(function () {
         Route::get('/', [BannerController::class, 'adminIndex']);
         Route::post('/', [BannerController::class, 'store']);
         Route::get('/{banner}', [BannerController::class, 'show']);

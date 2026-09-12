@@ -3,6 +3,7 @@
 import React, { useRef } from "react";
 import Image from "next/image";
 import CountdownTimer from "../atom/CountDownTimer";
+import Link from "next/link";
 
 function SpecialOffers({ campaign, products }) {
   const sliderRef = useRef(null);
@@ -74,12 +75,15 @@ function SpecialOffers({ campaign, products }) {
 
           {}
           <div
+
             ref={sliderRef}
             className="flex items-stretch gap-2 sm:gap-3 lg:gap-4 overflow-x-auto scrollbar-hide scroll-smooth py-1 px-1"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            <Link key={product.id} href={`/product/${product.id}`}>
+              <ProductCard  product={product} />
+            </Link>
             ))}
           </div>
 
@@ -108,7 +112,7 @@ function ProductCard({ product }) {
   return (
     <div className="w-[180px] xs:w-[180px] sm:w-[180px] md:w-[200px] lg:w-[260px] bg-white rounded-lg sm:rounded-xl lg:rounded-2xl p-1.5 sm:p-2 lg:p-4 border border-neutral-300 shadow-sm shrink-0 flex flex-col hover:shadow-md transition-shadow">
       {}
-      <div className="w-full h-[90px] xs:h-[100px] sm:h-[130px] md:h-[150px] lg:h-[180px] relative flex items-center justify-center bg-gray-50 rounded-md sm:rounded-lg lg:rounded-xl overflow-hidden mb-2">
+      <div  className="w-full h-[90px] xs:h-[100px] sm:h-[130px] md:h-[150px] lg:h-[180px] relative flex items-center justify-center bg-gray-50 rounded-md sm:rounded-lg lg:rounded-xl overflow-hidden mb-2">
         <Image
           src={productImage}
           alt={product.title || "product"}

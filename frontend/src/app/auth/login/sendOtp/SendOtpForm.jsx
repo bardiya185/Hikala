@@ -36,19 +36,27 @@ function SendOtpForm({
     mutate(
       { mobile },
       {
-       onSuccess: (data) => {
+ onSuccess: (data) => {
   console.log(data);
 
   toast.success(data?.data?.code);
 
   if (setStep) {
-    // داخل AuthForm / Modal
+    // Modal mode
     setStep(2);
-     window.history.replaceState({}, "", "/");
-  
   } else {
-    // فقط وقتی فرم در صفحه مستقل استفاده شده
-    router.push("/auth/login/checkOtp");
+    // Standalone page mode
+    sessionStorage.setItem("login_mobile", mobile);
+
+    const redirect = new URLSearchParams(window.location.search).get(
+      "redirect"
+    );
+
+    const query = redirect
+      ? `?redirect=${encodeURIComponent(redirect)}`
+      : "";
+
+    router.push(`/auth/login/checkOtp${query}`);
   }
 },
 

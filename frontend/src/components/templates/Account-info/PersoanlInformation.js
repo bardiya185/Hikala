@@ -1,121 +1,338 @@
+"use client";
+
 import React from "react";
 import { FaPlus } from "react-icons/fa";
 import { AiFillEdit } from "react-icons/ai";
 
 function PersoanlInformation() {
   return (
-    <div className="w-[852px] mt-4 h-[404px] border border-solid border-neutral-400 rounded-lg relative">
-      <div className="flex  items-center mx-6 pb-5 w-auto  border-b border-neutral-400">
-        <div className="w-1/2 pl-4">
-          <div className="flex justify-between items-center pt-5">
-            <span className="pr-4 text-neutral-500 font-iranyekan font-semibold">نام و نام خانوادگی</span>
-            <button>
-              <FaPlus />
-            </button>
+    <section className="w-full min-w-0">
+      <div
+        className="
+          w-full
+          overflow-hidden
+          rounded-xl
+          border
+          border-neutral-200
+          bg-white
+          shadow-sm
+        "
+      >
+        {/* =====================================================
+            HEADER
+        ====================================================== */}
+        <div
+          className="
+            flex
+            items-center
+            justify-between
+            border-b
+            border-neutral-200
+            px-4
+            py-4
+
+            sm:px-5
+            sm:py-5
+
+            md:px-6
+          "
+        >
+          <div>
+            <h2
+              className="
+                text-base
+                font-bold
+                text-neutral-900
+
+                sm:text-lg
+              "
+            >
+              Personal Information
+            </h2>
+
+            <p
+              className="
+                mt-1
+                text-xs
+                text-neutral-500
+
+                sm:text-sm
+              "
+            >
+              Manage your personal account information
+            </p>
           </div>
         </div>
 
-        <div className="w-1/2 px-4 ">
-          <div className="flex justify-between items-center pt-5 ">
-            <span className="text-neutral-500">کد ملی / گذرنامه / گواهی اقامت</span>
-            <button>
-              <FaPlus />
-            </button>
-          </div>
-        </div>
+        {/* =====================================================
+            INFORMATION GRID
+        ====================================================== */}
+        <div
+          className="
+            grid
+            grid-cols-1
+            divide-y
+            divide-neutral-200
 
-        <div className="absolute top-0 bottom-0 right-1/2 w-[1px] bg-neutral-400 -translate-x-1/2"></div>
+            md:grid-cols-2
+            md:divide-x
+            md:divide-y-0
+          "
+        >
+          {/* ===================================================
+              FULL NAME
+          ==================================================== */}
+          <InformationItem
+            label="Full Name"
+            action="add"
+          />
+
+          {/* ===================================================
+              NATIONAL ID / PASSPORT
+          ==================================================== */}
+          <InformationItem
+            label="National ID / Passport / Residence Certificate"
+            action="add"
+          />
+
+          {/* ===================================================
+              MOBILE NUMBER
+          ==================================================== */}
+          <InformationItem
+            label="Mobile Number"
+            value="09123456789"
+            verified
+            action="edit"
+          />
+
+          {/* ===================================================
+              EMAIL
+          ==================================================== */}
+          <InformationItem
+            label="Email"
+            action="add"
+          />
+
+          {/* ===================================================
+              PASSWORD
+          ==================================================== */}
+          <InformationItem
+            label="Password"
+            action="add"
+          />
+
+          {/* ===================================================
+              REFUND METHOD
+          ==================================================== */}
+          <InformationItem
+            label="Refund Method"
+            action="add"
+          />
+
+          {/* ===================================================
+              DATE OF BIRTH
+          ==================================================== */}
+          <InformationItem
+            label="Date of Birth"
+            value="1405/04/13"
+            action="edit"
+          />
+
+          {/* ===================================================
+              OCCUPATION
+          ==================================================== */}
+          <InformationItem
+            label="Occupation"
+            action="add"
+          />
+
+          {/* ===================================================
+              ECONOMIC CODE
+          ==================================================== */}
+          <InformationItem
+            label="Economic Code"
+            action="add"
+          />
+
+          {/* ===================================================
+              DISABILITY TYPE
+          ==================================================== */}
+          <InformationItem
+            label="Disability Type"
+            value="Not specified"
+            action="add"
+          />
+        </div>
       </div>
-      <div className="flex items-center">
-        <div className="w-1/2 pl-4">
-          <div className="flex gap-2  items-center pt-5">
-            <p className="pr-9 text-neutral-500">شماره موبایل</p>
-            <span className="bg-green-500 rounded-md text-white">
-              تایید شده
+    </section>
+  );
+}
+
+/* =============================================================
+   INFORMATION ITEM
+============================================================= */
+
+function InformationItem({
+  label,
+  value,
+  action = "add",
+  verified = false,
+}) {
+  const isEdit = action === "edit";
+
+  return (
+    <div
+      className="
+        flex
+        min-w-0
+        items-start
+        justify-between
+        gap-4
+        px-4
+        py-4
+
+        sm:px-5
+        sm:py-5
+
+        md:min-h-[108px]
+        md:px-6
+        md:py-5
+
+        lg:px-7
+      "
+    >
+      {/* =====================================================
+          CONTENT
+      ====================================================== */}
+      <div className="min-w-0 flex-1">
+        <div
+          className="
+            flex
+            min-w-0
+            flex-wrap
+            items-center
+            gap-2
+          "
+        >
+          <p
+            className="
+              min-w-0
+              text-sm
+              font-medium
+              leading-6
+              text-neutral-500
+
+              sm:text-[15px]
+            "
+          >
+            {label}
+          </p>
+
+          {verified && (
+            <span
+              className="
+                inline-flex
+                shrink-0
+                items-center
+                rounded-full
+                bg-green-50
+                px-2
+                py-1
+                text-[10px]
+                font-semibold
+                text-green-600
+                ring-1
+                ring-inset
+                ring-green-200
+
+                sm:px-2.5
+                sm:text-xs
+              "
+            >
+              Verified
             </span>
-          </div>
+          )}
         </div>
+
+        {/* VALUE */}
+        {value && (
+          <p
+            className="
+              mt-2
+              break-words
+              text-sm
+              font-medium
+              text-neutral-800
+
+              sm:text-base
+            "
+          >
+            {value}
+          </p>
+        )}
       </div>
-      <div className="flex items-center border-b border-neutral-400 w-auto pb-7">
-        <div className="w-1/2 pl-4">
-          <div className="flex justify-between ">
-            <span className="mt-[15px] pr-9">09123456789</span>
-            <button>
-              <AiFillEdit className="w-[25px] h-[25px] text-neutral-500" />
-            </button>
-          </div>
-        </div>
-        <div className="w-1/2 pl-4">
-          <div className="flex justify-between items-center px-6">
-            <p className="text-neutral-500">ایمیل</p>
-            <button>
-              <FaPlus />
-            </button>
-          </div>
-        </div>
-      </div>
 
-      <div className="flex items-center border-b border-neutral-400 w-auto pb-5 mx-1">
-        <div className="w-1/2 pl-4">
-          <div className="flex justify-between pr-9 pt-2 items-center ">
-            <span className="text-neutral-500">رمز عبور</span>
-            <button>
-              <FaPlus className="" />
-            </button>
-          </div>
-        </div>
+      {/* =====================================================
+          ACTION
+      ====================================================== */}
+      <button
+        type="button"
+        aria-label={`${isEdit ? "Edit" : "Add"} ${label}`}
+        className="
+          group
+          flex
+          h-9
+          w-9
+          shrink-0
+          items-center
+          justify-center
+          rounded-full
+          text-neutral-500
+          transition-all
+          duration-200
 
-        <div className="w-1/2 pl-4">
-          <div className="flex justify-between items-center px-6 pt-1 pl-5">
-            <p className="text-neutral-500">روش بازگرداندن پول من</p>
-            <button>
-              <FaPlus />
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center border-b border-neutral-400 w-auto pb-5 mx-6">
-        <div className="w-1/2 ">
-          <div className="flex justify-between pr-5 pl-3 ">
-            <p className="text-neutral-500">تاریخ تولد</p>
-            <button>
-              <AiFillEdit className="w-[25px] h-[25px] text-neutral-500 mt-5" />
-            </button>
-          </div>
-          <span className="pr-5">1405/04/13</span>
-        </div>
-        <div className="w-1/2">
-          <div className="flex justify-between items-center pr-6 pl-4">
-            <p className="text-neutral-500">شغل</p>
-            <button>
-              <FaPlus />
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center   mx-6">
-        <div className="w-1/2">
-        <div className="flex justify-between pr-5 pl-3 pt-5 items-center">
-          <p className="text-neutral-500">کد اقتصادی</p>
-          <button>
-            <FaPlus className=""/>
-          </button>
+          hover:bg-neutral-100
+          hover:text-neutral-800
 
-        </div>
+          active:scale-95
 
-        </div>
-        <div className="w-1/2">
-        <div className="flex items-center justify-between pr-5 pt-3 pl-4 ">
-          <span>نوع معلولیت</span>
-          <button>
-            <FaPlus/>
-          </button>
+          focus:outline-none
+          focus:ring-2
+          focus:ring-neutral-300
+          focus:ring-offset-2
 
-        </div>
-        <span className="pr-6 text-neutral-500">تعریف نشده</span>
+          sm:h-10
+          sm:w-10
+        "
+      >
+        {isEdit ? (
+          <AiFillEdit
+            className="
+              h-5
+              w-5
+              transition-transform
+              duration-200
+              group-hover:scale-110
 
-        </div>
-      </div>
+              sm:h-[22px]
+              sm:w-[22px]
+            "
+          />
+        ) : (
+          <FaPlus
+            className="
+              h-3.5
+              w-3.5
+              transition-transform
+              duration-200
+              group-hover:scale-110
+
+              sm:h-4
+              sm:w-4
+            "
+          />
+        )}
+      </button>
     </div>
   );
 }
