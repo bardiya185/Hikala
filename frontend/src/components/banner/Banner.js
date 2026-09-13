@@ -102,14 +102,16 @@ function Banner() {
       className="
         group
         relative
-        w-full
+        w-100
+         h-90
+         mt-10
         overflow-hidden
         rounded-xl
         select-none
 
         sm:rounded-2xl
 
-        lg:rounded-[20px]
+        lg:rounded-[0px]
       "
     >
       {/* =====================================

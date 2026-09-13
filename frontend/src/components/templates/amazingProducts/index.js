@@ -71,6 +71,6 @@ function AmazingProducts() {
       </div>
     </section>
   );
-}
+ }
 
 export default AmazingProducts;

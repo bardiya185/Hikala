@@ -67,7 +67,7 @@ export default async function Home() {
 
   return (
     <main className="w-full overflow-x-hidden">
- 
+
       <section className="w-full">
         <TopBanner data={bannerData} />
       </section>
@@ -102,7 +102,7 @@ export default async function Home() {
         </section>
 
         <section className="w-full">
-          {/* <Categories /> */}
+          <Categories />
         </section>
         {specialOff && (
         <section  className="w-full">

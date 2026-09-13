@@ -6,41 +6,22 @@ import Link from "next/link";
 import { useGetCategoriesHomePage } from "@/core/services/queries";
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  process.env.NEXT_PUBLIC_BASE_URL ||
-  "http://localhost:8000";
-
-const FALLBACK_IMAGE = "/icons/ip17.jpg";
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 const getCategoryImage = (banner) => {
-  if (!banner || typeof banner !== "string") {
-    return FALLBACK_IMAGE;
+  // اگر banner وجود نداشت
+  if (!banner) {
+    return "/icons/ip17.jpg";
   }
 
-  const trimmedBanner = banner.trim();
-
-  if (!trimmedBanner) {
-    return FALLBACK_IMAGE;
+  // اگر Laravel قبلاً URL کامل داده باشد
+  if (banner.startsWith("http://") || banner.startsWith("https://")) {
+    return banner;
   }
 
-  if (
-    trimmedBanner.startsWith("http://") ||
-    trimmedBanner.startsWith("https://")
-  ) {
-    return trimmedBanner;
-  }
 
-  if (trimmedBanner.startsWith("/storage/")) {
-    return `${API_URL}${trimmedBanner}`;
-  }
-
-  if (trimmedBanner.startsWith("/")) {
-    return `${API_URL}${trimmedBanner}`;
-  }
-
-  return `${API_URL}/storage/${trimmedBanner.replace(/^\/+/, "")}`;
+  return `${API_URL}/storage/${banner}`;
 };
-
 
 export default function  categories() {
   const {

@@ -551,18 +551,6 @@ function AuthForm() {
                       dark:hover:bg-red-950/30
                     "
                   >
-                    <div
-                      className="
-                        flex
-                        w-8
-                        shrink-0
-                        items-center
-                        justify-center
-                      "
-                    >
-                      <TbLogout className="h-5 w-5" />
-                    </div>
-
                     <div className="flex-1">
                       <LogoutButton />
                     </div>
