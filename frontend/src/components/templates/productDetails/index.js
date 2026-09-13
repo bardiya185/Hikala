@@ -16,10 +16,8 @@ import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 
 import ColorSwatchSelector from "@/components/atom/ColorSwatchSelector";
-import ViewDetailsButton from "@/components/atom/ViewDetailsButton";
 import ProductMoreDetials from "@/components/organisms/ProductMoreDetials";
 import ProductReviewModal from "@/components/ProductReviewModal";
-import WishlistButton from "@/components/WishlistButton";
 
 import {
   useAddProductsBasket,
@@ -30,7 +28,6 @@ import {
 
 import {
   useCart,
-  useWishlistIds,
 } from "@/core/services/queries";
 
 import toast from "react-hot-toast";
@@ -67,27 +64,10 @@ function getVariantPrice(variant) {
   return {
     basePrice: Number(variant?.base_price || 0),
     finalPrice: Number(variant?.final_price || 0),
-    discountPercent: Number(
-      variant?.discount_percent || 0,
-    ),
+    discountPercent: Number(variant?.discount_percent || 0),
   };
 }
 
-/**
- * Returns the main product image from the API.
- *
- * API structure:
- *
- * images: [
- *   {
- *     id: 58,
- *     image_url: "...",
- *     alt: "...",
- *     sort_order: 1,
- *     is_main: true
- *   }
- * ]
- */
 function getProductImage(product) {
   if (
     !Array.isArray(product?.images) ||
@@ -127,24 +107,24 @@ function getProductImage(product) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                              Seller Box                                    */
+/*                               Seller Box                                   */
 /* -------------------------------------------------------------------------- */
 
-function SellerBox({ data }) {
+function SellerBox() {
   return (
-    <div className="rounded-xl border border-neutral-200 bg-white p-4">
+    <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-black/20">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-sm font-bold text-neutral-800">
+        <h3 className="text-sm font-bold text-neutral-800 dark:text-neutral-100">
           Seller
         </h3>
 
-        <span className="text-xs text-neutral-500">
+        <span className="text-xs text-neutral-500 dark:text-neutral-400">
           Official Store
         </span>
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-neutral-200 bg-white">
+        <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-800">
           <Image
             src="/icons/idigi.jfif"
             alt="Seller"
@@ -155,43 +135,43 @@ function SellerBox({ data }) {
         </div>
 
         <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-neutral-800">
+          <p className="truncate text-sm font-bold text-neutral-800 dark:text-neutral-100">
             Digi Seller
           </p>
 
-          <p className="mt-1 text-xs text-neutral-500">
+          <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
             Trusted seller
           </p>
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 divide-x divide-neutral-200 rounded-lg bg-neutral-50 py-3 text-center">
+      <div className="mt-4 grid grid-cols-3 divide-x divide-neutral-200 rounded-lg bg-neutral-50 py-3 text-center dark:divide-neutral-800 dark:bg-neutral-800/60">
         <div>
-          <p className="text-xs text-neutral-500">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
             Rating
           </p>
 
-          <p className="mt-1 text-sm font-bold text-neutral-800">
+          <p className="mt-1 text-sm font-bold text-neutral-800 dark:text-neutral-100">
             95%
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-neutral-500">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
             Delivery
           </p>
 
-          <p className="mt-1 text-sm font-bold text-neutral-800">
+          <p className="mt-1 text-sm font-bold text-neutral-800 dark:text-neutral-100">
             Fast
           </p>
         </div>
 
         <div>
-          <p className="text-xs text-neutral-500">
+          <p className="text-xs text-neutral-500 dark:text-neutral-400">
             Products
           </p>
 
-          <p className="mt-1 text-sm font-bold text-neutral-800">
+          <p className="mt-1 text-sm font-bold text-neutral-800 dark:text-neutral-100">
             100+
           </p>
         </div>
@@ -211,20 +191,20 @@ function CartQuantityControl({
   isLoading,
 }) {
   return (
-    <div className="flex h-11 items-center justify-between rounded-lg border border-neutral-200 bg-white px-2">
+    <div className="flex h-11 items-center justify-between rounded-lg border border-neutral-200 bg-white px-2 dark:border-neutral-700 dark:bg-neutral-900">
       <button
         type="button"
         onClick={onIncrease}
         disabled={isLoading}
         aria-label="Increase quantity"
-        className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-700 transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-700 transition hover:bg-neutral-100 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-50 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-white"
       >
         <Plus className="h-4 w-4" />
       </button>
 
-      <span className="min-w-8 text-center text-sm font-bold text-neutral-800">
+      <span className="min-w-8 text-center text-sm font-bold text-neutral-800 dark:text-neutral-100">
         {isLoading ? (
-          <span className="mx-auto block h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-red-500" />
+          <span className="mx-auto block h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-red-500 dark:border-neutral-600 dark:border-t-red-400" />
         ) : (
           quantity
         )}
@@ -239,7 +219,7 @@ function CartQuantityControl({
             ? "Remove product"
             : "Decrease quantity"
         }
-        className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-700 transition hover:bg-neutral-100 disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-700 transition hover:bg-neutral-100 hover:text-neutral-950 disabled:cursor-not-allowed disabled:opacity-50 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-white"
       >
         {quantity <= 1 ? (
           <Trash2 className="h-4 w-4" />
@@ -261,48 +241,18 @@ function FeatureBox({
   description,
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-neutral-100 bg-white p-3">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-500">
+    <div className="flex items-center gap-3 rounded-xl border border-neutral-100 bg-white p-3 transition-colors hover:border-neutral-200 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-500 dark:bg-red-950/40 dark:text-red-400">
         {icon}
       </div>
 
       <div className="min-w-0">
-        <p className="text-sm font-semibold text-neutral-800">
+        <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
           {title}
         </p>
 
         {description && (
-          <p className="mt-1 text-xs leading-5 text-neutral-500">
-            {description}
-          </p>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                Plus Item                                   */
-/* -------------------------------------------------------------------------- */
-
-function PlusItem({
-  title,
-  description,
-  icon,
-}) {
-  return (
-    <div className="flex items-center gap-3 rounded-lg border border-neutral-100 p-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-neutral-100">
-        {icon}
-      </div>
-
-      <div className="min-w-0">
-        <p className="text-sm font-medium text-neutral-800">
-          {title}
-        </p>
-
-        {description && (
-          <p className="mt-1 text-xs text-neutral-500">
+          <p className="mt-1 text-xs leading-5 text-neutral-500 dark:text-neutral-400">
             {description}
           </p>
         )}
@@ -322,17 +272,17 @@ function ServiceItem({
 }) {
   return (
     <div className="flex items-start gap-3">
-      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-neutral-100">
+      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
         {icon}
       </div>
 
-      <div>
-        <p className="text-sm font-medium text-neutral-800">
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
           {title}
         </p>
 
         {description && (
-          <p className="mt-1 text-xs leading-5 text-neutral-500">
+          <p className="mt-1 text-xs leading-5 text-neutral-500 dark:text-neutral-400">
             {description}
           </p>
         )}
@@ -354,7 +304,6 @@ function ProductsDe({ data }) {
     useState(() => getDefaultVariant(variants));
 
   const [quantity, setQuantity] = useState(1);
-
   const [isFavorite, setIsFavorite] = useState(false);
 
   const {
@@ -379,9 +328,7 @@ function ProductsDe({ data }) {
     isPending: isRemoving,
   } = useRemoveCartItem();
 
-  const cartItems = Array.isArray(
-    cart?.data?.items,
-  )
+  const cartItems = Array.isArray(cart?.data?.items)
     ? cart.data.items
     : [];
 
@@ -389,9 +336,10 @@ function ProductsDe({ data }) {
   /*                              Product Image                               */
   /* ------------------------------------------------------------------------ */
 
-  const productImage = useMemo(() => {
-    return getProductImage(data);
-  }, [data]);
+  const productImage = useMemo(
+    () => getProductImage(data),
+    [data],
+  );
 
   const productImageAlt = useMemo(() => {
     const mainImage = Array.isArray(data?.images)
@@ -421,8 +369,8 @@ function ProductsDe({ data }) {
     return (
       cartItems.find(
         (item) =>
-          item?.variant?.id ===
-          selectedVariant.id,
+          item?.variant?.id === selectedVariant.id ||
+          item?.product_variant?.id === selectedVariant.id,
       ) || null
     );
   }, [cartItems, selectedVariant]);
@@ -439,9 +387,10 @@ function ProductsDe({ data }) {
     basePrice,
     finalPrice,
     discountPercent,
-  } = useMemo(() => {
-    return getVariantPrice(selectedVariant);
-  }, [selectedVariant]);
+  } = useMemo(
+    () => getVariantPrice(selectedVariant),
+    [selectedVariant],
+  );
 
   const hasDiscount =
     finalPrice > 0 &&
@@ -459,8 +408,7 @@ function ProductsDe({ data }) {
       attribute?.attribute_slug === "color",
   );
 
-  const hasColors =
-    colorAttributes.length > 0;
+  const hasColors = colorAttributes.length > 0;
 
   /* ------------------------------------------------------------------------ */
   /*                           Wishlist                                       */
@@ -476,29 +424,21 @@ function ProductsDe({ data }) {
       return;
     }
 
+    const nextFavoriteState = !isFavorite;
+
     toggleWishlist(data.id, {
       onSuccess: () => {
-        setIsFavorite(
-          (previousState) =>
-            !previousState,
-        );
+        setIsFavorite(nextFavoriteState);
 
-        if (isFavorite) {
-          toast.success(
-            "Removed from wishlist",
-          );
-        } else {
-          toast.success(
-            "Added to wishlist",
-          );
-        }
+        toast.success(
+          nextFavoriteState
+            ? "Added to wishlist"
+            : "Removed from wishlist",
+        );
       },
 
       onError: (error) => {
-        console.error(
-          "Wishlist error:",
-          error,
-        );
+        console.error("Wishlist error:", error);
 
         toast.error(
           error?.message ||
@@ -512,9 +452,7 @@ function ProductsDe({ data }) {
   /*                          Variant Selection                               */
   /* ------------------------------------------------------------------------ */
 
-  const handleSelectVariant = (
-    variant,
-  ) => {
+  const handleSelectVariant = (variant) => {
     if (!variant) {
       return;
     }
@@ -525,9 +463,7 @@ function ProductsDe({ data }) {
       variant?.stock || 0,
     );
 
-    setQuantity(
-      variantStock > 0 ? 1 : 0,
-    );
+    setQuantity(variantStock > 0 ? 1 : 0);
   };
 
   /* ------------------------------------------------------------------------ */
@@ -549,22 +485,17 @@ function ProductsDe({ data }) {
       return;
     }
 
-    setQuantity(
-      (currentQuantity) => {
-        if (currentQuantity <= 0) {
-          return 1;
-        }
+    setQuantity((currentQuantity) => {
+      if (currentQuantity <= 0) {
+        return 1;
+      }
 
-        if (
-          currentQuantity >
-          currentStock
-        ) {
-          return currentStock;
-        }
+      if (currentQuantity > currentStock) {
+        return currentStock;
+      }
 
-        return currentQuantity;
-      },
-    );
+      return currentQuantity;
+    });
   }, [selectedVariant]);
 
   /* ------------------------------------------------------------------------ */
@@ -578,16 +509,12 @@ function ProductsDe({ data }) {
     }
 
     if (!selectedVariant) {
-      toast.error(
-        "Please select a variant",
-      );
+      toast.error("Please select a variant");
       return;
     }
 
     if (stock <= 0) {
-      toast.error(
-        "This product is out of stock",
-      );
+      toast.error("This product is out of stock");
       return;
     }
 
@@ -603,22 +530,16 @@ function ProductsDe({ data }) {
 
     addProductToCart(
       {
-        product_variant_id:
-          selectedVariant.id,
+        product_variant_id: selectedVariant.id,
         quantity,
       },
       {
         onSuccess: () => {
-          toast.success(
-            "Added to cart successfully",
-          );
+          toast.success("Added to cart successfully");
         },
 
         onError: (error) => {
-          console.error(
-            "Add to cart error:",
-            error,
-          );
+          console.error("Add to cart error:", error);
 
           toast.error(
             "Could not add product to cart",
@@ -645,20 +566,14 @@ function ProductsDe({ data }) {
       selectedVariant.stock || 0,
     );
 
-    if (
-      currentQuantity >=
-      currentStock
-    ) {
-      toast.error(
-        "No more items available",
-      );
+    if (currentQuantity >= currentStock) {
+      toast.error("No more items available");
       return;
     }
 
     updateCartItem({
       itemId: cartItem.id,
-      quantity:
-        currentQuantity + 1,
+      quantity: currentQuantity + 1,
     });
   };
 
@@ -678,8 +593,7 @@ function ProductsDe({ data }) {
 
     updateCartItem({
       itemId: cartItem.id,
-      quantity:
-        currentQuantity - 1,
+      quantity: currentQuantity - 1,
     });
   };
 
@@ -688,27 +602,23 @@ function ProductsDe({ data }) {
   /* ------------------------------------------------------------------------ */
 
   useEffect(() => {
-    const elements =
-      document.querySelectorAll(
-        ".animate-split",
-      );
+    const elements = document.querySelectorAll(
+      ".animate-split",
+    );
 
     if (!elements.length) {
-      return;
+      return undefined;
     }
 
     const splits = [];
 
     elements.forEach((element) => {
       try {
-        const split = new SplitText(
-          element,
-          {
-            type: "words",
-            wordsClass:
-              "inline-block overflow-hidden",
-          },
-        );
+        const split = new SplitText(element, {
+          type: "words",
+          wordsClass:
+            "inline-block overflow-hidden",
+        });
 
         splits.push(split);
 
@@ -751,7 +661,7 @@ function ProductsDe({ data }) {
   return (
     <main
       dir="ltr"
-      className="mx-auto w-full max-w-[1440px] px-3 sm:px-5 lg:px-8"
+      className="mx-auto w-full max-w-[1440px] px-3 text-neutral-900 sm:px-5 lg:px-8 dark:text-neutral-100"
     >
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-6 xl:grid-cols-[minmax(0,450px)_minmax(0,1fr)_360px]">
 
@@ -760,45 +670,40 @@ function ProductsDe({ data }) {
         {/* ---------------------------------------------------------------- */}
 
         <section className="order-1 min-w-0">
-          <div className="flex h-10 items-center justify-between rounded-t-xl bg-red-500/10 px-3 sm:h-[50px]">
+          <div className="flex h-10 items-center justify-between rounded-t-xl bg-red-500/10 px-3 sm:h-[50px] dark:bg-red-950/30">
             <button
               type="button"
-              onClick={
-                handleToggleWishlist
-              }
-              disabled={
-                isWishlistLoading
-              }
+              onClick={handleToggleWishlist}
+              disabled={isWishlistLoading}
               aria-label={
                 isFavorite
                   ? "Remove from wishlist"
                   : "Add to wishlist"
               }
               aria-pressed={isFavorite}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition-all duration-200 hover:scale-110 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-sm transition-all duration-200 hover:scale-110 hover:bg-neutral-50 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-neutral-900 dark:hover:bg-neutral-800"
             >
               {isWishlistLoading ? (
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-red-500" />
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-neutral-300 border-t-red-500 dark:border-neutral-600 dark:border-t-red-400" />
               ) : (
                 <FaHeart
                   className={`h-5 w-5 transition-all duration-200 ${
                     isFavorite
                       ? "scale-110 text-red-500"
-                      : "text-neutral-400"
+                      : "text-neutral-400 dark:text-neutral-500"
                   }`}
                 />
               )}
             </button>
 
-            <p className="text-sm font-bold text-red-600">
+            <p className="text-sm font-bold text-red-600 dark:text-red-400">
               Special Offer
             </p>
 
             <div className="h-9 w-9" />
           </div>
 
-          {/* PRODUCT IMAGE */}
-          <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-b-xl border border-neutral-100 bg-white sm:aspect-[4/5] xl:aspect-[450/500]">
+          <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-b-xl border border-neutral-100 bg-white shadow-sm sm:aspect-[4/5] xl:aspect-[450/500] dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-black/20">
             <Image
               src={productImage}
               fill
@@ -813,8 +718,7 @@ function ProductsDe({ data }) {
             />
           </div>
 
-          {/* Product image information */}
-          <div className="mt-3 flex items-center justify-between text-xs text-neutral-500">
+          <div className="mt-3 flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
             <span>
               Product ID: {data?.id || "-"}
             </span>
@@ -837,23 +741,23 @@ function ProductsDe({ data }) {
         {/* ---------------------------------------------------------------- */}
 
         <section className="order-2 min-w-0">
-          <div className="rounded-xl border border-neutral-200 bg-white p-4 sm:p-5 lg:p-6">
+          <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm sm:p-5 lg:p-6 dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-black/20">
 
             <div className="mb-3 flex items-center gap-2">
               {data?.brand?.name && (
-                <span className="text-sm font-semibold text-neutral-500">
+                <span className="text-sm font-semibold text-neutral-500 dark:text-neutral-400">
                   {data.brand.name}
                 </span>
               )}
 
               {data?.rating && (
                 <>
-                  <BsDot className="text-neutral-400" />
+                  <BsDot className="text-neutral-400 dark:text-neutral-600" />
 
                   <div className="flex items-center gap-1">
                     <FcRating className="h-4 w-4" />
 
-                    <span className="text-xs font-semibold text-neutral-700">
+                    <span className="text-xs font-semibold text-neutral-700 dark:text-neutral-200">
                       {data.rating}
                     </span>
                   </div>
@@ -861,41 +765,36 @@ function ProductsDe({ data }) {
               )}
             </div>
 
-            <h1 className="animate-split text-lg font-bold leading-8 text-neutral-900 sm:text-xl lg:text-2xl">
-              {data?.title ||
-                "Product"}
+            <h1 className="animate-split text-lg font-bold leading-8 text-neutral-900 sm:text-xl lg:text-2xl dark:text-neutral-50">
+              {data?.title || "Product"}
             </h1>
 
             {data?.short_description && (
-              <p className="mt-3 text-sm leading-7 text-neutral-500">
+              <p className="mt-3 text-sm leading-7 text-neutral-500 dark:text-neutral-400">
                 {data.short_description}
               </p>
             )}
 
             {/* Product statistics */}
-            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-neutral-100 pb-5">
-              <div className="flex items-center gap-1.5 text-xs text-neutral-500">
+            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-neutral-100 pb-5 dark:border-neutral-800">
+              <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
                 <FaRegStar className="text-amber-400" />
                 <span>
-                  Rating:{" "}
-                  {data?.rating || 0}
+                  Rating: {data?.rating || 0}
                 </span>
               </div>
 
-              <div className="flex items-center gap-1.5 text-xs text-neutral-500">
-                <BsDot />
+              <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
+                <BsDot className="text-neutral-400 dark:text-neutral-600" />
                 <span>
-                  {data?.reviews_count ||
-                    0}{" "}
-                  Reviews
+                  {data?.reviews_count || 0} Reviews
                 </span>
               </div>
 
-              <div className="flex items-center gap-1.5 text-xs text-neutral-500">
-                <BsDot />
+              <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
+                <BsDot className="text-neutral-400 dark:text-neutral-600" />
                 <span>
-                  {data?.view_count || 0}{" "}
-                  Views
+                  {data?.view_count || 0} Views
                 </span>
               </div>
             </div>
@@ -904,110 +803,101 @@ function ProductsDe({ data }) {
             {variants.length > 0 && (
               <div className="mt-6">
                 <div className="mb-4 flex items-center justify-between">
-                  <h2 className="text-sm font-bold text-neutral-800">
+                  <h2 className="text-sm font-bold text-neutral-800 dark:text-neutral-100">
                     Product Variants
                   </h2>
 
-                  <span className="text-xs text-neutral-500">
+                  <span className="text-xs text-neutral-500 dark:text-neutral-400">
                     {variants.length} options
                   </span>
                 </div>
 
                 <div className="space-y-3">
-                  {variants.map(
-                    (variant) => {
-                      const isSelected =
-                        selectedVariant?.id ===
-                        variant.id;
+                  {variants.map((variant) => {
+                    const isSelected =
+                      selectedVariant?.id ===
+                      variant.id;
 
-                      const variantPrice =
-                        getVariantPrice(
-                          variant,
-                        );
+                    const variantPrice =
+                      getVariantPrice(variant);
 
-                      const variantColor =
-                        variant.attributes?.find(
-                          (attribute) =>
-                            attribute?.attribute_slug ===
-                            "color",
-                        );
+                    const variantColor =
+                      variant.attributes?.find(
+                        (attribute) =>
+                          attribute?.attribute_slug ===
+                          "color",
+                      );
 
-                      return (
-                        <button
-                          key={variant.id}
-                          type="button"
-                          onClick={() =>
-                            handleSelectVariant(
-                              variant,
-                            )
-                          }
-                          className={`w-full rounded-xl border p-3 text-left transition-all ${
-                            isSelected
-                              ? "border-red-500 bg-red-50/50"
-                              : "border-neutral-200 bg-white hover:border-neutral-300"
-                          }`}
-                        >
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="min-w-0">
-                              <div className="flex flex-wrap items-center gap-2">
-                                {variantColor?.value && (
-                                  <span className="text-sm font-semibold text-neutral-800">
-                                    {
-                                      variantColor.value
-                                    }
-                                  </span>
-                                )}
+                    return (
+                      <button
+                        key={variant.id}
+                        type="button"
+                        onClick={() =>
+                          handleSelectVariant(
+                            variant,
+                          )
+                        }
+                        aria-pressed={isSelected}
+                        className={`w-full rounded-xl border p-3 text-left transition-all focus:outline-none focus:ring-2 focus:ring-red-500/30 ${
+                          isSelected
+                            ? "border-red-500 bg-red-50/50 dark:border-red-400 dark:bg-red-950/30"
+                            : "border-neutral-200 bg-white hover:border-neutral-300 hover:bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700 dark:hover:bg-neutral-800/70"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              {variantColor?.value && (
+                                <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
+                                  {variantColor.value}
+                                </span>
+                              )}
 
-                                {variant.sku && (
-                                  <span className="text-xs text-neutral-400">
-                                    {variant.sku}
-                                  </span>
-                                )}
-                              </div>
-
-                              <div className="mt-2 flex flex-wrap gap-2">
-                                {variant.attributes
-                                  ?.slice(0, 4)
-                                  .map(
-                                    (
-                                      attribute,
-                                    ) => (
-                                      <span
-                                        key={
-                                          attribute.id
-                                        }
-                                        className="rounded-md bg-neutral-100 px-2 py-1 text-[11px] text-neutral-600"
-                                      >
-                                        {
-                                          attribute.value
-                                        }
-                                      </span>
-                                    ),
-                                  )}
-                              </div>
-                            </div>
-
-                            <div className="shrink-0 text-right">
-                              <p className="text-sm font-bold text-neutral-900">
-                                {formatPrice(
-                                  variantPrice.finalPrice,
-                                )}
-                              </p>
-
-                              {variantPrice.basePrice >
-                                variantPrice.finalPrice && (
-                                <p className="mt-1 text-xs text-neutral-400 line-through">
-                                  {formatPrice(
-                                    variantPrice.basePrice,
-                                  )}
-                                </p>
+                              {variant.sku && (
+                                <span className="text-xs text-neutral-400 dark:text-neutral-500">
+                                  {variant.sku}
+                                </span>
                               )}
                             </div>
+
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {variant.attributes
+                                ?.slice(0, 4)
+                                .map((attribute) => (
+                                  <span
+                                    key={
+                                      attribute.id
+                                    }
+                                    className="rounded-md bg-neutral-100 px-2 py-1 text-[11px] text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
+                                  >
+                                    {
+                                      attribute.value
+                                    }
+                                  </span>
+                                ))}
+                            </div>
                           </div>
-                        </button>
-                      );
-                    },
-                  )}
+
+                          <div className="shrink-0 text-right">
+                            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100">
+                              {formatPrice(
+                                variantPrice.finalPrice,
+                              )}
+                            </p>
+
+                            {variantPrice.basePrice >
+                              variantPrice.finalPrice && (
+                              <p className="mt-1 text-xs text-neutral-400 line-through">
+                                {formatPrice(
+                                  variantPrice.basePrice,
+                                )}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -1015,7 +905,7 @@ function ProductsDe({ data }) {
             {/* Colors */}
             {hasColors && (
               <div className="mt-6">
-                <h2 className="mb-3 text-sm font-bold text-neutral-800">
+                <h2 className="mb-3 text-sm font-bold text-neutral-800 dark:text-neutral-100">
                   Color
                 </h2>
 
@@ -1023,26 +913,18 @@ function ProductsDe({ data }) {
                   {colorAttributes.map(
                     (attribute) => (
                       <ColorSwatchSelector
-                        key={
-                          attribute.id
-                        }
+                        key={attribute.id}
                         color={
                           attribute.color_code
                         }
-                        label={
-                          attribute.value
-                        }
-                        selected={
-                          selectedVariant?.attributes?.some(
-                            (
-                              selectedAttribute,
-                            ) =>
-                              selectedAttribute?.attribute_slug ===
-                                "color" &&
-                              selectedAttribute?.value ===
-                                attribute.value,
-                          )
-                        }
+                        label={attribute.value}
+                        selected={selectedVariant?.attributes?.some(
+                          (selectedAttribute) =>
+                            selectedAttribute?.attribute_slug ===
+                              "color" &&
+                            selectedAttribute?.value ===
+                              attribute.value,
+                        )}
                       />
                     ),
                   )}
@@ -1053,49 +935,41 @@ function ProductsDe({ data }) {
             {/* Selected variant attributes */}
             {attributes.length > 0 && (
               <div className="mt-6">
-                <h2 className="mb-3 text-sm font-bold text-neutral-800">
+                <h2 className="mb-3 text-sm font-bold text-neutral-800 dark:text-neutral-100">
                   Specifications
                 </h2>
 
                 <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  {attributes.map(
-                    (attribute) => (
-                      <div
-                        key={
-                          attribute.id
+                  {attributes.map((attribute) => (
+                    <div
+                      key={attribute.id}
+                      className="flex items-center justify-between gap-3 rounded-lg bg-neutral-50 px-3 py-2.5 dark:bg-neutral-800/70"
+                    >
+                      <span className="text-xs text-neutral-500 dark:text-neutral-400">
+                        {
+                          attribute.attribute_name
                         }
-                        className="flex items-center justify-between gap-3 rounded-lg bg-neutral-50 px-3 py-2.5"
-                      >
-                        <span className="text-xs text-neutral-500">
-                          {
-                            attribute.attribute_name
-                          }
-                        </span>
+                      </span>
 
-                        <span className="text-xs font-semibold text-neutral-800">
-                          {
-                            attribute.value
-                          }
-                        </span>
-                      </div>
-                    ),
-                  )}
+                      <span className="text-xs font-semibold text-neutral-800 dark:text-neutral-100">
+                        {attribute.value}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
 
             {/* Price */}
-            <div className="mt-6 rounded-xl bg-neutral-50 p-4">
+            <div className="mt-6 rounded-xl bg-neutral-50 p-4 dark:bg-neutral-800/70">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs text-neutral-500">
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
                     Final Price
                   </p>
 
-                  <p className="mt-1 text-xl font-extrabold text-neutral-900 sm:text-2xl">
-                    {formatPrice(
-                      finalPrice,
-                    )}
+                  <p className="mt-1 text-xl font-extrabold text-neutral-900 sm:text-2xl dark:text-neutral-50">
+                    {formatPrice(finalPrice)}
                   </p>
                 </div>
 
@@ -1106,9 +980,7 @@ function ProductsDe({ data }) {
                     </span>
 
                     <span className="text-xs text-neutral-400 line-through">
-                      {formatPrice(
-                        basePrice,
-                      )}
+                      {formatPrice(basePrice)}
                     </span>
                   </div>
                 )}
@@ -1119,21 +991,21 @@ function ProductsDe({ data }) {
             <div className="mt-4 flex items-center gap-2">
               {stock > 0 ? (
                 <>
-                  <VscCopilotSuccess className="text-green-500" />
+                  <VscCopilotSuccess className="text-green-500 dark:text-green-400" />
 
-                  <span className="text-sm font-medium text-green-600">
+                  <span className="text-sm font-medium text-green-600 dark:text-green-400">
                     In stock
                   </span>
 
-                  <span className="text-xs text-neutral-400">
+                  <span className="text-xs text-neutral-400 dark:text-neutral-500">
                     ({stock} available)
                   </span>
                 </>
               ) : (
                 <>
-                  <IoWarningOutline className="text-red-500" />
+                  <IoWarningOutline className="text-red-500 dark:text-red-400" />
 
-                  <span className="text-sm font-medium text-red-500">
+                  <span className="text-sm font-medium text-red-500 dark:text-red-400">
                     Out of stock
                   </span>
                 </>
@@ -1145,23 +1017,15 @@ function ProductsDe({ data }) {
               {cartItem ? (
                 <div className="space-y-3">
                   <CartQuantityControl
-                    quantity={
-                      cartItem.quantity
-                    }
-                    onIncrease={
-                      handleIncrease
-                    }
-                    onDecrease={
-                      handleDecrease
-                    }
-                    isLoading={
-                      isCartUpdating
-                    }
+                    quantity={cartItem.quantity}
+                    onIncrease={handleIncrease}
+                    onDecrease={handleDecrease}
+                    isLoading={isCartUpdating}
                   />
 
                   <Link
                     href="/checkout/cart"
-                    className="flex h-11 items-center justify-center rounded-lg border border-red-500 text-sm font-bold text-red-500 transition hover:bg-red-50"
+                    className="flex h-11 items-center justify-center rounded-lg border border-red-500 text-sm font-bold text-red-500 transition hover:bg-red-50 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-950/30"
                   >
                     View Cart
                   </Link>
@@ -1169,23 +1033,23 @@ function ProductsDe({ data }) {
               ) : (
                 <button
                   type="button"
-                  onClick={
-                    handleAddToCart
-                  }
+                  onClick={handleAddToCart}
                   disabled={
-                    isAdding ||
-                    stock <= 0
+                    isAdding || stock <= 0
                   }
-                  className="flex h-12 w-full items-center justify-center rounded-lg bg-red-500 text-sm font-bold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:bg-neutral-300"
+                  className="flex h-12 w-full items-center justify-center rounded-lg bg-red-500 text-sm font-bold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:bg-neutral-300 dark:disabled:bg-neutral-800 dark:disabled:text-neutral-500"
                 >
                   {isAdding ? (
-                    <RotatingLines
-                      visible
-                      width="22"
-                      strokeWidth="5"
-                      animationDuration="0.75"
-                      ariaLabel="Loading"
-                    />
+                    <span className="text-white dark:text-neutral-100">
+                      <RotatingLines
+                        visible
+                        width="22"
+                        strokeWidth="5"
+                        animationDuration="0.75"
+                        strokeColor="currentColor"
+                        ariaLabel="Loading"
+                      />
+                    </span>
                   ) : (
                     "Add to Cart"
                   )}
@@ -1199,11 +1063,11 @@ function ProductsDe({ data }) {
         {/* Right Sidebar                                                     */}
         {/* ---------------------------------------------------------------- */}
 
-        <aside className="order-3 min-w-0 space-y-4">
+        <aside className="order-3 min-w-0 space-y-4 lg:sticky lg:top-20 lg:self-start">
           <SellerBox data={data} />
 
-          <div className="rounded-xl border border-neutral-200 bg-white p-4">
-            <h2 className="mb-4 text-sm font-bold text-neutral-800">
+          <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-black/20">
+            <h2 className="mb-4 text-sm font-bold text-neutral-800 dark:text-neutral-100">
               Delivery Services
             </h2>
 
@@ -1213,16 +1077,13 @@ function ProductsDe({ data }) {
                   <ServiceItem
                     key={feature.id}
                     icon={
-                      feature.type ===
-                      "fast" ? (
+                      feature.type === "fast" ? (
                         <TbBrandSpeedtest className="h-4 w-4" />
                       ) : (
                         <VscCopilotSuccess className="h-4 w-4" />
                       )
                     }
-                    title={
-                      feature.title
-                    }
+                    title={feature.title}
                     description={
                       feature.description
                     }
@@ -1232,8 +1093,8 @@ function ProductsDe({ data }) {
             </div>
           </div>
 
-          <div className="rounded-xl border border-neutral-200 bg-white p-4">
-            <h2 className="mb-4 text-sm font-bold text-neutral-800">
+          <div className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-black/20">
+            <h2 className="mb-4 text-sm font-bold text-neutral-800 dark:text-neutral-100">
               Product Features
             </h2>
 
@@ -1271,14 +1132,16 @@ function ProductsDe({ data }) {
       {/* ------------------------------------------------------------------ */}
 
       <div className="mt-6">
-        <ProductMoreDetials data={data}
-    selectedVariant={selectedVariant}
-    cartItem={cartItem}
-    handleAddToCarts={handleAddToCart}
-    handleDeacrease={handleDecrease}
-    handleIncrease={handleIncrease}
-    up={isCartUpdating}
-    isPending={isAdding} />
+        <ProductMoreDetials
+          data={data}
+          selectedVariant={selectedVariant}
+          cartItem={cartItem}
+          handleAddToCarts={handleAddToCart}
+          handleDeacrease={handleDecrease}
+          handleIncrease={handleIncrease}
+          up={isCartUpdating}
+          isPending={isAdding}
+        />
       </div>
 
       {/* ------------------------------------------------------------------ */}

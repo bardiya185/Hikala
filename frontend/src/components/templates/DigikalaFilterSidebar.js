@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   Search,
   Check,
+  RotateCcw,
 } from "lucide-react";
 
 import { LuMessageSquareWarning } from "react-icons/lu";
@@ -35,40 +36,31 @@ import "rc-slider/assets/index.css";
 const FilterSection = ({ value, title, children }) => (
   <Accordion.Item
     value={value}
-    className="px-4 sm:px-5 py-1"
+    className="px-4 py-1 sm:px-5"
   >
     <Accordion.Header className="flex">
       <Accordion.Trigger
         className="
-          flex
-          w-full
-          items-center
-          justify-between
-          py-4
-          text-sm
-          font-semibold
-          text-neutral-700
-          hover:text-neutral-900
-          transition-colors
-          group
-          outline-none
+          group flex w-full items-center justify-between
+          py-4 text-sm font-semibold
+          text-neutral-700 transition-colors
+          outline-none hover:text-neutral-900
+          focus-visible:text-neutral-900
+          dark:text-neutral-200 dark:hover:text-white
+          dark:focus-visible:text-white
         "
       >
         <span>{title}</span>
 
-        <div className="text-neutral-400">
-          {/* Mobile */}
+        <div className="text-neutral-400 dark:text-neutral-500">
           <span className="lg:hidden">
             <ChevronLeft size={20} />
           </span>
 
-          {/* Desktop */}
           <span
             className="
-              hidden
+              hidden transition-transform duration-300
               lg:inline-block
-              transition-transform
-              duration-300
               group-data-[state=open]:rotate-180
             "
           >
@@ -80,11 +72,10 @@ const FilterSection = ({ value, title, children }) => (
 
     <Accordion.Content
       className="
+        overflow-hidden text-sm text-neutral-600
         data-[state=open]:animate-slideDown
         data-[state=closed]:animate-slideUp
-        overflow-hidden
-        text-sm
-        text-neutral-600
+        dark:text-neutral-300
       "
     >
       {children}
@@ -99,6 +90,15 @@ const FilterSection = ({ value, title, children }) => (
 export default function DigikalaFilterSidebar({
   products = [],
 }) {
+  /* =======================================================
+     SAFE PRODUCTS
+  ======================================================= */
+
+  const safeProducts = useMemo(
+    () => (Array.isArray(products) ? products : []),
+    [products]
+  );
+
   /* =======================================================
      BRANDS
   ======================================================= */
@@ -119,7 +119,7 @@ export default function DigikalaFilterSidebar({
     filteredBrands,
     handleCheckboxChange,
   } = useBrandFilter({
-    products,
+    products: safeProducts,
     allBrandsFromApi,
     searchTerm,
   });
@@ -129,18 +129,19 @@ export default function DigikalaFilterSidebar({
   ======================================================= */
 
   const prices = useMemo(() => {
-    return products
+    return safeProducts
       .flatMap((product) =>
-        (product.variants || []).map((variant) =>
-          Number(variant.final_price)
-        )
+        Array.isArray(product?.variants)
+          ? product.variants.map((variant) =>
+              Number(variant?.final_price)
+            )
+          : []
       )
       .filter(
         (price) =>
-          Number.isFinite(price) &&
-          price >= 0
+          Number.isFinite(price) && price >= 0
       );
-  }, [products]);
+  }, [safeProducts]);
 
   /* =======================================================
      MIN / MAX PRICE
@@ -148,13 +149,11 @@ export default function DigikalaFilterSidebar({
 
   const minProductPrice = useMemo(() => {
     if (!prices.length) return 0;
-
     return Math.min(...prices);
   }, [prices]);
 
   const maxProductPrice = useMemo(() => {
     if (!prices.length) return 0;
-
     return Math.max(...prices);
   }, [prices]);
 
@@ -179,10 +178,7 @@ export default function DigikalaFilterSidebar({
     ) {
       return Math.max(
         minProductPrice,
-        Math.min(
-          parsedUrlMin,
-          maxProductPrice
-        )
+        Math.min(parsedUrlMin, maxProductPrice)
       );
     }
 
@@ -196,10 +192,7 @@ export default function DigikalaFilterSidebar({
     ) {
       return Math.min(
         maxProductPrice,
-        Math.max(
-          parsedUrlMax,
-          minProductPrice
-        )
+        Math.max(parsedUrlMax, minProductPrice)
       );
     }
 
@@ -208,32 +201,22 @@ export default function DigikalaFilterSidebar({
 
   /* =======================================================
      LOCAL SLIDER STATE
-
-     Important:
-     This state prevents the router from
-     re-rendering while dragging.
   ======================================================= */
 
-  const [priceRange, setPriceRange] = useState([
+  const [priceRange, setPriceRange] = useState(() => [
     getInitialMin(),
     getInitialMax(),
   ]);
 
   /* =======================================================
      SYNC URL -> SLIDER
-
-     If the URL changes externally,
-     the slider changes as well.
   ======================================================= */
 
   useEffect(() => {
     const min = getInitialMin();
     const max = getInitialMax();
 
-    setPriceRange([
-      min,
-      max,
-    ]);
+    setPriceRange([min, max]);
   }, [
     urlMinPrice,
     urlMaxPrice,
@@ -243,62 +226,67 @@ export default function DigikalaFilterSidebar({
 
   /* =======================================================
      PRICE CHANGE - LOCAL ONLY
-
-     No router here.
-     Therefore, the slider moves smoothly.
   ======================================================= */
 
   const handlePriceChange = (value) => {
-    if (!Array.isArray(value)) return;
+    if (!Array.isArray(value) || value.length !== 2) {
+      return;
+    }
 
-    const [min, max] = value;
+    const min = Number(value[0]);
+    const max = Number(value[1]);
 
-    setPriceRange([
-      Number(min),
-      Number(max),
-    ]);
+    if (!Number.isFinite(min) || !Number.isFinite(max)) {
+      return;
+    }
+
+    setPriceRange([min, max]);
   };
 
   /* =======================================================
      PRICE CHANGE COMPLETE
-
-     When the user releases the handle,
-     the URL changes.
   ======================================================= */
 
   const handlePriceChangeComplete = (value) => {
-    if (!Array.isArray(value)) return;
+    if (!Array.isArray(value) || value.length !== 2) {
+      return;
+    }
 
-    const [min, max] = value;
+    let min = Number(value[0]);
+    let max = Number(value[1]);
+
+    if (!Number.isFinite(min) || !Number.isFinite(max)) {
+      return;
+    }
+
+    min = Math.max(
+      minProductPrice,
+      Math.min(min, maxProductPrice)
+    );
+
+    max = Math.min(
+      maxProductPrice,
+      Math.max(max, minProductPrice)
+    );
+
+    if (min > max) {
+      [min, max] = [max, min];
+    }
 
     const params = new URLSearchParams(
       searchParams.toString()
     );
 
-    /* ---------------------------------------------
-       MIN PRICE
-    --------------------------------------------- */
-
     if (min <= minProductPrice) {
       params.delete("min_price");
     } else {
-      params.set(
-        "min_price",
-        String(min)
-      );
+      params.set("min_price", String(min));
     }
-
-    /* ---------------------------------------------
-       MAX PRICE
-    --------------------------------------------- */
 
     if (max >= maxProductPrice) {
       params.delete("max_price");
     } else {
-      params.set(
-        "max_price",
-        String(max)
-      );
+      params.set("max_price", String(max));
     }
 
     const queryString = params.toString();
@@ -307,9 +295,7 @@ export default function DigikalaFilterSidebar({
       queryString
         ? `${pathname}?${queryString}`
         : pathname,
-      {
-        scroll: false,
-      }
+      { scroll: false }
     );
   };
 
@@ -337,9 +323,34 @@ export default function DigikalaFilterSidebar({
       queryString
         ? `${pathname}?${queryString}`
         : pathname,
-      {
-        scroll: false,
-      }
+      { scroll: false }
+    );
+  };
+
+  /* =======================================================
+     RESET PRICE FILTER
+  ======================================================= */
+
+  const handleResetPrice = () => {
+    const params = new URLSearchParams(
+      searchParams.toString()
+    );
+
+    params.delete("min_price");
+    params.delete("max_price");
+
+    setPriceRange([
+      minProductPrice,
+      maxProductPrice,
+    ]);
+
+    const queryString = params.toString();
+
+    router.replace(
+      queryString
+        ? `${pathname}?${queryString}`
+        : pathname,
+      { scroll: false }
     );
   };
 
@@ -348,12 +359,9 @@ export default function DigikalaFilterSidebar({
   ======================================================= */
 
   const formatPrice = (price) => {
-    return Number(price).toLocaleString(
-      "en-US",
-      {
-        maximumFractionDigits: 2,
-      }
-    );
+    return Number(price).toLocaleString("en-US", {
+      maximumFractionDigits: 2,
+    });
   };
 
   /* =======================================================
@@ -364,23 +372,19 @@ export default function DigikalaFilterSidebar({
     <aside
       dir="ltr"
       className="
-        w-full
-        bg-white
-        text-left
-        font-sans
+        w-full overflow-hidden
+        bg-white text-left font-sans
+        dark:bg-neutral-900 dark:text-neutral-100
 
-        border-0
-        rounded-none
+        border-0 rounded-none
+        sm:rounded-xl sm:border sm:border-neutral-200
+        dark:sm:border-neutral-800
 
-        sm:border
-        sm:border-neutral-200
-        sm:rounded-xl
+        lg:sticky lg:top-5 lg:self-start
 
-        lg:sticky
-        lg:top-5
-        lg:self-start
-
-        overflow-hidden
+        shadow-none
+        sm:shadow-sm
+        dark:sm:shadow-black/20
       "
     >
       {/* ===================================================
@@ -389,17 +393,25 @@ export default function DigikalaFilterSidebar({
 
       <div
         className="
-          px-4
-          sm:px-5
-          py-4
-          text-base
-          font-bold
+          flex items-center justify-between
+          border-b border-neutral-100
+          px-4 py-4 text-base font-bold
           text-neutral-800
-          border-b
-          border-neutral-100
+          dark:border-neutral-800
+          dark:text-neutral-100
+          sm:px-5
         "
       >
-        Filters
+        <span>Filters</span>
+
+        {(urlMinPrice !== null ||
+          urlMaxPrice !== null ||
+          available ||
+          selectedBrands?.length > 0) && (
+          <span className="rounded-full bg-red-50 px-2 py-1 text-[10px] font-semibold text-red-600 dark:bg-red-950/30 dark:text-red-400">
+            Active
+          </span>
+        )}
       </div>
 
       {/* ===================================================
@@ -409,9 +421,9 @@ export default function DigikalaFilterSidebar({
       <Accordion.Root
         type="multiple"
         className="
-          w-full
-          divide-y
+          w-full divide-y
           divide-neutral-100
+          dark:divide-neutral-800
         "
       >
         {/* =================================================
@@ -422,55 +434,51 @@ export default function DigikalaFilterSidebar({
           value="address"
           title="Express Delivery"
         >
-          <div className="pb-4 space-y-3">
+          <div className="space-y-3 pb-4">
             <div
               className="
-                w-full
-                flex
-                items-center
-                gap-3
-                bg-amber-50
-                border
-                border-amber-100
-                rounded-lg
-                p-3
+                flex w-full items-center gap-3
+                rounded-lg border
+                border-amber-100 bg-amber-50 p-3
+                dark:border-amber-900/50
+                dark:bg-amber-950/20
               "
             >
               <LuMessageSquareWarning
                 className="
-                  w-6
-                  h-6
+                  h-6 w-6 shrink-0
                   text-amber-500
-                  shrink-0
+                  dark:text-amber-400
                 "
               />
 
               <p
                 className="
-                  text-xs
+                  text-xs leading-relaxed
                   text-neutral-600
-                  leading-relaxed
+                  dark:text-neutral-300
                 "
               >
-                To view available products
-                in a nearby warehouse, please
-                specify your address.
+                To view available products in
+                a nearby warehouse, please specify
+                your address.
               </p>
             </div>
 
             <button
               type="button"
               className="
-                w-full
-                py-2
-                text-xs
-                font-semibold
-                text-red-500
-                border
-                border-red-500
-                rounded-lg
+                w-full rounded-lg border
+                border-red-500 py-2
+                text-xs font-semibold
+                text-red-500 transition-colors
                 hover:bg-red-50
-                transition-colors
+                focus:outline-none
+                focus-visible:ring-2
+                focus-visible:ring-red-500
+                dark:border-red-500
+                dark:text-red-400
+                dark:hover:bg-red-950/30
               "
             >
               Select Address
@@ -487,26 +495,26 @@ export default function DigikalaFilterSidebar({
           title="Brand"
         >
           <div className="pb-4 pt-1">
-            {/* SEARCH */}
-
             <div
               className="
-                relative
-                flex
-                items-center
-                mb-3
-                bg-neutral-100
-                rounded-lg
-                px-3
-                py-2
+                mb-3 flex items-center
+                rounded-lg border
+                border-transparent
+                bg-neutral-100 px-3 py-2
+                transition-colors
+                focus-within:border-red-200
+                focus-within:bg-white
+                dark:bg-neutral-800
+                dark:focus-within:border-red-900
+                dark:focus-within:bg-neutral-850
               "
             >
               <Search
                 size={16}
                 className="
+                  ml-2 shrink-0
                   text-neutral-400
-                  ml-2
-                  shrink-0
+                  dark:text-neutral-500
                 "
               />
 
@@ -514,175 +522,135 @@ export default function DigikalaFilterSidebar({
                 type="text"
                 placeholder="Search brands..."
                 value={searchTerm}
-                onChange={(e) =>
-                  setSearchTerm(
-                    e.target.value
-                  )
+                onChange={(event) =>
+                  setSearchTerm(event.target.value)
                 }
                 className="
+                  w-full min-w-0
                   bg-transparent
-                  text-xs
-                  w-full
-                  min-w-0
-                  outline-none
-                  text-neutral-700
-                  font-sans
+                  font-sans text-xs
+                  text-neutral-700 outline-none
+                  placeholder:text-neutral-400
+                  dark:text-neutral-100
+                  dark:placeholder:text-neutral-500
                 "
+                aria-label="Search brands"
               />
             </div>
 
-            {/* BRANDS */}
-
             <div
               className="
-                max-h-[220px]
+                max-h-[220px] space-y-1
                 overflow-y-auto
-                space-y-1
                 scrollbar-thin
                 scrollbar-thumb-neutral-200
+                dark:scrollbar-thumb-neutral-700
               "
             >
               {isLoading ? (
-                <p
-                  className="
-                    text-xs
-                    text-neutral-400
-                    text-center
-                    py-2
-                  "
-                >
-                  Loading...
-                </p>
-              ) : filteredBrands.length ? (
-                filteredBrands.map(
-                  (brand) => {
-                    const brandId =
-                      String(brand.id);
+                <div className="space-y-2 py-2">
+                  {[1, 2, 3, 4].map((item) => (
+                    <div
+                      key={item}
+                      className="
+                        h-8 w-full animate-pulse
+                        rounded-md bg-neutral-100
+                        dark:bg-neutral-800
+                      "
+                    />
+                  ))}
+                </div>
+              ) : filteredBrands?.length ? (
+                filteredBrands.map((brand) => {
+                  const brandId = String(brand.id);
+                  const checkboxId = `brand-${brandId}`;
+                  const isChecked =
+                    selectedBrands.includes(brandId);
 
-                    const checkboxId =
-                      `brand-${brandId}`;
+                  return (
+                    <div
+                      key={brandId}
+                      className="
+                        flex w-full items-center
+                        justify-start rounded-lg
+                        px-2 transition-colors
+                        hover:bg-neutral-50
+                        dark:hover:bg-neutral-800
+                      "
+                    >
+                      <div className="ml-3 shrink-0 py-2">
+                        <Checkbox.Root
+                          id={checkboxId}
+                          checked={isChecked}
+                          onCheckedChange={() =>
+                            handleCheckboxChange(brandId)
+                          }
+                          className="
+                            flex h-4 w-4 shrink-0
+                            items-center justify-center
+                            rounded border
+                            border-neutral-300
+                            bg-white transition-colors
+                            outline-none
+                            focus-visible:ring-2
+                            focus-visible:ring-red-500
+                            data-[state=checked]:border-red-500
+                            data-[state=checked]:bg-red-500
+                            dark:border-neutral-600
+                            dark:bg-neutral-900
+                            dark:data-[state=checked]:border-red-500
+                            dark:data-[state=checked]:bg-red-500
+                          "
+                        >
+                          <Checkbox.Indicator className="text-white">
+                            <Check
+                              size={12}
+                              strokeWidth={3}
+                            />
+                          </Checkbox.Indicator>
+                        </Checkbox.Root>
+                      </div>
 
-                    const isChecked =
-                      selectedBrands.includes(
-                        brandId
-                      );
-
-                    return (
-                      <div
-                        key={brandId}
-                        onClick={() =>
-                          handleCheckboxChange(
-                            brandId
-                          )
-                        }
+                      <label
+                        htmlFor={checkboxId}
                         className="
-                          w-full
-                          flex
-                          items-center
-                          justify-start
-                          cursor-pointer
-                          hover:bg-neutral-50
-                          rounded
-                          px-2
-                          transition-colors
+                          flex min-w-0 grow
+                          cursor-pointer select-none
+                          items-center justify-between
+                          gap-2 border-b
+                          border-neutral-100 py-2
+                          text-xs font-semibold
+                          text-neutral-700
+                          dark:border-neutral-800
+                          dark:text-neutral-200
                         "
                       >
-                        <div
-                          className="
-                            ml-3
-                            py-2
-                            shrink-0
-                          "
-                          onClick={(e) =>
-                            e.stopPropagation()
-                          }
-                        >
-                          <Checkbox.Root
-                            id={checkboxId}
-                            checked={isChecked}
-                            onCheckedChange={() =>
-                              handleCheckboxChange(
-                                brandId
-                              )
-                            }
-                            className="
-                              flex
-                              h-4
-                              w-4
-                              shrink-0
-                              items-center
-                              justify-center
-                              rounded
-                              border
-                              border-neutral-300
-                              bg-white
-                              data-[state=checked]:bg-red-500
-                              data-[state=checked]:border-red-500
-                              transition-colors
-                              outline-none
-                            "
-                          >
-                            <Checkbox.Indicator
-                              className="text-white"
-                            >
-                              <Check
-                                size={12}
-                                strokeWidth={3}
-                              />
-                            </Checkbox.Indicator>
-                          </Checkbox.Root>
-                        </div>
+                        <span className="truncate">
+                          {brand.name}
+                        </span>
 
-                        <label
-                          htmlFor={checkboxId}
+                        <span
                           className="
-                            grow
-                            min-w-0
-                            flex
-                            items-center
-                            justify-between
-                            gap-2
-                            py-2
-                            border-b
-                            border-neutral-100
-                            text-xs
-                            font-semibold
-                            text-neutral-700
-                            cursor-pointer
-                            select-none
+                            hidden max-w-[40%]
+                            truncate text-left
+                            text-[10px] font-normal
+                            text-neutral-400
+                            sm:block
+                            dark:text-neutral-500
                           "
                         >
-                          <span className="truncate">
-                            {brand.name}
-                          </span>
-
-                          <span
-                            className="
-                              hidden
-                              sm:block
-                              text-[10px]
-                              text-neutral-400
-                              font-normal
-                              ltr
-                              text-left
-                              truncate
-                              max-w-[40%]
-                            "
-                          >
-                            {brand.slug}
-                          </span>
-                        </label>
-                      </div>
-                    );
-                  }
-                )
+                          {brand.slug}
+                        </span>
+                      </label>
+                    </div>
+                  );
+                })
               ) : (
                 <p
                   className="
-                    text-xs
+                    py-3 text-center text-xs
                     text-neutral-400
-                    text-center
-                    py-2
+                    dark:text-neutral-500
                   "
                 >
                   No brands found.
@@ -700,28 +668,11 @@ export default function DigikalaFilterSidebar({
           value="price"
           title="Price Range"
         >
-          <div
-            className="
-              pb-6
-              pt-2
-              px-1
-              overflow-hidden
-            "
-          >
+          <div className="overflow-hidden px-1 pb-6 pt-2">
             {prices.length > 0 &&
             maxProductPrice > minProductPrice ? (
               <>
-                {/* -----------------------------------------
-                    SLIDER
-                ----------------------------------------- */}
-
-                <div
-                  className="
-                    px-3
-                    sm:px-4
-                    py-5
-                  "
-                >
+                <div className="px-3 py-5 sm:px-4">
                   <Slider
                     range
                     min={minProductPrice}
@@ -733,32 +684,18 @@ export default function DigikalaFilterSidebar({
                     }
                     allowCross={false}
                     step={1}
-                    reverse={true}
+                    reverse
                     pushable={false}
                   />
                 </div>
 
-                {/* -----------------------------------------
-                    SELECTED VALUES
-                ----------------------------------------- */}
-
-                <div
-                  className="
-                    grid
-                    grid-cols-2
-                    gap-2
-                    mt-2
-                  "
-                >
-                  {/* MIN */}
-
+                <div className="mt-2 grid grid-cols-2 gap-2">
                   <div className="min-w-0">
                     <span
                       className="
-                        block
-                        text-[10px]
+                        mb-1 block text-[10px]
                         text-neutral-400
-                        mb-1
+                        dark:text-neutral-500
                       "
                     >
                       Minimum Price
@@ -766,37 +703,28 @@ export default function DigikalaFilterSidebar({
 
                     <div
                       className="
-                        border
+                        overflow-hidden whitespace-nowrap
+                        rounded-lg border
                         border-neutral-200
-                        rounded-lg
-                        px-2
-                        sm:px-3
-                        py-2
-                        text-[11px]
-                        sm:text-xs
+                        bg-white px-2 py-2
+                        text-center text-[11px]
                         text-neutral-700
-                        text-center
-                        bg-white
-                        whitespace-nowrap
-                        overflow-hidden
+                        dark:border-neutral-700
+                        dark:bg-neutral-800
+                        dark:text-neutral-200
+                        sm:px-3 sm:text-xs
                       "
                     >
-                      $
-                      {formatPrice(
-                        priceRange[0]
-                      )}
+                      ${formatPrice(priceRange[0])}
                     </div>
                   </div>
-
-                  {/* MAX */}
 
                   <div className="min-w-0">
                     <span
                       className="
-                        block
-                        text-[10px]
+                        mb-1 block text-[10px]
                         text-neutral-400
-                        mb-1
+                        dark:text-neutral-500
                       "
                     >
                       Maximum Price
@@ -804,73 +732,79 @@ export default function DigikalaFilterSidebar({
 
                     <div
                       className="
-                        border
+                        overflow-hidden whitespace-nowrap
+                        rounded-lg border
                         border-neutral-200
-                        rounded-lg
-                        px-2
-                        sm:px-3
-                        py-2
-                        text-[11px]
-                        sm:text-xs
+                        bg-white px-2 py-2
+                        text-center text-[11px]
                         text-neutral-700
-                        text-center
-                        bg-white
-                        whitespace-nowrap
-                        overflow-hidden
+                        dark:border-neutral-700
+                        dark:bg-neutral-800
+                        dark:text-neutral-200
+                        sm:px-3 sm:text-xs
                       "
                     >
-                      $
-                      {formatPrice(
-                        priceRange[1]
-                      )}
+                      ${formatPrice(priceRange[1])}
                     </div>
                   </div>
                 </div>
 
-                {/* -----------------------------------------
-                    FULL RANGE
-                ----------------------------------------- */}
-
                 <div
                   className="
-                    flex
-                    justify-between
-                    gap-3
-                    mt-3
-                    px-1
-                    text-[10px]
-                    text-neutral-400
-                    ltr
+                    mt-3 flex items-center
+                    justify-between gap-3 px-1
+                    text-[10px] text-neutral-400
+                    dark:text-neutral-500
                   "
                 >
                   <span>
-                    $
-                    {formatPrice(
-                      minProductPrice
-                    )}
+                    ${formatPrice(minProductPrice)}
                   </span>
 
                   <span>
-                    $
-                    {formatPrice(
-                      maxProductPrice
-                    )}
+                    ${formatPrice(maxProductPrice)}
                   </span>
                 </div>
+
+                {(urlMinPrice !== null ||
+                  urlMaxPrice !== null) && (
+                  <button
+                    type="button"
+                    onClick={handleResetPrice}
+                    className="
+                      mt-4 flex w-full
+                      items-center justify-center
+                      gap-1.5 rounded-lg
+                      border border-neutral-200
+                      py-2 text-[11px]
+                      font-semibold
+                      text-neutral-500
+                      transition-colors
+                      hover:border-red-200
+                      hover:bg-red-50
+                      hover:text-red-500
+                      focus:outline-none
+                      focus-visible:ring-2
+                      focus-visible:ring-red-500
+                      dark:border-neutral-700
+                      dark:text-neutral-400
+                      dark:hover:border-red-900
+                      dark:hover:bg-red-950/30
+                      dark:hover:text-red-400
+                    "
+                  >
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    Reset Price
+                  </button>
+                )}
               </>
             ) : prices.length === 1 ||
-              minProductPrice ===
-                maxProductPrice ? (
-              <div
-                className="
-                  py-4
-                  text-center
-                "
-              >
+              minProductPrice === maxProductPrice ? (
+              <div className="py-4 text-center">
                 <p
                   className="
-                    text-xs
-                    text-neutral-500
+                    text-xs text-neutral-500
+                    dark:text-neutral-400
                   "
                 >
                   Product Price
@@ -878,26 +812,21 @@ export default function DigikalaFilterSidebar({
 
                 <p
                   className="
-                    mt-2
-                    text-sm
-                    font-semibold
+                    mt-2 text-sm font-semibold
                     text-neutral-700
-                    ltr
+                    dark:text-neutral-200
                   "
+                  dir="ltr"
                 >
-                  $
-                  {formatPrice(
-                    minProductPrice
-                  )}
+                  ${formatPrice(minProductPrice)}
                 </p>
               </div>
             ) : (
               <p
                 className="
-                  text-xs
+                  py-4 text-center text-xs
                   text-neutral-400
-                  text-center
-                  py-4
+                  dark:text-neutral-500
                 "
               >
                 No product price available.
@@ -913,28 +842,23 @@ export default function DigikalaFilterSidebar({
 
       <div
         className="
-          border-t
-          border-neutral-100
+          border-t border-neutral-100
+          dark:border-neutral-800
         "
       >
         <div
           className="
-            px-4
-            sm:px-5
-            py-4
-            flex
-            items-center
-            justify-between
-            gap-4
+            flex items-center
+            justify-between gap-4
+            px-4 py-4 sm:px-5
           "
         >
           <label
             htmlFor="available-stock"
             className="
-              text-sm
-              font-semibold
-              text-neutral-700
-              cursor-pointer
+              cursor-pointer text-sm
+              font-semibold text-neutral-700
+              dark:text-neutral-200
             "
           >
             In-stock products only
@@ -943,35 +867,29 @@ export default function DigikalaFilterSidebar({
           <Switch.Root
             id="available-stock"
             checked={available}
-            onCheckedChange={
-              handleAvailableChange
-            }
+            onCheckedChange={handleAvailableChange}
+            aria-label="Show in-stock products only"
             className="
-              w-11
-              h-6
-              shrink-0
+              relative h-6 w-11 shrink-0
+              cursor-pointer rounded-full
               bg-neutral-200
-              data-[state=checked]:bg-cyan-500
-              rounded-full
-              relative
-              transition-colors
-              duration-200
-              cursor-pointer
+              transition-colors duration-200
               outline-none
+              focus-visible:ring-2
+              focus-visible:ring-red-500
+              data-[state=checked]:bg-red-500
+              dark:bg-neutral-700
+              dark:data-[state=checked]:bg-red-500
             "
           >
             <Switch.Thumb
               className="
-                block
-                w-4
-                h-4
-                bg-white
-                rounded-full
-                shadow
-                transition-transform
-                duration-200
+                block h-4 w-4
                 translate-x-[4px]
-                data-[state=checked]:-translate-x-[24px]
+                rounded-full bg-white
+                shadow-sm
+                transition-transform duration-200
+                data-[state=checked]:translate-x-[24px]
               "
             />
           </Switch.Root>
