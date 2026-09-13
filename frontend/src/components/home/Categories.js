@@ -3,17 +3,33 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { useGetCategoriesHomePage,  } from "@/core/services/queries";
+import { useGetCategoriesHomePage } from "@/core/services/queries";
 
-export default function Categories() {
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+const getCategoryImage = (banner) => {
+  // اگر banner وجود نداشت
+  if (!banner) {
+    return "/icons/ip17.jpg";
+  }
+
+  // اگر Laravel قبلاً URL کامل داده باشد
+  if (banner.startsWith("http://") || banner.startsWith("https://")) {
+    return banner;
+  }
+
+
+  return `${API_URL}/storage/${banner}`;
+};
+
+export default function  categories() {
   const {
     data,
     isLoading,
     isError,
     error,
   } = useGetCategoriesHomePage();
-
-  console.log(data)
 
   // API ممکن است مستقیماً آرایه بدهد
   // یا داخل data قرار گرفته باشد.
@@ -67,10 +83,7 @@ export default function Categories() {
    */
 
   if (isError) {
-    console.error(
-      "MAIN CATEGORIES ERROR:",
-      error
-    );
+    console.error("MAIN CATEGORIES ERROR:", error);
 
     return (
       <section className="w-full py-8 sm:py-10 lg:py-12">
@@ -109,23 +122,10 @@ export default function Categories() {
           <div className="mt-8 grid grid-cols-3 gap-x-4 gap-y-7 sm:grid-cols-4 sm:gap-x-6 sm:gap-y-8 md:grid-cols-6 lg:grid-cols-9 lg:gap-x-7 lg:gap-y-9">
 
             {mainCategories.map((category) => {
+              const image = getCategoryImage(category?.banner);
 
-              /*
-               * API:
-               *
-               * id
-               * name
-               * slug
-               * icon_key
-               * banner
-               * parent_id
-               */
-
-              const image = category?.banner
-  ? category.banner.startsWith("http")
-    ? category.banner
-    : `${process.env.NEXT_PUBLIC_API_URL}/${category.banner}`
-  : "/icons/ip17.jpg";
+              console.log("CATEGORY:", category);
+              console.log("CATEGORY IMAGE:", image);
 
               return (
                 <Link
@@ -140,7 +140,6 @@ export default function Categories() {
                     outline-none
                   "
                 >
-
                   {/* Image */}
 
                   <div
@@ -194,18 +193,15 @@ export default function Categories() {
                   >
                     {category?.name}
                   </span>
-
                 </Link>
               );
             })}
-
           </div>
         ) : (
           <div className="mt-8 text-center text-sm text-neutral-500">
             No categories available.
           </div>
         )}
-
       </div>
     </section>
   );

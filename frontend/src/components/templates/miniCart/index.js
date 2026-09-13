@@ -50,33 +50,34 @@ function MiniCart() {
       <div className="overflow-y-auto">
 
       {items?.map((item)=>(
-        <>
-      <div key={item.id} className="flex items-center">
-        <Image
-          src="/icons/miniimg.jpg"
-          width={100}
-          height={100}
-          alt="minicart"
-        />
-        <p className="w-fit text-wrap text-sm">
-         {product?.title}
-        </p>
-      </div>
-        <div className="flex items-center justify-between ">
-          <div className="w-[100px] flex items-center justify-center gap-3 h-[40px] border border-solid border-neutral-400 rounded-2xl">
-            <button disabled={item.quantity === 1} >
-              <FaPlus className="text-red-500" />
-            </button>
-            <span className=" text-red-500 text-center flex items-center">
-              {item?.quantity}
-            </span>
-            <button onClick={()=>handleDecrease(item)}>
-              <FaRegTrashAlt className="text-red-500" />
-            </button>
+        
+        <><div key={item.id} className="flex items-center">
+          <Image
+            src={item.variant.product.main_image}
+            width={60}
+            height={60}
+            alt="minicart" />
+          <p className="w-fit text-wrap text-sm p-10">
+            {product?.title}
+          </p>
+        </div><div className="flex items-center justify-between ">
+            <div className="w-[100px] flex items-center justify-center gap-3 h-[40px] border border-solid border-neutral-400 rounded-2xl">
+              <button disabled={item.quantity === 1}>
+                <FaPlus className="text-red-500" />
+              </button>
+              <span className=" text-red-500 text-center flex items-center">
+                {item?.quantity}
+              </span>
+              <button onClick={() => handleDecrease(item)}>
+                <FaRegTrashAlt className="text-red-500" />
+              </button>
+            </div>
+            {/* <hr className=" text-gray-600 border-2 border-slate-900 w-full"/> */}
+            <span className="text-green-500 text-lg">${item?.final_price}</span>
           </div>
-          <span className="text-green-500 text-lg">${item?.final_price}</span>
-        </div>
-        </>
+        <hr className=" p-2 mt-10  w-full"/>
+          
+          </>
       ))}
       
         <div className="flex items-center justify-between mt-7">
