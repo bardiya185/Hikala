@@ -174,46 +174,252 @@ function MiniCart() {
           {items.length} {items.length === 1 ? "item" : "items"}
         </span>
       </div>
-      <div className="overflow-y-auto">
 
-      {items?.map((item)=>(
-        <>
-      <div key={item.id} className="flex items-center">
-        <Image
-          src="/icons/miniimg.jpg"
-          width={100}
-          height={100}
-          alt="minicart"
-        />
-        <p className="w-fit text-wrap text-sm">
-         {product?.title}
-        </p>
+      {/* Items */}
+      <div className="max-h-[420px] overflow-y-auto px-5">
+        {items.map((item) => {
+          const product = item?.variant?.product || item?.product_variant?.product;
+
+          const image =
+            item?.variant?.product?.main_image ||
+            item?.product_variant?.product?.main_image ||
+            product?.main_image ||
+            "/icons/product1.webp";
+
+          const title =
+            product?.title ||
+            item?.variant?.product?.title ||
+            item?.product_variant?.product?.title ||
+            "Product";
+
+          const price =
+            item?.final_price ??
+            item?.product_variant?.final_price ??
+            item?.product_variant?.price ??
+            0;
+
+          return (
+            <div
+              key={item.id}
+              className="
+                border-b border-neutral-200
+                py-4
+                last:border-b-0
+                dark:border-neutral-800
+              "
+            >
+              <div className="flex items-start gap-3">
+                {/* Product Image */}
+                <div
+                  className="
+                    relative h-16 w-16 shrink-0
+                    overflow-hidden rounded-xl
+                    border border-neutral-200
+                    bg-neutral-50
+                    dark:border-neutral-800
+                    dark:bg-neutral-950
+                  "
+                >
+                  <Image
+                    src={image}
+                    width={64}
+                    height={64}
+                    alt={title}
+                    className="h-full w-full object-contain p-1"
+                    unoptimized={image.startsWith("http")}
+                  />
+                </div>
+
+                {/* Product Details */}
+                <div className="min-w-0 flex-1">
+                  <p
+                    className="
+                      line-clamp-2
+                      text-sm font-medium leading-6
+                      text-neutral-800
+                      dark:text-neutral-100
+                    "
+                  >
+                    {title}
+                  </p>
+
+                  <p className="mt-1 text-sm font-bold text-green-600 dark:text-green-400">
+                    ${Number(price).toLocaleString()}
+                  </p>
+                </div>
+
+                {/* Remove */}
+                <button
+                  type="button"
+                  onClick={() => handleRemove(item)}
+                  disabled={isPending}
+                  aria-label={`Remove ${title}`}
+                  className="
+                    flex h-8 w-8 shrink-0
+                    items-center justify-center
+                    rounded-lg
+                    text-neutral-400
+                    transition-colors
+                    hover:bg-red-50
+                    hover:text-red-500
+                    disabled:cursor-not-allowed
+                    disabled:opacity-50
+                    focus:outline-none
+                    focus-visible:ring-2
+                    focus-visible:ring-red-500
+                    dark:text-neutral-500
+                    dark:hover:bg-red-950/30
+                    dark:hover:text-red-400
+                  "
+                >
+                  <FaRegTrashAlt className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Quantity */}
+              <div className="mt-3 flex items-center justify-between gap-3">
+                <div
+                  className="
+                    flex h-9 items-center
+                    overflow-hidden rounded-xl
+                    border border-neutral-200
+                    bg-neutral-50
+                    dark:border-neutral-700
+                    dark:bg-neutral-950
+                  "
+                >
+                  <button
+                    type="button"
+                    onClick={() => handleIncrease(item)}
+                    disabled={isPending}
+                    aria-label={`Increase ${title}`}
+                    className="
+                      flex h-9 w-9 items-center justify-center
+                      text-neutral-500
+                      transition-colors
+                      hover:bg-neutral-200
+                      hover:text-neutral-900
+                      disabled:cursor-not-allowed
+                      disabled:opacity-40
+                      dark:text-neutral-400
+                      dark:hover:bg-neutral-800
+                      dark:hover:text-white
+                    "
+                  >
+                    <FaPlus className="h-3 w-3" />
+                  </button>
+
+                  <span
+                    className="
+                      flex h-full min-w-8
+                      items-center justify-center
+                      border-x border-neutral-200
+                      px-2
+                      text-sm font-semibold
+                      text-neutral-800
+                      dark:border-neutral-700
+                      dark:text-neutral-100
+                    "
+                  >
+                    {item?.quantity}
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={() => handleDecrease(item)}
+                    disabled={isPending}
+                    aria-label={
+                      item?.quantity === 1
+                        ? `Remove ${title}`
+                        : `Decrease ${title}`
+                    }
+                    className="
+                      flex h-9 w-9 items-center justify-center
+                      text-neutral-500
+                      transition-colors
+                      hover:bg-red-50
+                      hover:text-red-500
+                      disabled:cursor-not-allowed
+                      disabled:opacity-40
+                      dark:text-neutral-400
+                      dark:hover:bg-red-950/30
+                      dark:hover:text-red-400
+                    "
+                  >
+                    {item?.quantity === 1 ? (
+                      <FaRegTrashAlt className="h-3.5 w-3.5" />
+                    ) : (
+                      <FaMinus className="h-3 w-3" />
+                    )}
+                  </button>
+                </div>
+
+                <span className="text-sm font-bold text-neutral-800 dark:text-neutral-100">
+                  ${(Number(price) * Number(item?.quantity || 0)).toLocaleString()}
+                </span>
+              </div>
+            </div>
+          );
+        })}
       </div>
-        <div className="flex items-center justify-between ">
-          <div className="w-[100px] flex items-center justify-center gap-3 h-[40px] border border-solid border-neutral-400 rounded-2xl">
-            <button disabled={item.quantity === 1} >
-              <FaPlus className="text-red-500" />
-            </button>
-            <span className=" text-red-500 text-center flex items-center">
-              {item?.quantity}
-            </span>
-            <button onClick={()=>handleDecrease(item)}>
-              <FaRegTrashAlt className="text-red-500" />
-            </button>
-          </div>
-          <span className="text-green-500 text-lg">${item?.final_price}</span>
+
+      {/* Footer */}
+      <div
+        className="
+          border-t border-neutral-200
+          bg-neutral-50
+          px-5 py-4
+          dark:border-neutral-800
+          dark:bg-neutral-950
+        "
+      >
+        <div className="mb-4 flex items-center justify-between gap-4">
+          <span className="text-sm text-neutral-500 dark:text-neutral-400">
+            Total
+          </span>
+
+          <span className="text-lg font-bold text-green-600 dark:text-green-400">
+            $
+            {Number(
+              summary?.final_total ??
+                items.reduce((total, item) => {
+                  const price =
+                    item?.final_price ??
+                    item?.product_variant?.final_price ??
+                    item?.product_variant?.price ??
+                    0;
+
+                  return total + Number(price) * Number(item?.quantity || 0);
+                }, 0)
+            ).toLocaleString()}
+          </span>
         </div>
-        </>
-      ))}
-      
-        <div className="flex items-center justify-between mt-7">
-            <button className="w-[210px] h-[41px] bg-red-500 rounded-lg text-white text-center">
-                Place an Order
-            </button>
-            <span className="text-green-500 text-lg">{finalPrice?.final_total}</span>
-        </div>
-      
-    </div>
+
+        <button
+          type="button"
+          className="
+            flex h-11 w-full
+            items-center justify-center
+            rounded-xl
+            bg-red-500
+            px-5
+            text-sm font-bold text-white
+            shadow-sm
+            transition-all duration-200
+            hover:bg-red-600
+            active:scale-[0.99]
+            focus:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-red-500
+            focus-visible:ring-offset-2
+            dark:bg-red-500
+            dark:hover:bg-red-400
+            dark:focus-visible:ring-offset-neutral-950
+          "
+        >
+          Place an Order
+        </button>
+      </div>
     </div>
   );
 }
