@@ -10,7 +10,8 @@ function AmazingSliders({ campaign, products }) {
 
   const handleScroll = (direction) => {
     if (sliderRef.current) {
-      const scrollAmount = direction === "next" ? 200 : -200;
+      const scrollAmount = direction === "next" ? 280 : -280;
+
       sliderRef.current.scrollBy({
         left: scrollAmount,
         behavior: "smooth",
@@ -23,145 +24,429 @@ function AmazingSliders({ campaign, products }) {
   const bgColor = campaign?.color || "#DC2626";
 
   return (
-    <div
-      className="relative rounded-lg sm:rounded-xl lg:rounded-2xl p-2 sm:p-3 lg:p-4 my-3 sm:my-6 lg:my-8 select-none ltr overflow-hidden"
+    <section
+      className="
+        relative
+        my-4
+        overflow-hidden
+        rounded-xl
+        p-2.5
+        select-none
+        sm:my-6
+        sm:rounded-2xl
+        sm:p-3
+        lg:my-8
+        lg:p-4
+      "
       style={{ backgroundColor: bgColor }}
+      aria-label={campaign?.name || "Amazing offers"}
     >
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-2 sm:gap-3 lg:gap-4">
-        {}
-        {}
-        {}
-        <div className="flex flex-row lg:flex-col items-center justify-between lg:justify-center w-full lg:w-auto text-white px-2 py-2 lg:p-4 lg:min-w-[180px] shrink-0">
-          {}
+      <div className="flex flex-col items-stretch gap-2 sm:gap-3 lg:flex-row lg:items-center lg:gap-4">
+        {/* Campaign Info */}
+        <div
+          className="
+            flex
+            w-full
+            shrink-0
+            flex-row
+            items-center
+            justify-between
+            px-2
+            py-2
+            text-white
+
+            lg:w-auto
+            lg:min-w-[180px]
+            lg:flex-col
+            lg:justify-center
+            lg:p-4
+          "
+        >
           <div className="flex items-center gap-1.5 sm:gap-2 lg:mb-3">
             {campaign?.icon && (
-              <span className="text-xl sm:text-2xl lg:text-3xl">
+              <span
+                className="text-xl sm:text-2xl lg:text-3xl"
+                aria-hidden="true"
+              >
                 {campaign.icon}
               </span>
             )}
-            <h2 className="text-xs sm:text-sm md:text-base lg:text-xl font-extrabold uppercase tracking-wide leading-tight">
+
+            <h2
+              className="
+                text-xs
+                font-extrabold
+                uppercase
+                leading-tight
+                tracking-wide
+                sm:text-sm
+                md:text-base
+                lg:text-xl
+              "
+            >
               {campaign?.name || "Amazing"}
             </h2>
           </div>
 
-          {}
           {campaign?.ends_at && (
-            <div className="scale-75 sm:scale-90 lg:scale-100 origin-center">
+            <div className="origin-center scale-75 sm:scale-90 lg:scale-100">
               <CountdownTimer targetDate={campaign.ends_at} />
             </div>
           )}
 
-          {}
           {campaign?.description && (
-            <p className="hidden lg:block text-white/80 text-xs text-center mt-3 line-clamp-2">
+            <p className="mt-3 hidden max-w-[180px] text-center text-xs leading-5 text-white/80 lg:line-clamp-2 lg:block">
               {campaign.description}
             </p>
           )}
         </div>
 
-        {}
-        {}
-        {}
-        <div className="relative w-full overflow-hidden min-w-0">
-          {}
+        {/* Products Slider */}
+        <div className="relative min-w-0 flex-1 overflow-hidden">
+          {/* Previous */}
           <button
+            type="button"
             onClick={() => handleScroll("prev")}
-            className="hidden md:flex absolute left-1 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 w-8 h-8 lg:w-10 lg:h-10 rounded-full shadow-md items-center justify-center transition-all"
-            aria-label="Previous"
+            className="
+              absolute
+              left-1
+              top-1/2
+              z-10
+              hidden
+              h-9
+              w-9
+              -translate-y-1/2
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-neutral-200
+              bg-white/95
+              text-lg
+              text-neutral-700
+              shadow-lg
+              transition-all
+              hover:scale-105
+              hover:bg-white
+              focus:outline-none
+              focus-visible:ring-2
+              focus-visible:ring-white
+              md:flex
+              lg:h-10
+              lg:w-10
+            "
+            aria-label="Previous products"
           >
-            ❮
+            ‹
           </button>
 
-          {}
           <div
             ref={sliderRef}
-            className="flex items-stretch gap-2 sm:gap-3 lg:gap-4 overflow-x-auto scrollbar-hide scroll-smooth py-1 px-1"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            dir="ltr"
+            className="
+              flex
+              items-stretch
+              gap-2
+              overflow-x-auto
+              scroll-smooth
+              px-1
+              py-1
+              sm:gap-3
+              lg:gap-4
+              scrollbar-hide
+            "
+            style={{
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
           >
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+              />
             ))}
           </div>
 
-          {}
+          {/* Next */}
           <button
+            type="button"
             onClick={() => handleScroll("next")}
-            className="hidden md:flex absolute right-1 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 w-8 h-8 lg:w-10 lg:h-10 rounded-full shadow-md items-center justify-center transition-all"
-            aria-label="Next"
+            className="
+              absolute
+              right-1
+              top-1/2
+              z-10
+              hidden
+              h-9
+              w-9
+              -translate-y-1/2
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-neutral-200
+              bg-white/95
+              text-lg
+              text-neutral-700
+              shadow-lg
+              transition-all
+              hover:scale-105
+              hover:bg-white
+              focus:outline-none
+              focus-visible:ring-2
+              focus-visible:ring-white
+              md:flex
+              lg:h-10
+              lg:w-10
+            "
+            aria-label="Next products"
           >
-            ❯
+            ›
           </button>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
+
 function ProductCard({ product }) {
-  console.log(product)
-  const productImage = product.images?.[0]?.image_url ;
-  console.log(productImage)
-  // const productImage = product.images?.[0]image_url ;
+  const productImage = product?.images?.[0]?.image_url;
 
+  const pricing = product?.pricing || {};
 
-  const pricing = product.pricing || {};
   const basePrice = pricing.base_price || 0;
   const finalPrice = pricing.final_price || 0;
   const discountPercent = pricing.discount_percent || 0;
   const hasDiscount = pricing.has_discount || false;
 
   return (
-    <div className="w-[180px] xs:w-[180px] sm:w-[180px] md:w-[200px] lg:w-[260px] bg-white rounded-lg sm:rounded-xl lg:rounded-2xl p-1.5 sm:p-2 lg:p-4 border border-neutral-300 shadow-sm shrink-0 flex flex-col hover:shadow-md transition-shadow">
-      {}
-      <Link href={`/product/${product.id}`}>
-      
-      <div className="w-full h-[90px] xs:h-[100px] sm:h-[130px] md:h-[150px] lg:h-[180px] relative flex items-center justify-center bg-gray-50 rounded-md sm:rounded-lg lg:rounded-xl overflow-hidden mb-2">
-        {productImage ? (
+    <article
+      className="
+        group
+        flex
+        w-[170px]
+        shrink-0
+        flex-col
+        rounded-xl
+        border
+        border-neutral-200
+        bg-white
+        p-1.5
+        shadow-sm
+        transition-all
+        duration-300
 
-          <Image
-            src={productImage}
-            alt={product.title || "product"}
-            width={180}
-            height={180}
-            className="object-contain max-h-full p-1"
-            
-          />
-        ):null}
-      </div>
+        hover:-translate-y-0.5
+        hover:shadow-lg
 
-      {}
-      <div className="flex flex-col gap-0.5 sm:gap-1 flex-1 min-h-0">
-        <h3 className="font-semibold text-gray-800 text-[11px] xs:text-xs sm:text-sm line-clamp-2 leading-tight">
-          {product.title}
-        </h3>
-        <p className="hidden md:block text-xs text-gray-400 line-clamp-1 mt-1">
-          {product.short_description}
-        </p>
-      </div>
+        sm:w-[180px]
+        sm:rounded-xl
+        sm:p-2
 
-      {}
-      <div className="mt-1.5 sm:mt-2">
-        {hasDiscount ? (
-          <>
-            <div className="flex items-center gap-1 flex-wrap">
-              <del className="text-neutral-400 text-[10px] xs:text-xs sm:text-sm">
-                ${basePrice.toLocaleString()}
-              </del>
-              <span className="text-center text-white text-[9px] xs:text-[10px] sm:text-xs bg-red-600 rounded px-1 sm:px-1.5 py-0.5">
-                {discountPercent}%
-              </span>
+        md:w-[200px]
+
+        lg:w-[260px]
+        lg:rounded-2xl
+        lg:p-3
+
+        dark:border-neutral-700
+        dark:bg-neutral-900
+        dark:shadow-black/10
+        dark:hover:border-neutral-600
+        dark:hover:shadow-black/30
+      "
+    >
+      <Link
+        href={`/product/${product.id}`}
+        className="
+          flex
+          h-full
+          flex-col
+          rounded-lg
+          outline-none
+
+          focus-visible:ring-2
+          focus-visible:ring-red-500
+          focus-visible:ring-offset-2
+          dark:focus-visible:ring-offset-neutral-900
+        "
+      >
+        {/* Product Image */}
+        <div
+          className="
+            relative
+            mb-2
+            flex
+            h-[90px]
+            w-full
+            items-center
+            justify-center
+            overflow-hidden
+            rounded-lg
+            bg-neutral-50
+
+            sm:h-[120px]
+
+            md:h-[145px]
+
+            lg:h-[175px]
+            lg:rounded-xl
+
+            dark:bg-neutral-950
+          "
+        >
+          {productImage ? (
+            <Image
+              src={productImage}
+              alt={product?.title || "Product"}
+              width={220}
+              height={220}
+              sizes="
+                (max-width: 640px) 170px,
+                (max-width: 768px) 180px,
+                (max-width: 1024px) 200px,
+                260px
+              "
+              className="
+                h-full
+                w-full
+                object-contain
+                p-2
+                transition-transform
+                duration-500
+                ease-out
+                group-hover:scale-105
+              "
+            />
+          ) : (
+            <div
+              className="
+                flex
+                h-full
+                w-full
+                items-center
+                justify-center
+                text-xs
+                text-neutral-400
+                dark:text-neutral-600
+              "
+            >
+              No image
             </div>
-            <p className="text-green-600 text-xs xs:text-sm sm:text-base lg:text-lg font-bold">
-              ${finalPrice.toLocaleString()}
+          )}
+        </div>
+
+        {/* Product Info */}
+        <div className="flex min-h-0 flex-1 flex-col">
+          <h3
+            className="
+              line-clamp-2
+              text-[11px]
+              font-semibold
+              leading-5
+              text-neutral-800
+              transition-colors
+              group-hover:text-red-600
+
+              sm:text-xs
+
+              md:text-sm
+
+              dark:text-neutral-200
+              dark:group-hover:text-red-400
+            "
+          >
+            {product?.title}
+          </h3>
+
+          {product?.short_description && (
+            <p
+              className="
+                mt-1
+                hidden
+                line-clamp-1
+                text-xs
+                leading-5
+                text-neutral-400
+
+                md:block
+
+                dark:text-neutral-500
+              "
+            >
+              {product.short_description}
             </p>
-          </>
-        ) : (
-          <p className="text-gray-800 text-xs xs:text-sm sm:text-base lg:text-lg font-bold">
-            ${basePrice.toLocaleString()}
-          </p>
-        )}
-      </div>
+          )}
+        </div>
+
+        {/* Pricing */}
+        <div className="mt-2">
+          {hasDiscount ? (
+            <>
+              <div className="flex flex-wrap items-center gap-1.5">
+                <del
+                  className="
+                    text-[10px]
+                    text-neutral-400
+                    sm:text-xs
+                    md:text-sm
+                    dark:text-neutral-500
+                  "
+                >
+                  ${Number(basePrice).toLocaleString()}
+                </del>
+
+                <span
+                  className="
+                    rounded-md
+                    bg-red-600
+                    px-1.5
+                    py-0.5
+                    text-[9px]
+                    font-bold
+                    text-white
+                    sm:text-[10px]
+                    md:text-xs
+                  "
+                >
+                  {discountPercent}%
+                </span>
+              </div>
+
+              <p
+                className="
+                  mt-0.5
+                  text-xs
+                  font-bold
+                  text-green-600
+                  sm:text-sm
+                  md:text-base
+                  lg:text-lg
+                  dark:text-green-400
+                "
+              >
+                ${Number(finalPrice).toLocaleString()}
+              </p>
+            </>
+          ) : (
+            <p
+              className="
+                text-xs
+                font-bold
+                text-neutral-800
+                sm:text-sm
+                md:text-base
+                lg:text-lg
+                dark:text-neutral-100
+              "
+            >
+              ${Number(basePrice).toLocaleString()}
+            </p>
+          )}
+        </div>
       </Link>
-    </div>
+    </article>
   );
 }
 

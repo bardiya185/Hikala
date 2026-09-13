@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -9,8 +10,6 @@ import { FaRegUser } from "react-icons/fa6";
 import { useGetUserData } from "@/core/services/queries";
 
 function MobileBottomNav({ totalCount, openMenu }) {
-  
-   
   const { data: userData, isLoading } = useGetUserData();
 
   const isLoggedIn = Boolean(userData);
@@ -18,8 +17,6 @@ function MobileBottomNav({ totalCount, openMenu }) {
   /*
    * Don't decide the destination while the authentication
    * status is still being checked.
-   *
-   * In that case we keep the user on the current page.
    */
   const profileHref = isLoading
     ? "#"
@@ -33,6 +30,48 @@ function MobileBottomNav({ totalCount, openMenu }) {
     }
   };
 
+  const navItemClass = `
+    group
+    flex
+    min-w-[64px]
+    flex-1
+    flex-col
+    items-center
+    justify-center
+    gap-1
+
+    rounded-xl
+    py-1.5
+
+    text-neutral-600
+
+    transition-all
+    duration-200
+
+    hover:bg-neutral-100
+    hover:text-neutral-950
+
+    active:scale-[0.96]
+    active:bg-neutral-100
+
+    focus-visible:outline-none
+    focus-visible:ring-2
+    focus-visible:ring-red-500/30
+
+    dark:text-neutral-400
+    dark:hover:bg-neutral-900
+    dark:hover:text-white
+    dark:active:bg-neutral-800
+
+    sm:min-w-[72px]
+  `;
+
+  const iconClass = `
+    transition-transform
+    duration-200
+    group-hover:-translate-y-0.5
+  `;
+
   return (
     <nav
       className="
@@ -42,19 +81,28 @@ function MobileBottomNav({ totalCount, openMenu }) {
         z-[100]
 
         flex
-        h-16
+        min-h-16
         w-full
         items-center
         justify-around
 
         border-t
-        border-neutral-200
-        bg-white
+        border-neutral-200/80
+
+        bg-white/95
 
         px-2
-        pb-[env(safe-area-inset-bottom)]
+        pt-1.5
 
-        shadow-[0_-2px_10px_rgba(0,0,0,0.04)]
+        pb-[calc(0.375rem+env(safe-area-inset-bottom))]
+
+        shadow-[0_-8px_30px_rgba(0,0,0,0.06)]
+
+        backdrop-blur-xl
+
+        dark:border-neutral-800
+        dark:bg-neutral-950/95
+        dark:shadow-[0_-8px_30px_rgba(0,0,0,0.3)]
 
         lg:hidden
       "
@@ -66,39 +114,18 @@ function MobileBottomNav({ totalCount, openMenu }) {
       <Link
         href="/"
         aria-label="Home"
-        className="
-          flex
-          min-w-[64px]
-          flex-1
-          flex-col
-          items-center
-          justify-center
-          gap-1
-
-          rounded-lg
-          py-1
-
-          text-neutral-700
-
-          transition-colors
-          duration-200
-
-          hover:bg-neutral-50
-          hover:text-red-500
-
-          active:bg-neutral-100
-
-          sm:min-w-[72px]
-        "
+        className={navItemClass}
       >
         <MdOutlineHome
-          className="
+          className={`
+            ${iconClass}
+
             h-[23px]
             w-[23px]
 
             sm:h-6
             sm:w-6
-          "
+          `}
         />
 
         <span
@@ -106,6 +133,7 @@ function MobileBottomNav({ totalCount, openMenu }) {
             whitespace-nowrap
             text-[10px]
             font-medium
+            leading-none
 
             sm:text-xs
           "
@@ -120,40 +148,19 @@ function MobileBottomNav({ totalCount, openMenu }) {
       <button
         type="button"
         onClick={openMenu}
-        aria-label="Categories"
-        className="
-          flex
-          min-w-[64px]
-          flex-1
-          flex-col
-          items-center
-          justify-center
-          gap-1
-
-          rounded-lg
-          py-1
-
-          text-neutral-700
-
-          transition-colors
-          duration-200
-
-          hover:bg-neutral-50
-          hover:text-red-500
-
-          active:bg-neutral-100
-
-          sm:min-w-[72px]
-        "
+        aria-label="Open categories"
+        className={navItemClass}
       >
         <RxHamburgerMenu
-          className="
+          className={`
+            ${iconClass}
+
             h-[22px]
             w-[22px]
 
             sm:h-6
             sm:w-6
-          "
+          `}
         />
 
         <span
@@ -161,6 +168,7 @@ function MobileBottomNav({ totalCount, openMenu }) {
             whitespace-nowrap
             text-[10px]
             font-medium
+            leading-none
 
             sm:text-xs
           "
@@ -175,47 +183,72 @@ function MobileBottomNav({ totalCount, openMenu }) {
       <Link
         href={profileHref}
         onClick={handleProfileClick}
-        aria-label="My Digikala"
+        aria-label={
+          isLoading
+            ? "Loading profile"
+            : isLoggedIn
+              ? "My Digikala"
+              : "Login"
+        }
         aria-disabled={isLoading}
         className={`
-          flex
-          min-w-[64px]
-          flex-1
-          flex-col
-          items-center
-          justify-center
-          gap-1
-
-          rounded-lg
-          py-1
-
-          transition-colors
-          duration-200
-
-          sm:min-w-[72px]
+          ${navItemClass}
 
           ${
             isLoading
-              ? "cursor-wait text-neutral-400"
-              : "text-neutral-700 hover:bg-neutral-50 hover:text-red-500 active:bg-neutral-100"
+              ? `
+                cursor-wait
+                opacity-60
+                hover:bg-transparent
+                dark:hover:bg-transparent
+              `
+              : ""
           }
         `}
       >
-        <FaRegUser
-          className="
-            h-[21px]
-            w-[21px]
+        <span className="relative">
+          <FaRegUser
+            className={`
+              ${iconClass}
 
-            sm:h-[23px]
-            sm:w-[23px]
-          "
-        />
+              h-[21px]
+              w-[21px]
+
+              sm:h-[23px]
+              sm:w-[23px]
+            `}
+          />
+
+          {/* Loading indicator */}
+          {isLoading && (
+            <span
+              className="
+                absolute
+                -right-1
+                -top-1
+
+                h-2
+                w-2
+
+                animate-pulse
+
+                rounded-full
+
+                bg-neutral-400
+
+                dark:bg-neutral-600
+              "
+              aria-hidden="true"
+            />
+          )}
+        </span>
 
         <span
           className="
             whitespace-nowrap
             text-[10px]
             font-medium
+            leading-none
 
             sm:text-xs
           "
@@ -232,44 +265,24 @@ function MobileBottomNav({ totalCount, openMenu }) {
         aria-label={`Shopping cart${
           totalCount > 0 ? `, ${totalCount} items` : ""
         }`}
-        className="
-          relative
-          flex
-          min-w-[64px]
-          flex-1
-          flex-col
-          items-center
-          justify-center
-          gap-1
-
-          rounded-lg
-          py-1
-
-          text-neutral-700
-
-          transition-colors
-          duration-200
-
-          hover:bg-neutral-50
-          hover:text-red-500
-
-          active:bg-neutral-100
-
-          sm:min-w-[72px]
-        "
+        className={navItemClass}
       >
-        <div className="relative">
+        <span className="relative">
           <MdShoppingCartCheckout
-            className="
+            className={`
+              ${iconClass}
+
               h-[23px]
               w-[23px]
 
               sm:h-6
               sm:w-6
-            "
+            `}
           />
 
-          {/* Cart Badge */}
+          {/* =================================================
+              Cart Badge
+          ================================================== */}
           {totalCount > 0 && (
             <span
               className="
@@ -278,37 +291,45 @@ function MobileBottomNav({ totalCount, openMenu }) {
                 -top-2
 
                 flex
-                h-4
-                min-w-4
+                h-[17px]
+                min-w-[17px]
                 items-center
                 justify-center
 
                 rounded-full
+
+                border-2
+                border-white
+
                 bg-red-500
+
                 px-1
 
-                text-[9px]
+                text-[8px]
                 font-bold
                 leading-none
                 text-white
 
                 shadow-sm
 
-                sm:h-5
-                sm:min-w-5
-                sm:text-[10px]
+                dark:border-neutral-950
+
+                sm:h-[19px]
+                sm:min-w-[19px]
+                sm:text-[9px]
               "
             >
               {totalCount > 99 ? "+99" : totalCount}
             </span>
           )}
-        </div>
+        </span>
 
         <span
           className="
             whitespace-nowrap
             text-[10px]
             font-medium
+            leading-none
 
             sm:text-xs
           "
@@ -321,3 +342,4 @@ function MobileBottomNav({ totalCount, openMenu }) {
 }
 
 export default MobileBottomNav;
+

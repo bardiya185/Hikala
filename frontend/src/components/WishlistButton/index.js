@@ -2,66 +2,134 @@
 
 import { useMemo } from "react";
 import { TbHeart, TbHeartFilled } from "react-icons/tb";
-import { useAddToWishlist } from "@/core/services/mutations";
-import { useWishlistIds } from "@/core/services/queries";
 import toast from "react-hot-toast";
 
+import { useAddToWishlist } from "@/core/services/mutations";
+import { useWishlistIds } from "@/core/services/queries";
 
 export default function WishlistButton({
-    productId,
-    isInWishlist: explicitIsInWishlist,
-    className = "",
+  productId,
+  isInWishlist: explicitIsInWishlist,
+  className = "",
 }) {
-    const { data: wishlistIds = [] , isLoading } = useWishlistIds();
-    const { mutate, isPending , isError , isSuccess } = useAddToWishlist();
+  const { data: wishlistIds = [], isLoading } = useWishlistIds();
+  const { mutate, isPending } = useAddToWishlist();
 
-    // بررسی دقیق و هوشمندانه وضعیت لایک
-    const isFav = useMemo(() => {
-        // ۱. اگر از بیرون مقدار صریح داده شده باشد
-        if (explicitIsInWishlist !== undefined) return Boolean(explicitIsInWishlist);
+  const isFav = useMemo(() => {
+    if (explicitIsInWishlist !== undefined) {
+      return Boolean(explicitIsInWishlist);
+    }
 
-        // ۲. اگر productId وجود ندارد
-        if (!productId) return false;
+    if (!productId) {
+      return false;
+    }
 
-        // ۳. چک کردن در لیست با تبدیل اجباری همه IDها به String
-        const idsArray = Array.isArray(wishlistIds) ? wishlistIds : [];
-        return idsArray.some((id) => String(id) === String(productId));
-    }, [explicitIsInWishlist, wishlistIds, productId]);
+    const idsArray = Array.isArray(wishlistIds)
+      ? wishlistIds
+      : [];
 
-    const handleWishlist = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        mutate(productId);
-        if (!productId || isPending) return;
-        if (isError || isSuccess) {
-            toast.error("Failed to update wishlist");
-        } else if (isFav) {
-            toast.success("Removed from Wishlist");
-        } else {
-            toast.success("Added to Wishlist");
-        }
-    };
-    return (
-        <button
-            type="button"
-            onClick={handleWishlist}
-            disabled={isPending || isLoading}
-            className={`absolute top-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-full 
-            bg-[#f0f0f0b3] shadow-sm backdrop-blur-sm transition-all duration-300 
-             hover:scale-95 active:scale-100
-            ${isPending || isLoading ? "opacity-75 hover:scale-100 bg-[#bfbfbfb3]" : "hover:bg-[#f0f0f0b3] hover:text-red-500"}`}
-        >
-            {/* حالت پر شده (HeartFilled) */}
-            <TbHeartFilled
-                className={`absolute h-5 w-5 text-red-500 transition-opacity duration-300 
-                ${isFav ? "opacity-100" : "opacity-0"}`}
-            />
-
-            {/* حالت خالی (Heart) */}
-            <TbHeart
-                className={`absolute h-5 w-5 transition-opacity duration-300 
-                ${isFav ? "opacity-0" : "opacity-100"}`}
-            />
-        </button>
+    return idsArray.some(
+      (id) => String(id) === String(productId)
     );
+  }, [explicitIsInWishlist, wishlistIds, productId]);
+
+  const handleWishlist = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!productId || isPending || isLoading) {
+      return;
+    }
+
+    mutate(productId, {
+      onSuccess: () => {
+        toast.success(
+          isFav
+            ? "Removed from Wishlist"
+            : "Added to Wishlist"
+        );
+      },
+      onError: () => {
+        toast.error("Failed to update wishlist");
+      },
+    });
+  };
+
+  const isDisabled = isPending || isLoading;
+
+  return (
+    <button
+      type="button"
+      onClick={handleWishlist}
+      disabled={isDisabled}
+      aria-label={
+        isFav
+          ? "Remove from wishlist"
+          : "Add to wishlist"
+      }
+      aria-pressed={isFav}
+      className={`
+        absolute right-2 top-2 z-10
+        flex h-8 w-8 items-center justify-center
+        rounded-full
+        bg-white/75
+        text-neutral-700
+        shadow-sm
+        backdrop-blur-md
+        transition-all duration-200
+        hover:scale-95
+        hover:bg-white
+        hover:text-red-500
+        active:scale-100
+        focus:outline-none
+        focus-visible:ring-2
+        focus-visible:ring-red-500
+        focus-visible:ring-offset-2
+        disabled:cursor-not-allowed
+        disabled:opacity-60
+        dark:bg-neutral-900/75
+        dark:text-neutral-200
+        dark:hover:bg-neutral-800
+        dark:hover:text-red-400
+        dark:focus-visible:ring-red-400
+        dark:focus-visible:ring-offset-neutral-900
+        ${className}
+      `}
+    >
+      <TbHeartFilled
+        aria-hidden="true"
+        className={`
+          absolute h-5 w-5 text-red-500
+          transition-all duration-200
+          dark:text-red-400
+          ${isFav
+            ? "scale-100 opacity-100"
+            : "scale-75 opacity-0"}
+        `}
+      />
+
+      <TbHeart
+        aria-hidden="true"
+        className={`
+          absolute h-5 w-5
+          transition-all duration-200
+          ${isFav
+            ? "scale-75 opacity-0"
+            : "scale-100 opacity-100"}
+        `}
+      />
+
+      {isPending && (
+        <span
+          aria-hidden="true"
+          className="
+            absolute inset-0
+            animate-pulse rounded-full
+            bg-white/30
+            dark:bg-black/20
+          "
+        />
+      )}
+    </button>
+  );
 }

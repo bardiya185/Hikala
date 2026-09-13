@@ -3,23 +3,24 @@ import "./globals.css";
 import Header from "@/components/templates/header";
 import Footer from "@/components/templates/footer/Footer";
 import TanstackQueryProvider from "@/components/partials/provider/TanstackQueryProvider";
+import { ThemeProvider } from "@/components/partials/provider/ThemeProvider";
 import { Toaster } from "react-hot-toast";
 import NextTopLoader from "nextjs-toploader";
 import PageTransition from "@/components/atom/PageTransition";
 
-import localFont from 'next/font/local';
+import localFont from "next/font/local";
 
 const iranyekan = localFont({
   src: [
     {
-      path: '../../public/fonts/iranyekanwebextrabold.9346e9a2.9346e9a2 .woff',
-      weight: '400',
-      style: 'normal',
+      path: "../../public/fonts/iranyekanwebextrabold.9346e9a2.9346e9a2 .woff",
+      weight: "400",
+      style: "normal",
     },
   ],
-  display: 'swap',
+  display: "swap",
   preload: true,
-  fallback: ['system-ui', 'Arial', 'sans-serif'],
+  fallback: ["system-ui", "Arial", "sans-serif"],
 });
 
 export const metadata = {
@@ -29,16 +30,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" dir="ltr">
+    <html lang="en" dir="ltr" suppressHydrationWarning>
       <body className="min-h-screen">
         <TanstackQueryProvider>
-             {/* <Header /> */}
-          <NextTopLoader color="#DC2626" showSpinner={false} />
-          <main className="min-h-screen pb-20 lg:pb-0">
-            <PageTransition>{children}</PageTransition>
-          </main>
-          <Toaster />
-          {/* <Footer /> */}
+          <ThemeProvider>
+            <NextTopLoader color="#DC2626" showSpinner={false} />
+
+            <main className="min-h-screen pb-20 lg:pb-0">
+              <PageTransition>{children}</PageTransition>
+            </main>
+
+            <Toaster />
+          </ThemeProvider>
         </TanstackQueryProvider>
       </body>
     </html>

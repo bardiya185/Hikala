@@ -16,7 +16,6 @@ function CheckOtpForm({ mobile, setStep, setIsOpen }) {
   const { isPending, mutate } = useCheckOtp();
 
   const handleChange = (index, value) => {
-    // فقط عدد
     const digit = value.replace(/\D/g, "").slice(-1);
 
     const currentCode = code.split("");
@@ -26,14 +25,12 @@ function CheckOtpForm({ mobile, setStep, setIsOpen }) {
 
     setCode(newCode);
 
-    // رفتن به input بعدی
     if (digit && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
   const handleKeyDown = (index, event) => {
-    // Backspace روی input خالی -> برگشت به قبلی
     if (
       event.key === "Backspace" &&
       !code[index] &&
@@ -42,13 +39,13 @@ function CheckOtpForm({ mobile, setStep, setIsOpen }) {
       inputRefs.current[index - 1]?.focus();
     }
 
-    // Arrow Left
     if (event.key === "ArrowLeft" && index > 0) {
+      event.preventDefault();
       inputRefs.current[index - 1]?.focus();
     }
 
-    // Arrow Right
     if (event.key === "ArrowRight" && index < 5) {
+      event.preventDefault();
       inputRefs.current[index + 1]?.focus();
     }
   };
@@ -90,9 +87,7 @@ function CheckOtpForm({ mobile, setStep, setIsOpen }) {
         code,
       },
       {
-        onSuccess: (data) => {
-          console.log("OTP verification success:", data);
-
+        onSuccess: () => {
           toast.success("Login successful");
 
           const redirect = searchParams.get("redirect");
@@ -122,8 +117,6 @@ function CheckOtpForm({ mobile, setStep, setIsOpen }) {
         },
 
         onError: (error) => {
-          console.error("OTP verification error:", error);
-
           toast.error(
             error?.response?.data?.message ||
               "Invalid verification code. Please try again."
@@ -136,29 +129,62 @@ function CheckOtpForm({ mobile, setStep, setIsOpen }) {
   return (
     <form
       onSubmit={submitHandler}
-      className="flex min-h-[450px] w-full items-center justify-center"
+      className="
+        flex min-h-[450px] w-full
+        items-center justify-center
+        px-2
+      "
     >
-      <div className="flex w-full flex-col rounded-2xl border border-neutral-100 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 lg:max-w-[360px]">
+      <div
+        className="
+          flex w-full max-w-[380px] flex-col
+          rounded-2xl
+          border border-neutral-100
+          bg-white
+          p-5
+          shadow-[0_8px_30px_rgb(0,0,0,0.04)]
+          transition-all duration-300
+          sm:p-6
+
+          dark:border-neutral-800
+          dark:bg-neutral-900
+          dark:shadow-[0_8px_30px_rgb(0,0,0,0.25)]
+        "
+      >
         {/* Logo */}
-        <div className="mb-6 mt-2 flex justify-center">
+        <div className="mb-6 mt-1 flex justify-center">
           <Image
             src="/icons/en-logo.svg"
             width={150}
             height={24}
-            alt="logo"
-            className="object-contain"
+            alt="Digikala"
+            className="h-auto w-[140px] object-contain sm:w-[150px]"
           />
         </div>
 
         {/* Title */}
-        <div className="flex flex-col text-left">
-          <h6 className="text-lg font-bold tracking-tight text-neutral-800">
+        <div className="text-left">
+          <h6
+            className="
+              text-lg font-bold tracking-tight
+              text-neutral-800
+              dark:text-neutral-100
+            "
+          >
             Enter verification code
           </h6>
 
-          <p className="mt-2 text-[11px] font-medium leading-relaxed text-neutral-400 sm:text-[12px] md:text-sm">
+          <p
+            className="
+              mt-2 text-[11px] font-medium leading-relaxed
+              text-neutral-400
+              sm:text-xs
+              md:text-sm
+              dark:text-neutral-400
+            "
+          >
             A 6-digit verification code has been sent to{" "}
-            <span className="font-semibold text-neutral-700">
+            <span className="font-semibold text-neutral-700 dark:text-neutral-200">
               {mobile}
             </span>
           </p>
@@ -166,8 +192,10 @@ function CheckOtpForm({ mobile, setStep, setIsOpen }) {
 
         {/* OTP */}
         <div
-          className="mt-6 flex justify-center gap-2"
+          className="mt-7 flex justify-center gap-1.5 sm:gap-2"
           dir="ltr"
+          role="group"
+          aria-label="Verification code"
         >
           {Array.from({ length: 6 }).map((_, index) => (
             <input
@@ -177,7 +205,9 @@ function CheckOtpForm({ mobile, setStep, setIsOpen }) {
               }}
               type="text"
               inputMode="numeric"
-              autoComplete={index === 0 ? "one-time-code" : "off"}
+              autoComplete={
+                index === 0 ? "one-time-code" : "off"
+              }
               maxLength={1}
               value={code[index] || ""}
               autoFocus={index === 0}
@@ -190,45 +220,103 @@ function CheckOtpForm({ mobile, setStep, setIsOpen }) {
               onPaste={handlePaste}
               aria-label={`Verification code digit ${index + 1}`}
               className="
-                h-12
-                w-11
+                h-12 w-10
                 rounded-xl
-                border
-                border-neutral-200
-                bg-[#fafafa]
+                border border-neutral-200
+                bg-neutral-50
                 text-center
-                text-lg
-                font-semibold
+                text-lg font-semibold
                 text-neutral-800
                 outline-none
-                transition-all
+                transition-all duration-200
+
+                hover:border-neutral-300
                 focus:border-red-500
                 focus:bg-white
-                focus:ring-2
+                focus:ring-4
                 focus:ring-red-500/10
+
+                sm:h-13 sm:w-11
+
+                dark:border-neutral-700
+                dark:bg-neutral-950
+                dark:text-neutral-100
+                dark:hover:border-neutral-600
+                dark:focus:border-red-500
+                dark:focus:bg-neutral-900
+                dark:focus:ring-red-500/10
               "
             />
           ))}
         </div>
 
+        {/* Helper */}
+        <p
+          className="
+            mt-3 text-center text-[11px]
+            text-neutral-400
+            dark:text-neutral-500
+          "
+        >
+          Enter the 6-digit code to continue
+        </p>
+
         {/* Submit */}
         <button
           type="submit"
           disabled={isPending}
-          className="mt-6 flex h-[50px] w-full cursor-pointer items-center justify-center rounded-xl bg-red-600 text-sm font-semibold text-white shadow-md shadow-red-600/10 transition-all duration-200 hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+          className="
+            mt-5 flex h-[50px] w-full
+            items-center justify-center
+            rounded-xl
+            bg-red-600
+            text-sm font-semibold text-white
+            shadow-md shadow-red-600/10
+            transition-all duration-200
+
+            hover:bg-red-700
+            active:scale-[0.99]
+            focus:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-red-500
+            focus-visible:ring-offset-2
+
+            disabled:cursor-not-allowed
+            disabled:opacity-60
+
+            dark:bg-red-600
+            dark:hover:bg-red-500
+            dark:focus-visible:ring-offset-neutral-900
+          "
         >
           {isPending ? "Verifying..." : "Verify & Proceed"}
         </button>
 
         {/* Resend */}
         <div className="mt-5 text-center">
-          <span className="text-[12px] text-neutral-400">
+          <span
+            className="
+              text-[12px]
+              text-neutral-400
+              dark:text-neutral-500
+            "
+          >
             Didn't receive the code?{" "}
           </span>
 
           <button
             type="button"
-            className="cursor-pointer border-none bg-transparent text-[12px] font-semibold text-red-600 hover:underline"
+            disabled
+            className="
+              cursor-not-allowed
+              border-none
+              bg-transparent
+              text-[12px]
+              font-semibold
+              text-red-600
+              opacity-70
+              dark:text-red-400
+            "
           >
             Resend
           </button>
