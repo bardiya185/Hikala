@@ -134,7 +134,7 @@ export default async function SearchResultPage({
 
 const breadcrumbItems = [
   {
-    title: "DigiKala",
+    title: "Hikala",
     href: "/",
   },
 

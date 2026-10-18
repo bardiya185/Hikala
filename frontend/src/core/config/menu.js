@@ -14,7 +14,7 @@
     {
       id: "address",
       label: "address",
-      href: "/profile/addresess",
+      href: "/profile/addresses",
       icon: SiGooglestreetview,
     },
     {

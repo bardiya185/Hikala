@@ -363,3 +363,88 @@ export function usePayOrder() {
     },
   });
 }
+
+// ============================================================
+// NOTIFICATIONS (اعلان‌ها)
+// ============================================================
+
+export function useMarkNotificationRead() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (notificationId) => {
+      const response = await api.put(`/api/notifications/${notificationId}/read`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
+    onError: (error) => {
+      toast.error(
+        error?.response?.data?.message || "خوانده شدن اعلان انجام نشد"
+      );
+    },
+  });
+}
+
+export function useDeleteNotification() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (notificationId) => {
+      const response = await api.delete(`/api/notifications/${notificationId}`);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    },
+    onError: (error) => {
+      toast.error(
+        error?.response?.data?.message || "حذف اعلان انجام نشد"
+      );
+    },
+  });
+}
+
+// ============================================================
+// UPDATE PROFILE (PATCH /api/user)
+// ============================================================
+
+export function useUpdateProfile() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload) => {
+      const response = await api.patch("/api/user", payload);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      // Keep the cached user in sync without waiting for the refetch.
+      // Cache shape is the axios response: { data: { data: <user> } }.
+      queryClient.setQueryData(["user-data"], (previous) => {
+        const body = previous?.data;
+
+        if (!body || typeof body !== "object") return previous;
+
+        return {
+          ...previous,
+          data: {
+            ...body,
+            data: { ...body.data, ...(data?.data ?? {}) },
+          },
+        };
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["user-data"] });
+
+      toast.success("اطلاعات حساب شما با موفقیت به‌روزرسانی شد");
+    },
+    onError: (error) => {
+      const message =
+        error?.response?.data?.message ||
+        "ذخیره اطلاعات انجام نشد، دوباره تلاش کنید";
+
+      toast.error(message);
+    },
+  });
+}

@@ -22,6 +22,13 @@ const remotePatterns = [
     port: "8000",
     pathname: "/storage/**",
   },
+  // Laravel's artisan serve reports its host as 127.0.0.1:8000 in API URLs.
+  {
+    protocol: "http",
+    hostname: "127.0.0.1",
+    port: "8000",
+    pathname: "/storage/**",
+  },
 ];
 
 if (backendHostname && !remotePatterns.some((p) => p.hostname === backendHostname)) {

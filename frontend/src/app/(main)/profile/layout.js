@@ -14,6 +14,8 @@ import { RiNotification3Line } from "react-icons/ri";
 import { MdAccessTime } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa6";
 
+import { useGetUserData } from "@/core/services/queries";
+
 const menuProfile = [
   {
     id: "active",
@@ -90,6 +92,9 @@ const isMenuActive = (pathname, href) => {
 
 function ProfileLayout({ children }) {
   const pathname = usePathname();
+  const { data: userData } = useGetUserData();
+  const user = userData?.data?.data || userData?.data || null;
+  const displayName = user?.name || user?.mobile || "کاربر هایکالا";
 
   return (
     <div
@@ -152,7 +157,7 @@ function ProfileLayout({ children }) {
                     sm:text-base
                   "
                 >
-                  09123456789
+                  {displayName}
                 </span>
 
                 <span

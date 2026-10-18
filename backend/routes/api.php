@@ -102,6 +102,7 @@ Route::prefix('cart')->middleware('optional.auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/user', fn(Request $request) => $request->user());
+    Route::patch('/user', [AuthController::class, 'update']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/cart/merge', [CartController::class, 'mergeCart']);
     Route::apiResource('addresses', AddressController::class);

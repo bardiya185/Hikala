@@ -41,6 +41,11 @@ exit(1);
     if [ "$SEED_DATABASE" = "true" ]; then
         php artisan db:seed --force --no-interaction
     fi
+
+    if [ "$DEDUPE_PRODUCTS" = "true" ]; then
+        echo "Deduping duplicate products..."
+        php artisan products:dedupe --no-interaction || true
+    fi
 fi
 
 php artisan storage:link --force --no-interaction || true

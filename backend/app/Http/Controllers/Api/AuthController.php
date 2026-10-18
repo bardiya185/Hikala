@@ -7,6 +7,7 @@ use App\Services\Auth\AuthService;
 use App\Http\Requests\SendOtpRequest;
 use App\Http\Requests\CheckOtpRequest;
 use App\Http\Requests\RefreshTokenRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Models\RefreshToken;
 use App\Http\Resources\UserResource;
@@ -323,4 +324,57 @@ class AuthController extends Controller
             'data' => new UserResource($user),
         ]);
     }
-     }
+
+    /**
+     * Update the authenticated user profile (name / mobile / email).
+     *
+     * Only the columns that exist on the users table are written; see
+     * UpdateUserRequest which builds its rules from the real schema.
+     */
+    #[OA\Patch(
+        path: '/api/user',
+        tags: ['Auth'],
+        summary: 'Update authenticated user profile',
+        security: [["bearerAuth" => []]],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'name', type: 'string', example: 'علی رضایی'),
+                    new OA\Property(property: 'mobile', type: 'string', example: '09123456789'),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'Profile updated'),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ]
+    )]
+    public function update(UpdateUserRequest $request)
+    {
+        $user = $request->user();
+
+        $data = $request->validated();
+
+        if (array_key_exists('name', $data)) {
+            $user->name = $data['name'];
+        }
+
+        if (array_key_exists('mobile', $data)) {
+            $user->mobile = $data['mobile'];
+        }
+
+        if (array_key_exists('email', $data)) {
+            $user->email = $data['email'];
+        }
+
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'authenticated' => true,
+            'message' => 'Profile updated successfully.',
+            'data' => new UserResource($user->refresh()),
+        ]);
+    }
+}

@@ -1,5 +1,6 @@
 import Breadcrumb from "@/components/common/Breadcrumb";
 import ProductsDe from "@/components/templates/productDetails";
+import RecentlyViewedTracker from "@/components/atom/RecentlyViewedTracker";
 
 async function getProductDetails(id) {
   try {
@@ -73,6 +74,18 @@ export default async function ProductDetails({ params }) {
 
   return (
     <div>
+      <RecentlyViewedTracker
+        product={{
+          id: product.id,
+          title: product.title,
+          price:
+            product?.variants?.[0]?.final_price ??
+            product?.variants?.[0]?.base_price ??
+            product?.price,
+          image: product?.images?.[0]?.image_url ?? product?.images?.[0],
+        }}
+      />
+
       <Breadcrumb items={breadcrumbItems} />
 
       <ProductsDe data={product} />

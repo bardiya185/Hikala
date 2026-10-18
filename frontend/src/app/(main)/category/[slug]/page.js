@@ -1,15 +1,16 @@
+import { redirect } from "next/navigation";
+
+// /category/[slug] is kept as an alias of the fully-working product listing at
+// /search/[slug] (which resolves the slug via ?category_slug). Preserves query.
 export default async function CategoryPage({ params, searchParams }) {
   const { slug } = await params;
-  const filters = await searchParams;
+  const sp = (await searchParams) || {};
 
-  console.log("CATEGORY SLUG:", slug);
-  console.log("FILTERS:", filters);
+  const query = new URLSearchParams(
+    Object.fromEntries(
+      Object.entries(sp).filter(([, v]) => v != null && v !== "")
+    )
+  ).toString();
 
-  // گرفتن محصولات دسته‌بندی
-
-  return (
-    <div>
-      ...
-    </div>
-  );
+  redirect(`/search/${encodeURIComponent(slug)}${query ? `?${query}` : ""}`);
 }

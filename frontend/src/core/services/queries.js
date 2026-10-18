@@ -236,3 +236,18 @@ export function useGetDeliveryOptions() {
   });
 }
 
+// ============================================================
+// GET NOTIFICATIONS
+// ============================================================
+
+export function useGetNotifications() {
+  return useQuery({
+    queryKey: ["notifications"],
+    queryFn: async () => {
+      const response = await api.get("/api/notifications");
+      return response.data;
+    },
+    enabled: isLoggedIn(),
+  });
+}
+

@@ -67,7 +67,7 @@ const PAYMENT_METHODS = [
 function CheckoutPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const orderId = searchParams.get("order");
+  const orderId = searchParams.get("order") || searchParams.get("reorder");
 
   const [selectedPayment, setSelectedPayment] =
     useState("online");
@@ -133,7 +133,7 @@ function CheckoutPage() {
   // Redirect if no order
   useEffect(() => {
     if (!orderId) {
-      router.push("/cart");
+      router.push("/checkout/cart");
       toast.error("No order found");
     }
   }, [orderId, router]);
@@ -219,7 +219,7 @@ function CheckoutPage() {
           </p>
 
           <Link
-            href="/cart"
+            href="/checkout/cart"
             className="
               mt-4 inline-block
               rounded-lg
@@ -331,7 +331,7 @@ function CheckoutPage() {
       {/* Header */}
       <div className="mb-6">
         <Link
-          href="/cart"
+          href="/checkout/cart"
           className="
             inline-flex
             items-center

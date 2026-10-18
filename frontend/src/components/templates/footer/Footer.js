@@ -862,7 +862,7 @@ export default function Footer() {
             </span>
 
             <span className="flex items-center gap-1">
-              Developed by Sobhan
+              Developed by Sobhan &amp; Bardia
 
               <FaHeart
                 className="
