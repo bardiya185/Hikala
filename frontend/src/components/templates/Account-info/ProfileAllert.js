@@ -73,7 +73,7 @@ function ProfileAllert() {
             "
           >
             Verify your identity to increase your account security and
-            access the "Buy Now, Pay Later" feature.
+            access the &quot;Buy Now, Pay Later&quot; feature.
           </span>
         </div>
 
