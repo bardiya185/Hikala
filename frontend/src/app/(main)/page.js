@@ -8,7 +8,7 @@ import SpecialOffers from "@/components/organisms/SpecialOffers";
 async function getFlashSaleCampaign() {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/campaigns/flash-sale/products`,
+      `${process.env.SERVER_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL}/api/campaigns/flash-sale/products`,
       {
         next: { revalidate: 60 },
       },
@@ -27,7 +27,7 @@ async function getFlashSaleCampaign() {
 
 async function getSpecialOffer(){
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/campaigns/special/products`, {
+    const res = await fetch(`${process.env.SERVER_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL}/api/campaigns/special/products`, {
       next: { revalidate: 60 },
     })
     if(!res.ok) return null
@@ -41,7 +41,7 @@ async function getSpecialOffer(){
 
 async function getBanners() {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/banners`, {
+    const res = await fetch(`${process.env.SERVER_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL}/api/banners`, {
       next: { revalidate: 300 },
     });
 

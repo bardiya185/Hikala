@@ -24,7 +24,8 @@ async function getCategoryProducts({
     const sortBy = sort_by || "created_at";
     const sortOrder = sort_order || "desc";
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    const baseUrl =
+      process.env.SERVER_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL;
     const params = new URLSearchParams();
 
  // Category

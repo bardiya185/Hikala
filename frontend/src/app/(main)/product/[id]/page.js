@@ -3,7 +3,8 @@ import ProductsDe from "@/components/templates/productDetails";
 
 async function getProductDetails(id) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    const baseUrl =
+      process.env.SERVER_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL;
 
     const response = await fetch(`${baseUrl}/api/products/${id}`, {
       cache: "no-store",

@@ -2,6 +2,11 @@
 
 این ریپو یک مونورپو با دو سرویس است: `backend/` (Laravel 12 + PHP 8.3 + nginx) و `frontend/` (Next.js 15 standalone). هر دو داکر‌فایل و `railway.json` آماده دارند.
 
+> **حالت فعال فعلی (پلن رایگان Railway): تک‌سرویس.**
+> چون پلن Free فقط دو resource اجازه می‌دهد (MySQL + volume + سرویس برنامه)، یک `Dockerfile` در **ریشه ریپو** هر دو اپ را در یک کانتینر می‌سازد: nginx روی `$PORT`، مسیرهای `/api|/sanctum|/storage|/up|/docs|/oauth` → Laravel (php-fpm) و بقیه → Next.js standalone روی پورت داخلی 3000 (supervisord). سرویس `backend` با Root Directory خالی از همان داکرفایل ریشه بیلد می‌شود و دامنه‌اش هم API و هم سایت است.
+> متغیرهای بیلد: `NEXT_PUBLIC_BASE_URL=<دامنه سرویس>` و `NEXT_PUBLIC_NESHAN_API_KEY` (Railway این‌ها را به‌عنوان ARG به داکر می‌دهد). برای fetchهای سمت‌سرور، entrypoint به‌صورت خودکار `SERVER_BASE_URL=http://127.0.0.1:$PORT` ست می‌کند (قابل override).
+> اگر بعداً پلن Hobby گرفتید، می‌توانید با همان مراحل بخش‌های ۲ و ۳ هر اپ را سرویس جدا کرد.
+
 ## ۱) ساخت پروژه و دیتابیس
 1. در Railway یک Project بسازید.
 2. داخل پروژه: **New → Database → MySQL** (پلاگین رسمی MySQL).
