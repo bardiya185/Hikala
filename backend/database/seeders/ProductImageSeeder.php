@@ -23,6 +23,33 @@ class ProductImageSeeder extends Seeder
             return;
         }
 
+        // Drop any row that does not point at the product's own folder or whose
+        // file is missing on disk (stale dump paths, old random fills).
+        $all = DB::table('product_images')->get(['id', 'product_id', 'image_path']);
+        $removed = 0;
+        foreach ($all as $img) {
+            $ownPrefix = 'products/' . $img->product_id . '/';
+            $valid = str_starts_with($img->image_path, $ownPrefix)
+                && File::exists(storage_path('app/public/' . $img->image_path));
+            if (!$valid) {
+                DB::table('product_images')->where('id', $img->id)->delete();
+                $removed++;
+            }
+        }
+        if ($removed > 0) {
+            $this->command->info("Removed {$removed} image rows not matching their product.");
+        }
+
+        // Drop duplicate rows pointing at the same file for one product.
+        DB::statement('
+            DELETE pi FROM product_images pi
+            JOIN product_images pj
+              ON pj.product_id = pi.product_id
+             AND pj.image_path = pi.image_path
+             AND pj.id < pi.id
+        ');
+
+        // Link every file from each product's own folder.
         $productIds = DB::table('products')->pluck('id')->all();
         $existing = DB::table('product_images')->pluck('product_id')->unique()->all();
         $missing = array_diff($productIds, $existing);
@@ -55,71 +82,66 @@ class ProductImageSeeder extends Seeder
             DB::table('product_images')->insert($chunk);
         }
 
-        // Give remaining image-less products a random image from the pool,
-        // so the storefront never shows empty cards.
-        $pool = collect(File::allFiles($root))
-            ->filter(fn ($f) => preg_match('/\.(jpe?g|png|webp|gif)$/i', $f->getFilename()))
-            ->map(fn ($f) => 'products/' . $f->getRelativePath() . '/' . $f->getFilename())
-            ->values();
+        $this->command->info('Linked ' . count($rows) . ' product images from their own folders.');
 
+        // Products without their own files borrow images from a same-title
+        // product that has them, so every card shows a matching picture.
         $stillMissing = array_diff(
             $productIds,
-            $existing,
-            array_unique(array_column($rows, 'product_id'))
+            DB::table('product_images')->pluck('product_id')->unique()->all()
         );
 
-        $extra = [];
+        $borrowed = [];
         foreach ($stillMissing as $productId) {
-            if ($pool->isEmpty()) {
-                break;
-            }
-            $extra[] = [
-                'product_id' => $productId,
-                'image_path' => $pool->random(),
-                'alt' => null,
-                'sort_order' => 1,
-                'is_main' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }
-
-        foreach (array_chunk($extra, 500) as $chunk) {
-            DB::table('product_images')->insert($chunk);
-        }
-
-        // Repair rows whose files are missing on disk (e.g. stale dump paths).
-        $repaired = 0;
-        $all = DB::table('product_images')->get(['id', 'product_id', 'image_path']);
-        foreach ($all as $img) {
-            if (File::exists(storage_path('app/public/' . $img->image_path))) {
+            $title = DB::table('products')->where('id', $productId)->value('title');
+            if (!$title) {
                 continue;
             }
 
-            $dir = $root . DIRECTORY_SEPARATOR . $img->product_id;
-            $local = File::isDirectory($dir)
-                ? collect(File::files($dir))
-                    ->first(fn ($f) => preg_match('/\.(jpe?g|png|webp|gif)$/i', $f->getFilename()))
-                : null;
-
-            if ($local) {
-                DB::table('product_images')
-                    ->where('id', $img->id)
-                    ->update(['image_path' => 'products/' . $img->product_id . '/' . $local->getFilename()]);
-            } elseif (!$pool->isEmpty()) {
-                DB::table('product_images')
-                    ->where('id', $img->id)
-                    ->update(['image_path' => $pool->random()]);
-            } else {
-                DB::table('product_images')->where('id', $img->id)->delete();
+            $donorId = DB::table('products')
+                ->where('title', $title)
+                ->where('id', '!=', $productId)
+                ->whereIn('id', DB::table('product_images')->pluck('product_id'))
+                ->orderBy('id')
+                ->value('id');
+            if (!$donorId) {
+                continue;
             }
-            $repaired++;
+
+            $donorImages = DB::table('product_images')
+                ->where('product_id', $donorId)
+                ->orderBy('sort_order')
+                ->get(['image_path', 'alt']);
+
+            foreach ($donorImages as $i => $img) {
+                $borrowed[] = [
+                    'product_id' => $productId,
+                    'image_path' => $img->image_path,
+                    'alt' => $img->alt,
+                    'sort_order' => $i + 1,
+                    'is_main' => $i === 0 ? 1 : 0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
         }
 
-        if ($repaired > 0) {
-            $this->command->info("Repaired {$repaired} image rows with missing files.");
+        foreach (array_chunk($borrowed, 500) as $chunk) {
+            DB::table('product_images')->insert($chunk);
         }
 
-        $this->command->info('Linked ' . (count($rows) + count($extra)) . ' product images from storage.');
+        $this->command->info('Borrowed images for ' . count(array_unique(array_column($borrowed, 'product_id'))) . ' same-title products.');
+
+        $missingFiles = 0;
+        foreach (DB::table('product_images')->pluck('image_path') as $path) {
+            if (!File::exists(storage_path('app/public/' . $path))) {
+                $missingFiles++;
+            }
+        }
+        $without = count(array_diff(
+            $productIds,
+            DB::table('product_images')->pluck('product_id')->unique()->all()
+        ));
+        $this->command->info("Verify: {$missingFiles} rows with missing files, {$without} products without images.");
     }
 }
