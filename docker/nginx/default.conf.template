@@ -10,25 +10,28 @@ server {
     client_max_body_size 30M;
     charset utf-8;
 
-    # Laravel API and backend routes
-    location ~ ^/(api|sanctum|storage|up|docs|oauth)(/|$) {
+    # Laravel-uploaded files (public/storage symlink)
+    location ^~ /storage/ {
         root /var/www/html/public;
-        index index.php index.html;
-        try_files $uri $uri/ /index.php?$query_string;
+        expires 30d;
+        add_header Cache-Control "public";
+        access_log off;
+        try_files $uri =404;
+    }
 
-        location = /favicon.ico { access_log off; log_not_found off; }
-        location = /robots.txt  { access_log off; log_not_found off; }
+    # Laravel API and backend routes straight to php-fpm
+    location ~ ^/(api|sanctum|up|docs|oauth)(/|$) {
+        root /var/www/html/public;
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_param SCRIPT_FILENAME /var/www/html/public/index.php;
+        fastcgi_param SCRIPT_NAME /index.php;
+        include fastcgi_params;
+        fastcgi_hide_header X-Powered-By;
+        fastcgi_read_timeout 60s;
+    }
 
-        location ~ \.php$ {
-            fastcgi_pass 127.0.0.1:9000;
-            fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-            include fastcgi_params;
-            fastcgi_hide_header X-Powered-By;
-        }
-
-        location ~ /\.(?!well-known).* {
-            deny all;
-        }
+    location ~ /\.(?!well-known).* {
+        deny all;
     }
 
     # Everything else goes to Next.js
@@ -43,13 +46,5 @@ server {
         proxy_redirect off;
         proxy_buffering on;
         proxy_read_timeout 60s;
-    }
-
-    location ~* \.(?:jpg|jpeg|png|gif|webp|svg|ico|woff2?)$ {
-        expires 30d;
-        add_header Cache-Control "public";
-        proxy_pass http://web;
-        proxy_set_header Host $http_host;
-        access_log off;
     }
 }
