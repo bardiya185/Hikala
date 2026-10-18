@@ -430,7 +430,7 @@ export default function SearchBar() {
                   >
                     Results for{" "}
                     <span className="font-bold text-neutral-950 dark:text-white">
-                      "{query.trim()}"
+                      &quot;{query.trim()}&quot;
                     </span>
                   </p>
                 </div>
@@ -938,7 +938,7 @@ export default function SearchBar() {
                           dark:group-hover:text-red-400
                         "
                       >
-                        Search for "{query.trim()}"
+                        Search for &quot;{query.trim()}&quot;
                       </p>
 
                       <p
@@ -1038,9 +1038,9 @@ export default function SearchBar() {
                   dark:text-neutral-500
                 "
               >
-                We couldn't find anything matching{" "}
+                We couldn&apos;t find anything matching{" "}
                 <span className="font-medium text-neutral-600 dark:text-neutral-400">
-                  "{query.trim()}"
+                  &quot;{query.trim()}&quot;
                 </span>
                 . Try another keyword.
               </p>

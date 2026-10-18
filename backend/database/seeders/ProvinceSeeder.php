@@ -10,6 +10,11 @@ class ProvinceSeeder extends Seeder
 {
     public function run(): void
     {
+        if (DB::table('provinces')->exists()) {
+            $this->command->info('Provinces already seeded, skipping.');
+            return;
+        }
+
         $provinces = [
             ['name' => 'آذربایجان شرقی', 'code' => '01'],
             ['name' => 'آذربایجان غربی', 'code' => '02'],

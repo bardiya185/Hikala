@@ -23,7 +23,7 @@ const getCategoryImage = (banner) => {
   return `${API_URL}/storage/${banner}`;
 };
 
-export default function  categories() {
+export default function  Categories() {
   const {
     data,
     isLoading,

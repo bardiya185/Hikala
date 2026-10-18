@@ -12,6 +12,11 @@ class BannerSeeder extends Seeder
 {
     public function run(): void
     {
+        if (\App\Models\Banner::query()->exists()) {
+            $this->command->info('Banners already seeded, skipping.');
+            return;
+        }
+
         $middle4 = BannerPosition::where('key', 'home_middle_4')->first();
 
         if (!$middle4) {

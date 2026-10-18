@@ -15,22 +15,22 @@ import {
 const featureItems = [
   {
     id: 1,
-    image: "/images/footer/feature-1.webp",
+    image: "/icons/express-delivery.svg",
     title: "Fast Delivery",
   },
   {
     id: 2,
-    image: "/images/footer/feature-2.webp",
+    image: "/icons/cash-on-delivery.svg",
     title: "Secure Payment",
   },
   {
     id: 3,
-    image: "/images/footer/feature-3.webp",
+    image: "/icons/original-products.svg",
     title: "Quality Products",
   },
   {
     id: 4,
-    image: "/images/footer/feature-4.webp",
+    image: "/icons/support.svg",
     title: "Customer Support",
   },
 ];

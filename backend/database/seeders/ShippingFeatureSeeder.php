@@ -11,6 +11,11 @@ class ShippingFeatureSeeder extends Seeder
 {
     public function run(): void
     {
+        if (ProductVariantShippingFeature::query()->exists()) {
+            $this->command->info('Shipping features already seeded, skipping.');
+            return;
+        }
+
         $variants = ProductVariant::all();
         
         if ($variants->isEmpty()) {

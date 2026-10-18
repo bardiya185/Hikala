@@ -1,12 +1,15 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import api from "../config/api";
+import { getCookie } from "../utils/cookie";
 import { getGuestSessionId } from "../utils/gustSession";
+
+const isLoggedIn = () => !!getCookie("access_token");
 
 export const useGetUserData = ()=>{
     const queryFn =()=> api.get("/api/who-am-i")
     const queryKey = ['user-data']
-    return useQuery({queryKey,queryFn})
+    return useQuery({queryKey,queryFn,enabled: isLoggedIn()})
 }
 
 export const useGetMainCategories = ()=>{
@@ -88,16 +91,11 @@ export const useGetWishlist = (perPage = 10) => {
   const queryKey = ["wishlist", perPage];
 
   const queryFn = async () => {
-    console.log("WISHLIST QUERY STARTED");
-
     const response = await api.get("/api/wishlist", {
       params: {
         "per-page": perPage,
       },
     });
-
-    console.log("WISHLIST RESPONSE:", response);
-    console.log("WISHLIST DATA:", response?.data);
 
     return response?.data ?? [];
   };
@@ -105,6 +103,7 @@ export const useGetWishlist = (perPage = 10) => {
   return useQuery({
     queryKey,
     queryFn,
+    enabled: isLoggedIn(),
     retry:3,
     refetchOnWindowFocus: true,
   });
@@ -174,6 +173,7 @@ export const useWishlistIds = () => {
   return useQuery({
     queryKey: ["wishlist_ids"],
     queryFn: async () => {
+      if (!isLoggedIn()) return [];
 
       const response = await api.get("/api/wishlist");
 

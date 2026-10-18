@@ -230,8 +230,7 @@ Route::prefix('categories')->group(function () {
     });
     Route::prefix('reviews')->middleware('permission:approve-reviews')->group(function () {
         Route::get('/', [ReviewController::class, 'adminIndex']);
-        Route::post('/{review}/approve', [ReviewController::class, '
-        ']);
+        Route::post('/{review}/approve', [ReviewController::class, 'approve']);
         Route::post('/{review}/reject', [ReviewController::class, 'reject']);
     });
 

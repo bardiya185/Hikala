@@ -33,25 +33,26 @@ api.interceptors.response.use(
     if (status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      try {
-        const res = await getNewTokens();
-        
-        if (res?.status === 200) {
-          const newAccessToken = res?.data?.access_token;
-          
-          setCookie("access_token", newAccessToken, 30);
-          
-          originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-          return api(originalRequest);
-        }
-      } catch (refreshError) {
-      
-        console.error("Refresh token failed:", refreshError);
-        return Promise.reject(refreshError);
-      }
-    } 
+      const refreshToken = getCookie("refresh_token");
+      if (refreshToken) {
+        try {
+          const res = await getNewTokens();
 
-    
+          if (res?.status === 200) {
+            const newAccessToken = res?.data?.access_token;
+
+            setCookie("access_token", newAccessToken, 30);
+
+            originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+            return api(originalRequest);
+          }
+        } catch (refreshError) {
+          console.error("Refresh token failed:", refreshError);
+        }
+      }
+    }
+
+    return Promise.reject(error);
   }
 );
 

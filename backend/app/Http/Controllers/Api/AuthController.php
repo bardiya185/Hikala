@@ -78,7 +78,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Verification code sent successfully.',
-            'code' => $otpData['otp'], // 🛑 Beta - Remove in production
+            'code' => config('app.debug') ? $otpData['otp'] : null,
         ]);
     }
 
