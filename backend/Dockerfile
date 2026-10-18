@@ -52,5 +52,6 @@ COPY --from=build /var/www/html /var/www/html
 
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-EXPOSE 9000
-CMD ["php-fpm"]
+EXPOSE 8000
+# php artisan serve is used so Railway's HTTP proxy can reach the app.
+CMD sh -c "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"
