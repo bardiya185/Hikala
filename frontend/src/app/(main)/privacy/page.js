@@ -237,8 +237,8 @@ export default function PrivacyPage() {
                 className="mt-0.5 h-4 w-4 shrink-0 text-blue-500"
               />
               <p className="text-[11px] leading-5 text-neutral-500 dark:text-neutral-400">
-                To access, correct or delete your information, go to the 'Account
-                information' section.
+                To access, correct or delete your information, go to the &apos;Account
+                information&apos; section.
               </p>
             </div>
           </nav>

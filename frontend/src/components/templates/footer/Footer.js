@@ -40,8 +40,8 @@ const footerColumns = [
     id: 1,
     title: "Quick Links",
     links: [
-      { label: "About Us", href: "#" },
-      { label: "Contact Us", href: "#" },
+      { label: "About Us", href: "/about" },
+      { label: "Contact Us", href: "/contact" },
       { label: "Products", href: "/search" },
       { label: "Categories", href: "/search" },
       { label: "Privacy Policy", href: "/privacy" },
@@ -52,20 +52,20 @@ const footerColumns = [
     id: 2,
     title: "Customer Service",
     links: [
-      "Help Center",
-      "Shipping",
-      "Returns",
-      "Order Tracking",
-      "FAQ",
+      { label: "Help Center", href: "/help-center" },
+      { label: "Shipping", href: "/shipping" },
+      { label: "Returns", href: "/returns" },
+      { label: "Order Tracking", href: "/order-tracking" },
+      { label: "FAQ", href: "/faq" },
     ],
   },
   {
     id: 3,
     title: "Information",
     links: [
-      "About Store",
-      "Our Services",
-      "Support",
+      { label: "About Store", href: "/about" },
+      { label: "Our Services", href: "/services" },
+      { label: "Support", href: "/support" },
     ],
   },
 ];
@@ -563,8 +563,8 @@ export default function Footer() {
             <div className="mt-4 flex flex-col gap-3">
               {footerColumns[1].links.map((link) => (
                 <Link
-                  key={link}
-                  href="#"
+                  key={link.label}
+                  href={link.href}
                   className="
                     w-fit
 
@@ -583,7 +583,7 @@ export default function Footer() {
                     dark:hover:text-red-400
                   "
                 >
-                  {link}
+                  {link.label}
                 </Link>
               ))}
             </div>
@@ -609,8 +609,8 @@ export default function Footer() {
             <div className="mt-4 flex flex-col gap-3">
               {footerColumns[2].links.map((link) => (
                 <Link
-                  key={link}
-                  href="#"
+                  key={link.label}
+                  href={link.href}
                   className="
                     w-fit
 
@@ -629,7 +629,7 @@ export default function Footer() {
                     dark:hover:text-red-400
                   "
                 >
-                  {link}
+                  {link.label}
                 </Link>
               ))}
             </div>
