@@ -35,7 +35,7 @@ const INPUT_CLASS =
 const LABEL_CLASS =
   "mb-1.5 block text-xs font-semibold text-neutral-600 dark:text-neutral-300";
 
-const ADDRESS_TYPES = ["منزل", "اداری", "دیگر"];
+const ADDRESS_TYPES = ["Home", "Office", "Other"];
 
 /**
  * The addresses endpoint may return either `{ data: [...] }`,
@@ -133,25 +133,25 @@ function AddressCard({ address, index }) {
           </span>
 
           <h3 className="truncate text-sm font-bold text-neutral-800 dark:text-neutral-100">
-            {getText(address?.title) || `آدرس ${index + 1}`}
+            {getText(address?.title) || `Address ${index + 1}`}
           </h3>
         </div>
 
         {address?.is_default && (
           <span className="shrink-0 rounded-full bg-blue-50 px-2.5 py-1 text-[10px] font-bold text-blue-600 dark:bg-blue-950/40 dark:text-blue-300">
-            پیش‌فرض
+            Default
           </span>
         )}
       </div>
 
       <p className="mt-3 text-sm leading-6 text-neutral-700 dark:text-neutral-200">
-        {[province, city].filter(Boolean).join("، ")}
-        {plaque ? `، پلاک ${plaque}` : ""}
-        {unit ? `، واحد ${unit}` : ""}
+        {[province, city].filter(Boolean).join(", ")}
+        {plaque ? `, No. ${plaque}` : ""}
+        {unit ? `, Unit ${unit}` : ""}
       </p>
 
       <p className="mt-1.5 text-xs leading-5 text-neutral-500 dark:text-neutral-400">
-        {getAddressText(address) || "آدرسی ثبت نشده است."}
+        {getAddressText(address) || "No address recorded."}
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-neutral-100 pt-3 text-xs text-neutral-500 dark:border-neutral-800 dark:text-neutral-400">
@@ -184,7 +184,7 @@ function AddressCard({ address, index }) {
 
 function AddressForm({ onCancel }) {
   const [values, setValues] = useState({
-    title: "منزل",
+    title: "Home",
     receiver_name: "",
     receiver_mobile: "",
     postal_code: "",
@@ -233,37 +233,37 @@ function AddressForm({ onCancel }) {
     const requiredText = (value) => String(value ?? "").trim();
 
     if (!requiredText(values.receiver_name)) {
-      setErrorText("نام گیرنده را وارد کنید.");
+      setErrorText("Enter the recipient's name.");
       return;
     }
 
     if (!/^09\d{9}$/.test(requiredText(values.receiver_mobile))) {
-      setErrorText("شماره موبایل گیرنده باید ۱۱ رقم و با ۰۹ شروع شود.");
+      setErrorText("The recipient's mobile number must be 11 digits and start with 09.");
       return;
     }
 
     if (!provinceId) {
-      setErrorText("استان را انتخاب کنید.");
+      setErrorText("Select a province.");
       return;
     }
 
     if (!cityId) {
-      setErrorText("شهر را انتخاب کنید.");
+      setErrorText("Select a city.");
       return;
     }
 
     if (!requiredText(values.postal_code)) {
-      setErrorText("کد پستی را وارد کنید.");
+      setErrorText("Enter your postal code.");
       return;
     }
 
     if (!requiredText(values.address)) {
-      setErrorText("آدرس کامل را وارد کنید.");
+      setErrorText("Enter the full address.");
       return;
     }
 
     const payload = {
-      title: requiredText(values.title) || "منزل",
+      title: requiredText(values.title) || "Home",
       receiver_name: requiredText(values.receiver_name),
       receiver_mobile: requiredText(values.receiver_mobile),
       province_id: Number(provinceId),
@@ -278,13 +278,13 @@ function AddressForm({ onCancel }) {
 
     createAddress(payload, {
       onSuccess: () => {
-        toast.success("آدرس شما با موفقیت ذخیره شد");
+        toast.success("Your address was saved successfully");
         onCancel();
       },
       onError: (error) => {
         const message =
           error?.response?.data?.message ||
-          "ذخیره آدرس انجام نشد. دوباره تلاش کنید.";
+          "Saving the address failed. Please try again.";
 
         setErrorText(message);
         toast.error(message);
@@ -295,23 +295,24 @@ function AddressForm({ onCancel }) {
   return (
     <form
       onSubmit={handleSubmit}
-      dir="rtl"
+      dir="ltr"
       className={`${CARD_CLASS} mt-4 p-4 sm:p-5`}
     >
       <div className="flex items-start justify-between gap-3">
         <div>
           <h2 className="text-sm font-bold text-neutral-800 dark:text-neutral-100">
-            آدرس جدید
+            New address
           </h2>
           <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-            اطلاعات دریافت‌کننده را دقیق وارد کنید تا مرسوله به آدرس صحیح ارسال شود.
+            Enter the recipient&apos;s details accurately so the parcel is delivered
+            to the right address.
           </p>
         </div>
 
         <button
           type="button"
           onClick={onCancel}
-          aria-label="بستن فرم آدرس"
+          aria-label="Close address form"
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-800 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
         >
           <X aria-hidden="true" className="h-5 w-5" />
@@ -344,21 +345,21 @@ function AddressForm({ onCancel }) {
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
           <label htmlFor="receiver_name" className={LABEL_CLASS}>
-            نام گیرنده
+            Recipient name
           </label>
           <input
             id="receiver_name"
             name="receiver_name"
             value={values.receiver_name}
             onChange={handleChange}
-            placeholder="نام و نام خانوادگی"
+            placeholder="Full name"
             className={INPUT_CLASS}
           />
         </div>
 
         <div>
           <label htmlFor="receiver_mobile" className={LABEL_CLASS}>
-            شماره موبایل
+            Mobile number
           </label>
           <input
             id="receiver_mobile"
@@ -374,7 +375,7 @@ function AddressForm({ onCancel }) {
 
         <div>
           <label htmlFor="province" className={LABEL_CLASS}>
-            استان
+            Province
           </label>
           <select
             id="province"
@@ -388,10 +389,10 @@ function AddressForm({ onCancel }) {
           >
             <option value="">
               {isProvincesLoading
-                ? "در حال بارگذاری..."
+                ? "Loading..."
                 : isProvincesError
-                  ? "استان در دسترس نیست"
-                  : "انتخاب استان"}
+                  ? "No provinces available"
+                  : "Select province"}
             </option>
             {provinceList.map((province) => (
               <option key={province?.id} value={province?.id}>
@@ -403,7 +404,7 @@ function AddressForm({ onCancel }) {
 
         <div>
           <label htmlFor="city" className={LABEL_CLASS}>
-            شهر
+            City
           </label>
           <select
             id="city"
@@ -414,10 +415,10 @@ function AddressForm({ onCancel }) {
           >
             <option value="">
               {!provinceId
-                ? "ابتدا استان را انتخاب کنید"
+                ? "Select a province first"
                 : isCitiesLoading
-                  ? "در حال بارگذاری..."
-                  : "انتخاب شهر"}
+                  ? "Loading..."
+                  : "Select city"}
             </option>
             {cityList.map((city) => (
               <option key={city?.id} value={city?.id}>
@@ -429,7 +430,7 @@ function AddressForm({ onCancel }) {
 
         <div>
           <label htmlFor="postal_code" className={LABEL_CLASS}>
-            کد پستی
+            Postal code
           </label>
           <input
             id="postal_code"
@@ -446,7 +447,7 @@ function AddressForm({ onCancel }) {
         <div className="flex gap-3">
           <div className="flex-1">
             <label htmlFor="plaque" className={LABEL_CLASS}>
-              پلاک
+              Plate no.
             </label>
             <input
               id="plaque"
@@ -460,7 +461,7 @@ function AddressForm({ onCancel }) {
 
           <div className="flex-1">
             <label htmlFor="unit" className={LABEL_CLASS}>
-              واحد
+              Unit
             </label>
             <input
               id="unit"
@@ -476,7 +477,7 @@ function AddressForm({ onCancel }) {
 
       <div className="mt-3">
         <label htmlFor="address" className={LABEL_CLASS}>
-          آدرس کامل
+          Full address
         </label>
         <textarea
           id="address"
@@ -484,21 +485,21 @@ function AddressForm({ onCancel }) {
           value={values.address}
           onChange={handleChange}
           rows={3}
-          placeholder="خیابان، کوچه، ساختمان..."
+          placeholder="Street, lane, building..."
           className={`${INPUT_CLASS} h-auto resize-none py-2.5 leading-6`}
         />
       </div>
 
       <div className="mt-3">
         <label htmlFor="description" className={LABEL_CLASS}>
-          توضیحات (اختیاری)
+          Notes (optional)
         </label>
         <input
           id="description"
           name="description"
           value={values.description}
           onChange={handleChange}
-          placeholder="مثلاً: زنگ بزنید، طبقه سوم"
+          placeholder="e.g. ring the bell, third floor"
           className={INPUT_CLASS}
         />
       </div>
@@ -512,7 +513,7 @@ function AddressForm({ onCancel }) {
           className="h-4 w-4 accent-red-500"
         />
         <span className="text-xs font-medium text-neutral-600 dark:text-neutral-300">
-          این آدرس به عنوان آدرس پیش‌فرض ذخیره شود
+          Save this as my default address
         </span>
       </label>
 
@@ -531,10 +532,10 @@ function AddressForm({ onCancel }) {
           {isSaving ? (
             <>
               <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />
-              <span>در حال ذخیره...</span>
+              <span>Saving...</span>
             </>
           ) : (
-            <span>ذخیره آدرس</span>
+            <span>Save address</span>
           )}
         </button>
 
@@ -544,7 +545,7 @@ function AddressForm({ onCancel }) {
           disabled={isSaving}
           className="flex h-11 items-center justify-center rounded-lg border border-neutral-200 bg-white px-5 text-sm font-bold text-neutral-600 transition-colors hover:bg-neutral-50 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus-visible:ring-offset-neutral-900"
         >
-          انصراف
+          Cancel
         </button>
       </div>
     </form>
@@ -585,7 +586,7 @@ export default function AddressesPage() {
       <div dir="ltr" className="w-full">
         <div className={`${CARD_CLASS} p-4 sm:p-6`}>
           <h1 className="text-xl font-bold text-neutral-800 dark:text-neutral-100 sm:text-2xl">
-            آدرس‌ها
+            Addresses
           </h1>
 
           <div className="mt-5 h-px w-full bg-neutral-200 dark:bg-neutral-800" />
@@ -596,12 +597,12 @@ export default function AddressesPage() {
             </span>
 
             <h2 className="mt-4 text-base font-bold text-neutral-800 dark:text-neutral-100">
-              برای مدیریت آدرس‌ها وارد حساب خود شوید
+              Sign in to manage addresses
             </h2>
 
             <p className="mt-2 max-w-md text-sm leading-6 text-neutral-500 dark:text-neutral-400">
-              آدرس‌های ذخیره‌شده فقط در حساب کاربری شما نگهداری می‌شوند. بعد از
-              ورود می‌توانید آدرس‌های جدید اضافه کنید یا آن‌ها را ویرایش نمایید.
+              Saved addresses are kept only in your account. Once you sign in you
+              can add new addresses or edit existing ones.
             </p>
 
             <Link
@@ -609,7 +610,7 @@ export default function AddressesPage() {
               className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-red-500 px-6 text-sm font-bold text-white transition-colors hover:bg-red-600 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900"
             >
               <LogIn aria-hidden="true" className="h-4 w-4" />
-              <span>ورود به حساب کاربری</span>
+              <span>Sign in</span>
             </Link>
           </div>
         </div>
@@ -632,24 +633,24 @@ export default function AddressesPage() {
       <div dir="ltr" className="w-full">
         <div className={`${CARD_CLASS} p-4 sm:p-6`}>
           <h1 className="text-xl font-bold text-neutral-800 dark:text-neutral-100 sm:text-2xl">
-            آدرس‌ها
+            Addresses
           </h1>
 
           <div className="mt-5 h-px w-full bg-neutral-200 dark:bg-neutral-800" />
 
           <div className="flex min-h-[240px] flex-col items-center justify-center text-center">
             <h2 className="text-base font-bold text-neutral-800 dark:text-neutral-100">
-              بارگذاری آدرس‌ها انجام نشد
+              Addresses could not be loaded
             </h2>
             <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-              لطفاً اتصال اینترنت خود را بررسی کنید و دوباره تلاش کنید.
+              Please check your internet connection and try again.
             </p>
             <button
               type="button"
               onClick={() => refetch()}
               className="mt-4 h-11 rounded-lg bg-red-500 px-6 text-sm font-bold text-white transition-colors hover:bg-red-600 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
             >
-              تلاش دوباره
+              Try again
             </button>
           </div>
         </div>
@@ -664,18 +665,18 @@ export default function AddressesPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0">
             <h1 className="text-xl font-bold text-neutral-800 dark:text-neutral-100 sm:text-2xl">
-              آدرس‌ها
+              Addresses
             </h1>
             <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400 sm:text-sm">
               {addresses.length > 0
-                ? `${addresses.length} آدرس ذخیره‌شده`
-                : "هنوز آدرسی ذخیره نکرده‌اید"}
+                ? `${addresses.length} saved addresses`
+                : "No saved addresses yet"}
             </p>
           </div>
 
           <button
             type="button"
-            dir="rtl"
+            dir="ltr"
             onClick={() => setIsFormOpen((previous) => !previous)}
             aria-expanded={isFormOpen}
             className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-red-500 px-4 text-sm font-bold text-white transition-colors hover:bg-red-600 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900"
@@ -683,12 +684,12 @@ export default function AddressesPage() {
             {isFormOpen ? (
               <>
                 <X aria-hidden="true" className="h-4 w-4" />
-                <span>بستن فرم</span>
+                <span>Close form</span>
               </>
             ) : (
               <>
                 <Plus aria-hidden="true" className="h-4 w-4" />
-                <span>افزودن آدرس جدید</span>
+                <span>Add new address</span>
               </>
             )}
           </button>
@@ -707,22 +708,22 @@ export default function AddressesPage() {
             </span>
 
             <h2 className="mt-4 text-base font-bold text-neutral-800 dark:text-neutral-100">
-              هنوز آدرسی ذخیره نکرده‌اید
+              You have not saved an address yet
             </h2>
 
             <p className="mt-2 max-w-md text-sm leading-6 text-neutral-500 dark:text-neutral-400">
-              با افزودن آدرس، پرداخت و ثبت سفارش در خریدهای بعدی شما سریع‌تر انجام
-              می‌شود.
+              Saving an address makes payment and checkout faster for your next
+              purchases.
             </p>
 
             <button
               type="button"
-              dir="rtl"
+              dir="ltr"
               onClick={() => setIsFormOpen(true)}
               className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-red-500 px-6 text-sm font-bold text-white transition-colors hover:bg-red-600 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900"
             >
               <Plus aria-hidden="true" className="h-4 w-4" />
-              <span>افزودن آدرس جدید</span>
+              <span>Add new address</span>
             </button>
           </div>
         )}

@@ -8,11 +8,11 @@ export default function StoryModal({ isOpen, onClose, storyData }) {
   const mockDetails = {
     username: "Anker_iran",
     profileImg: "https://dkstatics-public.digikala.com/digikala-content-x-profile/68ee255cda58f15f60cd7068279cb5e3efff683a_1739952327.jpg?x-oss-process=image/resize,m_lfit,h_150,w_150/quality,q_80/format,webp",
-    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4", // ویدیو تستی کوتاه
-    likes: "۱.۳ هزار",
-    comments: "۲۹",
+    videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4", // Short test clip
+    likes: "1.3K",
+    comments: "29",
     product: {
-      title: "پاوربانک 100 وات انکر مدل A1336 ظرفیت 20000 میلی آمپر ساعت",
+      title: "Anker A1336 Power Bank 100W, 20000 mAh",
       img: "https://dkstatics-public.digikala.com/digikala-products/257cf635f0e598c97e96a8f0736bf8160a451111_1762159610.jpg?x-oss-process=image/resize,m_lfit,h_115,w_115/quality,q_60/format,webp"
     }
   };
@@ -41,7 +41,7 @@ export default function StoryModal({ isOpen, onClose, storyData }) {
             </div>
           
             <button className="bg-white text-black px-4 py-1.5 rounded-lg text-xs font-medium font-vazir hover:bg-neutral-200 transition-colors">
-              دنبال کن
+              Follow
             </button>
           </div>
 
@@ -89,7 +89,7 @@ export default function StoryModal({ isOpen, onClose, storyData }) {
                 <div className="flex-1 h-1 bg-white/30 rounded-full overflow-hidden">
                   <div className="h-full bg-white rounded-full w-1/3 animate-pulse" /> 
                 </div>
-                <span className="text-[10px] text-neutral-300 font-vazir">۰۰:۳۱</span>
+                <span className="text-[10px] text-neutral-300 font-vazir">00:31</span>
               </div>
             </div>
           </div>

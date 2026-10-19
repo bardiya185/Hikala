@@ -113,7 +113,7 @@ function SuccessPage() {
         if (!orderId) router.push("/");
     }, [orderId, router]);
 
-    // شروع انیمیشن چاپ بعد از لود شدن
+    // Start the print animation once the order has loaded
     useEffect(() => {
         if (order && !isLoading) {
             const timer = setTimeout(() => setPrintStarted(true), 500);
@@ -253,7 +253,7 @@ function SuccessPage() {
                                         {/* Header */}
                                         <div className="text-center border-b border-dashed border-neutral-200 pb-4">
                                             <div className="flex items-center justify-center gap-2">
-                                                {/* لوگو یا آیکون دیجی‌کالا */}
+                                                {/* Digikala logo or icon */}
                                                 <svg
                                                     className="h-5 w-5 sm:h-6 sm:w-6 text-red-500"
                                                     viewBox="0 0 24 24"

@@ -17,13 +17,13 @@ function NeshanMap({
 
   const apiKey = process.env.NEXT_PUBLIC_NESHAN_API_KEY;
 
-  // همیشه آخرین callback را نگه می‌داریم
+  // Always keep the latest callback
   useEffect(() => {
     onLocationSelectRef.current = onLocationSelect;
   }, [onLocationSelect]);
 
   /*
-   * ساخت نقشه
+   * Build the map
    */
   useEffect(() => {
     if (!containerRef.current) {
@@ -79,7 +79,7 @@ function NeshanMap({
     mapRef.current = map;
 
     /*
-     * کنترل‌های نقشه
+     * Map controls
      */
     map.addControl(
       new maplibregl.NavigationControl(),
@@ -87,18 +87,18 @@ function NeshanMap({
     );
 
     /*
-     * وقتی نقشه آماده شد
+     * Once the map is ready
      */
     map.on("load", () => {
-      // چون نقشه داخل modal قرار دارد،
-      // بعد از نمایش modal باید resize شود.
+      // The map lives inside a modal, so
+      // it has to be resized after the modal opens.
       setTimeout(() => {
         map.resize();
       }, 100);
     });
 
     /*
-     * کلیک روی نقشه
+     * Click on the map
      */
     map.on("click", (event) => {
       const { lng, lat } = event.lngLat;
@@ -106,7 +106,7 @@ function NeshanMap({
       const selectedLatitude = Number(lat);
       const selectedLongitude = Number(lng);
 
-      // ارسال مختصات به parent
+      // Send the coordinates to the parent
       if (onLocationSelectRef.current) {
         onLocationSelectRef.current({
           latitude: selectedLatitude,
@@ -114,13 +114,13 @@ function NeshanMap({
         });
       }
 
-      // حذف marker قبلی
+      // Remove the previous marker
       if (markerRef.current) {
         markerRef.current.remove();
         markerRef.current = null;
       }
 
-      // ساخت marker جدید
+      // Add a new marker
       markerRef.current = new maplibregl.Marker({
         color: "#ef4444",
       })
@@ -148,7 +148,7 @@ function NeshanMap({
   }, [apiKey]);
 
   /*
-   * وقتی latitude / longitude تغییر می‌کند
+   * When latitude / longitude changes
    */
   useEffect(() => {
     const map = mapRef.current;
@@ -174,7 +174,7 @@ function NeshanMap({
     }
 
     /*
-     * انتقال نقشه به مختصات جدید
+     * Move the map to the new coordinates
      */
     map.flyTo({
       center: [lng, lat],
@@ -183,7 +183,7 @@ function NeshanMap({
     });
 
     /*
-     * حذف marker قبلی
+     * Remove the previous marker
      */
     if (markerRef.current) {
       markerRef.current.remove();
@@ -191,7 +191,7 @@ function NeshanMap({
     }
 
     /*
-     * ساخت marker جدید
+     * Add a new marker
      */
     markerRef.current = new maplibregl.Marker({
       color: "#ef4444",
@@ -201,8 +201,8 @@ function NeshanMap({
   }, [latitude, longitude]);
 
   /*
-   * چون نقشه داخل modal است،
-   * با تغییر اندازه صفحه resize می‌شود.
+   * Since the map lives inside a modal,
+   * it is resized whenever the viewport changes.
    */
   useEffect(() => {
     const handleResize = () => {
@@ -219,7 +219,7 @@ function NeshanMap({
   }, []);
 
   /*
-   * اگر API Key وجود نداشت
+   * If the API key is missing
    */
   if (!apiKey) {
     return (
@@ -230,7 +230,7 @@ function NeshanMap({
   }
 
   /*
-   * Container نقشه
+   * Map container
    */
   return (
     <div

@@ -15,15 +15,15 @@ export default function CommentsPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0">
             <h1 className="text-xl font-bold text-neutral-800 dark:text-neutral-100 sm:text-2xl">
-              دیدگاه‌ها و پرسش‌های من
+              My Reviews &amp; Questions
             </h1>
             <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400 sm:text-sm">
-              ثبت نظر و پرسش درباره محصولاتی که خریداری کرده‌اید
+              Reviews and questions about the products you bought
             </p>
           </div>
 
           <span className="shrink-0 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-bold text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
-            ۰ مورد
+            0 items
           </span>
         </div>
 
@@ -42,13 +42,13 @@ export default function CommentsPage() {
           </div>
 
           <h2 className="mt-6 text-base font-bold text-neutral-800 dark:text-neutral-100 sm:text-lg">
-            هنوز دیدگاه یا پرسشی ثبت نکرده‌اید
+            You have not posted a review or question yet
           </h2>
 
           <p className="mt-2 max-w-md text-sm leading-6 text-neutral-500 dark:text-neutral-400">
-            نظر شما درباره کیفیت کالا، بسته‌بندی و ارسال به دیگر خریداران کمک می‌کند
-            و به ما در بهتر شدن خدمات. پس از تکمیل سفارش‌ها می‌توانید برای هر محصول
-            دیدگاه ثبت کنید یا پرسش خود را بپرسید.
+            Your feedback on product quality, packaging and delivery helps other
+            buyers and helps us improve. Once your orders are complete you can
+            review each product or ask your question.
           </p>
 
           <div className="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
@@ -57,22 +57,22 @@ export default function CommentsPage() {
               className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-red-500 px-6 text-sm font-bold text-white transition-colors hover:bg-red-600 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900 sm:w-auto"
             >
               <ShoppingBag aria-hidden="true" className="h-4 w-4" />
-              <span>مشاهده سفارش‌ها</span>
+              <span>View orders</span>
             </Link>
 
             <Link
               href="/"
               className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-neutral-200 bg-white px-6 text-sm font-bold text-neutral-600 transition-colors hover:bg-neutral-50 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus-visible:ring-offset-neutral-900 sm:w-auto"
             >
-              <span>شروع خرید</span>
+              <span>Start shopping</span>
             </Link>
           </div>
 
           <div className="mt-8 grid w-full max-w-lg grid-cols-1 gap-2 sm:grid-cols-3">
             {[
-              { title: "کیفیت کالا", note: "رضایت از محصول تحویل‌شده" },
-              { title: "بسته‌بندی", note: "سلامت و نحوه ارسال" },
-              { title: "سرعت ارسال", note: "تطابق با زمان وعده‌داده‌شده" },
+              { title: "Product quality", note: "How the delivered item turned out" },
+              { title: "Packaging", note: "Condition and how it arrived" },
+              { title: "Delivery speed", note: "Match with the promised date" },
             ].map((item) => (
               <div
                 key={item.title}

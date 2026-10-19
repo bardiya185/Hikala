@@ -2,7 +2,7 @@
 
 export default function GlobalError({ error, reset }) {
   return (
-    <html lang="fa" dir="rtl">
+    <html lang="en" dir="ltr">
       <body
         style={{
           margin: 0,
@@ -18,11 +18,10 @@ export default function GlobalError({ error, reset }) {
       >
         <div style={{ textAlign: "center", padding: 24, maxWidth: 480 }}>
           <h1 style={{ fontSize: 24, fontWeight: 800, margin: "0 0 8px" }}>
-            خطایی رخ داد
+            Something went wrong
           </h1>
           <p style={{ fontSize: 14, lineHeight: 1.9, color: "#737373", margin: "0 0 20px" }}>
-            مشکلی در بارگذاری برنامه پیش آمد. لطفاً صفحه را دوباره بارگذاری
-            کنید.
+            There was a problem loading the app. Please reload the page.
           </p>
           <button
             type="button"
@@ -38,7 +37,7 @@ export default function GlobalError({ error, reset }) {
               cursor: "pointer",
             }}
           >
-            تلاش مجدد
+            Try again
           </button>
         </div>
       </body>

@@ -87,7 +87,7 @@ function MiniCart() {
             "
           />
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
-            در حال دریافت سبد خرید ...
+            Loading your cart...
           </p>
         </div>
       </div>
@@ -126,7 +126,7 @@ function MiniCart() {
           </div>
 
           <p className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
-            سبد خرید شما خالی است
+            Your cart is empty
           </p>
         </div>
       </div>

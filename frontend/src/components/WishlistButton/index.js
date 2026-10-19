@@ -2,7 +2,7 @@
 
 import { useMemo, useCallback } from "react";
 import { TbHeart, TbHeartFilled } from "react-icons/tb";
-import { Loader2 } from "lucide-react"; // یا هر اسپینر سبک دیگر
+import { Loader2 } from "lucide-react"; // or any other lightweight spinner
 import toast from "react-hot-toast";
 import { useAddToWishlist } from "@/core/services/mutations";
 import { useWishlistIds } from "@/core/services/queries";

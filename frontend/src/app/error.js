@@ -36,7 +36,7 @@ export default function Error({ error, reset }) {
             sm:text-3xl
           "
         >
-          خطایی رخ داد
+          Something went wrong
         </h1>
 
         <p
@@ -46,8 +46,8 @@ export default function Error({ error, reset }) {
             sm:text-base
           "
         >
-          در بارگذاری این صفحه مشکلی پیش آمد. لطفاً دوباره تلاش کنید یا به
-          صفحه اصلی بازگردید.
+          There was a problem loading this page. Please try again, or return to
+          the home page.
         </p>
 
         {process.env.NODE_ENV !== "production" && error?.message && (
@@ -79,7 +79,7 @@ export default function Error({ error, reset }) {
             "
           >
             <RotateCcw className="h-4 w-4" />
-            تلاش مجدد
+            Try again
           </button>
 
           <Link
@@ -98,7 +98,7 @@ export default function Error({ error, reset }) {
             "
           >
             <Home className="h-4 w-4" />
-            بازگشت به خانه
+            Back to home
           </Link>
         </div>
       </div>

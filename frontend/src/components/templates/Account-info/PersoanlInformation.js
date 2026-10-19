@@ -13,16 +13,21 @@ import { getCookie } from "@/core/utils/cookie";
    HELPERS
 ============================================================ */
 
-const FA_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-
-const toFaDigits = (value) =>
-  String(value).replace(/[0-9]/g, (digit) => FA_DIGITS[Number(digit)]);
-
 /** Persian / Arabic digits -> Latin digits, spaces and dashes removed. */
+const PERSIAN_DIGIT_RANGE = new RegExp(
+  `[${String.fromCharCode(0x06f0)}-${String.fromCharCode(0x06f9)}]`,
+  "g"
+);
+
+const ARABIC_DIGIT_RANGE = new RegExp(
+  `[${String.fromCharCode(0x0660)}-${String.fromCharCode(0x0669)}]`,
+  "g"
+);
+
 const toLatinDigits = (value) => {
   const withLatinNumbers = String(value ?? "")
-    .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)))
-    .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
+    .replace(PERSIAN_DIGIT_RANGE, (d) => String(d.charCodeAt(0) - 0x06f0))
+    .replace(ARABIC_DIGIT_RANGE, (d) => String(d.charCodeAt(0) - 0x0660));
 
   return withLatinNumbers.replace(/[^0-9]/g, "");
 };
@@ -31,16 +36,16 @@ const VALIDATORS = {
   name: (value) => {
     const trimmed = String(value ?? "").trim();
 
-    if (trimmed.length < 2) return "نام باید حداقل ۲ نویسه باشد";
+    if (trimmed.length < 2) return "Name must be at least 2 characters";
 
-    if (trimmed.length > 255) return "نام نباید بیشتر از ۲۵۵ نویسه باشد";
+    if (trimmed.length > 255) return "Name must be 255 characters or fewer";
 
     return "";
   },
   mobile: (value) => {
     if (value && /^09[0-9]{9}$/.test(toLatinDigits(value))) return "";
 
-    return "شماره همراه باید ۱۱ رقم باشد و با ۰۹ شروع شود";
+    return "Mobile number must be 11 digits and start with 09";
   },
 };
 
@@ -84,76 +89,76 @@ function PersoanlInformation() {
       await updateProfile.mutateAsync(payload);
       setEditingKey(null);
     } catch {
-      /* The mutation already surfaces a Persian toast. */
+      /* The mutation already surfaces an error toast. */
     }
   };
 
   const rows = [
     {
       key: "name",
-      label: "نام و نام خانوادگی",
+      label: "Full name",
       value: user?.name ?? "",
       editable: true,
-      placeholder: "مثلاً سارا محمدی",
+      placeholder: "e.g. Sara Mohammadi",
     },
     {
       key: null,
-      label: "کد ملی / شماره گذرنامه / گواه اقامت",
+      label: "National ID / Passport number / Residence permit",
       value: "",
       editable: false,
     },
     {
       key: "mobile",
-      label: "شماره همراه",
+      label: "Mobile number",
       value: user?.mobile ?? "",
       editable: true,
       verified: true,
       inputMode: "tel",
-      placeholder: "۰۹۱۲۳۴۵۶۷۸۹",
-      hint: "پس از تغییر، ورود بعدی شما با همین شماره انجام می‌شود.",
+      placeholder: "09123456789",
+      hint: "After you change it, your next sign-in will use this number.",
     },
     {
       key: null,
-      label: "ایمیل",
+      label: "Email",
       /* The users table of this project has no email column yet, so the
          value is read-only until the backend supports it. */
       value: user?.email ?? "",
       editable: false,
-      emptyLabel: "برای حساب شما ثبت نشده است",
+      emptyLabel: "Not registered on your account",
     },
     {
       key: null,
-      label: "رمز عبور",
+      label: "Password",
       value: "",
       editable: false,
     },
     {
       key: null,
-      label: "روش بازپرداخت",
+      label: "Repayment method",
       value: "",
       editable: false,
     },
     {
       key: null,
-      label: "تاریخ تولد",
+      label: "Date of birth",
       value: "",
       editable: false,
     },
     {
       key: null,
-      label: "شغل",
+      label: "Occupation",
       value: "",
       editable: false,
     },
     {
       key: null,
-      label: "کد اقتصادی",
+      label: "Economic code",
       value: "",
       editable: false,
     },
     {
       key: null,
-      label: "نوع معلولیت",
+      label: "Disability type",
       value: "",
       editable: false,
     },
@@ -191,7 +196,7 @@ function PersoanlInformation() {
                 dark:text-neutral-100
               "
             >
-              اطلاعات شخصی
+              Personal information
             </h2>
 
             <p
@@ -202,7 +207,7 @@ function PersoanlInformation() {
                 dark:text-neutral-400
               "
             >
-              اطلاعات حساب کاربری خود را مدیریت و ویرایش کنید
+              Manage and edit your account details
             </p>
           </div>
         </div>
@@ -225,7 +230,7 @@ function PersoanlInformation() {
                 sm:text-sm
               "
             >
-              اطلاعات حساب شما در دسترس نیست. لطفاً دوباره وارد شوید.
+              Your account details are not available. Please sign in again.
             </p>
           </div>
         ) : null}
@@ -249,7 +254,7 @@ function PersoanlInformation() {
                 dark:text-neutral-400
               "
             >
-              برای مشاهده و ویرایش اطلاعات شخصی، وارد حساب خود شوید.
+              Sign in to view and edit your personal information.
             </span>
 
             <Link
@@ -272,7 +277,7 @@ function PersoanlInformation() {
                 dark:focus-visible:ring-offset-neutral-900
               "
             >
-              ورود یا ثبت‌نام
+              Sign in or sign up
             </Link>
           </div>
         ) : null}
@@ -400,7 +405,7 @@ function InformationItem({
                 dark:ring-green-900
               "
             >
-              تأیید شده
+              Verified
             </span>
           )}
         </div>
@@ -491,7 +496,7 @@ function InformationItem({
                   dark:focus-visible:ring-offset-neutral-900
                 "
               >
-                {saving ? "در حال ذخیره…" : "ذخیره"}
+                {saving ? "Saving…" : "Save"}
               </button>
 
               <button
@@ -520,7 +525,7 @@ function InformationItem({
                   dark:focus-visible:ring-offset-neutral-900
                 "
               >
-                انصراف
+                Cancel
               </button>
             </div>
           </form>
@@ -539,7 +544,7 @@ function InformationItem({
           >
             {hasValue
               ? row.key === "mobile"
-                ? toFaDigits(row.value)
+                ? toLatinDigits(row.value)
                 : row.value
               : null}
 
@@ -562,7 +567,7 @@ function InformationItem({
       {/* ACTION */}
       <button
         type="button"
-        aria-label={canEdit ? `ویرایش ${row.label}` : `افزودن ${row.label}`}
+        aria-label={canEdit ? `Edit ${row.label}` : `Add ${row.label}`}
         disabled={!canEdit || blocked || loading || saving}
         onClick={() => {
           if (!canEdit) return;

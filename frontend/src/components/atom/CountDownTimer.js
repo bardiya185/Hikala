@@ -60,7 +60,7 @@ export default function CountdownTimer({ targetDate }) {
   const [mounted, setMounted] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-  // ✅ فقط در کلاینت اجرا بشه
+  // ✅ Run only on the client
   useEffect(() => {
     setMounted(true);
     setTimeLeft(calculateTimeLeft(targetDate));
@@ -74,7 +74,7 @@ export default function CountdownTimer({ targetDate }) {
 
   const formatNumber = (num) => String(num || 0).padStart(2, "0");
 
-  // ✅ قبل از mount، یه placeholder نشون بده (برای جلوگیری از hydration mismatch)
+  // ✅ Before mount, show a placeholder (prevents hydration mismatch)
   if (!mounted) {
     return (
       <div className="flex items-center gap-2" dir="ltr">
@@ -87,7 +87,7 @@ export default function CountdownTimer({ targetDate }) {
     );
   }
 
-  // ✅ وقتی تایم تموم شد
+  // ✅ When the countdown ends
   const isExpired = timeLeft.days === 0 && timeLeft.hours === 0 && 
                     timeLeft.minutes === 0 && timeLeft.seconds === 0;
 
@@ -101,7 +101,7 @@ export default function CountdownTimer({ targetDate }) {
 
   return (
     <div className="flex items-center gap-2" dir="ltr">
-      {/* روزها */}
+      {/* Days */}
       {timeLeft.days > 0 && (
         <>
           <FlipUnit value={formatNumber(timeLeft.days)} label="days" />
@@ -109,15 +109,15 @@ export default function CountdownTimer({ targetDate }) {
         </>
       )}
       
-      {/* ساعت‌ها */}
+      {/* Hours */}
       <FlipUnit value={formatNumber(timeLeft.hours)} label="hours" />
       <span className="text-red-200 text-lg font-bold -mt-4">:</span>
       
-      {/* دقیقه‌ها */}
+      {/* Minutes */}
       <FlipUnit value={formatNumber(timeLeft.minutes)} label="minutes" />
       <span className="text-red-200 text-lg font-bold -mt-4">:</span>
       
-      {/* ثانیه‌ها */}
+      {/* Seconds */}
       <FlipUnit value={formatNumber(timeLeft.seconds)} label="seconds" />
     </div>
   );

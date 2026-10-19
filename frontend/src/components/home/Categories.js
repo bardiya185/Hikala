@@ -9,12 +9,12 @@ const API_URL =
   process.env.NEXT_PUBLIC_BASE_URL || "";
 
 const getCategoryImage = (banner) => {
-  // اگر banner وجود نداشت
+  // No banner provided
   if (!banner) {
     return "/icons/ip17.jpg";
   }
 
-  // اگر Laravel قبلاً URL کامل داده باشد
+  // Laravel already returned a full URL
   if (banner.startsWith("http://") || banner.startsWith("https://")) {
     return banner;
   }

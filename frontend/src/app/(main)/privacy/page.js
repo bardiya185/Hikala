@@ -10,9 +10,9 @@ import {
 } from "lucide-react";
 
 export const metadata = {
-  title: "حریم خصوصی | هیکالا",
+  title: "Privacy Policy | Hikala",
   description:
-    "سیاست حریم خصوصی فروشگاه اینترنتی هیکالا: چه داده‌هایی جمع‌آوری می‌کنیم، چرا استفاده می‌شود و حقوق شما در قبال اطلاعاتتان.",
+    "Privacy policy for the Hikala online store: what data we collect, why it is used and your rights over your information.",
 };
 
 const CARD_CLASS =
@@ -21,138 +21,138 @@ const CARD_CLASS =
 const SECTIONS = [
   {
     id: "scope",
-    title: "۱. دامنه این سیاست",
-    anchorLabel: "دامنه و تعاریف",
+    title: "1. Scope of This Policy",
+    anchorLabel: "Scope and definitions",
     icon: FileText,
     intro:
-      "حریم خصوصی شما برای ما ارزشمند است. این سیاست توضیح می‌دهد که هیکالا در مسیر خرید، ثبت‌نام و پشتیبانی، چه اطلاعاتی را دریافت و چگونه از آن‌ها نگهداری می‌کند.",
+      "Your privacy matters to us. This policy explains what information Hikala collects while you shop, sign up or contact support, and how that information is stored.",
     clauses: [
-      "این سیاست برای وب‌سایت، اپلیکیشن و خدمات پشتیبانی هیکالا اعمال می‌شود و خدمت به «کاربر» یعنی هر شخصی که از این مسیرها استفاده می‌کند.",
-      "با ثبت‌نام یا ادامه خرید در هیکالا، شما با جمع‌آوری و پردازش اطلاعات خود بر اساس همین متن موافقت می‌کنید.",
-      "در مواردی که قانون صریحاً الزام دیگری داشته باشد، حکم قانون بر این سیاست مقدم است.",
+      "This policy applies to the Hikala website, app and support services, and serving a 'user' means anyone who uses these channels.",
+      "By signing up or continuing to shop on Hikala, you agree to the collection and processing of your information as described here.",
+      "Where the law clearly requires something else, the law takes priority over this policy.",
     ],
   },
   {
     id: "collected",
-    title: "۲. اطلاعاتی که دریافت می‌کنیم",
-    anchorLabel: "اطلاعات جمع‌آوری‌شده",
+    title: "2. Information We Collect",
+    anchorLabel: "Collected information",
     icon: UserCheck,
     intro:
-      "تنها داده‌هایی را دریافت می‌کنیم که برای اجرای سفارش و بهبود خدمات به آن‌ها نیاز داریم.",
+      "We collect only the data we need to run your order and improve our service.",
     clauses: [
-      "اطلاعات شناسایی: نام و نام خانوادگی، شماره موبایل، نشانی پستی، کد پستی و ایمیل.",
-      "اطلاعات سفارش: سبد خرید، کالاها، روش ارسال، آدرس تحویل و وضعیت پرداخت (بدون ذخیره اطلاعات کارت بانکی).",
-      "اطلاعات فنی: آدرس IP، نوع مرورگر و دستگاه، صفحه ارجاع‌دهنده و گزارش خطاهای فنی.",
-      "اطلاعات محتوایی: دیدگاه‌ها، پرسش‌ها، فایل‌های پیوست‌شده و گفت‌وگوهای شما با پشتیبانی.",
+      "Identity information: first and last name, mobile number, postal address, postal code and email.",
+      "Order information: cart, items, shipping method, delivery address and payment status (never your bank card details).",
+      "Technical information: IP address, browser and device type, referring page and technical error reports.",
+      "Content information: your reviews, questions, attached files and conversations with support.",
     ],
   },
   {
     id: "usage",
-    title: "۳. چگونگی استفاده از اطلاعات",
-    anchorLabel: "کاربرد داده‌ها",
+    title: "3. How Your Information Is Used",
+    anchorLabel: "Data use",
     icon: Lock,
     intro:
-      "داده‌های شما فقط در چارچوب اهداف اعلام‌شده پردازش می‌شوند.",
+      "Your data is processed only within the purposes stated here.",
     clauses: [
-      "ثبت، پردازش و تحویل سفارش و اطلاع‌رسانی مراحل ارسال به شما.",
-      "احراز هویت، پشتیبانی، پاسخ به پرسش‌ها و رسیدگی به درخواست‌های بازگشت کالا.",
-      "پیشگیری از تخلف، سوءاستفاده و کلاهبرداری و حفظ امنیت حساب‌های کاربری.",
-      "بهبود تجربه خرید و شخصی‌سازی پیشنهادها بر اساس علاقه‌مندی‌های شما؛ این بخش قابل غیرفعال‌سازی است.",
-      "ارسال اطلاع‌رسانی بازاریابی تنها در صورتی که خودتان عضویت را پذیرفته باشید انجام می‌شود و در هر پیام امکان لغو عضویت وجود دارد.",
+      "Recording, processing and delivering orders, and updating you on each shipping step.",
+      "Authentication, support, answering questions and handling return requests.",
+      "Preventing violations, abuse and fraud, and keeping accounts secure.",
+      "Improving the shopping experience and personalizing offers based on your interests; this part can be turned off.",
+      "Marketing messages are sent only if you chose to subscribe, and every message has an unsubscribe link.",
     ],
   },
   {
     id: "cookies",
-    title: "۴. کوکی‌ها و فناوری‌های ردیابی",
-    anchorLabel: "کوکی‌ها",
+    title: "4. Cookies and Tracking Technologies",
+    anchorLabel: "Cookies",
     icon: Cookie,
     intro:
-      "هیکالا برای ورود به حساب، حفظ سبد خرید و سنجش عملکرد سایت از کوکی‌ها و ابزارهای تحلیل استفاده می‌کند.",
+      "Hikala uses cookies and analytics tools to sign you in, keep your cart and measure how the site performs.",
     clauses: [
-      "کوکی‌های ضروری: برای ورود به حساب، سبد خرید و پرداخت غیرقابل حذف هستند.",
-      "کوکی‌های تحلیلی: به ما کمک می‌کنند صفحات پرمخاطب و مراحل دشوار خرید را بشناسیم.",
-      "با تنظیمات مرورگر خود می‌توانید کوکی‌ها را محدود یا حذف کنید؛ در این حالت ممکن است برخی قابلیت‌ها از کار بیفتد.",
-      "اطلاعات موقعیت مکانی (استان، شهر و مختصات) تنها برای محاسبه هزینه و زمان ارسال و با اجازه شما دریافت می‌شود.",
+      "Essential cookies: needed for signing in, the cart and checkout, and they cannot be removed.",
+      "Analytics cookies: they help us see which pages are most read and which buying steps are difficult.",
+      "You can limit or delete cookies in your browser settings; in that case some features may stop working.",
+      "Location data (province, city and coordinates) is collected only to calculate delivery cost and time, and only with your permission.",
     ],
   },
   {
     id: "sharing",
-    title: "۵. اشتراک‌گذاری با اشخاص ثالث",
-    anchorLabel: "اشتراک‌گذاری",
+    title: "5. Sharing With Third Parties",
+    anchorLabel: "Sharing",
     icon: ShieldCheck,
     intro:
-      "ما اطلاعات شما را نمی‌فروشیم. داده‌ها فقط در حد لازم با شرکت‌های همکار فنی به اشتراک گذاشته می‌شود.",
+      "We do not sell your information. Data is shared with technical partners only as far as needed.",
     clauses: [
-      "شرکت‌های پستی و شرکت‌های حمل‌ونقل: برای تحویل سفارش (نام، نشانی، شماره تماس).",
-      "درگاه‌های پرداخت بانکی: برای تکمیل تراکنش مالی؛ هیکالا اطلاعات کارت شما را ذخیره نمی‌کند.",
-      "ارائه‌دهندگان خدمات ابری و پشتیبانی فنی: در چارچوب قرارداد محرمانگی و با دسترسی محدود.",
-      "نهادهای قانونی: تنها در صورت الزام قانونی یا درخواست معتبر مراجع ذی‌صلاح.",
+      "Postal and courier companies: to deliver orders (name, address and contact number).",
+      "Bank payment gateways: to complete the transaction; Hikala does not store your card details.",
+      "Cloud and technical support providers: under confidentiality agreements and with limited access.",
+      "Legal authorities: only where the law requires it or on a valid request from a competent body.",
     ],
   },
   {
     id: "security",
-    title: "۶. امنیت و مدت نگهداری",
-    anchorLabel: "امنیت داده‌ها",
+    title: "6. Security and Retention",
+    anchorLabel: "Data security",
     icon: Lock,
     intro:
-      "از تمهیدات فنی و سازمانی مناسب برای حفاظت از اطلاعات استفاده می‌کنیم.",
+      "We use suitable technical and organizational measures to protect your information.",
     clauses: [
-      "ارتباط میان مرورگر شما و سرورهای هیکالا رمزنگاری‌شده (HTTPS) برقرار می‌شود.",
-      "دسترسی کارکنان به اطلاعات کاربران، محدود، نقش‌محور و قابل ثبت است.",
-      "اطلاعات حساب تا زمان فعال بودن آن و سوابق سفارش به اندازه الزام‌های قانونی مالیاتی نگهداری می‌شود.",
-      "در صورت بروز نشت اطلاعات، طبق قانون با شما اطلاع‌رسانی خواهد شد.",
+      "The connection between your browser and Hikala's servers is encrypted (HTTPS).",
+      "Staff access to user information is limited, role-based and traceable.",
+      "Account data is kept while the account is active, and order records are kept for as long as tax law requires.",
+      "If information is ever leaked, you will be notified as the law requires.",
     ],
   },
   {
     id: "rights",
-    title: "۷. حقوق شما",
-    anchorLabel: "حقوق کاربر",
+    title: "7. Your Rights",
+    anchorLabel: "User rights",
     icon: UserCheck,
     intro:
-      "شما بر اطلاعات خود کنترل دارید و می‌توانید هر زمان درخواست خود را ثبت کنید.",
+      "You are in control of your information and can submit your request at any time.",
     clauses: [
-      "دریافت نسخه‌ای از اطلاعات شخصی خود و مشاهده سوابق سفارش‌ها در حساب کاربری.",
-      "اصلاح یا به‌روزرسانی اطلاعات نادرست یا ناقص.",
-      "درخواست حذف حساب و داده‌ها؛ اطلاعاتی که قانوناً باید نگهداری شود مستثنی است.",
-      "اعتراض به پردازش داده‌ها و لغو دریافت پیام‌های تبلیغاتی از همان لینک داخل پیام.",
-      "برای اجرای این حقوق به بخش «اطلاعات حساب» یا پشتیبانی هیکالا مراجعه کنید.",
+      "Get a copy of your personal information and review your order history in your account.",
+      "Correct or update information that is wrong or incomplete.",
+      "Request deletion of your account and data; information we must keep by law is exempt.",
+      "Object to data processing and stop promotional messages using the link inside the message.",
+      "To use these rights, go to the 'Account information' section or contact Hikala support.",
     ],
   },
   {
     id: "children",
-    title: "۸. حریم خصوصی نوجوانان",
-    anchorLabel: "نوجوانان",
+    title: "8. Teen Privacy",
+    anchorLabel: "Teens",
     icon: ShieldCheck,
     intro:
-      "خرید در هیکالا نیازمند حساب کاربری معتبر با شماره موبایل است.",
+      "Shopping on Hikala requires an active account with a mobile number.",
     clauses: [
-      "ثبت‌نام برای افراد زیر ۱۸ سال تنها با اجازه و نظارت والدین یا قیم انجام شود.",
-      "در صورت دریافت اطلاعات از نوجوانی بدون اجازه سرپرست، با تماس شما این اطلاعات حذف می‌شود.",
+      "Anyone under 18 should register only with a parent's or guardian's permission and supervision.",
+      "If a teenager's information was collected without guardian consent, we delete it as soon as you contact us.",
     ],
   },
   {
     id: "changes",
-    title: "۹. تغییرات این سیاست",
-    anchorLabel: "تغییرات",
+    title: "9. Changes to This Policy",
+    anchorLabel: "Changes",
     icon: FileText,
     intro:
-      "این متن ممکن است با رشد خدمات یا تغییر قوانین به‌روزرسانی شود.",
+      "This text may be updated as our services grow or the rules change.",
     clauses: [
-      "نسخه جدید در همین صفحه منتشر و تاریخ به‌روزرسانی در بالای صفحه درج می‌شود.",
-      "تغییرات مهم از طریق ایمیل یا پیامک به اطلاع کاربران می‌رسد.",
-      "ادامه استفاده از خدمات پس از انتشار، به معنای پذیرش نسخه به‌روزشده است.",
+      "The new version is published on this page and the update date at the top of the page is changed.",
+      "Important changes are announced to users by email or SMS.",
+      "Keeping on using the services after publication means you accept the updated version.",
     ],
   },
   {
     id: "contact",
-    title: "۱۰. ارتباط با ما",
-    anchorLabel: "تماس با ما",
+    title: "10. Contacting Us",
+    anchorLabel: "Contact us",
     icon: FileText,
     intro:
-      "پرسش، پیشنهاد یا شکایت خود درباره حریم خصوصی را با ما در میان بگذارید.",
+      "Tell us any question, suggestion or complaint you have about privacy.",
     clauses: [
-      "تلفن پشتیبانی: همه روزه از ساعت ۹ صبح تا ۶ عصر.",
-      "فرم «ثبت درخواست» در حساب کاربری، سریع‌ترین راه پیگیری موارد مربوط به داده‌های شماست.",
+      "Support phone: every day from 9:00 AM to 6:00 PM.",
+      "The 'Submit a request' form in your account is the fastest way to follow up on anything about your data.",
     ],
   },
 ];
@@ -163,7 +163,7 @@ export default function PrivacyPage() {
       dir="ltr"
       className="mx-auto w-full max-w-[1270px] px-3 py-4 sm:px-4 sm:py-6 lg:px-6 lg:py-8"
     >
-      <div dir="rtl" className="w-full space-y-4 sm:space-y-5">
+      <div dir="ltr" className="w-full space-y-4 sm:space-y-5">
         {/* ---------- Page header ---------- */}
         <div className={`${CARD_CLASS} overflow-hidden`}>
           <div className="bg-blue-50/70 px-4 py-5 dark:bg-blue-950/20 sm:px-6 sm:py-6">
@@ -175,18 +175,18 @@ export default function PrivacyPage() {
 
                 <div className="min-w-0">
                   <h1 className="text-xl font-extrabold text-neutral-900 dark:text-neutral-50 sm:text-2xl">
-                    سیاست حریم خصوصی هیکالا
+                    Hikala Privacy Policy
                   </h1>
                   <p className="mt-1.5 max-w-2xl text-xs leading-6 text-neutral-600 dark:text-neutral-300 sm:text-sm">
-                    چه اطلاعاتی درباره شما جمع‌آوری می‌شود، چرا به آن‌ها نیاز داریم،
-                    کجا نگهداری می‌شوند و شما چه کنترلی بر آن‌ها دارید.
+                    What information we collect about you, why we need it, where it
+                    is stored and how much control you have over it.
                   </p>
                 </div>
               </div>
 
               <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[11px] font-bold text-neutral-600 shadow-sm dark:bg-neutral-900 dark:text-neutral-300">
                 <FileText aria-hidden="true" className="h-3.5 w-3.5" />
-                <span>آخرین به‌روزرسانی: مهر ۱۴۰۵</span>
+                <span>Last updated: October 2026</span>
               </span>
             </div>
           </div>
@@ -194,14 +194,14 @@ export default function PrivacyPage() {
           <div className="flex flex-wrap items-center gap-3 border-t border-neutral-200 px-4 py-3 dark:border-neutral-800 sm:px-6">
             <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
               <Lock aria-hidden="true" className="h-4 w-4 text-blue-500" />
-              <span>اطلاعات کارت بانکی در هیکالا ذخیره نمی‌شود.</span>
+              <span>Bank card details are never stored on Hikala.</span>
             </span>
 
             <Link
               href="/terms"
               className="mr-auto text-xs font-bold text-blue-500 transition-colors hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:text-blue-400"
             >
-              مشاهده قوانین و مقررات
+              View terms &amp; conditions
             </Link>
           </div>
         </div>
@@ -209,11 +209,11 @@ export default function PrivacyPage() {
         {/* ---------- Nav + article ---------- */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-5">
           <nav
-            aria-label="فهرست بخش‌های حریم خصوصی"
+            aria-label="Privacy sections"
             className={`${CARD_CLASS} h-fit p-4 lg:sticky lg:top-6 lg:p-5`}
           >
             <h2 className="text-sm font-bold text-neutral-800 dark:text-neutral-100">
-              فهرست مطالب
+              Contents
             </h2>
 
             <ul className="mt-3 space-y-1">
@@ -237,7 +237,8 @@ export default function PrivacyPage() {
                 className="mt-0.5 h-4 w-4 shrink-0 text-blue-500"
               />
               <p className="text-[11px] leading-5 text-neutral-500 dark:text-neutral-400">
-                برای دسترسی، اصلاح یا حذف اطلاعات خود به بخش «اطلاعات حساب» بروید.
+                To access, correct or delete your information, go to the 'Account
+                information' section.
               </p>
             </div>
           </nav>
@@ -291,11 +292,11 @@ export default function PrivacyPage() {
               <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                 <div className="min-w-0">
                   <h2 className="text-sm font-bold text-neutral-800 dark:text-neutral-100">
-                    خرید با خیال راحت
+                    Shop with peace of mind
                   </h2>
                   <p className="mt-1.5 text-xs leading-6 text-neutral-500 dark:text-neutral-400">
-                    داده‌های شما فقط برای اجرای سفارش استفاده می‌شود و در اختیار
-                    هیچ شخص ثالثی قرار نمی‌گیرد.
+                    Your data is used only to run your order and is never given to
+                    any third party.
                   </p>
                 </div>
 
@@ -304,7 +305,7 @@ export default function PrivacyPage() {
                   className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-red-500 px-6 text-sm font-bold text-white transition-colors hover:bg-red-600 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900"
                 >
                   <ArrowLeft aria-hidden="true" className="h-4 w-4" />
-                  <span>بازگشت به فروشگاه</span>
+                  <span>Back to the store</span>
                 </Link>
               </div>
             </div>

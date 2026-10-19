@@ -44,7 +44,7 @@ export default function NotFound() {
             sm:text-3xl
           "
         >
-          صفحه پیدا نشد
+          Page not found
         </h1>
 
         <p
@@ -54,8 +54,8 @@ export default function NotFound() {
             sm:text-base
           "
         >
-          متأسفانه آدرسی که دنبال آن بودید وجود ندارد یا جابه‌جا شده است.
-          می‌توانید به صفحه اصلی بازگردید یا محصولات را جست‌وجو کنید.
+          Unfortunately the address you were looking for no longer exists or has
+          moved. You can return to the home page or search our products.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -73,7 +73,7 @@ export default function NotFound() {
             "
           >
             <Home className="h-4 w-4" />
-            بازگشت به خانه
+            Back to home
           </Link>
 
           <Link
@@ -92,7 +92,7 @@ export default function NotFound() {
             "
           >
             <Search className="h-4 w-4" />
-            جست‌وجوی محصولات
+            Search products
           </Link>
 
           <Link
@@ -111,7 +111,7 @@ export default function NotFound() {
             "
           >
             <ShoppingBag className="h-4 w-4" />
-            سبد خرید
+            Cart
           </Link>
         </div>
       </div>

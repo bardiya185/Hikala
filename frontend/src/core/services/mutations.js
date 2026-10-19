@@ -365,7 +365,7 @@ export function usePayOrder() {
 }
 
 // ============================================================
-// NOTIFICATIONS (اعلان‌ها)
+// NOTIFICATIONS
 // ============================================================
 
 export function useMarkNotificationRead() {
@@ -381,7 +381,7 @@ export function useMarkNotificationRead() {
     },
     onError: (error) => {
       toast.error(
-        error?.response?.data?.message || "خوانده شدن اعلان انجام نشد"
+        error?.response?.data?.message || "Failed to mark the notification as read"
       );
     },
   });
@@ -400,7 +400,7 @@ export function useDeleteNotification() {
     },
     onError: (error) => {
       toast.error(
-        error?.response?.data?.message || "حذف اعلان انجام نشد"
+        error?.response?.data?.message || "Failed to delete the notification"
       );
     },
   });
@@ -437,12 +437,12 @@ export function useUpdateProfile() {
 
       queryClient.invalidateQueries({ queryKey: ["user-data"] });
 
-      toast.success("اطلاعات حساب شما با موفقیت به‌روزرسانی شد");
+      toast.success("Your account details were updated successfully");
     },
     onError: (error) => {
       const message =
         error?.response?.data?.message ||
-        "ذخیره اطلاعات انجام نشد، دوباره تلاش کنید";
+        "Could not save your details, please try again";
 
       toast.error(message);
     },

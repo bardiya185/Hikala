@@ -398,7 +398,7 @@ function Reviews({ id }) {
         </div>
 
         <div className="text-xs text-neutral-400 dark:text-neutral-500">
-          14 مرداد
+          July 14
         </div>
       </div>
 

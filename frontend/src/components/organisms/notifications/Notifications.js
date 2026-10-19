@@ -10,21 +10,16 @@ import {
   useMarkNotificationRead,
 } from "@/core/services/mutations";
 import { useGetNotifications } from "@/core/services/queries";
-import { formatPersianDate } from "@/core/utils/formatDate";
+import { timeAgo } from "@/core/utils/formatDate";
 import { getCookie } from "@/core/utils/cookie";
 
 /* ============================================================
    HELPERS
 ============================================================ */
 
-const FA_DIGITS = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
-
-const toFaDigits = (value) =>
-  String(value).replace(/[0-9]/g, (digit) => FA_DIGITS[Number(digit)]);
-
 /**
- * Persian relative time ("۵ دقیقه پیش") that falls back to an
- * absolute Jalali-friendly Persian date for older notifications.
+ * Relative time ("5 minutes ago") that falls back to an absolute
+ * date for older notifications.
  */
 function formatNotificationTime(date) {
   if (!date) return "";
@@ -33,20 +28,7 @@ function formatNotificationTime(date) {
 
   if (Number.isNaN(parsed.getTime())) return "";
 
-  const diffInSeconds = Math.floor((Date.now() - parsed.getTime()) / 1000);
-
-  if (diffInSeconds < 60) return "همین حالا";
-
-  const minutes = Math.floor(diffInSeconds / 60);
-  if (minutes < 60) return `${toFaDigits(minutes)} دقیقه پیش`;
-
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${toFaDigits(hours)} ساعت پیش`;
-
-  const days = Math.floor(hours / 24);
-  if (days < 7) return `${toFaDigits(days)} روز پیش`;
-
-  return formatPersianDate(parsed);
+  return timeAgo(parsed);
 }
 
 /* ============================================================
@@ -92,7 +74,7 @@ function EmptyState({ title, description, action }) {
       >
         <Image
           src="/icons/empty-notification.svg"
-          alt="بدون اعلان"
+          alt="No notification"
           fill
           className="object-contain p-3"
           sizes="(max-width: 640px) 192px, 224px"
@@ -182,7 +164,7 @@ function FilterButton({ active, children, onClick, count }) {
             }
           `}
         >
-          {toFaDigits(count)}
+          {count}
         </span>
       )}
     </button>
@@ -266,7 +248,7 @@ function NotificationItem({ item, isBusy, actions }) {
                   dark:ring-red-900
                 "
               >
-                خوانده‌نشده
+                Unread
               </span>
             )}
           </div>
@@ -321,7 +303,7 @@ function NotificationItem({ item, isBusy, actions }) {
       {/* Delete */}
       <button
         type="button"
-        aria-label={`حذف اعلان ${title || "بدون عنوان"}`}
+        aria-label={`Delete notification: ${title || "Untitled"}`}
         onClick={(event) => actions.onRemove(event)}
         disabled={actions.removing}
         className="
@@ -383,19 +365,19 @@ export default function Notifications() {
 
   const emptyCopy = !hasToken
     ? {
-        title: "برای دیدن اعلان‌ها وارد شوید",
+        title: "Sign in to view your notifications",
         description:
-          "پس از ورود، اعلان سفارش‌ها، تخفیف‌ها و پیام‌های هیکالا اینجا نمایش داده می‌شود.",
+          "Once signed in, order updates, discounts and Hikala messages will appear here.",
       }
     : onlyUnread && items.length > 0
       ? {
-          title: "همه اعلان‌ها خوانده شده‌اند",
-          description: "پیامی در این فیلتر باقی نمانده است.",
+          title: "All notifications read",
+          description: "No messages left in this filter.",
         }
       : {
-          title: "هنوز اعلانی ندارید",
+          title: "No notifications yet",
           description:
-            "هر زمان سفارش، تخفیف یا پیام جدیدی برای شما ارسال شود، اینجا نمایش داده می‌شود.",
+            "Whenever an order, discount or new message arrives, it will show up here.",
         };
 
   const handleRemove = (event, item) => {
@@ -427,7 +409,7 @@ export default function Notifications() {
               {/* Back Button */}
               <Link
                 href="/profile"
-                aria-label="بازگشت به حساب کاربری"
+                aria-label="Back to my account"
                 className="
                   flex h-10 w-10 shrink-0 items-center justify-center
                   rounded-full border border-neutral-200
@@ -460,7 +442,7 @@ export default function Notifications() {
                       dark:text-neutral-100
                     "
                   >
-                    اعلان‌ها
+                    Notifications
                   </h1>
 
                   {!showLoading && !isError && unreadCount > 0 && (
@@ -475,7 +457,7 @@ export default function Notifications() {
                         dark:ring-red-900
                       "
                     >
-                      {toFaDigits(unreadCount)} خوانده‌نشده
+                      {unreadCount} unread
                     </span>
                   )}
                 </div>
@@ -492,7 +474,7 @@ export default function Notifications() {
                 active={!onlyUnread}
                 onClick={() => setOnlyUnread(false)}
               >
-                همه اعلان‌ها
+                All
               </FilterButton>
 
               <FilterButton
@@ -500,7 +482,7 @@ export default function Notifications() {
                 count={unreadCount}
                 onClick={() => setOnlyUnread(true)}
               >
-                فقط خوانده‌نشده‌ها
+                Unread only
               </FilterButton>
 
               {isFetching && !showLoading && (
@@ -511,7 +493,7 @@ export default function Notifications() {
                     dark:text-neutral-500
                   "
                 >
-                  در حال به‌روزرسانی…
+                  Updating...
                 </span>
               )}
             </div>
@@ -546,7 +528,7 @@ export default function Notifications() {
                     dark:text-neutral-300
                   "
                 >
-                  دریافت اعلان‌ها انجام نشد.
+                  Failed to load notifications.
                 </p>
 
                 <button
@@ -570,7 +552,7 @@ export default function Notifications() {
                     dark:focus-visible:ring-offset-neutral-900
                   "
                 >
-                  تلاش دوباره
+                  Try again
                 </button>
               </div>
             )}
@@ -602,7 +584,7 @@ export default function Notifications() {
                         dark:focus-visible:ring-offset-neutral-900
                       "
                     >
-                      ورود یا ثبت‌نام
+                      Sign in / Sign up
                     </Link>
                   ) : null
                 }

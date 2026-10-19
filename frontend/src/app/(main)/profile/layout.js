@@ -94,7 +94,7 @@ function ProfileLayout({ children }) {
   const pathname = usePathname();
   const { data: userData } = useGetUserData();
   const user = userData?.data?.data || userData?.data || null;
-  const displayName = user?.name || user?.mobile || "کاربر هایکالا";
+  const displayName = user?.name || user?.mobile || "Hikala User";
 
   return (
     <div

@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import StoryModal from './StoryModal'; 
 
 const STORIES_DATA = [
-  { id: 1, title: "پاوربانک انکر مدل A1...", img: "https://dkstatics-public.digikala.com/digikala-content-x-post-media/303037ddac33965839e218f528e65b2137d1e603_1771917471.jpg?x-oss-process=image/resize,m_fill,h_115,w_115" },
-  { id: 2, title: "تکنولوژی، با این سشو...", img: "https://dkstatics-public.digikala.com/digikala-content-x-post-media/a56a8a3c0aad383ee1bbc4d46daec66d951ca685_1777498909.jpg?x-oss-process=image/resize,m_fill,h_115,w_115" },
-  { id: 3, title: "سشوار نئوکلاسیک از ه...", img: "https://dkstatics-public.digikala.com/digikala-content-x-post-media/f701b205db394d095193abefc3f0fec9350ddc83_1777499636.jpg?x-oss-process=image/resize,m_fill,h_115,w_115" },
-  { id: 4, title: "به این ۱۰ تا کالا چه نمره ای میدی", img: "https://dkstatics-public.digikala.com/digikala-content-x-post-media/207a310ada09acb730ce18936808ea7aa83fc7dd_1760349231.jpg?x-oss-process=image/resize,m_fill,h_115,w_115" },
-  { id: 5, title: "کولر نسل جدید ایرومک...", img: "https://dkstatics-public.digikala.com/digikala-content-x-post-media/f5e34c84e337433d3bfb49935b21bfc1b0d34014_1777483786.jpg?x-oss-process=image/resize,m_fill,h_115,w_115" }
+  { id: 1, title: "Anker power bank model A1...", img: "https://dkstatics-public.digikala.com/digikala-content-x-post-media/303037ddac33965839e218f528e65b2137d1e603_1771917471.jpg?x-oss-process=image/resize,m_fill,h_115,w_115" },
+  { id: 2, title: "Tech, with this hair styler...", img: "https://dkstatics-public.digikala.com/digikala-content-x-post-media/a56a8a3c0aad383ee1bbc4d46daec66d951ca685_1777498909.jpg?x-oss-process=image/resize,m_fill,h_115,w_115" },
+  { id: 3, title: "Neoclassic hair dryer from...", img: "https://dkstatics-public.digikala.com/digikala-content-x-post-media/f701b205db394d095193abefc3f0fec9350ddc83_1777499636.jpg?x-oss-process=image/resize,m_fill,h_115,w_115" },
+  { id: 4, title: "How would you rate these 10 picks?", img: "https://dkstatics-public.digikala.com/digikala-content-x-post-media/207a310ada09acb730ce18936808ea7aa83fc7dd_1760349231.jpg?x-oss-process=image/resize,m_fill,h_115,w_115" },
+  { id: 5, title: "New-gen Aeromax cooler...", img: "https://dkstatics-public.digikala.com/digikala-content-x-post-media/f5e34c84e337433d3bfb49935b21bfc1b0d34014_1777483786.jpg?x-oss-process=image/resize,m_fill,h_115,w_115" }
 ];
 
 function Stories() {

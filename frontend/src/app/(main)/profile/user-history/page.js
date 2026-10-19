@@ -7,7 +7,7 @@ import { History, ImageOff, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { formatPrice } from "@/core/utils/formatPrice";
-import { formatPersianDate } from "@/core/utils/formatDate";
+import { timeAgo } from "@/core/utils/formatDate";
 import { RECENTLY_VIEWED_STORAGE_KEY } from "@/components/atom/RecentlyViewedTracker";
 
 const CARD_CLASS =
@@ -40,7 +40,7 @@ function normalizeEntry(entry) {
 
   return {
     id: entry.id,
-    title: typeof entry.title === "string" ? entry.title : "محصول",
+    title: typeof entry.title === "string" ? entry.title : "Product",
     price: Number(entry.price || 0),
     image: resolveImageSrc(entry.image),
     ts: Number(entry.ts || 0),
@@ -73,7 +73,7 @@ function ViewedProductCard({ item }) {
   return (
     <Link
       href={`/product/${item.id}`}
-      dir="rtl"
+      dir="ltr"
       className="group flex min-w-0 flex-col rounded-xl border border-neutral-200 bg-white p-3 transition-all hover:shadow-md active:scale-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:border-neutral-800 dark:bg-neutral-900"
     >
       <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-neutral-50 dark:bg-neutral-950/40">
@@ -95,7 +95,7 @@ function ViewedProductCard({ item }) {
               height={80}
               className="h-16 w-16 object-contain opacity-70"
             />
-            <span className="text-[10px]">بدون تصویر</span>
+            <span className="text-[10px]">No image</span>
           </div>
         )}
       </div>
@@ -105,18 +105,18 @@ function ViewedProductCard({ item }) {
       </h3>
 
       <div className="mt-2 flex items-end justify-between gap-2">
-        <p dir="rtl" className="min-w-0 text-sm font-bold text-green-600 sm:text-base">
+        <p dir="ltr" className="min-w-0 text-sm font-bold text-green-600 sm:text-base">
           <span className="text-neutral-800 dark:text-neutral-100">
             {formatPrice(item.price)}
           </span>{" "}
           <span className="text-[10px] font-medium text-neutral-500 dark:text-neutral-400">
-            تومان
+            Toman
           </span>
         </p>
 
         {item.ts > 0 && (
           <span className="shrink-0 text-[10px] text-neutral-400 dark:text-neutral-500">
-            {formatPersianDate(new Date(item.ts))}
+            {timeAgo(new Date(item.ts))}
           </span>
         )}
       </div>
@@ -143,9 +143,9 @@ export default function UserHistoryPage() {
     try {
       window.localStorage.removeItem(RECENTLY_VIEWED_STORAGE_KEY);
       setItems([]);
-      toast.success("تاریخچه مشاهده پاک شد");
+      toast.success("Viewing history cleared");
     } catch {
-      toast.error("پاک کردن تاریخچه انجام نشد");
+      toast.error("The history could not be cleared");
     }
   };
 
@@ -161,12 +161,12 @@ export default function UserHistoryPage() {
 
             <div className="min-w-0">
               <h1 className="text-xl font-bold text-neutral-800 dark:text-neutral-100 sm:text-2xl">
-                اخیراً مشاهده‌شده
+                Recently Viewed
               </h1>
               <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400 sm:text-sm">
                 {isReady && !isEmpty
-                  ? `${items.length} محصول در ۲۰ بازدید اخیر`
-                  : "محصولاتی که اخیراً دیده‌اید این‌جا ذخیره می‌شوند"}
+                  ? `${items.length} products in your last 20 views`
+                  : "Products you browse recently are stored here"}
               </p>
             </div>
           </div>
@@ -178,7 +178,7 @@ export default function UserHistoryPage() {
               className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-neutral-200 bg-white px-3 text-xs font-bold text-neutral-600 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-red-950/30"
             >
               <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
-              <span>پاک کردن تاریخچه</span>
+              <span>Clear history</span>
             </button>
           )}
         </div>
@@ -205,19 +205,19 @@ export default function UserHistoryPage() {
             </span>
 
             <h2 className="mt-4 text-base font-bold text-neutral-800 dark:text-neutral-100">
-              هنوز محصولی مشاهده نکرده‌اید
+              You have not viewed any products yet
             </h2>
 
             <p className="mt-2 max-w-md text-sm leading-6 text-neutral-500 dark:text-neutral-400">
-              با مرور دسته‌بندی‌ها و صفحات محصول، آخرین بازدیدهای شما در همین بخش
-              ثبت می‌شود تا دسترسی سریع‌تری به آن‌ها داشته باشید.
+              As you browse categories and product pages, your latest views are
+              recorded in this section so you can get back to them faster.
             </p>
 
             <Link
               href="/"
               className="mt-5 inline-flex h-11 items-center justify-center rounded-lg bg-red-500 px-6 text-sm font-bold text-white transition-colors hover:bg-red-600 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-neutral-900"
             >
-              <span>رفتن به صفحه اصلی</span>
+              <span>Go to the home page</span>
             </Link>
           </div>
         )}
