@@ -50,6 +50,8 @@ exit(1);
     if [ "$REFRESH_CAMPAIGNS" = "true" ]; then
         echo "Refreshing campaign time windows..."
         php artisan campaigns:window --days=2 --no-interaction || true
+        echo "Filling campaign discounts..."
+        php artisan campaigns:fill-discounts --per=12 --no-interaction || true
     fi
 fi
 
