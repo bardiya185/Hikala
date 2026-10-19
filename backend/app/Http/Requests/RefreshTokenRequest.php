@@ -21,7 +21,7 @@ class RefreshTokenRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'refresh_token.required' => 'Refresh token الزامی است',
+            'refresh_token.required' => 'The refresh token field is required.',
         ];
     }
 }

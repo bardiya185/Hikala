@@ -76,7 +76,7 @@ class ProductVariant extends Model
 
 
     /**
-     * قیمت قابل استفاده قبل از تخفیف
+     * The price actually used before the discount
      */
     public function getBasePriceAttribute()
     {

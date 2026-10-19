@@ -1,6 +1,6 @@
 "use client";
 
-import { useCheckOtp } from "@/core/services/mutations";
+import { useSendOtp, useCheckOtp } from "@/core/services/mutations";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useRef, useState } from "react";
@@ -14,6 +14,37 @@ function CheckOtpForm({ mobile, setStep, setIsOpen }) {
   const searchParams = useSearchParams();
 
   const { isPending, mutate } = useCheckOtp();
+  const {
+    isPending: isResending,
+    mutate: resendOtp,
+  } = useSendOtp();
+
+  const handleResend = () => {
+    if (isResending || !mobile) return;
+
+    resendOtp(
+      { mobile },
+      {
+        onSuccess: (data) => {
+          setCode("");
+          inputRefs.current[0]?.focus();
+
+          const debugCode = data?.data?.code;
+          if (debugCode) {
+            toast.success(`New code: ${debugCode}`);
+          } else {
+            toast.success("A new code has been sent");
+          }
+        },
+        onError: (error) => {
+          toast.error(
+            error?.response?.data?.message ||
+              "Failed to resend the code. Please try again."
+          );
+        },
+      }
+    );
+  };
 
   const handleChange = (index, value) => {
     const digit = value.replace(/\D/g, "").slice(-1);
@@ -236,7 +267,7 @@ function CheckOtpForm({ mobile, setStep, setIsOpen }) {
                 focus:ring-4
                 focus:ring-red-500/10
 
-                sm:h-13 sm:w-11
+                sm:h-12 sm:w-11
 
                 dark:border-neutral-700
                 dark:bg-neutral-950
@@ -306,19 +337,22 @@ function CheckOtpForm({ mobile, setStep, setIsOpen }) {
 
           <button
             type="button"
-            disabled
+            onClick={handleResend}
+            disabled={isResending}
             className="
-              cursor-not-allowed
               border-none
               bg-transparent
               text-[12px]
               font-semibold
               text-red-600
-              opacity-70
+              transition-opacity
+              hover:opacity-80
+              active:scale-[0.98]
+              disabled:cursor-wait disabled:opacity-70
               dark:text-red-400
             "
           >
-            Resend
+            {isResending ? "Sending..." : "Resend"}
           </button>
         </div>
       </div>

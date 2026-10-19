@@ -21,7 +21,7 @@ class Brand extends Model
     ];
 
     /**
-     * 🟢 رابطه برند با محصولات (یک به چند)
+     * 🟢 One-to-many relation between a brand and its products
      */
     public function products(): HasMany
     {

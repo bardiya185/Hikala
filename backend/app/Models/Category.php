@@ -25,7 +25,7 @@ class Category extends Model
     ];
 
     /**
-     * دسته والد
+     * Parent category
      */
     public function parent(): BelongsTo
     {
@@ -33,7 +33,7 @@ class Category extends Model
     }
 
     /**
-     * زیر دسته‌ها
+     * Subcategories
      */
     public function children(): HasMany
     {

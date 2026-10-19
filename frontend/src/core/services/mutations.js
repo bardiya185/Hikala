@@ -5,7 +5,6 @@ import {
 } from "@tanstack/react-query";
 import { removeCookie, setCookie } from "../utils/cookie";
 import api from "../config/api";
-import { data } from "autoprefixer";
 import  toast  from "react-hot-toast";
 import { getGuestSessionId, clearGuestSessionId } from "../utils/gustSession";
 

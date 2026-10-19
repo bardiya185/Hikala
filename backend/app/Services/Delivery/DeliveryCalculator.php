@@ -15,7 +15,7 @@ class DeliveryCalculator
     private const BUFFER_HOURS = 2;
 
     /**
-     * 🎯 محاسبه زودترین زمان تحویل
+     * 🎯 Calculate the earliest delivery time
      */
     public function calculateEarliestDelivery(Cart $cart): Carbon
     {
@@ -39,7 +39,7 @@ class DeliveryCalculator
     }
 
     /**
-     * 🎯 محاسبه دیرترین زمان تحویل (برای بازه)
+     * 🎯 Calculate the latest delivery time (for the delivery window)
      */
     public function calculateLatestDelivery(Cart $cart): Carbon
     {
@@ -62,7 +62,7 @@ class DeliveryCalculator
     }
 
     /**
-     * 📅 لیست روزهای قابل انتخاب
+     * 📅 List of selectable delivery days
      */
     public function getAvailableDates(Cart $cart, int $windowDays = 7): array
     {
@@ -90,7 +90,7 @@ class DeliveryCalculator
     }
 
     /**
-     * 🚀 سریع‌ترین روش ارسال یه variant
+     * 🚀 Fastest shipping method of a variant
      */
     private function getFastestShippingFeature($variant): ShippingFeatureType
     {
@@ -116,7 +116,7 @@ class DeliveryCalculator
     }
 
     /**
-     * 🐢 کندترین روش ارسال یه variant
+     * 🐢 Slowest shipping method of a variant
      */
     private function getSlowestShippingFeature($variant): ShippingFeatureType
     {
@@ -144,7 +144,7 @@ class DeliveryCalculator
     }
 
     /**
-     * 📊 خلاصه اطلاعات تحویل برای نمایش
+     * 📊 Delivery information summary for display
      */
     public function getDeliveryInfo(Cart $cart): array
     {

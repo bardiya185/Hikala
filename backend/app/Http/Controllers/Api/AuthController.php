@@ -340,7 +340,7 @@ class AuthController extends Controller
             required: true,
             content: new OA\JsonContent(
                 properties: [
-                    new OA\Property(property: 'name', type: 'string', example: 'علی رضایی'),
+                    new OA\Property(property: 'name', type: 'string', example: 'Ali Rezaei'),
                     new OA\Property(property: 'mobile', type: 'string', example: '09123456789'),
                 ]
             )

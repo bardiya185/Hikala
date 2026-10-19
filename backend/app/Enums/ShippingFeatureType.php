@@ -4,10 +4,10 @@ namespace App\Enums;
 
 enum ShippingFeatureType: string
 {
-    case FAST     = 'fast';        // 1 روز آماده‌سازی
-    case SAME_DAY = 'same_day';    // 0 روز (همان روز)
-    case FREE     = 'free';        // 3 روز
-    case STANDARD = 'standard';    // 5 روز
+    case FAST     = 'fast';        // 1 preparation day
+    case SAME_DAY = 'same_day';    // 0 days (same day)
+    case FREE     = 'free';        // 3 days
+    case STANDARD = 'standard';    // 5 days
 
     public function label(): string
     {
@@ -20,20 +20,20 @@ enum ShippingFeatureType: string
     }
 
     /**
-     * 📅 حداقل روز آماده‌سازی
+     * 📅 Minimum number of preparation days
      */
     public function minPreparationDays(): int
     {
         return match($this) {
-            self::SAME_DAY => 0,   // امروز
-            self::FAST     => 1,   // فردا
-            self::FREE     => 3,   // 3 روز
-            self::STANDARD => 5,   // 5 روز
+            self::SAME_DAY => 0,   // today
+            self::FAST     => 1,   // tomorrow
+            self::FREE     => 3,   // 3 days
+            self::STANDARD => 5,   // 5 days
         };
     }
 
     /**
-     * 📅 حداکثر روز آماده‌سازی
+     * 📅 Maximum number of preparation days
      */
     public function maxPreparationDays(): int
     {

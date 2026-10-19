@@ -75,45 +75,45 @@ class UpdateUserRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'نام الزامی است',
-            'name.string' => 'نام باید متن باشد',
-            'name.min' => 'نام باید حداقل :count نویسه باشد',
-            'name.max' => 'نام نباید بیشتر از :count نویسه باشد',
-            'mobile.required' => 'شماره موبایل الزامی است',
-            'mobile.regex' => 'فرمت شماره موبایل نامعتبر است (مثال: ۰۹۱۲۳۴۵۶۷۸۹)',
-            'mobile.unique' => 'این شماره موبایل قبلاً ثبت شده است',
-            'email.required' => 'ایمیل الزامی است',
-            'email.email' => 'فرمت ایمیل نامعتبر است',
-            'email.max' => 'ایمیل نباید بیشتر از :count نویسه باشد',
-            'email.unique' => 'این ایمیل قبلاً ثبت شده است',
+            'name.required' => 'The name field is required.',
+            'name.string' => 'The name must be text.',
+            'name.min' => 'The name must be at least :count characters.',
+            'name.max' => 'The name must not be greater than :count characters.',
+            'mobile.required' => 'The mobile number field is required.',
+            'mobile.regex' => 'Invalid mobile number format (e.g. 09123456789).',
+            'mobile.unique' => 'This mobile number is already taken.',
+            'email.required' => 'The email field is required.',
+            'email.email' => 'The email format is invalid.',
+            'email.max' => 'The email must not be greater than :count characters.',
+            'email.unique' => 'This email is already taken.',
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'name' => 'نام',
-            'mobile' => 'شماره موبایل',
-            'email' => 'ایمیل',
+            'name' => 'name',
+            'mobile' => 'mobile number',
+            'email' => 'email',
         ];
     }
 
     /**
-     * Convert Persian (۰-۹) and Arabic (٠-٩) digits to Latin digits
-     * and strip spaces, dashes and parentheses.
+     * Convert Persian (U+06F0-U+06F9) and Arabic-Indic (U+0660-U+0669) digits
+     * to Latin digits and strip spaces, dashes and parentheses.
      */
     private function toLatinDigits($value): string
     {
         $value = (string) $value;
 
         $value = str_replace(
-            ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'],
+            ["\u{06F0}", "\u{06F1}", "\u{06F2}", "\u{06F3}", "\u{06F4}", "\u{06F5}", "\u{06F6}", "\u{06F7}", "\u{06F8}", "\u{06F9}"],
             ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
             $value
         );
 
         $value = str_replace(
-            ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'],
+            ["\u{0660}", "\u{0661}", "\u{0662}", "\u{0663}", "\u{0664}", "\u{0665}", "\u{0666}", "\u{0667}", "\u{0668}", "\u{0669}"],
             ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
             $value
         );

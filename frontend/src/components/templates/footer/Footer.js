@@ -40,12 +40,12 @@ const footerColumns = [
     id: 1,
     title: "Quick Links",
     links: [
-      "About Us",
-      "Contact Us",
-      "Products",
-      "Categories",
-      "Privacy Policy",
-      "Terms & Conditions",
+      { label: "About Us", href: "#" },
+      { label: "Contact Us", href: "#" },
+      { label: "Products", href: "/search" },
+      { label: "Categories", href: "/search" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms & Conditions", href: "/terms" },
     ],
   },
   {
@@ -517,8 +517,8 @@ export default function Footer() {
             <div className="mt-4 flex flex-col gap-3">
               {footerColumns[0].links.map((link) => (
                 <Link
-                  key={link}
-                  href="#"
+                  key={link.label}
+                  href={link.href}
                   className="
                     w-fit
 
@@ -537,7 +537,7 @@ export default function Footer() {
                     dark:hover:text-red-400
                   "
                 >
-                  {link}
+                  {link.label}
                 </Link>
               ))}
             </div>

@@ -149,58 +149,58 @@ class StoreProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'brand_id.exists' => 'برند انتخاب شده معتبر نیست',
+            'brand_id.exists' => 'The selected brand is not valid.',
             
-            'title.required' => 'عنوان محصول الزامی است',
-            'title.string' => 'عنوان باید متن باشد',
-            'title.max' => 'عنوان نباید بیشتر از ۲۵۵ کاراکتر باشد',
+            'title.required' => 'The product title field is required.',
+            'title.string' => 'The title must be text.',
+            'title.max' => 'The title must not be greater than 255 characters.',
             
-            'slug.required' => 'اسلاگ محصول الزامی است',
-            'slug.unique' => 'این اسلاگ قبلاً استفاده شده است',
-            'slug.max' => 'اسلاگ نباید بیشتر از ۲۵۵ کاراکتر باشد',
+            'slug.required' => 'The product slug field is required.',
+            'slug.unique' => 'This slug has already been used.',
+            'slug.max' => 'The slug must not be greater than 255 characters.',
             
-            'short_description.max' => 'توضیح مختصر نباید بیشتر از ۵۰۰ کاراکتر باشد',
+            'short_description.max' => 'The short description must not be greater than 500 characters.',
             
-            'status.required' => 'وضعیت محصول الزامی است',
-            'status.in' => 'وضعیت باید یکی از draft, active, inactive باشد',
+            'status.required' => 'The product status field is required.',
+            'status.in' => 'The status must be one of draft, active or inactive.',
             
-            'meta_title.max' => 'عنوان سئو نباید بیشتر از ۲۵۵ کاراکتر باشد',
-            'meta_keywords.max' => 'کلمات کلیدی نباید بیشتر از ۲۵۵ کاراکتر باشد',
-            'meta_description.max' => 'توضیحات سئو نباید بیشتر از ۵۰۰ کاراکتر باشد',
+            'meta_title.max' => 'The SEO title must not be greater than 255 characters.',
+            'meta_keywords.max' => 'The meta keywords must not be greater than 255 characters.',
+            'meta_description.max' => 'The SEO description must not be greater than 500 characters.',
             
-            'sort_order.integer' => 'ترتیب نمایش باید عدد باشد',
-            'sort_order.min' => 'ترتیب نمایش نباید کمتر از ۰ باشد',
+            'sort_order.integer' => 'The sort order must be a number.',
+            'sort_order.min' => 'The sort order must not be less than 0.',
             
-            'is_active.boolean' => 'وضعیت فعال باید true یا false باشد',
-            'categories.array' => 'دسته‌بندی‌ها باید به صورت آرایه ارسال شوند',
-            'categories.min' => 'حداقل یک دسته‌بندی انتخاب کنید',
-            'categories.*.exists' => 'دسته‌بندی انتخاب شده معتبر نیست',
-            'variants.array' => 'تنوع‌ها باید به صورت آرایه ارسال شوند',
-            'variants.min' => 'حداقل یک تنوع برای محصول ایجاد کنید',
+            'is_active.boolean' => 'The active status must be true or false.',
+            'categories.array' => 'The categories must be sent as an array.',
+            'categories.min' => 'Please select at least one category.',
+            'categories.*.exists' => 'The selected category is not valid.',
+            'variants.array' => 'The variants must be sent as an array.',
+            'variants.min' => 'Please create at least one variant for the product.',
 
-            'variants.*.sku.required' => 'کد انبار (SKU) برای هر تنوع الزامی است',
-            'variants.*.sku.unique' => 'کد انبار (SKU) تکراری است',
+            'variants.*.sku.required' => 'The SKU is required for each variant.',
+            'variants.*.sku.unique' => 'This SKU is already taken.',
 
-            'variants.*.price.required' => 'قیمت برای هر تنوع الزامی است',
-            'variants.*.price.integer' => 'قیمت باید عدد باشد',
-            'variants.*.price.min' => 'قیمت نباید کمتر از ۰ باشد',
+            'variants.*.price.required' => 'The price is required for each variant.',
+            'variants.*.price.integer' => 'The price must be a number.',
+            'variants.*.price.min' => 'The price must not be less than 0.',
 
-            'variants.*.sale_price.integer' => 'قیمت تخفیف باید عدد باشد',
-            'variants.*.sale_price.min' => 'قیمت تخفیف نباید کمتر از ۰ باشد',
-            'variants.*.sale_price.lt' => 'قیمت تخفیف باید کمتر از قیمت اصلی باشد',
+            'variants.*.sale_price.integer' => 'The discount price must be a number.',
+            'variants.*.sale_price.min' => 'The discount price must not be less than 0.',
+            'variants.*.sale_price.lt' => 'The discount price must be lower than the original price.',
 
-            'variants.*.stock.required' => 'موجودی برای هر تنوع الزامی است',
-            'variants.*.stock.integer' => 'موجودی باید عدد باشد',
-            'variants.*.stock.min' => 'موجودی نباید کمتر از ۰ باشد',
+            'variants.*.stock.required' => 'The stock is required for each variant.',
+            'variants.*.stock.integer' => 'The stock must be a number.',
+            'variants.*.stock.min' => 'The stock must not be less than 0.',
 
-            'variants.*.weight.integer' => 'وزن باید عدد باشد',
-            'variants.*.weight.min' => 'وزن نباید کمتر از ۰ باشد',
+            'variants.*.weight.integer' => 'The weight must be a number.',
+            'variants.*.weight.min' => 'The weight must not be less than 0.',
 
-            'variants.*.is_active.boolean' => 'وضعیت فعال باید true یا false باشد',
-            'variants.*.attributes.array' => 'ویژگی‌ها باید به صورت آرایه ارسال شوند',
-            'variants.*.attributes.min' => 'حداقل یک ویژگی برای هر تنوع انتخاب کنید',
-            'variants.*.attributes.*.attribute_value_id.required' => 'شناسه مقدار ویژگی الزامی است',
-            'variants.*.attributes.*.attribute_value_id.exists' => 'مقدار ویژگی انتخاب شده معتبر نیست',
+            'variants.*.is_active.boolean' => 'The active status must be true or false.',
+            'variants.*.attributes.array' => 'The attributes must be sent as an array.',
+            'variants.*.attributes.min' => 'Please select at least one attribute for each variant.',
+            'variants.*.attributes.*.attribute_value_id.required' => 'The attribute value ID field is required.',
+            'variants.*.attributes.*.attribute_value_id.exists' => 'The selected attribute value is not valid.',
         ];
     }
 
@@ -208,7 +208,7 @@ class StoreProductRequest extends FormRequest
     {
         throw new \Illuminate\Validation\ValidationException($validator, response()->json([
             'success' => false,
-            'message' => 'خطاهای اعتبارسنجی',
+            'message' => 'Validation errors',
             'errors' => $validator->errors()
         ], 422));
     }

@@ -154,28 +154,28 @@ class UpdateProductRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'title.required' => 'عنوان محصول الزامی است',
-            'title.string' => 'عنوان باید متن باشد',
-            'title.max' => 'عنوان نباید بیشتر از ۲۵۵ کاراکتر باشد',
+            'title.required' => 'The product title field is required.',
+            'title.string' => 'The title must be text.',
+            'title.max' => 'The title must not be greater than 255 characters.',
             
-            'slug.required' => 'اسلاگ محصول الزامی است',
-            'slug.unique' => 'این اسلاگ قبلاً استفاده شده است',
-            'slug.max' => 'اسلاگ نباید بیشتر از ۲۵۵ کاراکتر باشد',
+            'slug.required' => 'The product slug field is required.',
+            'slug.unique' => 'This slug has already been used.',
+            'slug.max' => 'The slug must not be greater than 255 characters.',
             
-            'status.required' => 'وضعیت محصول الزامی است',
-            'status.in' => 'وضعیت باید یکی از draft, active, inactive باشد',
+            'status.required' => 'The product status field is required.',
+            'status.in' => 'The status must be one of draft, active or inactive.',
             
-            'categories.min' => 'حداقل یک دسته‌بندی انتخاب کنید',
-            'categories.*.exists' => 'دسته‌بندی انتخاب شده معتبر نیست',
+            'categories.min' => 'Please select at least one category.',
+            'categories.*.exists' => 'The selected category is not valid.',
 
-            'variants.*.sku.required' => 'کد انبار (SKU) برای هر تنوع الزامی است',
-            'variants.*.sku.unique' => 'کد انبار (SKU) تکراری است',
-            'variants.*.price.required' => 'قیمت برای هر تنوع الزامی است',
-            'variants.*.price.min' => 'قیمت نباید کمتر از ۰ باشد',
-            'variants.*.sale_price.lt' => 'قیمت تخفیف باید کمتر از قیمت اصلی باشد',
-            'variants.*.stock.required' => 'موجودی برای هر تنوع الزامی است',
-            'variants.*.stock.min' => 'موجودی نباید کمتر از ۰ باشد',
-            'variants.*.attributes.*.attribute_value_id.exists' => 'مقدار ویژگی انتخاب شده معتبر نیست',
+            'variants.*.sku.required' => 'The SKU is required for each variant.',
+            'variants.*.sku.unique' => 'This SKU is already taken.',
+            'variants.*.price.required' => 'The price is required for each variant.',
+            'variants.*.price.min' => 'The price must not be less than 0.',
+            'variants.*.sale_price.lt' => 'The discount price must be lower than the original price.',
+            'variants.*.stock.required' => 'The stock is required for each variant.',
+            'variants.*.stock.min' => 'The stock must not be less than 0.',
+            'variants.*.attributes.*.attribute_value_id.exists' => 'The selected attribute value is not valid.',
         ];
     }
 
@@ -183,7 +183,7 @@ class UpdateProductRequest extends FormRequest
     {
         throw new \Illuminate\Validation\ValidationException($validator, response()->json([
             'success' => false,
-            'message' => 'خطاهای اعتبارسنجی',
+            'message' => 'Validation errors',
             'errors' => $validator->errors()
         ], 422));
     }

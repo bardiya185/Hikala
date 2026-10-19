@@ -21,8 +21,8 @@ class SendOtpRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'mobile.required' => 'شماره موبایل الزامی است',
-            'mobile.regex' => 'فرمت شماره موبایل نامعتبر است',
+            'mobile.required' => 'The mobile number field is required.',
+            'mobile.regex' => 'Invalid mobile number format (e.g. 09123456789).',
         ];
     }
 }

@@ -176,7 +176,7 @@ class AttributeController extends Controller
             $valuesToDelete = $attribute->values()->whereNotIn('id', $submittedIds)->get();
             foreach ($valuesToDelete as $valueToDelete) {
                 if (method_exists($valueToDelete, 'products') && $valueToDelete->products()->exists()) {
-                    continue; // اگر متصل به محصول است، حذف نشود تا فروشگاه کرش نکند
+                    continue; // Keep it if it is attached to a product, so the storefront does not break
                 }
                 $valueToDelete->delete();
             }
@@ -202,10 +202,10 @@ class AttributeController extends Controller
     )]
     public function destroy(Attribute $attribute)
     {
-        if ($attribute->values()->whereHas('products')->exists()) { // فرض وجود رابطه محصولات در مقادیر
+        if ($attribute->values()->whereHas('products')->exists()) { // The values-products relation is assumed to exist
             return response()->json([
                 'success' => false,
-                'message' => 'این ویژگی در محصولات استفاده شده است و حذف آن ساختار فروشگاه را به هم می‌ریزد.'
+                'message' => 'This attribute is used in products and deleting it would break the store structure.'
             ], Response::HTTP_BAD_REQUEST);
         }
 

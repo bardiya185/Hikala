@@ -33,7 +33,9 @@ function SendOtpForm({ setStep, mobile, setMobile }) {
       },
       {
         onSuccess: (data) => {
-          toast.success(data?.data?.code);
+          // The API only exposes the code while APP_DEBUG=true.
+          const debugCode = data?.data?.code;
+          if (debugCode) toast.success(String(debugCode));
 
           if (setStep) {
             // Modal mode

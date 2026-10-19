@@ -20,12 +20,12 @@ class NotificationController extends Controller
     )]
     public function index(Request $request)
     {
-        // گرفتن اعلانات با صفحه‌بندی (جدیدترین‌ها اول)
+        // Fetch notifications with pagination (newest first)
         $notifications = $request->user()->notifications()->paginate(15);
 
         return response()->json([
             'success' => true,
-            // تعداد پیام‌های خوانده نشده برای نمایش روی آیکون زنگوله
+            // Number of unread messages to show on the bell icon
             'unread_count' => $request->user()->unreadNotifications()->count(),
             'data' => NotificationResource::collection($notifications),
             'meta' => [

@@ -30,7 +30,7 @@ class Cart extends Model
     }
 
     /**
-     * جمع قیمت‌های اصلی
+     * Sum of the base prices
      */
     public function getSubtotalAttribute(): float
     {
@@ -38,7 +38,7 @@ class Cart extends Model
     }
 
     /**
-     * مجموع تخفیف محصولات
+     * Total of the product discounts
      */
     public function getProductsDiscountAttribute(): float
     {
@@ -46,7 +46,7 @@ class Cart extends Model
     }
 
     /**
-     * جمع قبل از کوپن
+     * Sum before the coupon
      */
     public function getTotalBeforeCouponAttribute(): float
     {
@@ -54,7 +54,7 @@ class Cart extends Model
     }
 
     /**
-     * مقدار تخفیف کوپن
+     * Coupon discount amount
      */
 
 public function getCouponDiscountAttribute(): float
@@ -79,7 +79,7 @@ public function getCouponDiscountAttribute(): float
 }
 
     /**
-     * جمع نهایی
+     * Final total
      */
     public function getFinalTotalAttribute(): float
     {
@@ -87,7 +87,7 @@ public function getCouponDiscountAttribute(): float
     }
 
     /**
-     * تعداد کل آیتم‌ها
+     * Total number of items
      */
     public function getItemsCountAttribute(): int
     {
@@ -95,7 +95,7 @@ public function getCouponDiscountAttribute(): float
     }
 
     /**
-     * چک کن سبد خالیه یا نه
+     * Check whether the cart is empty
      */
     public function isEmpty(): bool
     {

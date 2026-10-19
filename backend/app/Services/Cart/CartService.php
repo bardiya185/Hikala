@@ -206,7 +206,7 @@ class CartService
     }
 
     /**
-     * ✅ چک موجودی
+     * ✅ Check stock
      */
     private function validateStock(ProductVariant $variant, int $quantity): void
     {
@@ -218,12 +218,12 @@ class CartService
     }
 
     /**
-     * 🔥 چک محدودیت هر سفارش
+     * 🔥 Check the per-order quantity limit
      */
     private function validateMaxOrderQuantity(ProductVariant $variant, int $quantity): void
     {
         if (!$variant->max_order_quantity) {
-            return; // 🎯 اگه محدودیت نداشت، مشکلی نیست
+            return; // 🎯 No limit configured, so nothing to enforce
         }
 
         if ($quantity > $variant->max_order_quantity) {
@@ -234,7 +234,7 @@ class CartService
     }
 
     /**
-     * 🎯 محاسبه بیشترین تعداد مجاز (کمترین بین stock و max_order_quantity)
+     * 🎯 Calculate the highest allowed quantity (the lower of stock and max_order_quantity)
      */
     private function getAllowedQuantity(ProductVariant $variant, int $requestedQuantity): int
     {

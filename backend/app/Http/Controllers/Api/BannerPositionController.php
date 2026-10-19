@@ -53,7 +53,7 @@ class BannerPositionController extends Controller
                 required: ['key', 'name'],
                 properties: [
                     new OA\Property(property: 'key', type: 'string', example: 'home_middle_4'),
-                    new OA\Property(property: 'name', type: 'string', example: '۴ بنر وسط صفحه اصلی'),
+                    new OA\Property(property: 'name', type: 'string', example: '4 middle banners on the home page'),
                     new OA\Property(property: 'description', type: 'string', nullable: true),
                     new OA\Property(property: 'max_banners', type: 'integer', example: 4),
                     new OA\Property(property: 'is_active', type: 'boolean', example: true),

@@ -46,6 +46,11 @@ exit(1);
         echo "Deduping duplicate products..."
         php artisan products:dedupe --no-interaction || true
     fi
+
+    if [ "$REFRESH_CAMPAIGNS" = "true" ]; then
+        echo "Refreshing campaign time windows..."
+        php artisan campaigns:window --days=2 --no-interaction || true
+    fi
 fi
 
 php artisan storage:link --force --no-interaction || true

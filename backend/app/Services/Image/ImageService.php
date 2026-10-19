@@ -17,7 +17,7 @@ class ImageService
         $storedPath = $file->storeAs($path, $fileName, 'public');
         
         if (!$storedPath) {
-            throw new \Exception('فایل ذخیره نشد!');
+            throw new \Exception('The file could not be saved!');
         }
         
         return $storedPath; // returns "products/1/filename.jpg"

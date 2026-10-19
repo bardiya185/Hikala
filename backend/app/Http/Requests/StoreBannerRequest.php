@@ -12,7 +12,7 @@ class StoreBannerRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // یا چک کن ادمین هست
+        return true; // or check that the user is an admin
     }
 
     public function rules(): array
@@ -48,9 +48,9 @@ class StoreBannerRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'image.max' => 'حجم تصویر نباید بیشتر از ۲ مگابایت باشد',
-            'ends_at.after' => 'تاریخ پایان باید بعد از تاریخ شروع باشد',
-            'background_color.regex' => 'کد رنگ باید مثل #FFFFFF باشد',
+            'image.max' => 'The image size must not exceed 2 MB.',
+            'ends_at.after' => 'The end date must be after the start date.',
+            'background_color.regex' => 'The color code must be in the format #FFFFFF.',
         ];
     }
     public function withValidator($validator)
@@ -59,7 +59,7 @@ class StoreBannerRequest extends FormRequest
             if ($this->linkable_type && $this->linkable_id) {
                 $exists = $this->linkable_type::where('id', $this->linkable_id)->exists();
                 if (!$exists) {
-                    $validator->errors()->add('linkable_id', 'موجودیت انتخابی یافت نشد');
+                    $validator->errors()->add('linkable_id', 'The selected entity was not found.');
                 }
             }
         });

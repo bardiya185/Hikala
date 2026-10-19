@@ -35,7 +35,7 @@ class ProductService
     ) {}
     
     /**
-     * لیست محصولات با تمام فیلترها
+     * Product list with all filters applied
      */
     public function list(Request $request): array
     {
@@ -65,7 +65,7 @@ class ProductService
     }
 
     /**
-     * لیست محصولات یک کمپین خاص (برای صفحه اختصاصی کمپین)
+     * Product list of a specific campaign (for the dedicated campaign page)
      */
     public function listByCampaign(DiscountCampaign $campaign, Request $request): array
     {
@@ -135,7 +135,7 @@ class ProductService
     }
     
     /**
-     * گرفتن دسته + زیردسته‌های فعال
+     * Get the category together with its active subcategories
      */
     private function getCategoryWithSubcategories(array $categoryIds): array
     {
@@ -168,7 +168,7 @@ class ProductService
     }
     
     /**
-     * چک زنجیره پدرها
+     * Check the chain of parents
      */
     private function isChainActive(int $categoryId): bool
     {
@@ -230,7 +230,7 @@ class ProductService
     }
 
     /**
-     * ✅ فیلتر کالاهای موجود (In Stock Only)
+     * ✅ Filter products that are in stock (In Stock Only)
      */
     private function applyInStockFilter(Builder $query, Request $request): void
     {
@@ -284,7 +284,7 @@ class ProductService
     }
     
     /**
-     * فیلتر محصولات بر اساس کمپین
+     * Filter products by campaign
      */
     private function filterByCampaign(Builder $query, Request $request, bool $sortByPrice, string $sortOrder): array
     {

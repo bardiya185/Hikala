@@ -22,10 +22,10 @@ class CheckOtpRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'mobile.required' => 'شماره موبایل الزامی است',
-            'mobile.regex' => 'فرمت شماره موبایل نامعتبر است',
-            'code.required' => 'کد تایید الزامی است',
-            'code.digits' => 'کد تایید باید ۶ رقم باشد',
+            'mobile.required' => 'The mobile number field is required.',
+            'mobile.regex' => 'Invalid mobile number format (e.g. 09123456789).',
+            'code.required' => 'The verification code field is required.',
+            'code.digits' => 'The verification code must be 6 digits.',
         ];
     }
 }

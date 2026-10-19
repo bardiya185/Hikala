@@ -39,10 +39,10 @@ class UpdateBrandRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'نام برند الزامی است',
-            'name.unique' => 'این نام برند قبلاً ثبت شده است',
-            'slug.required' => 'اسلاگ برند الزامی است',
-            'slug.unique' => 'این اسلاگ قبلاً ثبت شده است',
+            'name.required' => 'The brand name field is required.',
+            'name.unique' => 'This brand name is already taken.',
+            'slug.required' => 'The brand slug field is required.',
+            'slug.unique' => 'This slug is already taken.',
         ];
     }
 }
